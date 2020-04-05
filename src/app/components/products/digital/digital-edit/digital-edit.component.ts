@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import { HttpClient} from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
+import { BrandService } from '../../services/brand.service';
 const URL = 'http://localhost:3000/products/upload/';
 
 @Component({
@@ -16,9 +17,19 @@ export class DigitalEditComponent implements OnInit {
   addProduct: FormGroup;
   id:string = '';
   prodId: string;
+  categories;
+  brands;
 
-  constructor(private http: HttpClient, private el: ElementRef, private formBuilder: FormBuilder, private productsService: ProductService, private router: Router, private route: ActivatedRoute) { 
-    
+  constructor(
+    private http: HttpClient,
+    private el: ElementRef,
+    private formBuilder: FormBuilder,
+    private productsService: ProductService,
+    private brand: BrandService,
+    private category: ProductService,
+    private router: Router,
+    private route: ActivatedRoute) {
+
   }
 
   fileData=[];
@@ -54,6 +65,21 @@ export class DigitalEditComponent implements OnInit {
     this.prodId = this.route.snapshot.params['id'];
     this.getProducts(this.route.snapshot.params['id']);
     this.productFields();
+
+    this.getAllCategories();
+    this.getAllBrands();
+  }
+
+  getAllCategories() {
+    this.category.getCategories().subscribe(res => {
+      this.categories = res;
+    });
+  }
+
+  getAllBrands() {
+    this.brand.getAllBrands().subscribe((res) => {
+      this.brands = res;
+    });
   }
 
   getProducts(id) {

@@ -40,9 +40,13 @@
                                     <label class="col-form-label pt-0"> Product Upload</label>
                                     <input type="file" formControlName="product_image"  multiple (change)="onImageChange($event)" />        
                                     
+
                                     <div class="form-group">
-                                        <label for="validationCustom01" class="col-form-label pt-0"><span>*</span> Brand</label>
-                                        <input class="form-control" id="validationCustom01" name="brand" formControlName="brand" type="text" required="">
+                                        <label class="col-form-label"><span>*</span> Brand</label>
+                                        <select class="custom-select" formControlName="brand">
+                                            <option value="">--Select--</option>
+                                            <option *ngFor="let b of brands" [ngValue]="b.brand_id">{{b.brand_name}}</option>
+                                        </select>
                                     </div>
 
                                     <div class="form-group">
@@ -130,7 +134,7 @@
                                     </div> -->
                                     <div class="form-group">
                                         <label class="col-form-label"><span>*</span> Categories</label>
-                                        <select class="custom-select">
+                                        <select class="custom-select" id="category" formControlName="category">
                                             <option value="">--Select--</option>
                                             <option *ngFor="let c of categories" [ngValue]="c.cat_id">{{c.cat_name}}</option>
                                         </select>

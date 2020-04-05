@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder } from  '@angular/forms';
 import { HttpClient} from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { ProductService } from '../../services/product.service';
+import { BrandService } from '../../services/brand.service';
 const URL = 'http://localhost:3000/products/upload/';
 
 @Component({
@@ -13,15 +14,21 @@ const URL = 'http://localhost:3000/products/upload/';
 export class DigitalAddComponent implements OnInit {
 
   addProduct: FormGroup;
-  constructor(private http: HttpClient, private el: ElementRef,
-    private formBuilder: FormBuilder, private category:ProductService) { 
-    this.productFields();
-  }
+  constructor(
+    private http: HttpClient,
+    private el: ElementRef,
+    private formBuilder: FormBuilder,
+    private category:ProductService,
+    private brand: BrandService) {
+      this.productFields();
+    }
 
 
   fileData=[];
   imagePath;
   categories;
+  brands;
+
   public onUploadInit(args: any): void { }
 
   public onUploadError(args: any): void { }
@@ -30,7 +37,7 @@ export class DigitalAddComponent implements OnInit {
 
   productFields(){
     this.addProduct = this.formBuilder.group({
-      title: [''],  
+      title: [''],
       description: [''],
       price:[''],
       product_image:[''],
@@ -55,8 +62,8 @@ export class DigitalAddComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getAllCategories()
-    
+    this.getAllCategories();
+    this.getAllBrands();
   }
 
   getAllCategories() {
@@ -65,8 +72,14 @@ export class DigitalAddComponent implements OnInit {
     });
   }
 
+  getAllBrands() {
+    this.brand.getAllBrands().subscribe((res) => {
+      this.brands = res;
+    });
+  }
+
   onImageChange(evt){
-    if(evt.target.files.length>0){
+    if(evt.target.files.length>0) {
       this.fileData = evt.target.files;
     }
   }
@@ -75,7 +88,7 @@ export class DigitalAddComponent implements OnInit {
     return `3:${this.addProduct.value.tenure.threeMonths}[--split--]6:${this.addProduct.value.tenure.sixMonths}[--split--]9:${this.addProduct.value.tenure.nineMonths}[--split--]12:${this.addProduct.value.tenure.twelveMonths}[--split--]18:${this.addProduct.value.tenure.eighteenMonths}[--split--]24:${this.addProduct.value.tenure.twentyFourMonths}`;
   }
 
-  addProducts() {   
+  addProducts() {
     const tenureData = this.appendTenure();
     const formData = new FormData();
     for (let img of this.fileData) {

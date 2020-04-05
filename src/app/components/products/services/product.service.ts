@@ -51,9 +51,9 @@ export class ProductService {
     const url = `${this.c_url}/${id}`;
     return this.http.put(url, id);
   }
-  
+
   addCategory(categoryName) {
-    return this.http.post(this.c_url, {categoryName: categoryName});
+    return this.http.post(this.c_url, {categoryName});
   }
 
   deleteCategory(id) {
@@ -61,5 +61,4 @@ export class ProductService {
     return this.http.delete(url);
   }
 
-  
 }
