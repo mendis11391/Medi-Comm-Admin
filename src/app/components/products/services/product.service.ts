@@ -14,7 +14,7 @@ export class ProductService {
 
   b_url = `http://localhost:3000/products`;
   c_url = `http://localhost:3000/category`;
-  
+
   // public compareProducts : BehaviorSubject<Product[]> = new BehaviorSubject([]);
   public observer   :  Subscriber<{}>;
 
@@ -44,7 +44,7 @@ export class ProductService {
   }
 
   getCategories() {
-    return this.http.get(this.c_url).pipe(map((res:any) => res.json()));
+    return this.http.get(this.c_url);
   }
 
   updateCategory(id: string) {

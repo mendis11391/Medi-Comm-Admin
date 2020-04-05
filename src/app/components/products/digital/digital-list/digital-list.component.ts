@@ -52,7 +52,7 @@ export class DigitalListComponent implements OnInit {
     },
   };
 
-  ngOnInit() { 
+  ngOnInit() {
     this.loadProducts();
   }
 
@@ -60,7 +60,7 @@ export class DigitalListComponent implements OnInit {
     this.list.getProducts().subscribe(res => {
       this.products_list = res;
     }, error => {
-      console.log("test" + error);
+      console.log('test' + error);
       if (error.status === 401) {
         this.router.navigate(['/auth/login']);
       }
@@ -69,7 +69,7 @@ export class DigitalListComponent implements OnInit {
 
 
   onEdit(id) {
-    this.router.navigate(['digital/digital-edit-product/'+id]);
+    this.router.navigate(['products/digital/digital-edit-product/'+id]);
   }
 
   onDelete(id) {
@@ -81,7 +81,5 @@ export class DigitalListComponent implements OnInit {
         }
       );
   }
-
-  
 
 }
