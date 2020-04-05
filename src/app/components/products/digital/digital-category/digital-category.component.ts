@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { digitalCategoryDB } from 'src/app/shared/tables/digital-category';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { Category } from '../../../../shared/tables/product';
+import { ProductService } from '../../services/product.service';
 
 @Component({
   selector: 'app-digital-category',
@@ -8,11 +9,12 @@ import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./digital-category.component.scss']
 })
 export class DigitalCategoryComponent implements OnInit {
+  
   public closeResult: string;
-  public digital_categories = []
+  public categories;
 
-  constructor(private modalService: NgbModal) {
-    this.digital_categories = digitalCategoryDB.digital_category;
+  constructor(private modalService: NgbModal, private category: ProductService) {
+    // this.digital_categories = digitalCategoryDB.digital_category;
   }
 
   open(content) {
@@ -37,28 +39,31 @@ export class DigitalCategoryComponent implements OnInit {
     actions: {
       position: 'right'
     },
-    columns: {
-      img: {
-        title: 'Image',
-        type: 'html',
-      },
-      product_name: {
-        title: 'Name'
-      },
-      price: {
-        title: 'Price'
-      },
-      status: {
-        title: 'Status',
-        type: 'html',
-      },
-      category: {
-        title: 'Category',
+    columns: {      
+      category_name: {
+        title: 'Category'
       }
     },
   };
 
   ngOnInit() {
+    this.getAllCategories();
+  }
+
+  getAllCategories() {
+    this.category.getCategories().subscribe(res => {
+      this.categories = res;
+    });
+  }
+
+  addCategory(cname) {
+    this.category.addCategory(cname).subscribe((res) => {
+      if(res) {
+        this.getAllCategories();
+        let elm: HTMLElement = document.querySelector('#closemodal');
+        elm.click();
+      }
+    });
   }
 
 }

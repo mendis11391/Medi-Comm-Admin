@@ -23,25 +23,25 @@
                                     <div class="form">
                                         <div class="form-group">
                                             <label for="validationCustom01" class="mb-1">Category Name :</label>
-                                            <input class="form-control" id="validationCustom01" type="text">
+                                            <input class="form-control" #catname id="validationCustom01" type="text">
                                         </div>
-                                        <div class="form-group mb-0">
+                                        <!-- <div class="form-group mb-0">
                                             <label for="validationCustom02" class="mb-1">Category Image :</label>
                                             <input class="form-control" id="validationCustom02" type="file">
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" (click)="c('Save click')">Save</button>
+                                <button type="button" class="btn btn-primary" (click)="addCategory(catname.value)">Save</button>
                                 <button class="btn btn-secondary" type="button" data-dismiss="modal"
-                                    (click)="modal.dismiss('Cross click')">Close</button>
+                                    (click)="modal.dismiss('Cross click')" id="closemodal">Close</button>
                             </div>
                         </ng-template>
                     </div>
                     <div id="batchDelete" class="category-table custom-datatable">
                         <div class="table-responsive">
-                            <ng2-smart-table [settings]="settings" [source]="digital_categories"></ng2-smart-table>
+                            <ng2-smart-table [settings]="settings" [source]="categories"></ng2-smart-table>
                         </div>
                     </div>
                 </div>

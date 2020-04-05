@@ -1,5 +1,5 @@
 <div class="container-fluid">
-    <form enctype="multipart/form-data" [formGroup]="addProduct" (ngSubmit)="addProducts()">
+    <form enctype="multipart/form-data" [formGroup]="addProduct" (ngSubmit)="updateProducts()">
         <div class="row product-adding">
             <div class="col-xl-6">
                 <div class="card">
@@ -64,11 +64,11 @@
                                         <label class="col-form-label"><span>*</span> Disk Type</label>
                                         <div class="m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
                                             <label class="d-block" for="edo-ani">
-                                                <input class="radio_animated"  name="disk_type" formControlName="disk_type" [value]="true"  id="edo-ani" type="radio">
+                                                <input class="radio_animated"  name="disk_type" formControlName="disk_type" [value]="0"  id="edo-ani" type="radio" for="0">
                                                 HDD
                                             </label>
                                             <label class="d-block" for="edo-ani1">
-                                                <input class="radio_animated" name="disk_type" formControlName="disk_type" [value]="false"  id="edo-ani1" type="radio">
+                                                <input class="radio_animated" name="disk_type" formControlName="disk_type" [value]="1" id="edo-ani1" type="radio" for="1">
                                                 SSD
                                             </label>
                                         </div>
@@ -118,15 +118,6 @@
                                             <label for="validationCustom01" class="col-form-label pt-0"><span>*</span> 24 Months</label>
                                             <input class="form-control" id="validationCustom01" formControlName="twentyFourMonths" type="text" required="">
                                         </div>
-
-                                        
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="category" class="col-form-label pt-0"><span>*</span> Category</label>
-                                        <select  id="category" formControlName="category" >
-                                            <option selected>Select</option>
-                                            <option *ngFor="let c of categories" [ngValue]="c.category_id">{{c.category_name}}</option>
-                                        </select>
                                     </div>
                                     
                                 
@@ -139,7 +130,7 @@
                                         </div>
                                     </div>
                                 </div> -->
-                                <button type="submit" class="btn btn-primary mr-1">Add</button>                        
+                                <button type="submit" class="btn btn-primary mr-1">Update</button>                        
                         </div>
                     </div>
                 </div>

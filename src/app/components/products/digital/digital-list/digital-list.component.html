@@ -8,7 +8,36 @@
                 <div class="card-body">
                     <div id="batchDelete" class="custom-datatable">
                         <div class="table-responsive">
-                            <ng2-smart-table [settings]="settings" [source]="digital_list"></ng2-smart-table>
+                            <!-- <ng2-smart-table [settings]="settings" [source]="digital_list" (editConfirm)="onEdit($event)" (deleteConfirm)="onDelete($event)"></ng2-smart-table> -->
+                            <table class="table table-striped table-bordered">
+                                <thead>
+                                  <tr>
+                                    <th>Product Id</th>
+                                    <th>Product Title</th>
+                                    <th>Brand</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr *ngFor="let row of products_list">
+                                    <td>{{row.prod_id}}</td>
+                                    <td>{{row.prod_name}}</td>
+                                    <td>{{row.brand_name}}</td>
+                                    <td>{{row.prod_status}}</td>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <a (click)="onEdit(row.prod_id)"><i class="fa fa-pencil"></i></a>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <a (click)="onDelete(row.prod_id)"><i class="fa fa-trash"></i></a>
+                                            </div>
+                                        </div>                            
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
                         </div>
                     </div>
                 </div>

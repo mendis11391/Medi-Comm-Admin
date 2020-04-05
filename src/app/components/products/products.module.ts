@@ -16,6 +16,7 @@ import { DigitalSubCategoryComponent } from './digital/digital-sub-category/digi
 import { DigitalListComponent } from './digital/digital-list/digital-list.component';
 import { DigitalAddComponent } from './digital/digital-add/digital-add.component';
 import { ProductDetailComponent } from './physical/product-detail/product-detail.component';
+import { DigitalEditComponent } from './digital/digital-edit/digital-edit.component';
 import { GalleryModule } from '@ks89/angular-modal-gallery';
 import 'hammerjs';
 import 'mousetrap';
@@ -32,7 +33,7 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
 
 
 @NgModule({
-  declarations: [CategoryComponent, SubCategoryComponent, ProductListComponent, AddProductComponent, DigitalCategoryComponent, DigitalSubCategoryComponent, DigitalListComponent, DigitalAddComponent, ProductDetailComponent],
+  declarations: [CategoryComponent, SubCategoryComponent, DigitalEditComponent,ProductListComponent, AddProductComponent, DigitalCategoryComponent, DigitalSubCategoryComponent, DigitalListComponent, DigitalAddComponent, ProductDetailComponent],
   imports: [
     CommonModule,
     FormsModule,

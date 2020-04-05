@@ -10,6 +10,7 @@ import { DigitalListComponent } from './digital/digital-list/digital-list.compon
 import { DigitalAddComponent } from './digital/digital-add/digital-add.component';
 import { ProductDetailComponent } from './physical/product-detail/product-detail.component';
 import { AuthGuard } from '../auth/auth.guard';
+import { DigitalEditComponent } from './digital/digital-edit/digital-edit.component';
 
 const routes: Routes = [
   {
@@ -86,6 +87,14 @@ const routes: Routes = [
         data: {
           title: "Add Products",
           breadcrumb: "Add Product"
+        }
+      },
+      {
+        path: 'digital/digital-edit-product/:id',
+        component: DigitalEditComponent,
+        data: {
+          title: "Edit Products",
+          breadcrumb: "Edit Product"
         }
       }
     ]
