@@ -37,11 +37,11 @@ export class DigitalEditComponent implements OnInit {
 
   productFields(){
     this.addProduct = this.formBuilder.group({
-      title: [''],  
+      title: [''],
       description: [''],
       price:[''],
       product_image:[''],
-      status: [''],
+      status: ['0'],
       brand:[''],
       ram:[''],
       processor:[''],
@@ -57,7 +57,8 @@ export class DigitalEditComponent implements OnInit {
         twelveMonths: [0],
         eighteenMonths: [0],
         twentyFourMonths: [0]
-      })
+      }),
+      category:['']
     });
   }
 
@@ -87,7 +88,7 @@ export class DigitalEditComponent implements OnInit {
       let data = res[0];
       this.id = data.prod_id;
       this.addProduct.patchValue({
-        title: data.prod_name,  
+        title: data.prod_name,
         description: data.prod_description,
         price: data.prod_price,
         status: data.prod_status,
@@ -109,10 +110,18 @@ export class DigitalEditComponent implements OnInit {
       });
 
       if(this.addProduct.value.disk_type === '0') {
-        let a: HTMLElement = document.querySelector('#edo-ani');
+        let a: HTMLElement = document.querySelector('#edo-ani1');
         a.click();
       } else {
-        let a: HTMLElement = document.querySelector('#edo-ani1');
+        let a: HTMLElement = document.querySelector('#edo-ani');
+        a.click();
+      }
+
+      if(this.addProduct.value.status === '0') {
+        let a: HTMLElement = document.querySelector('#edo-ani4');
+        a.click();
+      } else {
+        let a: HTMLElement = document.querySelector('#edo-ani3');
         a.click();
       }
     });
@@ -145,7 +154,6 @@ export class DigitalEditComponent implements OnInit {
     formData.append('specifications', this.addProduct.value.specifications);
     formData.append('tenure', tenureData);
 
-    // this.addProduct.value.product_image = this.fileData;
 
     this.http.put(`http://localhost:3000/products/${this.prodId}`, this.addProduct.value).subscribe((res) => {
       console.log(res);

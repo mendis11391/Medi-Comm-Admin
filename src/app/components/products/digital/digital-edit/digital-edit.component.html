@@ -49,48 +49,56 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="validationCustom01" class="col-form-label pt-0"><span>*</span> RAM</label>
-                                        <input class="form-control" id="validationCustom01" name="ram" formControlName="ram" type="text" required="">
+                                        <label class="col-form-label"><span>*</span> Categories</label>
+                                        <select class="custom-select" id="category" formControlName="category">
+                                            <option value="">--Select--</option>
+                                            <option *ngFor="let c of categories" [ngValue]="c.cat_id">{{c.cat_name}}</option>
+                                        </select>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="validationCustom01" class="col-form-label pt-0"><span>*</span> Processor</label>
-                                        <input class="form-control" id="validationCustom01" name="processor" formControlName="processor" type="text" required="">
+                                        <label for="validationRam" class="col-form-label pt-0"><span>*</span> RAM</label>
+                                        <input class="form-control" id="validationRam" name="ram" formControlName="ram" type="text" required="">
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="validationCustom01" class="col-form-label pt-0"><span>*</span> Screen Size</label>
-                                        <input class="form-control" id="validationCustom01" name="screen_size" formControlName="screen_size" type="text" required="">
+                                        <label for="validationProcessor" class="col-form-label pt-0"><span>*</span> Processor</label>
+                                        <input class="form-control" id="validationProcessor" name="processor" formControlName="processor" type="text" required="">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="validationSerSz" class="col-form-label pt-0"><span>*</span> Screen Size</label>
+                                        <input class="form-control" id="validationSerSz" name="screen_size" formControlName="screen_size" type="text" required="">
                                     </div>                                    
 
                                     <div class="form-group">
                                         <label class="col-form-label"><span>*</span> Disk Type</label>
                                         <div class="m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
                                             <label class="d-block" for="edo-ani">
-                                                <input class="radio_animated"  name="disk_type" formControlName="disk_type" [value]="0"  id="edo-ani" type="radio" for="0">
+                                                <input class="radio_animated"  name="disk_type" formControlName="disk_type" [value]="1"  id="edo-ani" type="radio" for="0">
                                                 HDD
                                             </label>
                                             <label class="d-block" for="edo-ani1">
-                                                <input class="radio_animated" name="disk_type" formControlName="disk_type" [value]="1" id="edo-ani1" type="radio" for="1">
+                                                <input class="radio_animated" name="disk_type" formControlName="disk_type" [value]="0" id="edo-ani1" type="radio" for="1">
                                                 SSD
                                             </label>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="validationCustom01" class="col-form-label pt-0"><span>*</span>Disk Size</label>
-                                        <input class="form-control" id="validationCustom01" name="disk_size" formControlName="disk_size" type="text" required="">
+                                        <label for="validationdisk" class="col-form-label pt-0"><span>*</span>Disk Size</label>
+                                        <input class="form-control" id="validationdisk" name="disk_size" formControlName="disk_size" type="text" required="">
                                     </div>
 
                                     <div class="form-group">
                                         <label class="col-form-label"><span>*</span> Status</label>
                                         <div class="m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
                                             <label class="d-block" for="edo-ani">
-                                                <input class="radio_animated"  name="status" formControlName="status" [value]="true"  id="edo-ani" type="radio">
+                                                <input class="radio_animated"  name="status" formControlName="status" [value]="1"  id="edo-ani3" type="radio">
                                                 Enable
                                             </label>
                                             <label class="d-block" for="edo-ani1">
-                                                <input class="radio_animated" name="status" formControlName="status" [value]="false"  id="edo-ani1" type="radio">
+                                                <input class="radio_animated" name="status" formControlName="status" [value]="0"  id="edo-ani4" type="radio">
                                                 Disable
                                             </label>
                                         </div>

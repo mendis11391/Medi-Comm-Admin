@@ -9,8 +9,8 @@
                     <div class="card-body">
                         <div class="digital-add needs-validation">                        
                                 <div class="form-group">
-                                    <label for="validationCustom01" class="col-form-label pt-0"><span>*</span> Title</label>
-                                    <input class="form-control" id="validationCustom01" name="title" formControlName="title" type="text" required="">
+                                    <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Title</label>
+                                    <input class="form-control" id="validationTitle" name="title" formControlName="title" type="text" required="">
                                 </div>
                                 <!-- <div class="form-group">
                                     <label for="validationCustomtitle" class="col-form-label pt-0"><span>*</span> Quantity</label>
@@ -50,48 +50,56 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="validationCustom01" class="col-form-label pt-0"><span>*</span> RAM</label>
-                                        <input class="form-control" id="validationCustom01" name="ram" formControlName="ram" type="text" required="">
+                                        <label class="col-form-label"><span>*</span> Categories</label>
+                                        <select class="custom-select" id="category" formControlName="category">
+                                            <option value="">--Select--</option>
+                                            <option *ngFor="let c of categories" [ngValue]="c.cat_id">{{c.cat_name}}</option>
+                                        </select>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="validationCustom01" class="col-form-label pt-0"><span>*</span> Processor</label>
-                                        <input class="form-control" id="validationCustom01" name="processor" formControlName="processor" type="text" required="">
+                                        <label for="validationram" class="col-form-label pt-0"><span>*</span> RAM</label>
+                                        <input class="form-control" id="validationram" name="ram" formControlName="ram" type="text" required="">
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="validationCustom01" class="col-form-label pt-0"><span>*</span> Screen Size</label>
-                                        <input class="form-control" id="validationCustom01" name="screen_size" formControlName="screen_size" type="text" required="">
+                                        <label for="validationprocessor" class="col-form-label pt-0"><span>*</span> Processor</label>
+                                        <input class="form-control" id="validationprocessor" name="processor" formControlName="processor" type="text" required="">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="validationscreensz" class="col-form-label pt-0"><span>*</span> Screen Size</label>
+                                        <input class="form-control" id="validationscreensz" name="screen_size" formControlName="screen_size" type="text" required="">
                                     </div>                                    
 
                                     <div class="form-group">
                                         <label class="col-form-label"><span>*</span> Disk Type</label>
                                         <div class="m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
                                             <label class="d-block" for="edo-ani">
-                                                <input class="radio_animated"  name="disk_type" formControlName="disk_type" [value]="true"  id="edo-ani" type="radio">
+                                                <input class="radio_animated"  name="disk_type" formControlName="disk_type" [value]="1"  id="edo-ani" type="radio">
                                                 HDD
                                             </label>
                                             <label class="d-block" for="edo-ani1">
-                                                <input class="radio_animated" name="disk_type" formControlName="disk_type" [value]="false"  id="edo-ani1" type="radio">
+                                                <input class="radio_animated" name="disk_type" formControlName="disk_type" [value]="0"  id="edo-ani1" type="radio">
                                                 SSD
                                             </label>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="validationCustom01" class="col-form-label pt-0"><span>*</span>Disk Size</label>
-                                        <input class="form-control" id="validationCustom01" name="disk_size" formControlName="disk_size" type="text" required="">
+                                        <label for="validationdisksz" class="col-form-label pt-0"><span>*</span>Disk Size</label>
+                                        <input class="form-control" id="validationdisksz" name="disk_size" formControlName="disk_size" type="text" required="">
                                     </div>
 
                                     <div class="form-group">
                                         <label class="col-form-label"><span>*</span> Status</label>
                                         <div class="m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
                                             <label class="d-block" for="edo-ani">
-                                                <input class="radio_animated"  name="status" formControlName="status" [value]="true"  id="edo-ani" type="radio">
+                                                <input class="radio_animated"  name="status" formControlName="status" [value]="1"  id="edo-ani3" type="radio">
                                                 Enable
                                             </label>
                                             <label class="d-block" for="edo-ani1">
-                                                <input class="radio_animated" name="status" formControlName="status" [value]="false"  id="edo-ani1" type="radio">
+                                                <input class="radio_animated" name="status" formControlName="status" [value]="0" id="edo-ani4" type="radio">
                                                 Disable
                                             </label>
                                         </div>
@@ -99,57 +107,33 @@
 
                                     <div formGroupName="tenure">
                                          <div class="form-group">
-                                            <label for="validationCustom01" class="col-form-label pt-0"><span>*</span> 3 Months</label>
-                                            <input class="form-control" id="validationCustom01" formControlName="threeMonths" type="text" required="">
+                                            <label for="validation3m" class="col-form-label pt-0"><span>*</span> 3 Months</label>
+                                            <input class="form-control" id="validation3m" formControlName="threeMonths" type="text" required="">
                                         </div>
                                         <div class="form-group">
-                                            <label for="validationCustom01" class="col-form-label pt-0"><span>*</span> 6 Months</label>
-                                            <input class="form-control" id="validationCustom01" formControlName="sixMonths" type="text" required="">
+                                            <label for="validation6m" class="col-form-label pt-0"><span>*</span> 6 Months</label>
+                                            <input class="form-control" id="validation6m" formControlName="sixMonths" type="text" required="">
                                         </div>
                                         <div class="form-group">
-                                            <label for="validationCustom01" class="col-form-label pt-0"><span>*</span> 9 Months</label>
-                                            <input class="form-control" id="validationCustom01" formControlName="nineMonths" type="text" required="">
+                                            <label for="validation9m" class="col-form-label pt-0"><span>*</span> 9 Months</label>
+                                            <input class="form-control" id="validation9m" formControlName="nineMonths" type="text" required="">
                                         </div>
                                         <div class="form-group">
-                                            <label for="validationCustom01" class="col-form-label pt-0"><span>*</span> 12 Months</label>
-                                            <input class="form-control" id="validationCustom01" formControlName="twelveMonths" type="text" required="">
+                                            <label for="validation12m" class="col-form-label pt-0"><span>*</span> 12 Months</label>
+                                            <input class="form-control" id="validation12m" formControlName="twelveMonths" type="text" required="">
                                         </div>
                                         <div class="form-group">
-                                            <label for="validationCustom01" class="col-form-label pt-0"><span>*</span> 18 Months</label>
-                                            <input class="form-control" id="validationCustom01" formControlName="eighteenMonths" type="text" required="">
+                                            <label for="validation18m" class="col-form-label pt-0"><span>*</span> 18 Months</label>
+                                            <input class="form-control" id="validation18m" formControlName="eighteenMonths" type="text" required="">
                                         </div>
                                         <div class="form-group">
-                                            <label for="validationCustom01" class="col-form-label pt-0"><span>*</span> 24 Months</label>
-                                            <input class="form-control" id="validationCustom01" formControlName="twentyFourMonths" type="text" required="">
+                                            <label for="validation24m" class="col-form-label pt-0"><span>*</span> 24 Months</label>
+                                            <input class="form-control" id="validation24m" formControlName="twentyFourMonths" type="text" required="">
                                         </div>
 
                                         
                                     </div>
-                                    <!-- <div class="form-group">
-                                        <label for="category" class="col-form-label pt-0"><span>*</span> Category</label>
-                                        <select  id="category" formControlName="category" >
-                                            <option selected>Select</option>
-                                            <option *ngFor="let c of categories" [ngValue]="c.category_id">{{c.category_name}}</option>
-                                        </select>
-                                    </div> -->
-                                    <div class="form-group">
-                                        <label class="col-form-label"><span>*</span> Categories</label>
-                                        <select class="custom-select" id="category" formControlName="category">
-                                            <option value="">--Select--</option>
-                                            <option *ngFor="let c of categories" [ngValue]="c.cat_id">{{c.cat_name}}</option>
-                                        </select>
-                                    </div>
                                     
-                                
-                                <!-- <div class="card-body dropzone-custom p-0">
-                                    <div class="dropzone dropzone-primary" [dropzone]="config1" (error)="onUploadError($event)"
-                                        (success)="onUploadSuccess($event)">
-                                        <div class="dz-message needsclick">
-                                            <i class="fa fa-cloud-upload"></i>
-                                            <h4 class="mb-0 f-w-600">Drops Images here or click to upload.</h4>
-                                        </div>
-                                    </div>
-                                </div> -->
                                 <button type="submit" class="btn btn-primary mr-1">Add</button>                        
                         </div>
                     </div>

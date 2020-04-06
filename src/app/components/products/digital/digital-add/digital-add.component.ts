@@ -41,12 +41,12 @@ export class DigitalAddComponent implements OnInit {
       description: [''],
       price:[''],
       product_image:[''],
-      status: [''],
+      status: ['0'],
       brand:[''],
       ram:[''],
       processor:[''],
       screen_size:[''],
-      disk_type:[''],
+      disk_type:['0'],
       disk_size:[''],
       specifications:[''],
       tenure: this.formBuilder.group({
@@ -94,7 +94,7 @@ export class DigitalAddComponent implements OnInit {
     for (let img of this.fileData) {
       formData.append('product_image', img);
     }
-    formData.append('title', this.addProduct.value.title);
+    formData.append('name', this.addProduct.value.title);
     formData.append('description', this.addProduct.value.description);
     formData.append('price', this.addProduct.value.price);
     formData.append('status', this.addProduct.value.status);
