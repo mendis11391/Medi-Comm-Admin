@@ -93,7 +93,7 @@ export class DigitalEditComponent implements OnInit {
         description: data.prod_description,
         price: data.prod_price,
         status: data.prod_status,
-        brand: data.brand_name,
+        brand: data.brand_id,
         ram: data.prod_ram,
         processor: data.prod_processor,
         screen_size: data.prod_screensize,
@@ -107,7 +107,8 @@ export class DigitalEditComponent implements OnInit {
           twelveMonths:  data.prod_tenure[3][1],
           eighteenMonths:  data.prod_tenure[4][1],
           twentyFourMonths:  data.prod_tenure[5][1]
-        }
+        },
+        category: data.prod_cat_id
       });
 
       this.defaultBrand=data.brand_name;

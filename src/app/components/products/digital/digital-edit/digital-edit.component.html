@@ -43,16 +43,14 @@
                                     <div class="form-group">
                                         <label class="col-form-label"><span>*</span> Brand</label>
                                         <select class="custom-select" formControlName="brand">
-                                            <option disabled [value]="defaultBrand">{{defaultBrand}}</option>
-                                            <option *ngFor="let b of brands" [ngValue]="b.brand_id">{{b.brand_name}}</option>
+                                            <option *ngFor="let b of brands" [value]="b.brand_id">{{b.brand_name}}</option>
                                         </select>
                                     </div>
 
                                     <div class="form-group">
                                         <label class="col-form-label"><span>*</span> Categories</label>
                                         <select class="custom-select" id="category" formControlName="category">
-                                            <option value="">--Select--</option>
-                                            <option *ngFor="let c of categories" [ngValue]="c.cat_id">{{c.cat_name}}</option>
+                                            <option *ngFor="let c of categories" [value]="c.cat_id">{{c.cat_name}}</option>
                                         </select>
                                     </div>
 
