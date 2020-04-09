@@ -11,7 +11,7 @@ import { ProductService } from '../../services/product.service';
   styleUrls: ['./digital-list.component.scss']
 })
 export class DigitalListComponent implements OnInit {
-  public products_list;
+  public productsList;
 
   constructor(private list:ProductService, private router:Router) {
   }
@@ -58,11 +58,12 @@ export class DigitalListComponent implements OnInit {
 
   loadProducts() {
     this.list.getProducts().subscribe(res => {
-      this.products_list = res;
+      this.productsList = res;
     }, error => {
-      console.log('test' + error);
       if (error.status === 401) {
         this.router.navigate(['/auth/login']);
+      } else if(error.status === 403) {
+        alert('session expired');
       }
     });
   }
@@ -77,7 +78,9 @@ export class DigitalListComponent implements OnInit {
       .subscribe(res => {
         this.loadProducts();
         }, (err) => {
-          console.log(err);
+          if (err.status === 401) {
+            this.router.navigate(['/auth/login']);
+          }
         }
       );
   }
