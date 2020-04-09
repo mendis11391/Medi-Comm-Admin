@@ -34,6 +34,7 @@ export class DigitalEditComponent implements OnInit {
 
   fileData=[];
   imagePath;
+  defaultBrand;
 
   productFields(){
     this.addProduct = this.formBuilder.group({
@@ -109,6 +110,8 @@ export class DigitalEditComponent implements OnInit {
         }
       });
 
+      this.defaultBrand=data.brand_name;
+
       if(this.addProduct.value.disk_type === '0') {
         let a: HTMLElement = document.querySelector('#edo-ani1');
         a.click();
@@ -159,7 +162,6 @@ export class DigitalEditComponent implements OnInit {
       console.log(res);
     });
   }
-
 
 
 }

@@ -43,7 +43,7 @@
                                     <div class="form-group">
                                         <label class="col-form-label"><span>*</span> Brand</label>
                                         <select class="custom-select" formControlName="brand">
-                                            <option value="">--Select--</option>
+                                            <option disabled [value]="defaultBrand">{{defaultBrand}}</option>
                                             <option *ngFor="let b of brands" [ngValue]="b.brand_id">{{b.brand_name}}</option>
                                         </select>
                                     </div>

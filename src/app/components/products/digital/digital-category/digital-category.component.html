@@ -41,7 +41,19 @@
                     </div>
                     <div id="batchDelete" class="category-table custom-datatable">
                         <div class="table-responsive">
-                            <ng2-smart-table [settings]="settings" [source]="categories"></ng2-smart-table>
+                            <!-- <ng2-smart-table [settings]="settings" [source]="categories"></ng2-smart-table> -->
+                            <table class="table table-striped table-bordered">
+                                <thead>
+                                  <tr>
+                                    <th>Category Name</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr *ngFor="let row of categories">
+                                    <td>{{row.cat_name}}</td>
+                                  </tr>
+                                </tbody>
+                              </table>
                         </div>
                     </div>
                 </div>
