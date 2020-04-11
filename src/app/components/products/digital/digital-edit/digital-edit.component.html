@@ -129,6 +129,14 @@
                                         </div>
                                     </div>
                                     
+                                    <div class="form-group">
+                                        <label for="validationRam" class="col-form-label pt-0"><span></span> Images</label>
+                                        <div class="row">
+                                            <div class="col-md-4" *ngFor="let item of prodImgs">
+                                                <img src='http://localhost:3000/images/products/{{item}}' style="width: 100%;" />
+                                            </div>
+                                        </div>
+                                    </div>
                                 
                                 <!-- <div class="card-body dropzone-custom p-0">
                                     <div class="dropzone dropzone-primary" [dropzone]="config1" (error)="onUploadError($event)"

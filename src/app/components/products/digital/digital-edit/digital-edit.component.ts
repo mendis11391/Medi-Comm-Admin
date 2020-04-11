@@ -19,6 +19,7 @@ export class DigitalEditComponent implements OnInit {
   prodId: string;
   categories;
   brands;
+  prodImgs;
 
   constructor(
     private http: HttpClient,
@@ -86,7 +87,7 @@ export class DigitalEditComponent implements OnInit {
 
   getProducts(id) {
     this.productsService.getProduct(id).subscribe((res: any) => {
-      let data = res[0];
+      let data = res;
       this.id = data.prod_id;
       this.addProduct.patchValue({
         title: data.prod_name,
@@ -111,7 +112,7 @@ export class DigitalEditComponent implements OnInit {
         category: data.prod_cat_id
       });
 
-      this.defaultBrand=data.brand_name;
+      this.prodImgs = data.prod_img;
 
       if(this.addProduct.value.disk_type === '0') {
         let a: HTMLElement = document.querySelector('#edo-ani1');
