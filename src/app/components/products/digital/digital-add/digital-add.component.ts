@@ -28,6 +28,9 @@ export class DigitalAddComponent implements OnInit {
   imagePath;
   categories;
   brands;
+  categoryName;
+
+  cities;
 
   public onUploadInit(args: any): void { }
 
@@ -57,13 +60,15 @@ export class DigitalAddComponent implements OnInit {
         eighteenMonths: [0],
         twentyFourMonths: [0]
       }),
-      category:['']
+      category:[''],
+      cities: []
     });
   }
 
   ngOnInit() {
     this.getAllCategories();
     this.getAllBrands();
+    this.getAllCities();
   }
 
   getAllCategories() {
@@ -78,6 +83,12 @@ export class DigitalAddComponent implements OnInit {
     });
   }
 
+  getAllCities() {
+    this.category.getAllCities().subscribe((res) => {
+      this.cities = res;
+    })
+  }
+
   onImageChange(evt){
     if(evt.target.files.length>0) {
       this.fileData = evt.target.files;
@@ -88,8 +99,23 @@ export class DigitalAddComponent implements OnInit {
     return `3:${this.addProduct.value.tenure.threeMonths}[--split--]6:${this.addProduct.value.tenure.sixMonths}[--split--]9:${this.addProduct.value.tenure.nineMonths}[--split--]12:${this.addProduct.value.tenure.twelveMonths}[--split--]18:${this.addProduct.value.tenure.eighteenMonths}[--split--]24:${this.addProduct.value.tenure.twentyFourMonths}`;
   }
 
+  selectCities() {
+    let arr;
+    arr = this.addProduct.value.cities.join('[--split--]');
+    return arr;
+  }
+
+  getCategoryName() {
+    this.categoryName = this.categories.filter((res) => {
+      return res.cat_id === this.addProduct.value.category;
+    });
+  }
+
   addProducts() {
     const tenureData = this.appendTenure();
+    const appendedcities: string = this.selectCities();
+    let categoryNameF: any = this.categoryName;
+    categoryNameF = categoryNameF[0].cat_name;
     const formData = new FormData();
     for (let img of this.fileData) {
       formData.append('product_image', img);
@@ -107,6 +133,9 @@ export class DigitalAddComponent implements OnInit {
     formData.append('specifications', this.addProduct.value.specifications);
     formData.append('tenure', tenureData);
     formData.append('category', this.addProduct.value.category);
+    formData.append('cities', appendedcities);
+    formData.append('categoryName', categoryNameF);
+
 
     this.addProduct.value.product_image = this.fileData;
 
@@ -133,7 +162,6 @@ export class DigitalAddComponent implements OnInit {
                 formData.append('product_image', inputEl.files.item(0));
             //call the angular http method
             this.http.post(URL, formData).pipe(map((res:Response) => res.json())).subscribe(
-                //map the success function and alert the response
                  (success) => {
                          alert('success');
                 },

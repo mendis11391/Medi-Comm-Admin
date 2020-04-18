@@ -14,6 +14,7 @@ export class ProductService {
 
   b_url = `http://localhost:3000/products`;
   c_url = `http://localhost:3000/category`;
+  cty_url = `http://localhost:3000/cities`;
 
   // public compareProducts : BehaviorSubject<Product[]> = new BehaviorSubject([]);
   public observer   :  Subscriber<{}>;
@@ -59,6 +60,10 @@ export class ProductService {
   deleteCategory(id) {
     const url = `${this.c_url}/${id}`;
     return this.http.delete(url);
+  }
+
+  getAllCities() {
+    return this.http.get(this.cty_url);
   }
 
 }

@@ -51,9 +51,17 @@
 
                                     <div class="form-group">
                                         <label class="col-form-label"><span>*</span> Categories</label>
-                                        <select class="custom-select" id="category" formControlName="category">
+                                        <select class="custom-select" id="category" formControlName="category" (change)="getCategoryName()">
                                             <option value="">--Select--</option>
                                             <option *ngFor="let c of categories" [ngValue]="c.cat_id">{{c.cat_name}}</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-form-label"><span>*</span> Available in cities</label>
+                                        <select class="custom-select" id="cities" multiple formControlName="cities" (change)="selectCities()">
+                                            <option *ngFor="let c of cities" [ngValue]="c.cityid">
+                                                {{c.cityname}}</option>
                                         </select>
                                     </div>
 
