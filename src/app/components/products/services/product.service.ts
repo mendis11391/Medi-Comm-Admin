@@ -53,7 +53,7 @@ export class ProductService {
   }
 
   addCategory(categoryName) {
-    return this.http.post(this.c_url, {categoryName});
+    return this.http.post(this.c_url, {cat_name: categoryName});
   }
 
   deleteCategory(id) {
