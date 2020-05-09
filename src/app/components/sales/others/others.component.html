@@ -1,0 +1,22 @@
+<div class="container-fluid">
+    <form enctype="multipart/form-data" [formGroup]="days" (ngSubmit)="addDays()">
+        <div class="row product-adding">
+            <div class="col-xl-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Tentative Date to product Delivery in Days</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="digital-add needs-validation">                        
+                                <div class="form-group">
+                                    <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Days</label>
+                                    <input class="form-control" id="validationDays" name="days" formControlName="days" type="number" required="">
+                                </div>
+                                <button type="submit" class="btn btn-primary mr-1">Add</button>  
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </form>
+</div>
