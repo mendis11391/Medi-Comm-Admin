@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from  '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from  '@angular/forms';
+import { DeliverydateService } from '../services/deliverydate.service';
 
 @Component({
   selector: 'app-others',
@@ -9,18 +10,34 @@ import { FormGroup, FormBuilder } from  '@angular/forms';
 export class OthersComponent implements OnInit {
 
   days: FormGroup;
+  successMsg = false;
 
-  constructor(private formBuilder: FormBuilder) { }
+  constructor(private formBuilder: FormBuilder, private delvdate: DeliverydateService) { }
 
   ngOnInit() {
     this.days = this.formBuilder.group({
-      days: [''],
+      days: ['', Validators.required],
     });
+
+    this.delvdate.getAllCities().subscribe((res: any) => {
+      if (res) {
+        var a = res.filter((res) => {
+          if(res.cityname === 'Bangalore') {
+            return res.tentitiveDeleivery;
+          }
+      });
+      this.days.patchValue({
+        days: a[0].tentitiveDeleivery
+      });
+      }
+   });
   }
 
   addDays() {
+    this.delvdate.updateDeliveryDate(this.days.value).subscribe((res) => {
+      this.successMsg = true;
+    });
   }
 
-  
 
 }
