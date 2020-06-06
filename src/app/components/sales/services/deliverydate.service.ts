@@ -17,4 +17,9 @@ export class DeliverydateService {
     const url = `${this.cty_url}`;
     return this.http.put(url, data);
   }
+
+  updateTaxes(data) {
+    const url = `${this.cty_url}/taxes`;
+    return this.http.put(url, data);
+  }
 }

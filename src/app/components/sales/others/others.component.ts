@@ -12,6 +12,7 @@ export class OthersComponent implements OnInit {
   days: FormGroup;
   taxes:FormGroup;
   successMsg = false;
+  successMsg1 = false;
 
   constructor(private formBuilder: FormBuilder, private delvdate: DeliverydateService) { }
 
@@ -32,15 +33,22 @@ export class OthersComponent implements OnInit {
 
     this.delvdate.getAllCities().subscribe((res: any) => {
       if (res) {
-        var a = res;
-      this.days.patchValue({
-        bangalore: a[0].tentitiveDeleivery,
-        mumbai: a[1].tentitiveDeleivery,
-        pune: a[2].tentitiveDeleivery,
-        hyderabad: a[3].tentitiveDeleivery
-      });
+        const a = res;
+        this.days.patchValue({
+          bangalore: a[0].tentitiveDeleivery,
+          mumbai: a[1].tentitiveDeleivery,
+          pune: a[2].tentitiveDeleivery,
+          hyderabad: a[3].tentitiveDeleivery
+        });
+
+        this.taxes.patchValue({
+          bangalore: a[0].taxes,
+          mumbai: a[1].taxes,
+          pune: a[2].taxes,
+          hyderabad: a[3].taxes
+        });
       }
-   });
+    });
   }
 
   addDays() {
@@ -49,5 +57,10 @@ export class OthersComponent implements OnInit {
     });
   }
 
+  addTaxes() {
+    this.delvdate.updateTaxes(this.taxes.value).subscribe((res) => {
+      this.successMsg1 = true;
+    });
+  }
 
 }
