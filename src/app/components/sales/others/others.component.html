@@ -1,23 +1,70 @@
 <div class="container-fluid">
-    <form enctype="multipart/form-data" [formGroup]="days" (ngSubmit)="addDays()">
         <div class="row product-adding">
             <div class="col-xl-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h5>Tentative Date to product Delivery in Days</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="digital-add needs-validation">                        
-                                <div class="form-group">
-                                    <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Days</label>
-                                    <input class="form-control" id="validationDays" name="days" formControlName="days" type="number" required="">
-                                </div>
-                                <button type="submit" class="btn btn-primary mr-1">Add</button>  
+                <form enctype="multipart/form-data" [formGroup]="days" (ngSubmit)="addDays()">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Tentative Date to product Delivery in Days</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="digital-add needs-validation">                        
+                                    <div class="form-group">
+                                        <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Bangalore</label>
+                                        <input class="form-control"  name="bangalore" formControlName="bangalore" type="number" required="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Mumbai</label>
+                                        <input class="form-control"  name="mumbai" formControlName="mumbai" type="number" required="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Pune</label>
+                                        <input class="form-control"  name="pune" formControlName="pune" type="number" required="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Hyderabad</label>
+                                        <input class="form-control" name="hyderabad" formControlName="hyderabad" type="number" required="">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary mr-1">Add</button>  
                             </div>
                             <div *ngIf="successMsg"><span>Updated Successfully!</span></div>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
-    </form>
+
+
+            <div class="col-xl-6">
+                <form enctype="multipart/form-data" [formGroup]="taxes" (ngSubmit)="addDays()">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Taxes</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="digital-add needs-validation">                        
+                                    <div class="form-group">
+                                        <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Bangalore</label>
+                                        <input class="form-control" name="bangalore" formControlName="bangalore" type="number" required="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Mumbai</label>
+                                        <input class="form-control" name="mumbai" formControlName="mumbai" type="number" required="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Pune</label>
+                                        <input class="form-control" name="pune" formControlName="pune" type="number" required="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Hyderabad</label>
+                                        <input class="form-control" name="hyderabad" formControlName="hyderabad" type="number" required="">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary mr-1">Add</button>  
+                            </div>
+                            <div *ngIf="successMsg"><span>Updated Successfully!</span></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
 </div>
+

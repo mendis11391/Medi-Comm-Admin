@@ -16,18 +16,18 @@ export class OthersComponent implements OnInit {
 
   ngOnInit() {
     this.days = this.formBuilder.group({
-      days: ['', Validators.required],
+      bangalore: ['', Validators.required],
     });
 
     this.delvdate.getAllCities().subscribe((res: any) => {
       if (res) {
         var a = res.filter((res) => {
           if(res.cityname === 'Bangalore') {
-            return res.tentitiveDeleivery;
+            return res;
           }
       });
       this.days.patchValue({
-        days: a[0].tentitiveDeleivery
+        bangalore: a[0].tentitiveDeleivery
       });
       }
    });
