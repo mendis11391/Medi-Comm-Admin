@@ -10,6 +10,7 @@ import { DeliverydateService } from '../services/deliverydate.service';
 export class OthersComponent implements OnInit {
 
   days: FormGroup;
+  taxes:FormGroup;
   successMsg = false;
 
   constructor(private formBuilder: FormBuilder, private delvdate: DeliverydateService) { }
@@ -17,6 +18,16 @@ export class OthersComponent implements OnInit {
   ngOnInit() {
     this.days = this.formBuilder.group({
       bangalore: ['', Validators.required],
+      mumbai: ['', Validators.required],
+      pune: ['', Validators.required],
+      hyderabad: ['', Validators.required],
+    });
+
+    this.taxes = this.formBuilder.group({
+      bangalore: ['', Validators.required],
+      mumbai: ['', Validators.required],
+      pune: ['', Validators.required],
+      hyderabad: ['', Validators.required],
     });
 
     this.delvdate.getAllCities().subscribe((res: any) => {
