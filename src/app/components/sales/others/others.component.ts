@@ -32,13 +32,12 @@ export class OthersComponent implements OnInit {
 
     this.delvdate.getAllCities().subscribe((res: any) => {
       if (res) {
-        var a = res.filter((res) => {
-          if(res.cityname === 'Bangalore') {
-            return res;
-          }
-      });
+        var a = res;
       this.days.patchValue({
-        bangalore: a[0].tentitiveDeleivery
+        bangalore: a[0].tentitiveDeleivery,
+        mumbai: a[1].tentitiveDeleivery,
+        pune: a[2].tentitiveDeleivery,
+        hyderabad: a[3].tentitiveDeleivery
       });
       }
    });
