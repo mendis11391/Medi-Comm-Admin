@@ -41,25 +41,39 @@ export class DigitalAddComponent implements OnInit {
   productFields(){
     this.addProduct = this.formBuilder.group({
       title: [''],
+      offers: ['["oid1","oid2","oid3","oid4"]'],
       description: [''],
+      qty:[''],
       price:[''],
+      deliveryDate:[''],
       product_image:[''],
       status: ['0'],
       brand:[''],
       ram:[''],
       processor:[''],
       screen_size:[''],
+      weight:[''],
+      usb:[''],
+      hdmi:[''],
+      clockSpeed:[''],
+      battery:[''],
+      touchScreen:['0'],
+      connectivity:[''],
+      webcam:['0'],
       disk_type:['0'],
       disk_size:[''],
       specifications:[''],
       tenure: this.formBuilder.group({
+        oneMonth: [0],
         threeMonths: [0],
         sixMonths: [0],
-        nineMonths: [0],
         twelveMonths: [0],
         eighteenMonths: [0],
         twentyFourMonths: [0]
       }),
+      featured:[0],
+      bestSeller:[0],
+      newProducts:[0],
       category:[''],
       cities: []
     });
@@ -96,7 +110,7 @@ export class DigitalAddComponent implements OnInit {
   }
 
   appendTenure() {
-    return `3:${this.addProduct.value.tenure.threeMonths}[--split--]6:${this.addProduct.value.tenure.sixMonths}[--split--]9:${this.addProduct.value.tenure.nineMonths}[--split--]12:${this.addProduct.value.tenure.twelveMonths}[--split--]18:${this.addProduct.value.tenure.eighteenMonths}[--split--]24:${this.addProduct.value.tenure.twentyFourMonths}`;
+    return `1:${this.addProduct.value.tenure.oneMonth}[--split--]3:${this.addProduct.value.tenure.threeMonths}[--split--]6:${this.addProduct.value.tenure.sixMonths}[--split--]12:${this.addProduct.value.tenure.twelveMonths}[--split--]18:${this.addProduct.value.tenure.eighteenMonths}[--split--]24:${this.addProduct.value.tenure.twentyFourMonths}`;
   }
 
   selectCities() {
@@ -105,15 +119,46 @@ export class DigitalAddComponent implements OnInit {
     return arr;
   }
 
+  selectOffers() {
+    let arr;
+    arr = this.addProduct.value.offers.join('[--split--]');
+    return arr;
+  }
+
   getCategoryName() {
     this.categoryName = this.categories.filter((res) => {
       return res.cat_id === this.addProduct.value.category;
     });
   }
+  specialProducts(e){
+    let id=e.target.id;
+    if(id=="featured"){
+      this.addProduct.value.featured=e.target.checked ? 1 : 0;
+    }
+    else if(id=="bestSeller"){
+      this.addProduct.value.bestSeller=e.target.checked ? 1 : 0;
+    }
+    else if(id=="newProducts"){
+      this.addProduct.value.newProducts=e.target.checked ? 1 : 0;
+    }   
+  }
 
   addProducts() {
     const tenureData = this.appendTenure();
     const appendedcities: string = this.selectCities();
+    const formVal = this.addProduct.value;
+    const specs={
+      weight: formVal.weight,
+      usb: formVal.usb,
+      hdmi: formVal.hdmi,
+      clockSpeed: formVal.clockSpeed,
+      battery: formVal.battery,
+      touchScreen: formVal.touchScreen,
+      connectivity: formVal.connectivity,
+      webcam: formVal.webcam,
+    };
+    const dbSpecs=[];
+    dbSpecs.push(JSON.stringify(specs));
     let categoryNameF: any = this.categoryName;
     categoryNameF = categoryNameF[0].cat_name;
     const formData = new FormData();
@@ -121,17 +166,24 @@ export class DigitalAddComponent implements OnInit {
       formData.append('product_image', img);
     }
     formData.append('name', this.addProduct.value.title);
+    formData.append('offers', this.addProduct.value.offers);
     formData.append('description', this.addProduct.value.description);
+    formData.append('qty', this.addProduct.value.qty);
     formData.append('price', this.addProduct.value.price);
+    formData.append('deliveryDate', this.addProduct.value.deliveryDate);
     formData.append('status', this.addProduct.value.status);
     formData.append('brand', this.addProduct.value.brand);
     formData.append('ram', this.addProduct.value.ram);
     formData.append('processor', this.addProduct.value.processor);
     formData.append('screen_size', this.addProduct.value.screen_size);
+    formData.append('specs', JSON.stringify(dbSpecs));
     formData.append('disk_type', this.addProduct.value.disk_type);
     formData.append('disk_size', this.addProduct.value.disk_size);
     formData.append('specifications', this.addProduct.value.specifications);
     formData.append('tenure', tenureData);
+    formData.append('featured', this.addProduct.value.featured);
+    formData.append('bestSeller', this.addProduct.value.bestSeller);
+    formData.append('newProducts', this.addProduct.value.newProducts);
     formData.append('category', this.addProduct.value.category);
     formData.append('cities', appendedcities);
     formData.append('categoryName', categoryNameF);

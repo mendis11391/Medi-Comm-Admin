@@ -10,9 +10,10 @@ import { TransactionsComponent } from './transactions/transactions.component';
 import { OthersComponent } from './others/others.component';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DepositsComponent } from './deposits/deposits.component';
 
 @NgModule({
-  declarations: [OrdersComponent, TransactionsComponent, OthersComponent],
+  declarations: [OrdersComponent, TransactionsComponent, OthersComponent, DepositsComponent],
   imports: [
     CommonModule,
     SalesRoutingModule,

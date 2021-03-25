@@ -32,8 +32,21 @@
                                     <textarea rows="5" name="description" formControlName="description" cols="12"></textarea>
                                 </div>
                                 <div class="form-group">
-                                    <label for="validationCustom02" class="col-form-label"><span>*</span> Product Price</label>
+                                    <label for="offers" class="col-form-label pt-0"><span>*</span> Offers</label>
+                                    <input class="form-control" id="validationram" name="offers" formControlName="offers" type="text" required="">
+                                </div>
+                                <div class="form-group">
+                                    <label for="qty" class="col-form-label pt-0"><span>*</span> Quantity</label>
+                                    <input class="form-control" id="qty" name="qty" formControlName="qty" type="number" required="">
+                                </div>
+                                <div class="form-group">
+                                    <label for="validationCustom02" class="col-form-label"><span>*</span> Security Deposit</label>
                                     <input class="form-control" name="price" formControlName="price" id="validationCustom02" type="text" required="">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="deliveryDate" class="col-form-label"><span>*</span> Product Delivery date</label>
+                                    <input class="form-control" name="deliveryDate" formControlName="deliveryDate" id="deliveryDate" type="number" required="">
                                 </div>
                                 
                                 
@@ -78,7 +91,65 @@
                                     <div class="form-group">
                                         <label for="validationscreensz" class="col-form-label pt-0"><span>*</span> Screen Size</label>
                                         <input class="form-control" id="validationscreensz" name="screen_size" formControlName="screen_size" type="text" required="">
-                                    </div>                                    
+                                    </div>     
+                                    
+                                    <div class="form-group">
+                                        <label for="validationram" class="col-form-label pt-0"><span>*</span> Weight</label>
+                                        <input class="form-control" id="validationram" name="weight" formControlName="weight" type="text" required="">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="validationram" class="col-form-label pt-0"><span>*</span> USB ports</label>
+                                        <input class="form-control" id="validationram" name="usb" formControlName="usb" type="text" required="">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="validationram" class="col-form-label pt-0"><span>*</span> HDMI port</label>
+                                        <input class="form-control" id="validationram" name="hdmi" formControlName="hdmi" type="text" required="">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="validationram" class="col-form-label pt-0"><span>*</span> Clock speed</label>
+                                        <input class="form-control" id="validationram" name="clockSpeed" formControlName="clockSpeed" type="text" required="">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="validationram" class="col-form-label pt-0"><span>*</span> Battery</label>
+                                        <input class="form-control" id="validationram" name="battery" formControlName="battery" type="text" required="">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-form-label"><span>*</span> Touch screen</label>
+                                        <div class="m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
+                                            <label class="d-block" for="edo-ani">
+                                                <input class="radio_animated"  name="touchScreen" formControlName="touchScreen" [value]="1"  id="touchScreen" type="radio">
+                                                Yes
+                                            </label>
+                                            <label class="d-block" for="edo-ani1">
+                                                <input class="radio_animated" name="touchScreen" formControlName="touchScreen" [value]="0"  id="touchScreen" type="radio">
+                                                No
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="validationram" class="col-form-label pt-0"><span>*</span> Connectivity</label>
+                                        <input class="form-control" id="validationram" name="connectivity" formControlName="connectivity" type="text" required="">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-form-label"><span>*</span> Webcam</label>
+                                        <div class="m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
+                                            <label class="d-block" for="edo-ani">
+                                                <input class="radio_animated"  name="webcam" formControlName="webcam" [value]="1"  id="webcam" type="radio">
+                                                Yes
+                                            </label>
+                                            <label class="d-block" for="edo-ani1">
+                                                <input class="radio_animated" name="webcam" formControlName="webcam" [value]="0"  id="webcam" type="radio">
+                                                No
+                                            </label>
+                                        </div>
+                                    </div>
 
                                     <div class="form-group">
                                         <label class="col-form-label"><span>*</span> Disk Type</label>
@@ -115,16 +186,16 @@
 
                                     <div formGroupName="tenure">
                                          <div class="form-group">
-                                            <label for="validation3m" class="col-form-label pt-0"><span>*</span> 3 Months</label>
-                                            <input class="form-control" id="validation3m" formControlName="threeMonths" type="text" required="">
+                                            <label for="validation3m" class="col-form-label pt-0"><span>*</span> 1 Month</label>
+                                            <input class="form-control" id="validation3m" formControlName="oneMonth" type="text" required="">
                                         </div>
                                         <div class="form-group">
-                                            <label for="validation6m" class="col-form-label pt-0"><span>*</span> 6 Months</label>
-                                            <input class="form-control" id="validation6m" formControlName="sixMonths" type="text" required="">
+                                            <label for="validation6m" class="col-form-label pt-0"><span>*</span> 3 Months</label>
+                                            <input class="form-control" id="validation6m" formControlName="threeMonths" type="text" required="">
                                         </div>
                                         <div class="form-group">
-                                            <label for="validation9m" class="col-form-label pt-0"><span>*</span> 9 Months</label>
-                                            <input class="form-control" id="validation9m" formControlName="nineMonths" type="text" required="">
+                                            <label for="validation9m" class="col-form-label pt-0"><span>*</span> 6 Months</label>
+                                            <input class="form-control" id="validation9m" formControlName="sixMonths" type="text" required="">
                                         </div>
                                         <div class="form-group">
                                             <label for="validation12m" class="col-form-label pt-0"><span>*</span> 12 Months</label>
@@ -137,6 +208,14 @@
                                         <div class="form-group">
                                             <label for="validation24m" class="col-form-label pt-0"><span>*</span> 24 Months</label>
                                             <input class="form-control" id="validation24m" formControlName="twentyFourMonths" type="text" required="">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="validation24m" class="col-form-label pt-0"><span>*</span> Featured</label>
+                                            <input class="form-control" id="featured" formControlName="featured" (change)="specialProducts($event)"  type="checkbox" required="">
+                                            <label for="validation24m" class="col-form-label pt-0"><span>*</span> Best seller</label>
+                                            <input class="form-control" id="bestSeller" formControlName="bestSeller" (change)="specialProducts($event)"  type="checkbox" required="">
+                                            <label for="validation24m" class="col-form-label pt-0"><span>*</span> New products</label>
+                                            <input class="form-control" id="newProducts" formControlName="newProducts" (change)="specialProducts($event)" type="checkbox" required="">
                                         </div>
 
                                         

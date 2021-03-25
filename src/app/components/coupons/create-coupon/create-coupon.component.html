@@ -15,13 +15,13 @@
                                     <div class="form-group row">
                                         <label for="validationCustom0" class="col-xl-3 col-md-4"><span>*</span>
                                             Coupan Title</label>
-                                        <input class="form-control col-md-7" formControlName="name"
+                                        <input class="form-control col-md-7" formControlName="coupon_title"
                                             id="validationCustom0" type="text" required="">
                                     </div>
                                     <div class="form-group row">
                                         <label for="validationCustom1" class="col-xl-3 col-md-4"><span>*</span>
                                             Coupan Code</label>
-                                        <input class="form-control col-md-7" formControlName="code"
+                                        <input class="form-control col-md-7" formControlName="coupon_code"
                                             id="validationCustom1" type="text" required="">
                                         <div class="valid-feedback">Please Provide a Valid Coupon Code.</div>
                                     </div>
@@ -62,7 +62,7 @@
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-xl-3 col-md-4">Discount Type</label>
-                                        <select class="custom-select col-md-7" required="">
+                                        <select class="custom-select col-md-7" formControlName="discount_type" required="">
                                             <option value="">--Select--</option>
                                             <option value="1">Percent</option>
                                             <option value="2">Fixed</option>

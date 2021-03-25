@@ -4,6 +4,7 @@ import { digitalListDB } from 'src/app/shared/tables/digital-list';
 import { BehaviorSubject, Observable, of, Subscriber} from 'rxjs';
 import { Product } from '../../../../shared/tables/product';
 import { ProductService } from '../../services/product.service';
+import { ExcelService } from 'src/app/components/sales/services/excel.service';
 
 @Component({
   selector: 'app-digital-list',
@@ -12,8 +13,9 @@ import { ProductService } from '../../services/product.service';
 })
 export class DigitalListComponent implements OnInit {
   public productsList;
+  public filteredProducts=[];
 
-  constructor(private list:ProductService, private router:Router) {
+  constructor(private excelService:ExcelService,private list:ProductService, private router:Router) {
   }
 
   public settings = {
@@ -31,11 +33,11 @@ export class DigitalListComponent implements OnInit {
       prod_id: {
         title: 'prod_id',
       },
-      title: {
-        title: 'Product Title',
+      prod_name: {
+        title: 'prod_name',
       },
-      brand: {
-        title: 'Brand',
+      brand_name: {
+        title: 'brand_name',
       },
       status: {
         title: 'Status',
@@ -59,6 +61,7 @@ export class DigitalListComponent implements OnInit {
   loadProducts() {
     this.list.getProducts().subscribe(res => {
       this.productsList = res;
+      this.filteredProducts=this.productsList;
     }, error => {
       if (error.status === 401) {
         this.router.navigate(['/auth/login']);
@@ -83,6 +86,22 @@ export class DigitalListComponent implements OnInit {
           }
         }
       );
+  }
+
+  filterproducts(e){
+    if(e=='All products'){
+      this.filteredProducts=this.productsList;
+    } else if(e=='Laptops'){
+      this.filteredProducts=this.productsList.filter(item => item.cat_name=='Laptops');
+    } else if(e=='Desktops'){
+      this.filteredProducts=this.productsList.filter(item => item.cat_name=='Desktops');
+    } else if(e=='Camera'){
+      this.filteredProducts=this.productsList.filter(item => item.cat_name=='Camera');
+    }
+  }
+
+  exportAsXLSX():void {
+    this.excelService.exportAsExcelFile(this.filteredProducts, 'Products');
   }
 
 }

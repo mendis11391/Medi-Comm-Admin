@@ -75,6 +75,7 @@ const routes: Routes = [
       },
       {
         path: 'digital/digital-product-list',
+        // canActivate: [AuthGuard],
         component: DigitalListComponent,
         data: {
           title: "Product List",

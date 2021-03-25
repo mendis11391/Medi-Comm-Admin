@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { NgbDateStruct, NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-create-coupon',
@@ -15,7 +16,7 @@ export class CreateCouponComponent implements OnInit {
   public date: { year: number, month: number };
   public modelFooter: NgbDateStruct;
 
-  constructor(private formBuilder: FormBuilder, private calendar: NgbCalendar) {
+  constructor(private formBuilder: FormBuilder, private calendar: NgbCalendar, private http:HttpClient) {
     this.createGeneralForm();
     this.createRestrictionForm();
     this.createUsageForm();
@@ -27,8 +28,8 @@ export class CreateCouponComponent implements OnInit {
 
   createGeneralForm() {
     this.generalForm = this.formBuilder.group({
-      name: [''],
-      code: [''],
+      coupon_title: [''],
+      coupon_code: [''],
       start_date: [''],
       end_date: [''],
       free_shipping: [''],
@@ -55,6 +56,13 @@ export class CreateCouponComponent implements OnInit {
   }
   ngOnInit() {
 
+  }
+
+  onSubmit() {
+
+    this.http.post('http://localhost:3000/coupons', this.generalForm).subscribe((res) => {
+      console.log(res);
+    });
   }
 
 }
