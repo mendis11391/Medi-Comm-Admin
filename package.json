@@ -56,7 +56,7 @@
     "screenfull": "^5.0.1",
     "tslib": "^1.10.0",
     "web-animations-js": "^2.3.2",
-    "xlsx": "^0.16.9",
+    "xlsx": "^0.17.0",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
