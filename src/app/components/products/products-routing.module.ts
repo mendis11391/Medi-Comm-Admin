@@ -15,7 +15,7 @@ import { DigitalEditComponent } from './digital/digital-edit/digital-edit.compon
 const routes: Routes = [
   {
     path: '',
-    canActivate: [AuthGuard],
+    // canActivate: [AuthGuard],
     children: [
       {
         path: 'physical/category',
@@ -75,7 +75,7 @@ const routes: Routes = [
       },
       {
         path: 'digital/digital-product-list',
-        // canActivate: [AuthGuard],
+        canActivate: [AuthGuard],
         component: DigitalListComponent,
         data: {
           title: "Product List",

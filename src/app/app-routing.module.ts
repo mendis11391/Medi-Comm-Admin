@@ -4,6 +4,7 @@ import { content } from './shared/routes/content-routes';
 import { ContentLayoutComponent } from './shared/layout/content-layout/content-layout.component';
 import { LoginComponent } from './components/auth/login/login.component';
 import { AuthGuard } from './components/auth/auth.guard';
+import { User, Role } from './components/auth/user';
 const routes: Routes = [
   {
     path: '',

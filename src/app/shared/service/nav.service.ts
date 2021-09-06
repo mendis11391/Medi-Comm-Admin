@@ -64,6 +64,9 @@ export class NavService {
 		{
 			title: 'Sales', icon: 'dollar-sign', type: 'sub', active: false, children: [
 				{ path: '/sales/orders', title: 'Orders', type: 'link' },
+				{ path: '/sales/orders-panel', title: 'Orders panel', type: 'link' },
+				{ path: '/sales/user-requests', title: 'User requests', type: 'link' },
+				{ path: '/sales/manage-orders', title: 'Manage orders', type: 'link' },
 				{ path: '/sales/deposits', title: 'Deposits', type: 'link' },
 				{ path: '/sales/others', title: 'others', type: 'link' },
 				{ path: '/sales/transactions', title: 'Transactions', type: 'link' },

@@ -15,6 +15,7 @@ export class ProductService {
   b_url = `http://localhost:3000/products`;
   c_url = `http://localhost:3000/category`;
   cty_url = `http://localhost:3000/cities`;
+  pay_url = `http://localhost:3000/payments`
 
   // public compareProducts : BehaviorSubject<Product[]> = new BehaviorSubject([]);
   public observer   :  Subscriber<{}>;
@@ -64,6 +65,10 @@ export class ProductService {
 
   getAllCities() {
     return this.http.get(this.cty_url);
+  }
+
+  addReplacement(val){
+    return this.http.post(`${this.pay_url}/replacement`, val)
   }
 
 }

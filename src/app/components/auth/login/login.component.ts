@@ -6,7 +6,7 @@ import { AuthService } from '../auth.service';
 
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { User } from '../user';
+import { Role, User } from '../user';
 
 interface Response {
   token: string,
@@ -25,6 +25,7 @@ export class LoginComponent implements OnInit {
   public registerForm: FormGroup;
   loginError = false;
   public user;
+  Role = Role;
   
 
   constructor(private formBuilder: FormBuilder, private login: AuthService, private router: Router) {
@@ -75,13 +76,12 @@ export class LoginComponent implements OnInit {
       this.login.loginCheck(this.loginForm.value).subscribe((res: Response) => {
         
         if (res.authenticated) {
-          // this.login.getUserDetails(res.token).subscribe(resp => {
-          //   localStorage.setItem('user_id', resp.data[0].user_id);
-          //   localStorage.setItem('u_role', resp.data[0].usertype);
-          //   // localStorage.setItem('productAdd', resp.data[0].product_add);
-          //   // localStorage.setItem('productView', resp.data[0].view);
-          //   // localStorage.setItem('deposits', resp.data[0].deposits);
-          // });
+          this.login.getUserDetails(res.token).subscribe(resp => {
+            localStorage.setItem('user_id', resp.data[0].user_id);
+            localStorage.setItem('u_role', resp.data[0].usertype);
+            localStorage.setItem('uname', resp.data[0].uname);
+            this.login.login(resp.data[0].uname);
+          });
           localStorage.setItem('token', res.token);
           this.router.navigate(['/dashboard/default']);
           // setTimeout(()=>{

@@ -12,6 +12,7 @@ export class HeaderComponent implements OnInit {
   public open: boolean = false;
   public openNav: boolean = false;
   public isOpenMobile : boolean;
+  userName:string;
 
   @Output() rightSidebarEvent = new EventEmitter<boolean>();
 
@@ -37,6 +38,8 @@ export class HeaderComponent implements OnInit {
   }
 
 
-  ngOnInit() {  }
+  ngOnInit() { 
+    this.userName = localStorage.getItem('uname')
+   }
 
 }

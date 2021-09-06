@@ -14,7 +14,8 @@ import { NavService } from './service/nav.service';
 import { WINDOW_PROVIDERS } from './service/windows.service';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
 import { RightSidebarComponent } from './components/right-sidebar/right-sidebar.component';
-
+import { UserDirective } from '../shared/directives/user.directive';
+import { UserRoleDirective } from '../shared/directives/user-role.directive';
 
 @NgModule({
   declarations: [
@@ -25,13 +26,16 @@ import { RightSidebarComponent } from './components/right-sidebar/right-sidebar.
     SidebarComponent,
     ContentLayoutComponent,
     BreadcrumbComponent,
-    RightSidebarComponent
+    RightSidebarComponent,
+    UserDirective,
+    UserRoleDirective
   ],
   imports: [
     CommonModule,
     RouterModule
   ],
   providers: [NavService, WINDOW_PROVIDERS],
-  exports: [FeatherIconsComponent, ToggleFullscreenDirective]
+  exports: [FeatherIconsComponent, ToggleFullscreenDirective,UserDirective,
+    UserRoleDirective]
 })
 export class SharedModule { }

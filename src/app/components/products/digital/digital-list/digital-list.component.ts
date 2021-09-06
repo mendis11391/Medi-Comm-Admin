@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable, of, Subscriber} from 'rxjs';
 import { Product } from '../../../../shared/tables/product';
 import { ProductService } from '../../services/product.service';
 import { ExcelService } from 'src/app/components/sales/services/excel.service';
+import { Role } from 'src/app/components/auth/user';
 
 @Component({
   selector: 'app-digital-list',
@@ -14,6 +15,7 @@ import { ExcelService } from 'src/app/components/sales/services/excel.service';
 export class DigitalListComponent implements OnInit {
   public productsList;
   public filteredProducts=[];
+  Role = Role;
 
   constructor(private excelService:ExcelService,private list:ProductService, private router:Router) {
   }

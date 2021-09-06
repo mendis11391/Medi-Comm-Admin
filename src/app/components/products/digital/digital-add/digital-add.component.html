@@ -243,7 +243,9 @@
                 </div>
                 <div class="card">
                     <div class="card-header">
-                        <h5>Meta Data</h5>
+                        <input type="file" (change)="onFileChange($event)" />
+                        <div id="output"></div>
+                        <h5>Import products</h5>
                     </div>
                     <div class="card-body">
                         <div class="digital-add needs-validation">
@@ -257,8 +259,7 @@
                             </div> -->
                             <div class="form-group mb-0">
                                 <div class="product-buttons text-center">
-                                    <button type="button" class="btn btn-primary mr-1">Add</button>
-                                    <button type="button" class="btn btn-light">Discard</button>
+                                    <button type="button" class="btn btn-primary mr-1" (click)="importExcelData()">Import</button>
                                 </div>
                             </div>
                         </div>

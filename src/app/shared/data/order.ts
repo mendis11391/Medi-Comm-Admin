@@ -1,4 +1,30 @@
 export interface Orders {
+    primary_id?:string,
+    order_id?:string,
+    customer_id?:number,
+    subTotal?:number,
+    damageProtection?:number,
+    totalSecurityDeposit?:number,
+    discount?:number,
+    grandTotal?:number,
+    promo?:string,
+    firstName?:string,
+    lastName?:string,
+    billingAddress?:number,
+    shippingAddress?:number,
+    orderType_id?:number,
+    order_type?:string,
+    orderStatus?:string,
+    deliveryStatus?:string,
+    refundStatus?:string,
+    createdBy?:number,
+    modifiedBy?:number,
+    createdAt?:Date,
+    modifiedAt?:Date,
+    orderItem?:[],
+    address?:[]
+
+    total?:number
     id?: number,
     userId?: string,
     ordid?:string;
@@ -12,7 +38,7 @@ export interface Orders {
     lname: string,
     mobile: number,
     email: string,
-    address: string,
+    // address: string,
     city: string,
     state: string,
     pincode: number,
@@ -22,3 +48,10 @@ export interface Orders {
     delivery_status: string,
     refund_status: string
 }
+
+export interface Assets {
+    id?: number,
+    assetId?: string,
+    availability?:string
+}
+

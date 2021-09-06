@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AuthService } from './components/auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'multikart-backend';
+  userRole= JSON.parse(JSON.stringify(localStorage.getItem('u_role')));
+
+  constructor(private auth:AuthService){
+    this.auth.login(this.userRole);
+  }
 }

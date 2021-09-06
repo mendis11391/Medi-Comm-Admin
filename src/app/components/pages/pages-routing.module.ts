@@ -2,6 +2,7 @@ import { NgModule, Component } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ListPageComponent } from './list-page/list-page.component';
 import { CreatePageComponent } from './create-page/create-page.component';
+import { CreateAssetsComponent } from './create-assets/create-assets.component';
 
 const routes: Routes = [
   {
@@ -21,6 +22,14 @@ const routes: Routes = [
         data: {
           title: "Create Page",
           breadcrumb: "Create Page"
+        }
+      },
+      {
+        path: 'create-assets',
+        component: CreateAssetsComponent,
+        data: {
+          title: "asset Page",
+          breadcrumb: "Asset Page"
         }
       }
     ]

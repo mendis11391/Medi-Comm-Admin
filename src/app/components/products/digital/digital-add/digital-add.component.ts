@@ -4,6 +4,7 @@ import { HttpClient} from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { ProductService } from '../../services/product.service';
 import { BrandService } from '../../services/brand.service';
+import * as XLSX from 'xlsx';
 const URL = 'http://localhost:3000/products/upload/';
 
 @Component({
@@ -29,6 +30,7 @@ export class DigitalAddComponent implements OnInit {
   categories;
   brands;
   categoryName;
+  importExcel;
 
   cities;
 
@@ -130,6 +132,7 @@ export class DigitalAddComponent implements OnInit {
       return res.cat_id === this.addProduct.value.category;
     });
   }
+  
   specialProducts(e){
     let id=e.target.id;
     if(id=="featured"){
@@ -141,6 +144,90 @@ export class DigitalAddComponent implements OnInit {
     else if(id=="newProducts"){
       this.addProduct.value.newProducts=e.target.checked ? 1 : 0;
     }   
+  }
+
+  onFileChange(ev) {
+    let workBook = null;
+    let jsonData = null;
+    const reader = new FileReader();
+    const file = ev.target.files[0];
+    reader.onload = (event) => {
+      const data = reader.result;
+      workBook = XLSX.read(data, { type: 'binary' });
+      jsonData = workBook.SheetNames.reduce((initial, name) => {
+        const sheet = workBook.Sheets[name];
+        initial[name] = XLSX.utils.sheet_to_json(sheet);
+        return initial;
+      }, {});
+      const dataString = JSON.stringify(jsonData.data);
+      this.importExcel=JSON.parse(dataString);
+      // fileData.forEach((element) => {
+      //   document.getElementById('output').innerHTML = element.URL
+      // });
+    }
+    reader.readAsBinaryString(file);
+  }
+
+  importExcelData(){    
+    // this.importExcel.forEach(this.importProducts);
+    for(let i=0;i<this.importExcel.length;i++){
+      this.importProducts(this.importExcel[i]);
+    }
+  }
+
+  importProducts(item) {
+    var that = this;
+    const specs={
+      weight: item.Weight,
+      usb: item.USBPorts,
+      hdmi: item.HDMIPort,
+      clockSpeed: item.ClockSpeed,
+      battery: item.Battery,
+      touchScreen: item.TouchScreen,
+      connectivity: item.Connectivity,
+      webcam: item.Webcam,
+    };
+    let category;
+    if(item.Categories=='Laptops'){
+      category='cat12345';
+    } else if(item.Categories=='Desktops'){
+      category='cat12348';
+    } else if(item.Categories=='Camera'){
+      category='cat12349';
+    } 
+    const tenureData = `1:${item.Month1}[--split--]3:${item.Month3}[--split--]6:${item.Month6}[--split--]12:${item.Month12}[--split--]18:${item.Month18}[--split--]24:${item.Month24}`;
+    const dbSpecs=[];
+    dbSpecs.push(JSON.stringify(specs));
+    const formData = new FormData();
+
+    formData.append('name', item.Title);
+    formData.append('offers', item.Offers);
+    formData.append('description', item.Url);
+    formData.append('qty', item.Qty);
+    formData.append('price', item.SecurityDeposit);
+    formData.append('deliveryDate', item.DeliveryDate);
+    formData.append('product_image', item.Images);
+    formData.append('status', item.Status);
+    formData.append('brand', item.Brand);
+    formData.append('ram', item.Ram);
+    formData.append('processor', item.Processor);
+    formData.append('screen_size', item.ScreenSize);
+    formData.append('specs', JSON.stringify(dbSpecs));
+    formData.append('disk_type', item.DiskType);
+    formData.append('disk_size', item.DiskSize);
+    formData.append('specifications', item.Description);
+    formData.append('tenure', tenureData);
+    formData.append('featured', item.Featured);
+    formData.append('bestSeller', item.BestSeller);
+    formData.append('newProducts', item.NewProducts);
+    formData.append('category', 'cat12345');
+    formData.append('cities', item.Cities);
+    formData.append('categoryName', item.Categories);
+
+    that.http.post('http://localhost:3000/products/', formData).subscribe((res) => {
+      console.log(res);
+    });
+    
   }
 
   addProducts() {

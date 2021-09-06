@@ -10,9 +10,10 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { PagesRoutingModule } from './pages-routing.module';
 import { ListPageComponent } from './list-page/list-page.component';
 import { CreatePageComponent } from './create-page/create-page.component';
+import { CreateAssetsComponent } from './create-assets/create-assets.component';
 
 @NgModule({
-  declarations: [ListPageComponent, CreatePageComponent],
+  declarations: [ListPageComponent, CreatePageComponent, CreateAssetsComponent],
   imports: [
     CommonModule,
     PagesRoutingModule,

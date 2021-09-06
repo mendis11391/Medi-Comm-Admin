@@ -1,0 +1,223 @@
+<!-- Container-fluid starts-->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Manage Order</h5>
+                </div>
+                <div class="card-body">
+                    <div class="custom-datatable">
+                        <input type='text' class="filter-ngx form-control" placeholder='Search...'
+                            (keyup)='updateFilter($event)' />
+                            <button class="pull-right btn btn-warning" (click)="exportAsXLSX()">Download</button><br><br>
+                       
+                        <select name="ordersFilter" (change)="filterOrders($event.target.value)">
+                            <option>All orders</option>
+                            <option>Primary order</option>
+                            <option>Renewal order</option>
+                            <option>Replacement order</option>
+                            <option>Return order</option>
+                        </select>
+                        <table class="table table-striped table-bordered" >
+                          <thead>
+                            <tr>
+                              <th>Order Id</th>
+                              <th>Payu Trans Id</th>
+                              <th>Order date</th>
+                              <th>User Id</th>
+                              <th>User name</th>
+                              <th>Security deposit</th>
+                              <th>Payment status</th>
+                              <th>Delivery status</th>
+                              <th>Action</th>
+                            </tr>
+                          </thead>
+                          <tbody *ngFor="let o of filteredOrders">
+                            <tr >
+                              <td (click)="getOrderById(o.txnid)">{{o.txnid}}</td>
+                              <td (click)="getOrderById(o.txnid)">{{o.payuid}}</td>
+                              <td (click)="getOrderById(o.txnid)">{{o.orderdate}}</td> 
+                              <td (click)="getOrderById(o.txnid)">{{o.userId}}</td>
+                              <td (click)="getOrderById(o.txnid)">{{o.fname}}</td> 
+                              <td (click)="getOrderById(o.txnid)">₹{{o.securitydeposit}}</td>    
+                              <td (click)="getOrderById(o.txnid)">{{o.refund_status}}</td> 
+                              <td (click)="getOrderById(o.txnid)">{{o.delivery_status}}</td>   
+                              <td><a (click)="editOrderById(o.txnid)"><i class="fa fa-pencil"></i></a></td>                    
+                            </tr>                          
+                          </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+   <ng-template class="order-details" #orderDetails let-c="close" let-d="dismiss">
+        <div class="modal-header text-center">
+          <h4 class="col-12 modal-title text-center" id="modal-basic-title">Order details</h4>
+          <button type="button" class="close" aria-label="Close" (click)="d()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="row" *ngFor="let o of fullOrderDetails">          
+                <div class="col">
+                    <h3>Order details</h3>
+
+                    <table class="table table-striped table-bordered" >
+                        <thead>
+                          <tr>
+                            <th>Order Id</th>
+                            <th>Payu Trans Id</th>
+                            <th>User Id</th>
+                            <th>Order date</th>
+                          </tr>
+                        </thead>
+                        <tbody *ngFor="let o of fullOrderDetails">
+                          <tr>
+                            <td>{{o.txnid}}</td>
+                            <td>{{o.payuid}}</td>
+                            <td>{{o.userId}}</td>
+                            <td>{{o.orderdate}}</td>                         
+                          </tr>                          
+                        </tbody>
+                      </table>
+
+                    <h3>Product details</h3>
+                    <table class="table table-striped table-bordered" *ngFor="let o of fullOrderDetails">
+                        <thead>
+                          <tr>
+                            <th>prod id</th>
+                            <th>Prod name</th>
+                            <th>Qty</th>
+                            <th>Tenure</th>
+                            <th>Security Deposit</th>
+                            <th>Rent/mo</th>
+                            <th>Expected Delivery Date</th>
+                            <th *ngIf="o.order_type!='Return order'">Start date</th>
+                            <th *ngIf="o.order_type=='Return order'">Return date</th>
+                            <th>Asset #</th>
+                          </tr>
+                        </thead>
+                        <tbody *ngFor="let p of o.checkoutItemData">
+                          <tr *ngIf="p.ordered==1 && o.order_type=='Primary order'">
+                            <td>{{p.id}}</td>
+                            <td>{{p.prod_name}}</td>
+                            <td>{{p.qty}}</td>
+                            <td>{{p.tenure}}</td>
+                            <td>₹{{p.prod_price}}</td>
+                            <td>₹{{(p.price-0) + (p.dp-0)}}</td>
+                            <td>{{p.delvdate}}</td> 
+                            <td>{{p.startDate}}</td>
+                            <td>{{p.assetId}}</td>                                                       
+                          </tr>           
+                          <tr *ngIf="p.renewed==4 && o.order_type=='Renewal order'">
+                            <td>{{p.id}}</td>
+                            <td>{{p.prod_name}}</td>
+                            <td>{{p.qty}}</td>
+                            <td>{{p.tenure}}</td>
+                            <td>₹{{p.prod_price}}</td>
+                            <td>₹{{(p.price-0) + (p.dp-0)}}</td>
+                            <td>{{p.delvdate}}</td> 
+                            <td>{{p.startDate}}</td>
+                            <td>{{p.assetId}}</td> 
+                                                      
+                          </tr>   
+                          <tr *ngIf="o.order_type=='Replacement order'">
+                            <td>{{p.id}}</td>
+                            <td>{{p.prod_name}}</td>
+                            <td>{{p.qty}}</td>
+                            <td>{{p.tenure}}</td>
+                            <td>₹{{p.prod_price}}</td>
+                            <td>₹{{(p.price-0) + (p.dp-0)}}</td>
+                            <td>{{p.delvdate}}</td> 
+                            <td>{{p.startDate}}</td>
+                            <td>{{p.assetId}}</td>                                                       
+                          </tr>  
+                          <tr *ngIf="o.order_type=='Return order'">
+                            <td>{{p.id}}</td>
+                            <td>{{p.prod_name}}</td>
+                            <td>{{p.qty}}</td>
+                            <td>{{p.tenure}}</td>
+                            <td>₹{{p.prod_price}}</td>
+                            <td>₹{{(p.price-0) + (p.dp-0)}}</td>
+                            <td>{{p.delvdate}}</td> 
+                            <td>{{p.returnDate}}</td>
+                            <td>{{p.assetId}}</td> 
+                                                      
+                          </tr>               
+                        </tbody>
+                    </table>
+
+                    <div *ngFor="let o of fullOrderDetails" class="pull-right">
+                        <h4>Total security deposit: <span>₹{{o.securitydeposit}}</span></h4>
+                        <h4>Grand Total: <span>₹{{o.amount}}</span></h4>
+                    </div> 
+                    
+                    <div class="addr">
+                        <hr>
+                        <h3>Delivery Address</h3>
+                        <div *ngFor="let o of fullOrderDetails">
+                            <h4>Name: <span>{{o.fname}}</span></h4>
+                            <h4>Address: <span>{{o.address}},{{o.city}}-{{o.pincode}}.</span></h4>
+                            <h4>Mobile: <span>{{o.mobile}}</span></h4>
+                            <h4>Email: <span>{{o.email}}</span></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+
+    <ng-template class="edit-order" #editOrder let-c="close" let-d="dismiss">
+        <div class="modal-header text-center">
+          <h4 class="col-12 modal-title text-center" id="modal-basic-title">Order details</h4>
+          <button type="button" class="close" aria-label="Close" (click)="d()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <ngb-tabset class="tab-coupon">
+                <ngb-tab title="Renewals">
+                    <ng-template ngbTabContent>
+                        <table class="table table-striped table-bordered" >
+                            <thead>
+                                <tr>
+                                    <th><input type="checkbox"></th>
+                                    <th>Primary order#</th>
+                                    <th>Product name</th>
+                                    <th>Start date</th>
+                                    <th>Expiry date</th>
+                                    <th>Rent / Mo</th>
+                                </tr>
+                            </thead>
+                            <tbody *ngFor="let p of productDetails">
+                                <tr>
+                                <td *ngIf="(dateDiffInMonths(p.nextStartDate, currentDate)<=2  && p.ordered!=1 && p.renewed!=4)">
+                                    <input type="checkbox" name="{{p.id}}" id="{{p.id}}" [value]="[p.price*p.qty]" (click)="renewalsTotal($event, o,p, o.txnid, o.damageProtection)">
+                                </td>
+                                <td *ngIf="(dateDiffInMonths(p.nextStartDate, currentDate)<=2  && p.ordered!=1 && p.renewed!=4)">{{p.primaryOrderNo}}</td>
+                                <td *ngIf="(dateDiffInMonths(p.nextStartDate, currentDate)<=2  && p.ordered!=1 && p.renewed!=4)">{{p.prod_name}}</td>
+                                <td *ngIf="(dateDiffInMonths(p.nextStartDate, currentDate)<=2  && p.ordered!=1 && p.renewed!=4)">{{p.startDate}}</td>
+                                <td *ngIf="(dateDiffInMonths(p.nextStartDate, currentDate)<=2  && p.ordered!=1 && p.renewed!=4)">{{p.expiryDate}}</td>  
+                                <td *ngIf="(dateDiffInMonths(p.nextStartDate, currentDate)<=2  && p.ordered!=1 && p.renewed!=4)">{{p.price}}</td>                          
+                                </tr>                          
+                            </tbody>
+                        </table>
+                        <div class="pull-right">
+                            <button class="btn btn-primary">Renew</button>
+                        </div>
+                    </ng-template>
+                </ngb-tab>
+                <ngb-tab >
+                    <ng-template ngbTabTitle>Return</ng-template>
+                    <ng-template ngbTabContent>
+
+                    </ng-template>
+                </ngb-tab>
+            </ngb-tabset>
+        </div>
+    </ng-template>

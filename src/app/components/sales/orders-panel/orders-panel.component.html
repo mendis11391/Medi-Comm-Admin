@@ -1,0 +1,202 @@
+<!-- Container-fluid starts-->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Manage Order</h5>
+                </div>
+                <div class="card-body">
+                    <div class="custom-datatable">
+                        <input type='text' class="filter-ngx form-control" placeholder='Search...'
+                            (keyup)='updateFilter($event)' />
+                            <button class="pull-right btn btn-warning" (click)="exportAsXLSX()">Download</button><br><br>
+                        <ngx-datatable class="bootstrap"  [rows]="order" [columnMode]="'force'" [headerHeight]="50"
+                            [footerHeight]="50" [rowHeight]="'auto'" [limit]="15">
+                            <ngx-datatable-column prop="primary_id"></ngx-datatable-column>
+                            <!-- <ngx-datatable-column prop="payuid"></ngx-datatable-column> -->
+                            <ngx-datatable-column name="customer_id"></ngx-datatable-column>
+                            <ngx-datatable-column prop="orderStatus"></ngx-datatable-column>
+                            <ngx-datatable-column name="createdAt"></ngx-datatable-column>
+                            <ngx-datatable-column name="grandTotal"></ngx-datatable-column>
+                            <ngx-datatable-column prop="deliveryStatus"></ngx-datatable-column>
+                            <ngx-datatable-column prop="id">
+                                <ng-template class="action" let-row="row" let-value="value" ngx-datatable-cell-template>
+                                    <a  class="nav-link edit" (click)="open(value)">
+                                      <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                                    </a>
+                                    <a  class="nav-link edit" (click)="getOrderById(value)">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </a>
+                                  </ng-template>
+                            </ngx-datatable-column>
+                        </ngx-datatable>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+    <ng-template #content let-c="close" let-d="dismiss">
+        <div class="modal-header text-center">
+          <h4 class="col-12 modal-title text-center" id="modal-basic-title">Update order & refund status</h4>
+          <button type="button" class="close" aria-label="Close" (click)="d()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">   
+                <form enctype="multipart/form-data" [formGroup]="updateStatus" (ngSubmit)="updateDeliveryStatus(orderId)">
+                               
+                <div class="col">
+                    <label>Update Delivery Status</label>
+                        <select formControlName="deliveryStatus">
+                            <option>Order booked</option>                            
+                            <option>Delivery awaited</option>
+                            <option>Waiting for KYC</option>
+                            <!-- <option>Shipped</option>
+                            <option>Delivered</option> -->
+                            <!-- <option>Partially delivered</option> -->
+                            <!-- <option>Returned</option> -->
+                        </select>                        
+                </div>
+                <div class="col">
+                    <label>Update payment Status</label>
+                    <select formControlName="refundStatus">
+                            <option>awaiting payment</option>
+                            <option>Paid</option>
+                            <option>Deposit refunded</option>
+                            <option>Complete refund</option>
+                            <!-- <option>Waiting for return</option>
+                            <option>Waiting for refund</option> -->
+                            <option>Refund initiated</option>
+                    </select>
+                </div>
+                
+                <button type="submit">Update</button>
+            </form>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template class="order-details" #orderDetails let-c="close" let-d="dismiss">
+        <div class="modal-header text-center">
+          <h4 class="col-12 modal-title text-center" id="modal-basic-title">Order details</h4>
+          <button type="button" class="close" aria-label="Close" (click)="d()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="row" *ngFor="let o of fullOrderDetails">          
+                <div class="col">
+                    <h3>Order details</h3>
+
+                    <table class="table table-striped table-bordered" >
+                        <thead>
+                          <tr>
+                            <th>Order Id</th>
+                            <th>Payu Trans Id</th>
+                            <th>User Id</th>
+                            <th>Order date</th>
+                          </tr>
+                        </thead>
+                        <tbody *ngFor="let o of fullOrderDetails">
+                          <tr>
+                            <td>{{o.txnid}}</td>
+                            <td>{{o.payuid}}</td>
+                            <td>{{o.userId}}</td>
+                            <td>{{o.orderdate}}</td>                         
+                          </tr>                          
+                        </tbody>
+                      </table>
+
+                    <h3>Product details</h3>
+                    <table class="table table-striped table-bordered" >
+                        <thead>
+                          <tr>
+                            <th>Prod name</th>
+                            <th>Qty</th>
+                            <th>Tenure</th>
+                            <th>Security Deposit</th>
+                            <th>Rent/mo</th>
+                            <th>Expected Delivery Date</th>
+                            <th>Start Date</th>
+                            <th>Asset #</th>
+                            <th>Deivery status</th>
+                            <th>Assign asset Id & Delivery date</th>
+                          </tr>
+                        </thead>
+                        <tbody *ngFor="let p of productDetails">
+                          <tr *ngIf="p.ordered==1">
+                            <td>{{p.prod_name}}</td>
+                            <td>{{p.qty}}</td>
+                            <td>{{p.tenure}}</td>
+                            <td>₹{{p.prod_price}}</td>
+                            <td>₹{{p.price}}</td>
+                            <td>{{p.delvdate}}</td> 
+                            <td>{{p.startDate}}</td> 
+                            <td>{{p.assetId}}</td> 
+                            <td>{{p.deliveryStatus}}</td>
+                            <td>
+                              <div *ngIf="p.replacement==1">
+                                <label>requested for replacement?</label>
+                                <a class="btn btn-primary" aria-label="Close" (click)="d()" [routerLink]="['/sales/replacement-orders/',p.primaryOrderNo]">View</a>
+                              </div>
+                              <form class="orders-form-popup" [formGroup]="assetAssign" (ngSubmit)="updateAssetId(o.txnid, p.id,p.indexs)">
+                                <label> Asset #:
+                                    <select formControlName="assetId" class="form-control">
+                                        <option *ngFor="let a of assets" [value]="a.assetId">{{a.assetId}}</option>
+                                    </select> 
+                                </label>
+                                <div *ngIf="((deliveryStatus.value.deliveryStatus=='Shipped' && assetId=='') || (deliveryStatus.value.deliveryStatus=='Delivered' && assetId=='') || formError==true)" class="text text-danger">
+                                    Asset # is required.
+                                </div><br>
+                                <button class="btn btn-primary">Update</button>
+                              </form>
+                              <form [formGroup]="deliveryDateStatus" (ngSubmit)="updateDeliveryDate(o.txnid, p.id,p.indexs)">
+                                <label>Delivery date:<input class="form-control" type="date" formControlName="deliveryDate" [value]="currDate"> </label>
+                                <!-- <div *ngIf="((deliveryDateStatus.value.deliveryStatus=='Shipped' && deliveryDateStatus.value.deliveryDate=='') || (deliveryDateStatus.value.deliveryStatus=='Delivered' && deliveryDateStatus.value.assetId==''))" class="text text-danger">
+                                    Delivery date is required.
+                                </div> -->
+                                <div *ngIf="p.deliveryDateAssigned==0 && (deliveryStatus.value.deliveryStatus=='Delivered' || deliveryStatus.value.deliveryStatus=='Shipped')" class="text text-danger">
+                                  Delivery date is required.
+                                </div>
+                                <button class="btn btn-primary">Update</button>
+                              </form>
+                              <form [formGroup]="deliveryStatus" (ngSubmit)="updateProductDeliveryStatus(o.txnid, p.id,p.indexs)">                                
+                                <label> Delivery status:
+                                  <select formControlName="deliveryStatus" class="form-control" required>                   
+                                      <option>Delivery awaited</option>
+                                      <option>Shipped</option>
+                                      <option>Delivered</option>
+                                      <option>Returned</option>
+                                  </select> 
+                                  <button class="btn btn-primary">Update</button>
+                                </label>
+                              </form>
+                              
+                            </td>                           
+                          </tr>                          
+                        </tbody>
+                    </table>
+
+                    <div *ngFor="let o of fullOrderDetails" class="pull-right">
+                        <h4>Total security deposit: <span>₹{{o.securitydeposit}}</span></h4>
+                        <h4>Grand Total: <span>₹{{o.amount}}</span></h4>
+                    </div> 
+                    
+                    <div class="addr">
+                        <hr>
+                        <h3>Delivery Address</h3>
+                        <div *ngFor="let o of fullOrderDetails">
+                            <h4>Name: <span>{{o.fname}}</span></h4>
+                            <h4>Address: <span>{{o.address}},{{o.city}}-{{o.pincode}}.</span></h4>
+                            <h4>Mobile: <span>{{o.mobile}}</span></h4>
+                            <h4>Email: <span>{{o.email}}</span></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>

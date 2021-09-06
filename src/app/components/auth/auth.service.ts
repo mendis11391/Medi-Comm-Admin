@@ -3,7 +3,8 @@ import { ConstantsURL } from '../../../constants/constant-urls';
 import { HttpClient } from '@angular/common/http';
 
 import { BehaviorSubject, Observable } from 'rxjs';
-import { User } from './user';
+import { User, Role, UserData } from './user';
+
 
 @Injectable({
   providedIn: 'root'
@@ -11,11 +12,12 @@ import { User } from './user';
 export class AuthService {
 
   b_url = `http://localhost:3000/`;
-  private currentUserSubject: BehaviorSubject<User>;
-  public currentUser: Observable<User>;
+  private currentUserSubject: BehaviorSubject<UserData>;
+  public currentUser: Observable<UserData>;
+  private user: User;
 
   constructor(private http: HttpClient) {
-    this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
+    this.currentUserSubject = new BehaviorSubject<UserData>(JSON.parse(localStorage.getItem('currentUser')));
         this.currentUser = this.currentUserSubject.asObservable();
    }
 
@@ -27,8 +29,18 @@ export class AuthService {
     return !!localStorage.getItem('token');
   }
 
-  public getUserDetails(token): Observable<User> {
-    return this.http.post<User>(`${this.b_url}admindetails`,{token:token});
+  //auth codes
+  hasRole(role: Role) {
+    return this.authenticatedCheck() && this.user.role === role;
+  }
+
+  login(role: Role) {
+    this.user = { role: role };
+  }
+  //auth codes
+
+  public getUserDetails(token): Observable<UserData> {
+    return this.http.post<UserData>(`${this.b_url}admindetails`,{token:token});
   }
 
   public getAdminDetails() {
@@ -36,8 +48,8 @@ export class AuthService {
     return this.http.post(`${this.b_url}admindetails`,{token:token});
   }
 
-  public getUserDetailsById(id): Observable<User> {
-    return this.http.get<User>(`${this.b_url}admin/${id}`);
+  public getUserDetailsById(id): Observable<UserData> {
+    return this.http.get<UserData>(`${this.b_url}admin/${id}`);
   }
 
   public productAdd(){
