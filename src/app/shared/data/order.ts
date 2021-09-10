@@ -50,8 +50,14 @@ export interface Orders {
 }
 
 export interface Assets {
-    id?: number,
-    assetId?: string,
-    availability?:string
+    asset_id?: number,
+    asset_no?: string,
+    asset_type?:string,
+    warranty_expiry?:Date,
+    procument_date?:Date,
+    availability?:boolean,
+    startDate?:Date,
+    EndDate?:Date,
+    nextStartDate?:Date
 }
 

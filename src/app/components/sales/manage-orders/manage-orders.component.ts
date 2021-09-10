@@ -101,7 +101,7 @@ export class ManageOrdersComponent implements OnInit {
 
   getAssets(){
     this.os.getAllassets().subscribe((assets)=>{
-      this.assets=assets.filter(item => item.availability=='1');
+      this.assets=assets.filter(item => item.availability==true);
     });
     console.log(this.assets);
   }

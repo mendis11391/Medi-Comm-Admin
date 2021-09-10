@@ -21,12 +21,12 @@
                               <th>Action</th>
                             </tr>
                           </thead>
-                          <tbody *ngFor="let o of order">
-                            <tr *ngFor="let p of o.checkoutItemData">
-                              <td *ngIf="p.renewed==2" (click)="getOrderById(o.txnid)">{{o.txnid}}</td>
-                              <td *ngIf="p.renewed==2" (click)="getOrderById(o.txnid)">{{p.prod_name.substring(0,50)+'...'}}</td>
-                              <td *ngIf="p.renewed==2" (click)="getOrderById(o.txnid)">{{p.assetId}}</td>
-                              <td *ngIf="p.renewed==2" (click)="returnProductOrderById(o.txnid, p.assetId, p.indexs)"><a><i class="fa fa-pencil"></i></a></td>                   
+                          <tbody *ngFor="let o of orderitem">
+                            <tr >
+                              <td  (click)="getOrderById(o.order_item_id)">{{o.order_item_id}}</td>
+                              <td (click)="getOrderById(o.txnid)">{{o.prod_name.substring(0,50)+'...'}}</td>
+                              <td  (click)="getOrderById(o.txnid)">{{o.asset_id}}</td>
+                              <td (click)="returnProductOrderById(o.txnid, p.assetId, p.indexs)"><a><i class="fa fa-pencil"></i></a></td>                   
                             </tr>                          
                           </tbody>
                         </table>

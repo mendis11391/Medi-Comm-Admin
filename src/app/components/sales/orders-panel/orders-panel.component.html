@@ -96,17 +96,17 @@
                         <thead>
                           <tr>
                             <th>Order Id</th>
-                            <th>Payu Trans Id</th>
+                            <!-- <th>Payu Trans Id</th> -->
                             <th>User Id</th>
                             <th>Order date</th>
                           </tr>
                         </thead>
                         <tbody *ngFor="let o of fullOrderDetails">
                           <tr>
-                            <td>{{o.txnid}}</td>
-                            <td>{{o.payuid}}</td>
-                            <td>{{o.userId}}</td>
-                            <td>{{o.orderdate}}</td>                         
+                            <td>{{o.primary_id}}</td>
+                            <!-- <td>{{o.payuid}}</td> -->
+                            <td>{{o.customer_id}}</td>
+                            <td>{{o.createdAt}}</td>                         
                           </tr>                          
                         </tbody>
                       </table>
@@ -116,37 +116,35 @@
                         <thead>
                           <tr>
                             <th>Prod name</th>
-                            <th>Qty</th>
                             <th>Tenure</th>
                             <th>Security Deposit</th>
                             <th>Rent/mo</th>
-                            <th>Expected Delivery Date</th>
+                            <!-- <th>Expected Delivery Date</th> -->
                             <th>Start Date</th>
                             <th>Asset #</th>
-                            <th>Deivery status</th>
+                            <th>Delivery status</th>
                             <th>Assign asset Id & Delivery date</th>
                           </tr>
                         </thead>
                         <tbody *ngFor="let p of productDetails">
-                          <tr *ngIf="p.ordered==1">
+                          <tr>
                             <td>{{p.prod_name}}</td>
-                            <td>{{p.qty}}</td>
-                            <td>{{p.tenure}}</td>
-                            <td>₹{{p.prod_price}}</td>
-                            <td>₹{{p.price}}</td>
-                            <td>{{p.delvdate}}</td> 
+                            <td>{{p.tenure_id}} Months</td>
+                            <td>₹{{p.security_deposit}}</td>
+                            <td>₹{{p.tenure_price}}</td>
+                            <!-- <td>{{p.delvdate}}</td>  -->
                             <td>{{p.startDate}}</td> 
-                            <td>{{p.assetId}}</td> 
-                            <td>{{p.deliveryStatus}}</td>
+                            <td>{{p.asset_id}}</td> 
+                            <td>{{p.delivery_status}}</td>
                             <td>
-                              <div *ngIf="p.replacement==1">
+                              <!-- <div *ngIf="p.replacement==1">
                                 <label>requested for replacement?</label>
                                 <a class="btn btn-primary" aria-label="Close" (click)="d()" [routerLink]="['/sales/replacement-orders/',p.primaryOrderNo]">View</a>
-                              </div>
-                              <form class="orders-form-popup" [formGroup]="assetAssign" (ngSubmit)="updateAssetId(o.txnid, p.id,p.indexs)">
+                              </div> -->
+                              <form class="orders-form-popup" [formGroup]="assetAssign" (ngSubmit)="updateAssetId(p.order_item_id)">
                                 <label> Asset #:
                                     <select formControlName="assetId" class="form-control">
-                                        <option *ngFor="let a of assets" [value]="a.assetId">{{a.assetId}}</option>
+                                        <option *ngFor="let a of assets" [value]="a.asset_no">{{a.asset_no}}</option>
                                     </select> 
                                 </label>
                                 <div *ngIf="((deliveryStatus.value.deliveryStatus=='Shipped' && assetId=='') || (deliveryStatus.value.deliveryStatus=='Delivered' && assetId=='') || formError==true)" class="text text-danger">
@@ -154,7 +152,7 @@
                                 </div><br>
                                 <button class="btn btn-primary">Update</button>
                               </form>
-                              <form [formGroup]="deliveryDateStatus" (ngSubmit)="updateDeliveryDate(o.txnid, p.id,p.indexs)">
+                              <form [formGroup]="deliveryDateStatus" (ngSubmit)="updateDeliveryDate(p.order_item_id)">
                                 <label>Delivery date:<input class="form-control" type="date" formControlName="deliveryDate" [value]="currDate"> </label>
                                 <!-- <div *ngIf="((deliveryDateStatus.value.deliveryStatus=='Shipped' && deliveryDateStatus.value.deliveryDate=='') || (deliveryDateStatus.value.deliveryStatus=='Delivered' && deliveryDateStatus.value.assetId==''))" class="text text-danger">
                                     Delivery date is required.
@@ -164,7 +162,7 @@
                                 </div>
                                 <button class="btn btn-primary">Update</button>
                               </form>
-                              <form [formGroup]="deliveryStatus" (ngSubmit)="updateProductDeliveryStatus(o.txnid, p.id,p.indexs)">                                
+                              <form [formGroup]="deliveryStatus" (ngSubmit)="updateProductDeliveryStatus(p.order_item_id)">                                
                                 <label> Delivery status:
                                   <select formControlName="deliveryStatus" class="form-control" required>                   
                                       <option>Delivery awaited</option>

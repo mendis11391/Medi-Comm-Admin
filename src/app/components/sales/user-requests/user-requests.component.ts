@@ -51,6 +51,7 @@ export class UserRequestsComponent implements OnInit {
   public productsList;
   public filteredProducts=[];
   public filteredOrders=[];
+  orderitem=[];
   model: NgbDateStruct;
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
   constructor(private route: ActivatedRoute, private router:Router,private excelService:ExcelService,private http: HttpClient,private ps:ProductService,private os:OrdersService, private modalService: NgbModal, private formBuilder: FormBuilder) {
@@ -86,6 +87,10 @@ export class UserRequestsComponent implements OnInit {
       assetId: ['']
     });
     this.transactionId();
+    this.http.get(`http://localhost:3000/users/getCustomerRequests`).subscribe((res) => {
+      this.orderitem.push(res[0]);
+      this.orderitem =this.orderitem.filter(item=>item.request_status==1)
+    });
   }
 
   getOrders(){
@@ -119,7 +124,7 @@ export class UserRequestsComponent implements OnInit {
 
   getAssets(){
     this.os.getAllassets().subscribe((assets)=>{
-      this.assets=assets.filter(item => item.availability=='1');
+      this.assets=assets.filter(item => item.availability==true);
     });
     console.log(this.assets);
   }

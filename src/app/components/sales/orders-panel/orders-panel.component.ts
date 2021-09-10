@@ -77,7 +77,7 @@ export class OrdersPanelComponent implements OnInit {
 
   getAssets(){
     this.os.getAllassets().subscribe((assets)=>{
-      this.assets=assets.filter(item => item.availability=='1');
+      this.assets=assets.filter(item => item.availability==true);
     });
   }
 
@@ -102,9 +102,9 @@ export class OrdersPanelComponent implements OnInit {
 
   getOrderById(ordId){
     this.modalReference=this.modalService.open(this.orderDetails, { windowClass : "order-details"});
-    this.http.get(`http://localhost:3000/products/ordDetails/${ordId}`).subscribe((res) => {
+    this.http.get(`http://localhost:3000/orders/orderId/${ordId}`).subscribe((res) => {
       this.fullOrderDetails=res;
-      this.productDetails=res[0].checkoutItemData;
+      this.productDetails=res[0].orderItem;
     });
   }
   
@@ -138,7 +138,7 @@ export class OrdersPanelComponent implements OnInit {
   //     window.location.reload();
   //   });
   // }
-  updateAssetId(OrderId, prodId, indexId){
+  updateAssetId(OrderId){
     let getOrder;
     let getAllProduct;
     let forQtyProduct;
@@ -147,61 +147,89 @@ export class OrdersPanelComponent implements OnInit {
     let startDate;
     let expiryDate;
     let nextStartDate;
-    getOrder=this.order.filter(res=>res.txnid===OrderId);
-    getAllProduct=getOrder[0].orderedProducts;
-    forQtyProduct=getOrder[0].checkoutItemData;
-
-    let od = new Promise((resolve, reject) => {
-      Array.prototype.forEach.call(getAllProduct, res => {
-        if(res.id===prodId){
-          res.assetId=[];
-          resolve('OD success');
-        }
-      });
-    });
-
-    let cid = new Promise((resolve, reject) => {
-      Array.prototype.forEach.call(forQtyProduct, res => {
-        if(res.id===prodId){
-          if(res.indexs===indexId){
-            if(res.assetId){
-              currentAssetId=res.assetId;
-            }
-            if(assetId!==''){              
-              res.assetId=assetId;
-            }
-          }
-          startDate = res.startDate;
-          expiryDate = res.expiryDate;
-          nextStartDate = res.nextStartDate;
-          resolve('cid success');
-        }
-      });
-    });
-
-    Promise.all([od,cid]).then((success)=>{
-      console.log(success);
-      this.http.put(`http://localhost:3000/orders/updateOD/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct)}).subscribe((res) => {});
-        this.http.put(`http://localhost:3000/orders/updateCID/${OrderId}`, {checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
-        console.log(res);
-        
+    let orderItem;
+    this.http.get(`http://localhost:3000/orders/orderItemsByorderId/${OrderId}`).subscribe((res) => {
+      orderItem=res;
+      getAllProduct=orderItem[0].renewals_timline;
+      currentAssetId=getAllProduct[0].assetId ;
+      if(orderItem[0].asset_id=='To be assigned'){
+        getAllProduct[0].assetId = assetId;
+        this.http.put(`http://localhost:3000/orders/updateOrderItemAsset/${OrderId}`, {assetId:assetId,renewalTimeline:JSON.stringify(getAllProduct)}).subscribe((res) => {});
+          
         this.http.put(`http://localhost:3000/assets/update/${assetId}`, {availability:0, startDate:startDate, expiryDate:expiryDate, nextStartDate:nextStartDate}).subscribe();
-        this.http.put(`http://localhost:3000/assets/update/${currentAssetId}`, {availability:1, startDate:'', expiryDate:'', nextStartDate:''}).subscribe();
         this.assetAssign.reset();
         this.getAssets();
         this.modalReference.close();
-        // window.location.reload();
-      });
-    });    
+        window.location.reload();
+      } else{
+        getAllProduct[0].assetId = assetId;
+        this.http.put(`http://localhost:3000/orders/updateOrderItemAsset/${OrderId}`, {assetId:assetId,renewalTimeline:JSON.stringify(getAllProduct)}).subscribe((res) => {});
+          
+        this.http.put(`http://localhost:3000/assets/update/${assetId}`, {availability:0, startDate:startDate, expiryDate:expiryDate, nextStartDate:nextStartDate}).subscribe();
+        this.http.put(`http://localhost:3000/assets/update/${currentAssetId}`, {availability:1, startDate:startDate, expiryDate:expiryDate, nextStartDate:nextStartDate}).subscribe();
+        this.assetAssign.reset();
+        this.getAssets();
+        this.modalReference.close();
+        window.location.reload();
+
+      }
+    });
+    
+    // forQtyProduct=getOrder[0].checkoutItemData;
+
+    // let od = new Promise((resolve, reject) => {
+    //   Array.prototype.forEach.call(getAllProduct, res => {
+    //     if(res.id===prodId){
+    //       res.assetId=[];
+    //       resolve('OD success');
+    //     }
+    //   });
+    // });
+
+    // let cid = new Promise((resolve, reject) => {
+    //   Array.prototype.forEach.call(forQtyProduct, res => {
+    //     if(res.id===prodId){
+    //       if(res.indexs===indexId){
+    //         if(res.assetId){
+    //           currentAssetId=res.assetId;
+    //         }
+    //         if(assetId!==''){              
+    //           res.assetId=assetId;
+    //         }
+    //       }
+    //       startDate = res.startDate;
+    //       expiryDate = res.expiryDate;
+    //       nextStartDate = res.nextStartDate;
+    //       resolve('cid success');
+    //     }
+    //   });
+    // });
+
+    // Promise.all([od,cid]).then((success)=>{
+    //   console.log(success);
+    //   this.http.put(`http://localhost:3000/orders/updateOD/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct)}).subscribe((res) => {});
+    //     this.http.put(`http://localhost:3000/orders/updateCID/${OrderId}`, {checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
+    //     console.log(res);
+        
+    //     this.http.put(`http://localhost:3000/assets/update/${assetId}`, {availability:0, startDate:startDate, expiryDate:expiryDate, nextStartDate:nextStartDate}).subscribe();
+    //     this.http.put(`http://localhost:3000/assets/update/${currentAssetId}`, {availability:1, startDate:'', expiryDate:'', nextStartDate:''}).subscribe();
+    //     this.assetAssign.reset();
+    //     this.getAssets();
+    //     this.modalReference.close();
+    //     // window.location.reload();
+    //   });
+    // });    
     
   }
 
-  updateDeliveryDate(OrderId, prodId, indexId){
+  updateDeliveryDate(OrderId){
     let getOrder;
     let getAllProduct;
     let forQtyProduct;
     this.formError=false;
-    let log={orderID:OrderId,  adminResponse:`Updated delivery date to: ${this.deliveryDateStatus.value.deliveryDate}`, Product_id:prodId }
+    let orderItem;
+    let currentAssetId;
+    // let log={orderID:OrderId,  adminResponse:`Updated delivery date to: ${this.deliveryDateStatus.value.deliveryDate}`, Product_id:prodId }
 
     // const controls = this.deliveryDateStatus.controls;
 
@@ -223,154 +251,127 @@ export class OrdersPanelComponent implements OnInit {
       }
       
       let db= getdeliveryDate.getDate()+'/'+(getdeliveryDate.getMonth()+1)+'/'+getdeliveryDate.getFullYear();
-      getOrder=this.order.filter(res=>res.txnid===OrderId);
-      getAllProduct=getOrder[0].orderedProducts;
-      forQtyProduct=getOrder[0].checkoutItemData;
-      let expiryDate=this.getDates(db);
-      let edb=expiryDate.getDate()+'/'+(expiryDate.getMonth()+1)+'/'+expiryDate.getFullYear();
-      let ndb=this.getDates(db);
-      ndb.setDate(ndb.getDate() + 1);
-      let nextStartDate = ndb.getDate()+'/'+(ndb.getMonth()+1)+'/'+ndb.getFullYear();
-      // getProduct=getAllProduct.filter(res=>res.id===prodId);
-      let od = new Promise((resolve, reject) => {
-        Array.prototype.forEach.call(getAllProduct, res => {
-          if(res.id===prodId){
-            // res.deliveryAssigned=1;
-            res.actualStartDate=db;
-            res.startDate=db;
-            res.expiryDate=edb;
-            res.nextStartDate=nextStartDate;      
-            res.billPeriod = db+'-'+edb; 
-            res.deliveryDateAssigned=1;
-            // res.deliveryStatus=delvStatus;
-            // if(assetId!==''){
-            //   res.assetId.push(assetId);
-            // }
-            resolve('OD success');
-          }
-        });
-      });
-      
-      let cid = new Promise((resolve, reject) => {
-        Array.prototype.forEach.call(forQtyProduct, res => {
-          if(res.id===prodId){          
-            assetId=res.assetId;   
-            if(res.indexs===indexId){
-              // res.deliveryAssigned=1;
-              res.actualStartDate=db;
-              res.startDate=db;
-              res.expiryDate=edb;
-              res.nextStartDate=nextStartDate;
-              res.billPeriod = db+'-'+edb;  
-              res.deliveryDateAssigned=1;
-              // res.deliveryStatus=delvStatus;
-              // const index = res.assetId.indexOf(res.assetId[0]);
-              //   if (index > -1) {
-              //     res.assetId.splice(index, 1);
-              //   }
-              // if(assetId!==''){              
-              //   res.assetId=assetId;
-              // }
-            }
-            resolve('cid success')
-          }
-        });
-      });
-     
-      if(assetId!=''){
-        this.formError=false;
-        Promise.all([od,cid]).then((success)=>{
-          this.http.put(`http://localhost:3000/orders/updateDelivery/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct),checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
-            console.log(res);
-            this.http.put(`http://localhost:3000/assets/update/${assetId}`, {availability:0, startDate:db, expiryDate:edb, nextStartDate:nextStartDate}).subscribe();
-            const userId = localStorage.getItem('user_id');
-            const uname = localStorage.getItem('uname');
-            const uid = uname.substring(0, 3);
-            const rand = Math.floor((Math.random() * 9999) + 1);
-            const activityId = ""+uid + rand;
-            let activity={
-              activityId:activityId,
-              userId:userId,
-              activityLog:JSON.stringify(log),
-            }
-            this.http.post(`http://localhost:3000/backendActivity/createActivity`, activity).subscribe();
-            this.deliveryDateStatus.reset();
-            this.getAssets();
-            this.modalReference.close();
-            window.location.reload();
-          });
-        });
-      } else{
-        this.formError=true;
-      }
-      
+
+      this.http.get(`http://localhost:3000/orders/orderItemsByorderId/${OrderId}`).subscribe((res) => {
+
+        orderItem=res;
+        getAllProduct=orderItem[0].renewals_timline;
+        currentAssetId=getAllProduct[0].assetId ;
+        let expiryDate=this.getDates(db);
+        let edb=expiryDate.getDate()+'/'+(expiryDate.getMonth()+1)+'/'+expiryDate.getFullYear();
+        let ndb=this.getDates(db);
+        ndb.setDate(ndb.getDate() + 1);
+        let nextStartDate = ndb.getDate()+'/'+(ndb.getMonth()+1)+'/'+ndb.getFullYear();
+
+        getAllProduct[0].actualStartDate=db;
+        getAllProduct[0].startDate=db;
+        getAllProduct[0].expiryDate=edb;
+        getAllProduct[0].nextStartDate=nextStartDate;      
+        getAllProduct[0].billPeriod = db+'-'+edb; 
+        getAllProduct[0].deliveryDateAssigned=1;
         
-      // if(this.deliveryDateStatus.value.deliveryStatus==='Shipped' || this.deliveryDateStatus.value.deliveryStatus==='Delivered'){
-      //   if(((this.deliveryDateStatus.value.deliveryStatus==='Shipped' && this.deliveryDateStatus.value.assetId!='') || (this.deliveryDateStatus.value.deliveryStatus==='Delivered' && this.deliveryDateStatus.value.assetId!=''))){
-      //     this.http.put(`http://localhost:3000/orders/updateDelivery/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct),checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
-      //       console.log(res);
-      //       // this.http.put(`http://localhost:3000/assets/update/${assetId}`, {availability:0}).subscribe();
-      //       this.deliveryDateStatus.reset();
-      //       this.getAssets();
-      //       this.modalReference.close();
-      //       window.location.reload();
-      //     });
-      //   } 
-      // } else {
-      //   this.http.put(`http://localhost:3000/orders/updateDelivery/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct),checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
-      //       console.log(res);
-      //       // this.http.put(`http://localhost:3000/assets/update/${assetId}`, {availability:0}).subscribe();
-      //       this.deliveryDateStatus.reset();
-      //       this.getAssets();
-      //       this.modalReference.close();
-      //       window.location.reload();
-      //     });
-      // }
+        // let cid = new Promise((resolve, reject) => {
+        //   Array.prototype.forEach.call(forQtyProduct, res => {
+        //     if(res.id===prodId){          
+        //       assetId=res.assetId;   
+        //       if(res.indexs===indexId){
+        //         // res.deliveryAssigned=1;
+        //         res.actualStartDate=db;
+        //         res.startDate=db;
+        //         res.expiryDate=edb;
+        //         res.nextStartDate=nextStartDate;
+        //         res.billPeriod = db+'-'+edb;  
+        //         res.deliveryDateAssigned=1;
+        //         // res.deliveryStatus=delvStatus;
+        //         // const index = res.assetId.indexOf(res.assetId[0]);
+        //         //   if (index > -1) {
+        //         //     res.assetId.splice(index, 1);
+        //         //   }
+        //         // if(assetId!==''){              
+        //         //   res.assetId=assetId;
+        //         // }
+        //       }
+        //       resolve('cid success')
+        //     }
+        //   });
+        // });
+      
+        if(currentAssetId!='To be assigned'){
+          this.formError=false;
+          this.http.put(`http://localhost:3000/orders/updateOrderItemDeliveryDate/${OrderId}`, {deliveryDate:getdeliveryDate,renewalTimeline:JSON.stringify(getAllProduct)}).subscribe((res) => {
+              console.log(res);
+              this.http.put(`http://localhost:3000/assets/update/${assetId}`, {availability:0, startDate:db, expiryDate:edb, nextStartDate:nextStartDate}).subscribe();
+              // const userId = localStorage.getItem('user_id');
+              // const uname = localStorage.getItem('uname');
+              // const uid = uname.substring(0, 3);
+              // const rand = Math.floor((Math.random() * 9999) + 1);
+              // const activityId = ""+uid + rand;
+              // let activity={
+              //   activityId:activityId,
+              //   userId:userId,
+              //   activityLog:JSON.stringify(log),
+              // }
+              // this.http.post(`http://localhost:3000/backendActivity/createActivity`, activity).subscribe();
+              this.deliveryDateStatus.reset();
+              this.getAssets();
+              this.modalReference.close();
+              window.location.reload();
+            });
+        } else{
+          this.formError=true;
+        }
+
+      });
+      
+      
   }
 
-  updateProductDeliveryStatus(OrderId, prodId, indexId){
+  updateProductDeliveryStatus(OrderId){
     let getOrder;
     let getAllProduct;
     let forQtyProduct;
+    let orderItem;
+    let currentAssetId;
     let delvStatus = this.deliveryStatus.value.deliveryStatus;
-    getOrder=this.order.filter(res=>res.txnid===OrderId);
-    getAllProduct=getOrder[0].orderedProducts;
-    forQtyProduct=getOrder[0].checkoutItemData;
-    console.log(forQtyProduct);
-    let od = new Promise((resolve, reject) => {
-      Array.prototype.forEach.call(getAllProduct, res => {
-        if(res.id===prodId){
-          res.deliveryAssigned=1;      
-          res.deliveryStatus=delvStatus;
-          resolve('OD Success');
-        }
-      });
-    });
-    
-    let cid = new Promise((resolve, reject) => {
-      Array.prototype.forEach.call(forQtyProduct, res => {
-        if(res.id===prodId){
-          if(res.indexs===indexId){
-            res.deliveryAssigned=1;
-            res.deliveryStatus=delvStatus;
-            this.assetId=res.assetId;
-            resolve('CID success');
-          }
-        }
-      });
-    });
-    
-    Promise.all([od,cid]).then((success)=>{
-      if(this.assetId!=''){
-        this.http.put(`http://localhost:3000/orders/updateDelivery/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct),checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
-          console.log(res);
-          // this.http.put(`http://localhost:3000/assets/update/${assetId}`, {availability:0}).subscribe();
-          this.deliveryStatus.reset();
-          this.modalReference.close();
+    this.http.put(`http://localhost:3000/orders/updateRenewTimline/${OrderId}`, {deliveryStatus:delvStatus}).subscribe((res)=>{
+      this.modalReference.close();
           window.location.reload();
-        });
-      }
     });
+    // console.log(forQtyProduct);
+    // let od = new Promise((resolve, reject) => {
+    //   Array.prototype.forEach.call(getAllProduct, res => {
+    //     if(res.id===prodId){
+    //       res.deliveryAssigned=1;      
+    //       res.deliveryStatus=delvStatus;
+    //       resolve('OD Success');
+    //     }
+    //   });
+    // });
+    
+    // let cid = new Promise((resolve, reject) => {
+    //   Array.prototype.forEach.call(forQtyProduct, res => {
+    //     if(res.id===prodId){
+    //       if(res.indexs===indexId){
+    //         res.deliveryAssigned=1;
+    //         res.deliveryStatus=delvStatus;
+    //         this.assetId=res.assetId;
+    //         resolve('CID success');
+    //       }
+    //     }
+    //   });
+    // });
+    
+    // Promise.all([od,cid]).then((success)=>{
+    //   if(this.assetId!=''){
+    //     this.http.put(`http://localhost:3000/orders/updateDelivery/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct),checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
+    //       console.log(res);
+    //       // this.http.put(`http://localhost:3000/assets/update/${assetId}`, {availability:0}).subscribe();
+    //       this.deliveryStatus.reset();
+    //       this.modalReference.close();
+    //       window.location.reload();
+    //     });
+    //   }
+    // });
     
   }
 
