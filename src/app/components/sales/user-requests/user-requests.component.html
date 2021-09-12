@@ -22,11 +22,11 @@
                             </tr>
                           </thead>
                           <tbody *ngFor="let o of orderitem">
-                            <tr >
-                              <td  (click)="getOrderById(o.order_item_id)">{{o.order_item_id}}</td>
-                              <td (click)="getOrderById(o.txnid)">{{o.prod_name.substring(0,50)+'...'}}</td>
-                              <td  (click)="getOrderById(o.txnid)">{{o.asset_id}}</td>
-                              <td (click)="returnProductOrderById(o.txnid, p.assetId, p.indexs)"><a><i class="fa fa-pencil"></i></a></td>                   
+                            <tr *ngIf="o.request_id==2">
+                              <td  (click)="getOrderById(o.order_id)">{{o.order_item_id}}</td>
+                              <td (click)="getOrderById(o.order_id)">{{o.prod_name.substring(0,50)+'...'}}</td>
+                              <td  (click)="getOrderById(o.order_id)">{{o.asset_id}}</td>
+                              <td (click)="returnProductOrderById(o.order_id, o.order_item_id,o.asset_id)"><a><i class="fa fa-pencil"></i></a></td>                   
                             </tr>                          
                           </tbody>
                         </table>
@@ -55,12 +55,12 @@
                             <th>Action</th>
                           </tr>
                         </thead>
-                        <tbody *ngFor="let o of order">
-                          <tr *ngFor="let p of o.checkoutItemData">
-                            <td *ngIf="p.replacement==1 && o.order_type!='Replacement order'" (click)="getOrderById(o.txnid)">{{o.txnid}}</td>
-                            <td *ngIf="p.replacement==1 && o.order_type!='Replacement order'" (click)="getOrderById(o.txnid)">{{p.prod_name.substring(0,50)+'...'}}</td>
-                            <td *ngIf="p.replacement==1 && o.order_type!='Replacement order'" (click)="getOrderById(o.txnid)">{{p.assetId}}</td>
-                            <td *ngIf="p.replacement==1 && o.order_type!='Replacement order'" (click)="replaceProductOrderById(o.txnid, p.assetId, p.indexs)"><a><i class="fa fa-pencil"></i></a></td>                   
+                        <tbody *ngFor="let o of orderitem">
+                          <tr *ngIf="o.request_id==1">
+                            <td  (click)="getOrderById(o.order_id)">{{o.order_item_id}}</td>
+                            <td (click)="getOrderById(o.order_id)">{{o.prod_name.substring(0,50)+'...'}}</td>
+                            <td  (click)="getOrderById(o.order_id)">{{o.asset_id}}</td>
+                            <td  (click)="replaceProductOrderById(o.order_id, o.order_item_id, o.asset_id)"><a><i class="fa fa-pencil"></i></a></td>                   
                           </tr>                          
                         </tbody>
                       </table>
@@ -73,7 +73,7 @@
 
      <ng-template class="order-details" #orderDetails let-c="close" let-d="dismiss">
         <div class="modal-header text-center">
-          <h4 class="col-12 modal-title text-center" id="modal-basic-title">Order details</h4>
+          <h4 class="col-12 modal-title text-center" id="modal-basic-title">Order detailsz</h4>
           <button type="button" class="close" aria-label="Close" (click)="d()">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -87,17 +87,17 @@
                         <thead>
                           <tr>
                             <th>Order Id</th>
-                            <th>Payu Trans Id</th>
+                            <!-- <th>Payu Trans Id</th> -->
                             <th>User Id</th>
                             <th>Order date</th>
                           </tr>
                         </thead>
                         <tbody *ngFor="let o of fullOrderDetails">
                           <tr>
-                            <td>{{o.txnid}}</td>
-                            <td>{{o.payuid}}</td>
-                            <td>{{o.userId}}</td>
-                            <td>{{o.orderdate}}</td>                         
+                            <td>{{o.order_id}}</td>
+                            <!-- <td>{{o.payuid}}</td> -->
+                            <td>{{o.customer_id}}</td>
+                            <td>{{o.createdAt | date:'dd MM yyyy'}}</td>                         
                           </tr>                          
                         </tbody>
                       </table>
@@ -176,19 +176,19 @@
             <div class="row" *ngFor="let o of fullOrderDetails">   
                   <div class="col-6" >
                     <h1>Order details</h1>
-                    <p>Primary order# : {{o.txnid}}</p>
-                    <p>Order date: {{o.orderdate[0]}}</p>
-                    <p>Subscription period:{{productDetails[0].startDate}}-{{productDetails[0].expiryDate}}</p>
+                    <p>Primary order# : {{o.order_id}}</p>
+                    <p>Order date: {{o.createdAt | date:'dd MMM yyyy'}}</p>
+                    <!-- <p>Subscription period:{{productDetails[0].startDate}}-{{productDetails[0].expiryDate}}</p>
                     <p>Requested return date:{{productDetails[0].returnDate}}</p>
-                    <p>Start date: {{productDetails[0].actualStartDate}}</p>
+                    <p>Start date: {{productDetails[0].actualStartDate}}</p> -->
                 </div>    
                 <div class="col-6">
                   <h1>User details</h1>
-                  <p>Customer# : {{o.userId}}</p>
-                  <p>Customer name: {{o.fname}}</p>
+                  <p>Customer# : {{o.customer_id}}</p>
+                  <p>Customer name: {{o.firstName }}</p>
                   <p>Mobile: {{o.mobile}}</p>
                   <p>Email: {{o.email}}</p>
-                  <p>Address:{{o.address}}, {{o.city}}-{{o.pincode}}</p>
+                  <p>Address:{{o.address[0].address_line1}}, {{o.address[0].city}}-{{o.address[0].pincode}}</p>
                 </div>
                 <div class="col-12">
                   <table class="table">
@@ -257,8 +257,8 @@
                 <div class="row orders" *ngFor="let o of fullOrderDetails">
                   <div class="col-6" >
                       <h1>Order details</h1>
-                      <p>Primary order# : {{o.txnid}}</p>
-                      <p>Order date: {{o.orderdate[0]}}</p>
+                      <p>Primary order# : {{o.order_id}}</p>
+                      <p>Order date: {{o.createdAt}}</p>
                       <label>Billing start date: <input type="date" [(ngModel)]="billStartDate"></label>
                       <p>Bill period:{{billStartDate | date: 'dd/MM/yyyy'}}-{{productDetails[0].expiryDate}}</p>
                       
@@ -306,9 +306,9 @@
                     <!-- <td><a (click)="openBillingPeriod()">{{p.billPeriod}}</a></td> -->
                     <td>
                       <!-- <div hidden>{{filterByPrice(p.prod_price)}}</div> -->
-                        <select [(ngModel)]="prodId" (click)="selectProduct(prodId,p.prod_price, p.indexs, p.tenure, p.assetId)">
+                        <select [(ngModel)]="prodId" (click)="selectProduct(prodId,p.prod_price, p.indexs, p.tenure_id, p.assetId)">
                             <option selected="selected">select</option>
-                            <option *ngFor="let fp of filteredProducts">{{fp.prod_id}}</option>
+                            <option *ngFor="let fp of filteredProducts">{{fp.product_id}}</option>
                         </select>
                         <input type="number" [(ngModel)]="damageCharges" placeholder="Damage charges">
                         <!-- <input list="prodId" [(ngModel)]="prodId" (click)="selectProduct(prodId)">
@@ -320,10 +320,10 @@
                     <td><button class="btn btn-primary" (click)="reject(p.primaryOrderNo,p.indexs)">Reject</button></td>
                   </tr>
                   <tr *ngFor="let rp of replaceProduct">
-                    <td>{{rp.prod_id}}</td>
+                    <td>{{rp.product_id}}</td>
                     <td>{{rp.prod_name}}</td>
                     <td>{{p2Tenure}}</td>
-                    <td>{{rp.prod_price}}</td>
+                    <td>{{rp.securityDeposit}}</td>
                     <td>{{(p2TenurePrice-0)+(p2DP-0)}}</td>
                     <td>    
                       <label>Asset #:

@@ -32,11 +32,12 @@ export class UserRequestsComponent implements OnInit {
   productDetails;
   returnDate;
   currentOrderId;
+  currentOrderItemId;
   currentAssetId;
   currentIndexs;
   txnId;
   replaceProduct;
-  p2Tenure=0;
+  p2Tenure;
   p2TenurePrice=0;
   p2DP=0;
   billStartDate = new Date();
@@ -88,8 +89,9 @@ export class UserRequestsComponent implements OnInit {
     });
     this.transactionId();
     this.http.get(`http://localhost:3000/users/getCustomerRequests`).subscribe((res) => {
-      this.orderitem.push(res[0]);
-      this.orderitem =this.orderitem.filter(item=>item.request_status==1)
+      let a=[];
+      a.push(res);
+      this.orderitem =a[0].filter(item=>item.request_status==1)
     });
   }
 
@@ -166,15 +168,19 @@ export class UserRequestsComponent implements OnInit {
     this.txnId=txnid;
   }
 
-  returnProductOrderById(ordId,assetId, indexs){
+  returnProductOrderById(ordId,oiid,assetId){
+    let orderItem;
     this.modalReference=this.modalService.open(this.returnRequest, { windowClass : "return-request"});   
-    this.http.get(`http://localhost:3000/products/ordDetails/${ordId}`).subscribe((res) => {
+    this.http.get(`http://localhost:3000/orders/orderId/${ordId}`).subscribe((res) => {
       this.fullOrderDetails=res;
-      this.productDetails=res[0].checkoutItemData.filter(item =>item.renewed==2 && item.indexs===indexs);
+      orderItem = res[0].orderItem.filter(item=>item.order_item_id == oiid);
+      this.productDetails=orderItem[0].renewals_timline.filter(item =>item.renewed==0 );
+      
+    this.currentIndexs=this.productDetails.indexs;
     }); 
+    this.currentOrderItemId = oiid;
     this.currentOrderId=ordId;
     this.currentAssetId=assetId;
-    this.currentIndexs=indexs;
   }
 
   returnProduct(){
@@ -183,11 +189,11 @@ export class UserRequestsComponent implements OnInit {
     var year = this.model.year;
     this.returnDate= day + '/' + month + '/' + year;
 
-    let productToReturn = this.productDetails.filter(item=>item.indexs===this.currentIndexs);
+    let productToReturn = this.productDetails;
 
     let ucid={      
         indexs:productToReturn[0].indexs,
-        id: productToReturn[0].prod_id,
+        id: productToReturn[0].id,
         prod_name:productToReturn[0].prod_name,
         prod_price:productToReturn[0].prod_price,
         prod_img:productToReturn[0].prod_img,
@@ -213,6 +219,9 @@ export class UserRequestsComponent implements OnInit {
         billAmount:0,
         p1Rent:0,
         damageCharges:this.returnDamageCharges,
+        order_item_id:productToReturn[0].order_item_id,
+        tenure_id:productToReturn[0].tenureBasePrice,
+        tenureBasePrice:productToReturn[0].tenureBasePrice
     };    
     
     let cInfo=[];
@@ -221,37 +230,56 @@ export class UserRequestsComponent implements OnInit {
     // pInfo.push(productToReturn[0].prod_id);
 
     let returnOrder={
-      uid: this.fullOrderDetails[0].userId,
-      txnid: this.txnId,
-      amount: 0,
-      securityDeposit: productToReturn[0].prod_price,
-      checkoutProductsInfo: cInfo,
-      pinfo: pInfo,
-      fname: this.fullOrderDetails[0].fname,
-      mobile: this.fullOrderDetails[0].mobile,
-      email: this.fullOrderDetails[0].email,
-      delvAddress:this.fullOrderDetails[0].delivery_address,
-      address: this.fullOrderDetails[0].address,
-      town: this.fullOrderDetails[0].city,
-      state: this.fullOrderDetails[0].state,
-      pincode: this.fullOrderDetails[0].pincode,
-      selfPickup: false,
+      uid: this.fullOrderDetails[0].customer_id,
+      primaryID:this.fullOrderDetails[0].primary_id,
+      orderID: this.txnId,
+      subTotal: 0,
       damageProtection:0,
-      refund_status:this.refundStatus
+      total:0,
+      securityDeposit: 0,
+      grandTotal: 0,
+      discount: 0,
+      firstName: this.fullOrderDetails[0].firstName,
+      lastName:this.fullOrderDetails[0].lastName,
+      mobile: this.fullOrderDetails[0].mobile,
+      email: this.fullOrderDetails[0].email, 
+      billingAddress:this.fullOrderDetails[0].billingAddress,
+      shippingAddress:this.fullOrderDetails[0].shippingAddress,
+      orderType:4,
+      orderStatus:'Success',
+      deliveryStatus:'To be returned',
+      refundStatus:'To be Paid',
+      createdBy:1,
+      modifiedBy:1,
+      createdAt: new Date(),
+      modifiedAt:new Date(),
+      products:JSON.stringify(cInfo)
     }; 
 
-    this.http.post(`http://localhost:3000/payments/return`,  returnOrder).subscribe((res) => {
-      this.http.get(`http://localhost:3000/products/ordDetails/${this.currentOrderId}`).subscribe((resOrd) => {
-        let cid = resOrd[0].checkoutItemData;
-        cid.forEach(element => {
-          if(element.assetId===this.currentAssetId){ 
-            element.renewed=3;
-            element.returnDate=this.returnDate;
-          }
-        });     
-        this.http.put(`http://localhost:3000/orders/updateCID/${this.currentOrderId}`, {checkoutProducts:JSON.stringify(cid)}).subscribe();  
-      });
-      this.http.put(`http://localhost:3000/assets/update/${this.currentAssetId}`, {availability:1, startDate:'',expiryDate:'',nextStartDate:''}).subscribe();
+    let returnOrderItem={
+      status:0,
+      damageCharges:this.returnDamageCharges
+    };
+
+    let customerRequest={
+      approvalStatus:1,
+      requestStatus:0
+    };
+
+    this.http.post(`http://localhost:3000/payments/newReturn`,  returnOrder).subscribe((res) => {
+      this.http.put(`http://localhost:3000/orders/updateOrderItemStatus/${this.currentOrderItemId}`,returnOrderItem).subscribe();
+      this.http.put(`http://localhost:3000/users/updatecustomerRequests/${this.currentOrderItemId}`,customerRequest).subscribe();
+      // this.http.get(`http://localhost:3000/products/ordDetails/${this.currentOrderId}`).subscribe((resOrd) => {
+      //   let cid = resOrd[0].checkoutItemData;
+      //   cid.forEach(element => {
+      //     if(element.assetId===this.currentAssetId){ 
+      //       element.renewed=3;
+      //       element.returnDate=this.returnDate;
+      //     }
+      //   });     
+      //   this.http.put(`http://localhost:3000/orders/updateCID/${this.currentOrderId}`, {checkoutProducts:JSON.stringify(cid)}).subscribe();  
+      // });
+      this.http.put(`http://localhost:3000/assets/update/${this.currentAssetId}`, {availability:1, startDate:0,expiryDate:0,nextStartDate:0}).subscribe();
       this.modalReference.close();
     });
   }
@@ -288,29 +316,44 @@ export class UserRequestsComponent implements OnInit {
     let month = currDate.getMonth()+1;
     let year = currDate.getFullYear();
     let deliverDate =day + '/' + month + '/' + year;
-    this.filteredProducts = this.filteredProducts.filter(item=>item.prod_price>=p1SecurityDeposit)
+    let tenures;
+    this.filteredProducts = this.filteredProducts.filter(item=>item.securityDeposit>=p1SecurityDeposit)
     this.replaceProduct=this.filteredProducts;
-    this.replaceProduct=this.replaceProduct.filter(item=>item.prod_id==prodId);
+    this.replaceProduct=this.replaceProduct.filter(item=>item.product_id==prodId);
     let filterP1=this.productDetails.filter(item => item.indexs===p1Indexs);
-    this.securityDepositDiff = this.replaceProduct[0].prod_price-p1SecurityDeposit;
+    this.securityDepositDiff = this.replaceProduct[0].securityDeposit-p1SecurityDeposit;
+    
 
     
+    
       this.http.get(`http://localhost:3000/assets/${p1AssetId}`).subscribe((assetRes) => {
-        p2TenureArr=this.replaceProduct[0].prod_tenure;
-        for(let i=0;i<p2TenureArr.length;i++){//this loop is for rent/mo of that specific month from p1
-          if(p2TenureArr[i][0]==p1Tenure){
-           this.p2TenurePrice=p2TenureArr[i][1];
-           this.p2Tenure=p2TenureArr[i][0];
+        p2TenureArr=this.replaceProduct[0].tenure_base_price;
+        
+
+        this.http.get(`http://localhost:3000/products/tenures/${this.replaceProduct[0].priority}`).subscribe((res)=>{
+          tenures = res[0];
+          for(let i=0;i<tenures.length;i++){
+            if(tenures[i].tenure_id==p1Tenure){
+              this.p2Tenure=tenures[i].tenure+' '+tenures[i].tenure_period;
+              this.p2TenurePrice = this.replaceProduct[0].tenure_base_price-(this.replaceProduct[0].tenure_base_price*tenures[i].discount/100);
+            }
           }
-        }
+        });
+
+        // for(let i=0;i<p2TenureArr.length;i++){//this loop is for rent/mo of that specific month from p1
+        //   if(p2TenureArr[i][0]==p1Tenure){
+        //    this.p2TenurePrice=p2TenureArr[i][1];
+        //    this.p2Tenure=p1Tenure;
+        //   }
+        // }
 
         if(filterP1[0].dp>0){
           this.p2DP=this.p2TenurePrice*(8/100);
           } else{
           this.p2DP=0;
         }
-        p1RentBalance = this.calcDiffPrice(assetRes[0].startDate,assetRes[0].expiryDate, deliverDate,assetRes[0].expiryDate,filterP1[0].price, filterP1[0].dp);
-        p2RentAmount = this.calcDiffPrice(assetRes[0].startDate,assetRes[0].expiryDate, deliverDate,assetRes[0].expiryDate,this.p2TenurePrice, this.p2DP);
+        p1RentBalance = this.calcDiffPrice(assetRes[0].startDate,assetRes[0].EndDate, deliverDate,assetRes[0].EndDate,filterP1[0].price, filterP1[0].dp);
+        p2RentAmount = this.calcDiffPrice(assetRes[0].startDate,assetRes[0].EndDate, deliverDate,assetRes[0].EndDate,this.p2TenurePrice, this.p2DP);
         this.rentDifference = p2RentAmount-p1RentBalance;
       });    
   }  
@@ -320,15 +363,28 @@ export class UserRequestsComponent implements OnInit {
     this.assetId='';
   }
 
-  replaceProductOrderById(ordId,assetId, indexs){
+  replaceProductOrderById(ordId,oiid, assetId){
     this.modalReference=this.modalService.open(this.replacementRequest, { windowClass : "replacement-request"});   
-    this.http.get(`http://localhost:3000/products/ordDetails/${ordId}`).subscribe((res) => {
+    // this.http.get(`http://localhost:3000/products/ordDetails/${ordId}`).subscribe((res) => {
+    //   this.fullOrderDetails=res;
+    //   this.productDetails=res[0].checkoutItemData.filter(item =>item.replacement==1 && item.indexs===indexs);
+    // }); 
+    // this.currentOrderId=ordId;
+    // this.currentAssetId=assetId;
+    // this.currentIndexs=indexs;
+
+    let orderItem;
+    // this.modalReference=this.modalService.open(this.returnRequest, { windowClass : "return-request"});   
+    this.http.get(`http://localhost:3000/orders/orderId/${ordId}`).subscribe((res) => {
       this.fullOrderDetails=res;
-      this.productDetails=res[0].checkoutItemData.filter(item =>item.replacement==1 && item.indexs===indexs);
+      orderItem = res[0].orderItem.filter(item=>item.order_item_id == oiid);
+      this.productDetails=orderItem[0].renewals_timline.filter(item =>item.renewed==0 );
+      
+    this.currentIndexs=this.productDetails.indexs;
     }); 
+    this.currentOrderItemId = oiid;
     this.currentOrderId=ordId;
     this.currentAssetId=assetId;
-    this.currentIndexs=indexs;
   }
 
   dateConfig(date){

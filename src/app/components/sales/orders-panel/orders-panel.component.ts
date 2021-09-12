@@ -300,7 +300,7 @@ export class OrdersPanelComponent implements OnInit {
           this.formError=false;
           this.http.put(`http://localhost:3000/orders/updateOrderItemDeliveryDate/${OrderId}`, {deliveryDate:getdeliveryDate,renewalTimeline:JSON.stringify(getAllProduct)}).subscribe((res) => {
               console.log(res);
-              this.http.put(`http://localhost:3000/assets/update/${assetId}`, {availability:0, startDate:db, expiryDate:edb, nextStartDate:nextStartDate}).subscribe();
+              this.http.put(`http://localhost:3000/assets/update/${currentAssetId}`, {availability:0, startDate:db, expiryDate:edb, nextStartDate:nextStartDate}).subscribe();
               // const userId = localStorage.getItem('user_id');
               // const uname = localStorage.getItem('uname');
               // const uid = uname.substring(0, 3);
