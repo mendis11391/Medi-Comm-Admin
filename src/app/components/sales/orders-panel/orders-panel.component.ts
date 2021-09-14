@@ -29,6 +29,7 @@ export class OrdersPanelComponent implements OnInit {
   fullOrderDetails;
   productDetails;
   currDate=new Date();
+  customer_id;
   assetId;
   formError:boolean;
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
@@ -104,6 +105,7 @@ export class OrdersPanelComponent implements OnInit {
     this.modalReference=this.modalService.open(this.orderDetails, { windowClass : "order-details"});
     this.http.get(`http://localhost:3000/orders/orderId/${ordId}`).subscribe((res) => {
       this.fullOrderDetails=res;
+      this.customer_id = res[0].customer_id
       this.productDetails=res[0].orderItem;
     });
   }
@@ -160,7 +162,7 @@ export class OrdersPanelComponent implements OnInit {
         this.assetAssign.reset();
         this.getAssets();
         this.modalReference.close();
-        window.location.reload();
+        // window.location.reload();
       } else{
         getAllProduct[0].assetId = assetId;
         this.http.put(`http://localhost:3000/orders/updateOrderItemAsset/${OrderId}`, {assetId:assetId,renewalTimeline:JSON.stringify(getAllProduct)}).subscribe((res) => {});
@@ -170,7 +172,7 @@ export class OrdersPanelComponent implements OnInit {
         this.assetAssign.reset();
         this.getAssets();
         this.modalReference.close();
-        window.location.reload();
+        // window.location.reload();
 
       }
     });
@@ -315,7 +317,7 @@ export class OrdersPanelComponent implements OnInit {
               this.deliveryDateStatus.reset();
               this.getAssets();
               this.modalReference.close();
-              window.location.reload();
+              // window.location.reload();
             });
         } else{
           this.formError=true;
@@ -335,7 +337,8 @@ export class OrdersPanelComponent implements OnInit {
     let delvStatus = this.deliveryStatus.value.deliveryStatus;
     this.http.put(`http://localhost:3000/orders/updateRenewTimline/${OrderId}`, {deliveryStatus:delvStatus}).subscribe((res)=>{
       this.modalReference.close();
-          window.location.reload();
+      this.http.get(`http://localhost:3000/orders/${this.customer_id}`).subscribe();
+          // window.location.reload();
     });
     // console.log(forQtyProduct);
     // let od = new Promise((resolve, reject) => {

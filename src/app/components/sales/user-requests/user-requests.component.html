@@ -308,7 +308,7 @@
                       <!-- <div hidden>{{filterByPrice(p.prod_price)}}</div> -->
                         <select [(ngModel)]="prodId" (click)="selectProduct(prodId,p.prod_price, p.indexs, p.tenure_id, p.assetId)">
                             <option selected="selected">select</option>
-                            <option *ngFor="let fp of filteredProducts">{{fp.product_id}}</option>
+                            <option [value]="fp.product_id" *ngFor="let fp of filteredProducts">{{fp.product_id}}</option>
                         </select>
                         <input type="number" [(ngModel)]="damageCharges" placeholder="Damage charges">
                         <!-- <input list="prodId" [(ngModel)]="prodId" (click)="selectProduct(prodId)">
@@ -316,8 +316,8 @@
                           <option *ngFor="let fp of filteredProducts">{{fp.prod_id}}</option>
                         </datalist>  -->
                     </td>
-                    <td><button class="btn btn-primary" (click)="replace(p.primaryOrderNo,p.id,p.indexs, p.tenure, p.dp,p.assetId,prodId, damageCharges)">Replace</button></td>
-                    <td><button class="btn btn-primary" (click)="reject(p.primaryOrderNo,p.indexs)">Reject</button></td>
+                    <td><button class="btn btn-primary" (click)="replace(p.order_item_id,p.id,p.indexs, p.tenure_id, p.dp,p.assetId,prodId, damageCharges)">Replace</button></td>
+                    <td><button class="btn btn-primary" (click)="reject(p.order_item_id,p.indexs)">Reject</button></td>
                   </tr>
                   <tr *ngFor="let rp of replaceProduct">
                     <td>{{rp.product_id}}</td>
@@ -328,7 +328,7 @@
                     <td>    
                       <label>Asset #:
                         <select [(ngModel)]="assetId">
-                          <option *ngFor="let a of assets">{{a.assetId}}</option>
+                          <option *ngFor="let a of assets">{{a.asset_no}}</option>
                         </select>
                       </label>                
                     </td>

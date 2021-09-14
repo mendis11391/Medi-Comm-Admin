@@ -19,7 +19,7 @@
                             <ngx-datatable-column prop="orderStatus"></ngx-datatable-column>
                             <ngx-datatable-column name="createdAt"></ngx-datatable-column>
                             <ngx-datatable-column name="grandTotal"></ngx-datatable-column>
-                            <ngx-datatable-column prop="deliveryStatus"></ngx-datatable-column>
+                            <ngx-datatable-column prop="delivery_status"></ngx-datatable-column>
                             <ngx-datatable-column prop="id">
                                 <ng-template class="action" let-row="row" let-value="value" ngx-datatable-cell-template>
                                     <a  class="nav-link edit" (click)="open(value)">
@@ -165,10 +165,12 @@
                               <form [formGroup]="deliveryStatus" (ngSubmit)="updateProductDeliveryStatus(p.order_item_id)">                                
                                 <label> Delivery status:
                                   <select formControlName="deliveryStatus" class="form-control" required>                   
-                                      <option>Delivery awaited</option>
-                                      <option>Shipped</option>
-                                      <option>Delivered</option>
-                                      <option>Returned</option>
+                                      <!-- <option value="1">Awaiting KYC</option>
+                                      <option value="2">Delivery awaited</option> -->
+                                      <option value="3">Shipped</option>
+                                      <option value="4">Delivered</option>
+                                      <!-- <option value="5">Partially delivered</option> -->
+                                      <option value="6">Return</option>
                                   </select> 
                                   <button class="btn btn-primary">Update</button>
                                 </label>

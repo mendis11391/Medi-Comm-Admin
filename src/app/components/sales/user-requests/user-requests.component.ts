@@ -39,6 +39,7 @@ export class UserRequestsComponent implements OnInit {
   replaceProduct;
   p2Tenure;
   p2TenurePrice=0;
+  tenure_id=0;
   p2DP=0;
   billStartDate = new Date();
   returnDamageCharges:number=0;
@@ -107,7 +108,7 @@ export class UserRequestsComponent implements OnInit {
   loadProducts() {
     this.ps.getProducts().subscribe(res => {
       this.productsList = res;
-      this.filteredProducts=this.productsList;
+      this.filteredProducts=this.productsList.filter(item=>item.cat_id==1 && item.city_id==1);
     }, error => {
       if (error.status === 401) {
         this.router.navigate(['/auth/login']);
@@ -327,15 +328,15 @@ export class UserRequestsComponent implements OnInit {
     
     
       this.http.get(`http://localhost:3000/assets/${p1AssetId}`).subscribe((assetRes) => {
-        p2TenureArr=this.replaceProduct[0].tenure_base_price;
+        // p2TenureArr=this.replaceProduct[0].tenure_base_price;
         
 
         this.http.get(`http://localhost:3000/products/tenures/${this.replaceProduct[0].priority}`).subscribe((res)=>{
-          tenures = res[0];
-          for(let i=0;i<tenures.length;i++){
-            if(tenures[i].tenure_id==p1Tenure){
-              this.p2Tenure=tenures[i].tenure+' '+tenures[i].tenure_period;
-              this.p2TenurePrice = this.replaceProduct[0].tenure_base_price-(this.replaceProduct[0].tenure_base_price*tenures[i].discount/100);
+          p2TenureArr = res[0];
+          for(let i=0;i<p2TenureArr.length;i++){
+            if(p2TenureArr[i].tenure_id==p1Tenure){
+              this.p2Tenure=p2TenureArr[i].tenure+' '+p2TenureArr[i].tenure_period;
+              this.p2TenurePrice = this.replaceProduct[0].tenure_base_price-(this.replaceProduct[0].tenure_base_price*p2TenureArr[i].discount/100);
             }
           }
         });
@@ -428,7 +429,7 @@ export class UserRequestsComponent implements OnInit {
     return Math.round(p1BillAmount);
   }
 
-  replace(txnid,p1, p1Indexs,p1Tenure, p1DP,p1AssetId, p2, damageCharges){
+  replace(oiid,p1, p1Indexs,p1Tenure, p1DP,p1AssetId, p2, damageCharges){
     let filterP1;
     let filterP2;
     let p2TenureArr;
@@ -446,154 +447,187 @@ export class UserRequestsComponent implements OnInit {
     let p2RentAmount=0;
     let p1RentBalance=0;
     let p2DP=0;
+    let tenureBasePrice = 0;
+    let tenure_id =0;
     filterP1=this.productDetails.filter(item => item.indexs===p1Indexs);
-    filterP2 = this.productsList.filter(item => item.prod_id===p2);
-    let securityDepositDiff = filterP2[0].prod_price-filterP1[0].prod_price;
+    filterP2 = this.productsList.filter(item => item.product_id===parseInt(p2));
+    let securityDepositDiff = filterP2[0].securityDeposit-filterP1[0].prod_price;
     
-    let log={orderID:txnid, request:'Replacement', adminResponse:'Replaced', replacedProdId:filterP1[0].id, replacedWith:filterP2[0].id}
+    // let log={orderID:txnid, request:'Replacement', adminResponse:'Replaced', replacedProdId:filterP1[0].id, replacedWith:filterP2[0].id}
 
     this.http.get(`http://localhost:3000/assets/${p1AssetId}`).subscribe((assetRes) => { //for startdate & expirydate of that asset#
 
-      p2TenureArr=filterP2[0].prod_tenure;
-      for(let i=0;i<p2TenureArr.length;i++){//this loop is for rent/mo of that specific month from p1
-        if(p2TenureArr[i][0]===p1Ten){
-          p2TenurePrice=p2TenureArr[i][1];
-        }
-      }
+      // p2TenureArr=filterP2[0].prod_tenure;
+      // for(let i=0;i<p2TenureArr.length;i++){//this loop is for rent/mo of that specific month from p1
+      //   if(p2TenureArr[i][0]===p1Ten){
+      //     p2TenurePrice=p2TenureArr[i][1];
+      //   }
+      // }
 
-      if(filterP1[0].dp>0){
-        p2DP=p2TenurePrice*(8/100);
-        } else{
-        p2DP=0;
-      }
-
-      p1RentAmount=this.calcDiffPrice(assetRes[0].startDate,assetRes[0].expiryDate, assetRes[0].startDate, deliverDate, filterP1[0].price, filterP1[0].dp);
-      p1RentBalance = this.calcDiffPrice(assetRes[0].startDate,assetRes[0].expiryDate, deliverDate,assetRes[0].expiryDate,filterP1[0].price, filterP1[0].dp);
-      p2RentAmount = this.calcDiffPrice(assetRes[0].startDate,assetRes[0].expiryDate, deliverDate,assetRes[0].expiryDate,p2TenurePrice, p2DP);
-      totalAmount=parseInt(filterP2[0].prod_price)+parseInt(p2TenurePrice)+p2DP;
-
-      let returnedProduct={      
-        indexs:filterP1[0].indexs,
-        id: filterP1[0].id,
-        prod_name:filterP1[0].prod_name,
-        prod_price:filterP1[0].prod_price,
-        prod_img:filterP1[0].prod_img,
-        delvdate: filterP1[0].delvdate,
-        actualStartDate:filterP1[0].actualStartDate,
-        qty: 1, 
-        price: filterP1[0].price, 
-        tenure: filterP1[0].tenure,
-        primaryOrderNo:filterP1[0].primaryOrderNo, 
-        currentOrderNo: this.txnId,
-        renewed:filterP1[0].renewed,
-        startDate:filterP1[0].startDate,
-        expiryDate:filterP1[0].expiryDate,
-        nextStartDate:filterP1[0].nextStartDate,
-        overdew:filterP1[0].overdew,
-        ordered:1,
-        assetId:filterP1[0].assetId,
-        deliveryStatus:filterP1[0].deliveryStatus,
-        deliveryAssigned:filterP1[0].deliveryAssigned,
-        dp:filterP1[0].dp,
-        replacement:filterP1[0].replacement,
-        returnDate:deliverDate,
-        billPeriod:assetRes[0].startDate+'-'+deliverDate,
-        billAmount:p1RentAmount,
-        p1Rent:p1RentBalance,
-        damageCharges:damageCharges,
-      }; 
-
-      console.log(returnedProduct);
-      
-      let ucid={      
-        indexs:Math.floor((Math.random() * 9999) + 1),
-        id: filterP2[0].prod_id,
-        prod_name:filterP2[0].prod_name,
-        prod_price:filterP2[0].prod_price,
-        prod_img:filterP2[0].prod_img,
-        delvdate: deliverDate,
-        qty: 1, 
-        price: p2TenurePrice, 
-        tenure: filterP1[0].tenure,
-        primaryOrderNo:filterP1[0].primaryOrderNo, 
-        currentOrderNo: this.txnId,
-        renewed:1,
-        startDate:assetRes[0].startDate,
-        expiryDate:assetRes[0].expiryDate,
-        nextStartDate:assetRes[0].nextStartDate,
-        overdew:0,
-        ordered:1,
-        assetId:this.assetId,
-        deliveryStatus:filterP1[0].deliveryStatus,
-        deliveryAssigned:filterP1[0].deliveryAssigned,
-        dp:p2DP,
-        replacement:0,
-        returnDate:'',
-        billPeriod:deliverDate+'-'+assetRes[0].expiryDate,
-        billAmount:p2RentAmount,
-        p2Rent:p2RentAmount,
-        p1RentBalance:p1RentBalance,
-        securityDepositDiff:securityDepositDiff,
-        damageCharges:damageCharges,
-        replaceId:Math.floor((Math.random() * 99999) + 1),
-        returnedProduct:returnedProduct
-      };    
-      
-      let cInfo=[];
-      let pInfo=[];
-      cInfo.push(ucid);
-      pInfo.push(filterP2[0].prod_id);
-      let replaceOrder = {
-        uid: this.fullOrderDetails[0].userId,
-        txnid: this.txnId,
-        amount: (this.rentDifference)+this.damageCharges+this.totalTaxAmount((this.rentDifference)+this.damageCharges)+this.securityDepositDiff,
-        securityDeposit: filterP2[0].prod_price,
-        checkoutProductsInfo: cInfo,
-        pinfo: pInfo,
-        fname: this.fullOrderDetails[0].fname,
-        mobile: this.fullOrderDetails[0].mobile,
-        email: this.fullOrderDetails[0].email,
-        delvAddress:this.fullOrderDetails[0].delivery_address,
-        address: this.fullOrderDetails[0].address,
-        town: this.fullOrderDetails[0].city,
-        state: this.fullOrderDetails[0].state,
-        pincode: this.fullOrderDetails[0].pincode,
-        selfPickup: false,
-        damageProtection:p2DP
-      };  
-      
-
-      this.http.post(`http://localhost:3000/payments/replace`,  replaceOrder).subscribe((res) => {
-        this.http.get(`http://localhost:3000/products/ordDetails/${txnid}`).subscribe((resOrd) => {
-          let cid = resOrd[0].checkoutItemData;
-          cid.forEach(element => {
-            if(element.assetId===filterP1[0].assetId){              
-              element.replacement=2;
+      this.http.get(`http://localhost:3000/products/tenures/${this.replaceProduct[0].priority}`).subscribe((res)=>{
+          p2TenureArr = res[0];
+          for(let i=0;i<p2TenureArr.length;i++){
+            if(p2TenureArr[i].tenure_id==p1Tenure){
+              this.tenure_id = p2TenureArr[i].tenure_id;
+              this.p2Tenure=p2TenureArr[i].tenure+' '+p2TenureArr[i].tenure_period;
+              p2TenurePrice = this.replaceProduct[0].tenure_base_price-(this.replaceProduct[0].tenure_base_price*p2TenureArr[i].discount/100);
             }
-            if(element.indexs===filterP1[0].indexs){              
-              element.replacement=2;
-              element.billPeriod=filterP1[0].startDate+'-'+deliverDate;
-              element.renewed=3;
-              element.returnDate=deliverDate;
-            }
-          });     
-          this.http.put(`http://localhost:3000/orders/updateCID/${txnid}`, {checkoutProducts:JSON.stringify(cid)}).subscribe();  
-        });
-        const userId = localStorage.getItem('user_id');
-        const uname = localStorage.getItem('uname');
-        const uid = uname.substring(0, 3);
-        const rand = Math.floor((Math.random() * 9999) + 1);
-        const activityId = ""+uid + rand;
-        let activity={
-          activityId:activityId,
-          userId:userId,
-          activityLog:JSON.stringify(log),
-        }
-      this.http.post(`http://localhost:3000/backendActivity/createActivity`, activity).subscribe();
-        this.http.put(`http://localhost:3000/assets/update/${p1AssetId}`, {availability:1, startDate:'',expiryDate:'',nextStartDate:''}).subscribe();
-        this.http.put(`http://localhost:3000/assets/update/${this.assetId}`, {availability:0, startDate:assetRes[0].startDate,expiryDate:assetRes[0].expiryDate,nextStartDate:assetRes[0].nextStartDate}).subscribe();
+          }          
       });
-      this.modalReference.close();
+
+      if(this.p2TenurePrice){
+        if(filterP1[0].dp>0){
+          p2DP=this.p2TenurePrice*(8/100);
+          } else{
+          p2DP=0;
+        }
+  
+        p1RentAmount=this.calcDiffPrice(assetRes[0].startDate,assetRes[0].EndDate, assetRes[0].startDate, deliverDate, filterP1[0].price, filterP1[0].dp);
+        p1RentBalance = this.calcDiffPrice(assetRes[0].startDate,assetRes[0].EndDate, deliverDate,assetRes[0].EndDate,filterP1[0].price, filterP1[0].dp);
+        p2RentAmount = this.calcDiffPrice(assetRes[0].startDate,assetRes[0].EndDate, deliverDate,assetRes[0].EndDate,this.p2TenurePrice, p2DP);
+        totalAmount=parseInt(filterP2[0].securityDeposit)+this.p2TenurePrice+p2DP;
+  
+        let returnedProduct={      
+          indexs:filterP1[0].indexs,
+          id: filterP1[0].id,
+          prod_name:filterP1[0].prod_name,
+          prod_price:filterP1[0].prod_price,
+          prod_img:filterP1[0].prod_img,
+          delvdate: filterP1[0].delvdate,
+          actualStartDate:filterP1[0].actualStartDate,
+          qty: 1, 
+          price: filterP1[0].price, 
+          tenure: filterP1[0].tenure,
+          primaryOrderNo:filterP1[0].primaryOrderNo, 
+          currentOrderNo: this.txnId,
+          renewed:filterP1[0].renewed,
+          startDate:filterP1[0].startDate,
+          expiryDate:filterP1[0].expiryDate,
+          nextStartDate:filterP1[0].nextStartDate,
+          overdew:filterP1[0].overdew,
+          ordered:1,
+          assetId:filterP1[0].assetId,
+          deliveryStatus:filterP1[0].deliveryStatus,
+          deliveryAssigned:filterP1[0].deliveryAssigned,
+          dp:filterP1[0].dp,
+          replacement:filterP1[0].replacement,
+          returnDate:deliverDate,
+          billPeriod:assetRes[0].startDate+'-'+deliverDate,
+          billAmount:p1RentAmount,
+          p1Rent:p1RentBalance,
+          damageCharges:damageCharges,
+        }; 
+  
+        console.log(returnedProduct);
+        
+        let ucid={      
+          indexs:Math.floor((Math.random() * 9999) + 1),
+          id: filterP2[0].product_id,
+          prod_name:filterP2[0].prod_name,
+          prod_price:filterP2[0].securityDeposit,
+          prod_img:filterP2[0].prod_img,
+          tenureBasePrice:this.productsList[0].tenure_base_price,
+          tenure_id:this.tenure_id,
+          delvdate: deliverDate,
+          qty: 1, 
+          price: this.p2TenurePrice, 
+          tenure: filterP1[0].tenure,
+          primaryOrderNo:filterP1[0].primaryOrderNo, 
+          currentOrderNo: this.txnId,
+          renewed:1,
+          startDate:assetRes[0].startDate,
+          expiryDate:assetRes[0].EndDate,
+          nextStartDate:assetRes[0].nextStartDate,
+          overdew:0,
+          ordered:1,
+          assetId:this.assetId,
+          deliveryStatus:filterP1[0].deliveryStatus,
+          deliveryAssigned:filterP1[0].deliveryAssigned,
+          dp:p2DP,
+          replacement:0,
+          returnDate:'',
+          billPeriod:deliverDate+'-'+assetRes[0].EndDate,
+          billAmount:p2RentAmount,
+          p2Rent:p2RentAmount,
+          p1RentBalance:p1RentBalance,
+          securityDepositDiff:securityDepositDiff,
+          damageCharges:damageCharges,
+          replaceId:Math.floor((Math.random() * 99999) + 1),
+          returnedProduct:returnedProduct
+        };    
+        
+        let cInfo=[];
+        let pInfo=[];
+        cInfo.push(ucid);
+        // pInfo.push(filterP2[0].prod_id);
+        let replaceOrder = {
+          uid: this.fullOrderDetails[0].customer_id,
+          primaryID: this.fullOrderDetails[0].primary_id,
+          orderID: this.txnId,
+          subTotal: (this.rentDifference)+this.damageCharges+this.totalTaxAmount((this.rentDifference)+this.damageCharges),
+          damageProtection:p2DP,
+          total:(this.rentDifference)+this.damageCharges+this.totalTaxAmount((this.rentDifference)+this.damageCharges)+p2DP,
+          securityDeposit: filterP2[0].securityDeposit,
+          grandTotal: (this.rentDifference)+this.damageCharges+this.totalTaxAmount((this.rentDifference)+this.damageCharges)+this.securityDepositDiff,
+          discount: 0,
+          firstName: 'Manjesh',
+          lastName:'Sham',
+          mobile: 8971870126,
+          email: 'manjeshwar17@gmail.com', 
+          billingAddress:1,
+          shippingAddress:1,
+          orderType:1,
+          orderStatus:'Success',
+          deliveryStatus:'Delivered',
+          refundStatus:'Paid',
+          createdBy:1,
+          modifiedBy:1,
+          createdAt: new Date(),
+          modifiedAt:new Date(),
+          products:JSON.stringify(cInfo)        
+        };  
+        
+        console.log(replaceOrder);
+        this.http.post(`http://localhost:3000/payments/newReplace`,  replaceOrder).subscribe((res) => {
+          this.http.get(`http://localhost:3000/orders/orderItemsByorderId/${oiid}`).subscribe((resOrd) => {
+            let cid = resOrd[0].renewals_timline;
+            cid.forEach(element => {
+              if(element.assetId===filterP1[0].assetId){              
+                element.replacement=2;
+              }
+              if(element.indexs===filterP1[0].indexs){              
+                element.replacement=2;
+                element.billPeriod=filterP1[0].startDate+'-'+deliverDate;
+                element.renewed=3;
+                element.returnDate=deliverDate;
+                this.http.put(`http://localhost:3000/orders/updateRenewalTimeline/${parseInt(filterP1[0].order_item_id)}`, {assetId:filterP1[0].assetId,renewalTimeline:JSON.stringify(cid), status:0}).subscribe();
+                let customerRequest={
+                  approvalStatus:1,
+                  requestStatus:0
+                };
+                this.http.put(`http://localhost:3000/users/updatecustomerRequests/${this.currentOrderItemId}`,customerRequest).subscribe();
+              }
+            });     
+              
+          });
+          // const userId = localStorage.getItem('user_id');
+          // const uname = localStorage.getItem('uname');
+          // const uid = uname.substring(0, 3);
+          // const rand = Math.floor((Math.random() * 9999) + 1);
+          // const activityId = ""+uid + rand;
+          // let activity={
+          //   activityId:activityId,
+          //   userId:userId,
+          //   activityLog:JSON.stringify(log),
+          // }
+        // this.http.post(`http://localhost:3000/backendActivity/createActivity`, activity).subscribe();
+          this.http.put(`http://localhost:3000/assets/update/${p1AssetId}`, {availability:1, startDate:'',expiryDate:'',nextStartDate:''}).subscribe();
+          this.http.put(`http://localhost:3000/assets/update/${this.assetId}`, {availability:0, startDate:assetRes[0].startDate,expiryDate:assetRes[0].EndDate,nextStartDate:assetRes[0].nextStartDate}).subscribe();
+        });
+        this.modalReference.close();
+  
+      }
+
     });
 
     
