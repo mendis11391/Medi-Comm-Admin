@@ -264,6 +264,8 @@ export class OrdersPanelComponent implements OnInit {
         let ndb=this.getDates(db);
         ndb.setDate(ndb.getDate() + 1);
         let nextStartDate = ndb.getDate()+'/'+(ndb.getMonth()+1)+'/'+ndb.getFullYear();
+        let exp=this.getDates(db);
+        exp.setDate(exp.getDate() + 1);
 
         getAllProduct[0].actualStartDate=db;
         getAllProduct[0].startDate=db;
@@ -300,7 +302,7 @@ export class OrdersPanelComponent implements OnInit {
       
         if(currentAssetId!='To be assigned'){
           this.formError=false;
-          this.http.put(`http://localhost:3000/orders/updateOrderItemDeliveryDate/${OrderId}`, {deliveryDate:getdeliveryDate,renewalTimeline:JSON.stringify(getAllProduct)}).subscribe((res) => {
+          this.http.put(`http://localhost:3000/orders/updateOrderItemDeliveryDate/${OrderId}`, {deliveryDate:getdeliveryDate, expiryDate:exp,renewalTimeline:JSON.stringify(getAllProduct)}).subscribe((res) => {
               console.log(res);
               this.http.put(`http://localhost:3000/assets/update/${currentAssetId}`, {availability:0, startDate:db, expiryDate:edb, nextStartDate:nextStartDate}).subscribe();
               // const userId = localStorage.getItem('user_id');

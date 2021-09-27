@@ -26,7 +26,7 @@
                               <td  (click)="getOrderById(o.order_id)">{{o.order_item_id}}</td>
                               <td (click)="getOrderById(o.order_id)">{{o.prod_name.substring(0,50)+'...'}}</td>
                               <td  (click)="getOrderById(o.order_id)">{{o.asset_id}}</td>
-                              <td (click)="returnProductOrderById(o.order_id, o.order_item_id,o.asset_id)"><a><i class="fa fa-pencil"></i></a></td>                   
+                              <td (click)="returnProductOrderById(o.order_id, o.order_item_id,o.renewals_timline,o.asset_id)"><a><i class="fa fa-pencil"></i></a></td>                   
                             </tr>                          
                           </tbody>
                         </table>
@@ -60,7 +60,7 @@
                             <td  (click)="getOrderById(o.order_id)">{{o.order_item_id}}</td>
                             <td (click)="getOrderById(o.order_id)">{{o.prod_name.substring(0,50)+'...'}}</td>
                             <td  (click)="getOrderById(o.order_id)">{{o.asset_id}}</td>
-                            <td  (click)="replaceProductOrderById(o.order_id, o.order_item_id, o.asset_id)"><a><i class="fa fa-pencil"></i></a></td>                   
+                            <td  (click)="replaceProductOrderById(o.order_id, o.order_item_id,o.renewals_timline, o.tenure_id, o.asset_id)"><a><i class="fa fa-pencil"></i></a></td>                   
                           </tr>                          
                         </tbody>
                       </table>
@@ -206,16 +206,17 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr *ngFor="let p of productDetails">
-                        <td>{{p.id}}</td>
-                        <td>{{p.prod_name}}</td>
-                        <td>{{p.tenure}}</td>
-                        <td>{{p.prod_price}}</td>
-                        <td>{{(p.price-0)+(p.dp-0)}}</td>
-                        <td>{{p.assetId}}</td>
-                        <td hidden>getBillPeriod(p.expiryDate)</td>
+                      <tr >
+                        <td>{{productDetails.id}}</td>
+                        <td>{{productDetails.prod_name}}</td>
+                        <td>{{productDetails.tenure}}</td>
+                        <td>{{productDetails.prod_price}}</td>
+                        <td>{{(productDetails.price-0)+(productDetails.dp-0)}}</td>
+                        <td>{{productDetails.assetId}}</td>
+                        <td hidden>getBillPeriod(productDetails.expiryDate)</td>
                         <td>                          
-                            <input type="number" [(ngModel)]="returnDamageCharges" placeholder="Damage charges">                            
+                            <input type="number" [(ngModel)]="returnDamageCharges" placeholder="Damage charges"> 
+                            <input type="number" [(ngModel)]="earlyReturnCharges" placeholder="Early return charges">                           
                         </td>
                         <td>
                           <select [(ngModel)]="refundStatus">
@@ -232,12 +233,12 @@
                     <ngb-datepicker #dp [(ngModel)]="model" (navigate)="date = $event.next"></ngb-datepicker><br><br>     
                 </div>
                 <hr>
-              <div class="col pull-right" *ngFor="let p of productDetails">
-                <p>Damage charges: {{returnDamageCharges}}</p>
-                <p *ngFor="let p of productDetails">To be refunded: {{(p.prod_price-0)-(returnDamageCharges)}}</p>
+              <div class="col pull-right">
+                <p>Damage charges: {{returnDamageCharges + earlyReturnCharges}}</p>
+                <p>To be refunded: {{(productDetails.prod_price-0)-(returnDamageCharges+earlyReturnCharges)}}</p>
                 
                 <button class="btn btn-primary mr-1" (click)="returnProduct()">Return</button>   
-                <button class="btn btn-primary" (click)="returnReject(p.primaryOrderNo,p.indexs)">Reject</button>   
+                <button class="btn btn-primary" (click)="reject(productDetails.order_item_id)">Reject</button>   
               </div>
             </div>
         </div>
@@ -260,7 +261,7 @@
                       <p>Primary order# : {{o.order_id}}</p>
                       <p>Order date: {{o.createdAt}}</p>
                       <label>Billing start date: <input type="date" [(ngModel)]="billStartDate"></label>
-                      <p>Bill period:{{billStartDate | date: 'dd/MM/yyyy'}}-{{productDetails[0].expiryDate}}</p>
+                      <p>Bill period:{{billStartDate | date: 'dd/MM/yyyy'}}-{{productDetails.expiryDate}}</p>
                       
                   </div>
                   <div class="col-6">
@@ -291,33 +292,38 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr *ngFor="let p of productDetails">
+                  <tr>
                     <!-- <th scope="row"><input type="checkbox"></th> -->
-                    <td>{{p.id}}</td>
-                    <td>{{p.prod_name}}</td>
-                    <td>{{p.tenure}}</td>
-                    <td>{{p.prod_price}}</td>
-                    <td>{{(p.price-0)+(p.dp-0)}}</td>
+                    <td>{{productDetails.id}}</td>
+                    <td>{{productDetails.prod_name}}</td>
+                    <td>{{productDetails.tenure}}</td>
+                    <td>{{productDetails.prod_price}}</td>
+                    <td>{{(productDetails.price-0)+(productDetails.dp-0)}}</td>
                     <!-- <td>{{p.price}}</td> -->
-                    <td>{{p.startDate}}</td>
-                    <td>{{p.expiryDate}}</td>
-                    <td>{{p.assetId}}</td>
-                    <td hidden>getBillPeriod(p.expiryDate)</td>
+                    <td>{{productDetails.startDate}}</td>
+                    <td>{{productDetails.expiryDate}}</td>
+                    <td>{{productDetails.assetId}}</td>
+                    <td hidden>getBillPeriod(productDetails.expiryDate)</td>
                     <!-- <td><a (click)="openBillingPeriod()">{{p.billPeriod}}</a></td> -->
                     <td>
                       <!-- <div hidden>{{filterByPrice(p.prod_price)}}</div> -->
-                        <select [(ngModel)]="prodId" (click)="selectProduct(prodId,p.prod_price, p.indexs, p.tenure_id, p.assetId)">
+                        <select [(ngModel)]="prodId" (click)="selectProduct(prodId,productDetails.prod_price, productDetails.indexs, p1Tenure, productDetails.assetId)">
                             <option selected="selected">select</option>
-                            <option [value]="fp.product_id" *ngFor="let fp of filteredProducts">{{fp.product_id}}</option>
+                            <option [value]="fp.product_id" *ngFor="let fp of filteredProducts">{{fp.prod_name}}</option>
                         </select>
                         <input type="number" [(ngModel)]="damageCharges" placeholder="Damage charges">
+                        <select [(ngModel)]="replacePaymentStatus">
+                          <option selected>To be paid</option>
+                            <option>Paid</option>
+                            <option>Complete refund</option>
+                      </select>
                         <!-- <input list="prodId" [(ngModel)]="prodId" (click)="selectProduct(prodId)">
                         <datalist id="prodId" >
                           <option *ngFor="let fp of filteredProducts">{{fp.prod_id}}</option>
                         </datalist>  -->
                     </td>
-                    <td><button class="btn btn-primary" (click)="replace(p.order_item_id,p.id,p.indexs, p.tenure_id, p.dp,p.assetId,prodId, damageCharges)">Replace</button></td>
-                    <td><button class="btn btn-primary" (click)="reject(p.order_item_id,p.indexs)">Reject</button></td>
+                    <td><button class="btn btn-primary" (click)="replace(productDetails.order_item_id,productDetails.id,productDetails.indexs, productDetails.tenure_id, productDetails.dp,productDetails.assetId,prodId, damageCharges)">Replace</button></td>
+                    <td><button class="btn btn-primary" (click)="reject(productDetails.order_item_id)">Reject</button></td>
                   </tr>
                   <tr *ngFor="let rp of replaceProduct">
                     <td>{{rp.product_id}}</td>
