@@ -1,5 +1,5 @@
-import { Component, OnInit, ElementRef, Input } from '@angular/core';
-import { FormGroup, FormBuilder } from  '@angular/forms';
+import { Component, OnInit, ElementRef, Input, AfterViewInit } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from  '@angular/forms';
 import { ProductService } from '../../services/product.service';
 import { fileURLToPath } from 'url';
 import { HttpClient} from '@angular/common/http';
@@ -12,7 +12,7 @@ const URL = 'http://localhost:3000/products/upload/';
   selector: 'app-digital-edit',
   templateUrl: './digital-edit.component.html'
 })
-export class DigitalEditComponent implements OnInit {
+export class DigitalEditComponent implements OnInit, AfterViewInit {
 
   addProduct: FormGroup;
   id:string = '';
@@ -30,57 +30,122 @@ export class DigitalEditComponent implements OnInit {
     private category: ProductService,
     private router: Router,
     private route: ActivatedRoute) {
-
+      this.productFields();
   }
 
   fileData=[];
   imagePath;
   defaultBrand;
 
+  subCat=[];
+  catSpecs;
+  cities
+
   productFields(){
     this.addProduct = this.formBuilder.group({
-      title: [''],
-      description: [''],
-      qty:[''],
-      price:[''],
-      deliveryDate:[''],
-      product_image:[''],
-      status: ['0'],
-      brand:[''],
-      ram:[''],
-      processor:[''],
-      screen_size:[''],
-      weight:[''],
-      usb:[''],
-      hdmi:[''],
-      clockSpeed:[''],
-      battery:[''],
-      touchScreen:['0'],
-      connectivity:[''],
-      webcam:['0'],
-      disk_type:['0'],
-      disk_size:[''],
-      specifications:[''],
-      tenureFinal: [''],
-      tenure: this.formBuilder.group({
-        oneMonth: [0],
-        threeMonths: [0],
-        sixMonths: [0],
-        twelveMonths: [0],
-        eighteenMonths: [0],
-        twentyFourMonths: [0]
-      }),
-      category:['']
+      mainCatName:['', Validators.required],
+      subCatId:['', Validators.required],
+      brandId:['', Validators.required],
+      cityId:['', Validators.required],
+      deliveryTimeline:['', Validators.required],      
+      productName:['', Validators.required],
+      metaTitle:['', Validators.required],
+      slug:['', Validators.required],
+      prodImage:['', Validators.required],
+      prodDescription:['', Validators.required],
+      prodQty:['', Validators.required],
+      securityDeposit:['', Validators.required],
+      tenureBasePrice:['', Validators.required],
+      specs:new FormGroup({}),
+      highlightType:['', Validators.required],
+      prodStatus:[true],
+      publishedAt:[new Date()],
+      startsAt:[new Date()],
+      endsAt:[new Date()],
+      priority:['', Validators.required],
+      createdBy:[1],
+      modifiedBy:[1]
     });
   }
 
   ngOnInit() {
     this.prodId = this.route.snapshot.params['id'];
     this.getProducts(this.route.snapshot.params['id']);
-    this.productFields();
-
     this.getAllCategories();
     this.getAllBrands();
+    this.getAllCities();
+    this.getAllspecValuesBySpecId(1);
+  }
+
+  ngAfterViewInit(){
+    this.getSubCategory();
+    this.getSpecsByCatId();
+  }
+
+
+
+
+  onImageChange(evt){
+    if(evt.target.files.length>0) {
+      this.fileData = evt.target.files;
+    }
+  }
+
+  // getAllBrands() {
+  //   this.brand.getAllBrands().subscribe((res) => {
+  //     this.brands = res;
+  //   });
+  // }
+
+  getProducts(id) {
+    this.productsService.getProduct(id).subscribe((res: any) => {
+      let data = res[0];
+      // this.id = data.prod_id;
+      // let specs= JSON.parse(JSON.parse(data.specs));
+      // this.fileData=data.prod_img;
+      this.addProduct.patchValue({
+        mainCatName:data.main_cat_id,
+        subCatId:data.cat_id,
+        brandId:data.brand_id,
+        cityId:data.city_id,
+        deliveryTimeline:data.delivery_timeline,      
+        productName:data.prod_name,
+        metaTitle:data.metaTitle,
+        slug:data.slug,
+        prodImage:data.prod_image,
+        prodDescription:data.prod_description,
+        prodQty:data.prod_qty,
+        securityDeposit:data.securityDeposit,
+        tenureBasePrice:data.tenure_base_price,
+        specs:new FormGroup({}),
+        // highlightType:['', Validators.required],
+        prodStatus:data.prod_status,
+        publishedAt:[new Date()],
+        startsAt:[new Date()],
+        endsAt:[new Date()],
+        priority:data.priority,
+        createdBy:[1],
+        modifiedBy:[1]
+      });
+      
+      // this.prodImgs = data.prod_img;
+
+      // if(this.addProduct.value.disk_type === '0') {
+      //   let a: HTMLElement = document.querySelector('#edo-ani1');
+      //   a.click();
+      // } else {
+      //   let a: HTMLElement = document.querySelector('#edo-ani');
+      //   a.click();
+      // }
+
+      // if(this.addProduct.value.status === '0') {
+      //   let a: HTMLElement = document.querySelector('#edo-ani4');
+      //   a.click();
+      // } else {
+      //   let a: HTMLElement = document.querySelector('#edo-ani3');
+      //   a.click();
+      // }
+    });
   }
 
   getAllCategories() {
@@ -89,10 +154,23 @@ export class DigitalEditComponent implements OnInit {
     });
   }
 
-  onImageChange(evt){
-    if(evt.target.files.length>0) {
-      this.fileData = evt.target.files;
-    }
+  getSubCategory(){
+    this.subCat = this.categories.filter(item=>item.id==this.addProduct.value.mainCatName);
+    console.log(this.subCat[0].subItems);
+  }
+
+  getSpecsByCatId(){
+    let id = this.addProduct.value.subCatId;
+    this.category.getSpecsByCatId(id).subscribe((resp)=>{
+      var cSpecs:any = resp;
+      let sf:FormGroup = this.addProduct.get('specs') as FormGroup;
+      this.catSpecs=resp;
+      for(let i=0; i<cSpecs.length;i++){
+        let a = sf.addControl(cSpecs[i].spec_id , this.formBuilder.control(['']));
+      }
+      console.log(this.addProduct.value); 
+    });
+       
   }
 
   getAllBrands() {
@@ -101,62 +179,16 @@ export class DigitalEditComponent implements OnInit {
     });
   }
 
-  getProducts(id) {
-    this.productsService.getProduct(id).subscribe((res: any) => {
-      let data = res;
-      this.id = data.prod_id;
-      let specs= JSON.parse(JSON.parse(data.specs));
-      this.fileData=data.prod_img;
-      this.addProduct.patchValue({
-        title: data.prod_name,
-        description: data.prod_description,
-        deliveryDate:data.prod_deliveryDate,
-        qty:data.prod_qty,
-        price: data.prod_price,
-        status: data.prod_status,
-        brand: data.brand_id,
-        ram: data.prod_ram,
-        processor: data.prod_processor,
-        screen_size: data.prod_screensize,
-        weight: specs.weight,
-        usb: specs.usb,
-        hdmi: specs.hdmi,
-        clockSpeed:specs.clockSpeed,
-        battery:specs.battery,
-        touchScreen:specs.touchScreen,
-        connectivity:specs.connectivity,
-        webcam:specs.webcam,
-        disk_type: data.prod_disktype,
-        disk_size: data.prod_disksize,
-        specifications:data.prod_specification,
-        tenure: {
-          oneMonth: data.prod_tenure[0][1],
-          threeMonths:  data.prod_tenure[1][1],
-          sixMonths:  data.prod_tenure[2][1],
-          twelveMonths:  data.prod_tenure[3][1],
-          eighteenMonths:  data.prod_tenure[4][1],
-          twentyFourMonths:  data.prod_tenure[5][1]
-        },
-        category: data.prod_cat_id
-      });
+  getAllCities() {
+    this.category.getAllCities().subscribe((res) => {
+      this.cities = res;
+    })
+  }
 
-      this.prodImgs = data.prod_img;
 
-      if(this.addProduct.value.disk_type === '0') {
-        let a: HTMLElement = document.querySelector('#edo-ani1');
-        a.click();
-      } else {
-        let a: HTMLElement = document.querySelector('#edo-ani');
-        a.click();
-      }
-
-      if(this.addProduct.value.status === '0') {
-        let a: HTMLElement = document.querySelector('#edo-ani4');
-        a.click();
-      } else {
-        let a: HTMLElement = document.querySelector('#edo-ani3');
-        a.click();
-      }
+  getAllspecValuesBySpecId(id){
+    this.category.getSpecValueByID(id).subscribe((res)=>{
+      return res;
     });
   }
 

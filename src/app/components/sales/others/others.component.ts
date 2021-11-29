@@ -11,8 +11,10 @@ export class OthersComponent implements OnInit {
 
   days: FormGroup;
   taxes:FormGroup;
+  padding:FormGroup;
   successMsg = false;
   successMsg1 = false;
+  successMsg2 = false;
 
   constructor(private formBuilder: FormBuilder, private delvdate: DeliverydateService) { }
 
@@ -31,9 +33,19 @@ export class OthersComponent implements OnInit {
       hyderabad: ['', Validators.required],
     });
 
+    this.padding = this.formBuilder.group({
+      bangalore: ['', Validators.required],
+      mumbai: ['', Validators.required],
+      pune: ['', Validators.required],
+      hyderabad: ['', Validators.required],
+    });
+
     this.delvdate.getAllCities().subscribe((res: any) => {
       if (res) {
         const a = res;
+        this.padding.patchValue({
+          bangalore: a[0].city_invoice_padding
+        })
         this.days.patchValue({
           bangalore: a[0].tentitiveDeleivery,
           mumbai: a[1].tentitiveDeleivery,
@@ -60,6 +72,12 @@ export class OthersComponent implements OnInit {
   addTaxes() {
     this.delvdate.updateTaxes(this.taxes.value).subscribe((res) => {
       this.successMsg1 = true;
+    });
+  }
+
+  updatePadding() {
+    this.delvdate.updatePadding(this.padding.value, 1).subscribe((res) => {
+      this.successMsg2 = true;
     });
   }
 

@@ -7,6 +7,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient} from '@angular/common/http';
 import { FormGroup,FormBuilder } from '@angular/forms';
 import { ExcelService } from '../services/excel.service';
+
 @Component({
   selector: 'app-orders',
   templateUrl: './orders.component.html',
@@ -36,15 +37,16 @@ export class OrdersComponent implements OnInit {
   }
 
   updateFilter(event) {
+    this.temp=this.order;
     const val = event.target.value.toLowerCase();
 
     // filter our data
     const temp = this.temp.filter(function (d) {
-      return d.name.toLowerCase().indexOf(val) !== -1 || !val;
+      return d.primary_id.toLowerCase().indexOf(val) !== -1 || d.delivery_status.toLowerCase().indexOf(val) !== -1 || !val;
     });
 
     // update the rows
-    this.order = temp;
+    this.filteredOrders = temp;
     // Whenever the filter changes, always go back to the first page
     this.table.offset = 0;
   }
@@ -67,22 +69,23 @@ export class OrdersComponent implements OnInit {
   getOrders(){
     this.os.getAllOrders().subscribe((orders)=>{
       orders.reverse();
-      this.order=orders.filter(item => item.status=='SUCCESS');
+      // this.order=orders.filter(item => item.paymentStatus=='Success');
+      this.order=orders;
       this.filteredOrders=this.order;
     });
   }
 
   filterOrders(e){
     if(e=='All orders'){
-      this.filteredOrders=this.order.filter(item => item.status=='SUCCESS');
+      this.filteredOrders=this.order;
     } else if(e=='Primary order'){
-      this.filteredOrders=this.order.filter(item => item.order_type=='Primary order');
+      this.filteredOrders=this.order.filter(item => item.orderType_id==1);
     } else if(e=='Renewal order'){
-      this.filteredOrders=this.order.filter(item => item.order_type=='Renewal order');
+      this.filteredOrders=this.order.filter(item => item.orderType_id==2);
     } else if(e=='Replacement order'){
-      this.filteredOrders=this.order.filter(item => item.order_type=='Replacement order');
+      this.filteredOrders=this.order.filter(item => item.orderType_id==3);
     } else if(e=='Return order'){
-      this.filteredOrders=this.order.filter(item => item.order_type=='Return order');
+      this.filteredOrders=this.order.filter(item => item.orderType_id==4);
     }
   }
 

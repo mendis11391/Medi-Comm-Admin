@@ -11,6 +11,8 @@ import { DigitalAddComponent } from './digital/digital-add/digital-add.component
 import { ProductDetailComponent } from './physical/product-detail/product-detail.component';
 import { AuthGuard } from '../auth/auth.guard';
 import { DigitalEditComponent } from './digital/digital-edit/digital-edit.component';
+import { DigitalSpecsComponent } from './digital/digital-specs/digital-specs.component';
+import { DigitalSubCategoryListComponent } from './digital/digital-sub-category-list/digital-sub-category-list.component';
 
 const routes: Routes = [
   {
@@ -66,6 +68,15 @@ const routes: Routes = [
         }
       },
       {
+        path: 'digital/digital-sub-category-list',
+        // canActivate: [AuthGuard],
+        component: DigitalSubCategoryListComponent,
+        data: {
+          title: "Product List",
+          breadcrumb: "Product List"
+        }
+      },
+      {
         path: 'digital/digital-sub-category',
         component: DigitalSubCategoryComponent,
         data: {
@@ -74,8 +85,16 @@ const routes: Routes = [
         }
       },
       {
+        path: 'digital/digital-specs',
+        component: DigitalSpecsComponent,
+        data: {
+          title: "Sub Category",
+          breadcrumb: "Sub Category"
+        }
+      },
+      {
         path: 'digital/digital-product-list',
-        canActivate: [AuthGuard],
+        // canActivate: [AuthGuard],
         component: DigitalListComponent,
         data: {
           title: "Product List",

@@ -4,230 +4,140 @@
             <div class="col-xl-6">
                 <div class="card">
                     <div class="card-header">
+                        <h5>Choose Category</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="digital-add needs-validation">
+                            <div class="form-group">
+                                <label class="col-form-label"><span>*</span> Category group</label>
+                                <select class="form-control" formControlName="mainCatName" (change)="getSubCategory()">
+                                    <option *ngFor="let c of categories" value="{{c.id}}">{{c.main_cat_name}}</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" *ngIf="addProduct.value.mainCatName">
+                                <label class="col-form-label"><span>*</span> Category name</label>
+                                <select class="form-control" formControlName="subCatId" (change)="getSpecsByCatId()">
+                                    <option *ngFor="let sc of subCat[0].subItems" value="{{sc.cat_id}}">{{sc.cat_name}}</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" *ngIf="addProduct.value.mainCatName">
+                                <label class="col-form-label"><span>*</span> cities</label>
+                                <select class="form-control" formControlName="cityId" multiple>
+                                    <option *ngFor="let c of cities" value="{{c.city_id}}">{{c.city_name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
                         <h5>General</h5>
                     </div>
                     <div class="card-body">
-                        <div class="digital-add needs-validation">                        
-                                <div class="form-group">
-                                    <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Title</label>
-                                    <input class="form-control" id="validationTitle" name="title" formControlName="title" type="text" required="">
+                        <div class="digital-add needs-validation">    
+                            <div class="form-group">
+                                <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Product name</label>
+                                <input class="form-control" formControlName="productName" type="text" required="">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Meta title</label>
+                                <input class="form-control" formControlName="metaTitle" type="text" required="">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Product slug</label>
+                                <input class="form-control" formControlName="slug" type="text" required="">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Product description</label>
+                                <input class="form-control" formControlName="prodDescription" type="text" required="">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Product quantity</label>
+                                <input class="form-control" formControlName="prodQty" type="number" required="">
+                            </div>
+                            <div class="form-group">
+                                <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Product delivery timeline</label>
+                                <input class="form-control" formControlName="deliveryTimeline" type="number" required="">
+                            </div>
+                            <div class="form-group">
+                                <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Security deposit</label>
+                                <input class="form-control" formControlName="securityDeposit" type="number" required="">
+                            </div>
+                            <div class="form-group">
+                                <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Tenure base price</label>
+                                <input class="form-control" formControlName="tenureBasePrice" type="number" required="">
+                            </div>
+                            <div class="form-group">
+                                <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Priority</label>
+                                <input class="form-control" formControlName="priority" type="number" required="">
+                            </div>
+                            <div class="form-group">
+                                <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Product image</label>
+                                <input type="file" id="product_image" (change)="imageChange($event)"  formControlName="prodImage"  multiple  />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-form-label"><span>*</span> Product status</label>
+                                <div class="m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
+                                    <label class="d-block" for="edo-ani">
+                                        <input class="radio_animated"  formControlName="prodStatus" [value]="1"   type="radio">
+                                        Yes
+                                    </label>
+                                    <label class="d-block" for="edo-ani1">
+                                        <input class="radio_animated" formControlName="prodStatus" [value]="0"   type="radio">
+                                        No
+                                    </label>
                                 </div>
-                                <!-- <div class="form-group">
-                                    <label for="validationCustomtitle" class="col-form-label pt-0"><span>*</span> Quantity</label>
-                                    <input class="form-control" id="validationCustomtitle" name="quantity" [(ngModel)]="quantity" type="number" required="">
-                                </div> -->
-                                <!-- <div class="form-group">
-                                    <label class="col-form-label"><span>*</span> Categories</label>
-                                    <select class="custom-select" required="">
-                                        <option value="">--Select--</option>
-                                        <option value="1">eBooks</option>
-                                        <option value="2">Graphic Design</option>
-                                        <option value="3">3D Impact</option>
-                                        <option value="4">Application</option>
-                                        <option value="5">Websites</option>
+                            </div>
+
+                            <div class="form-group" *ngIf="addProduct.value.mainCatName">
+                                <label class="col-form-label"><span>*</span> Highlights</label>
+                                <select class="form-control" formControlName="highlightType" multiple>
+                                    <option value="1">Featured</option>
+                                    <option value="2">Best seller</option>
+                                    <option value="3">New products</option>
+                                </select>
+                            </div>
+
+                            
+                            <div class="form-group" *ngIf="addProduct.value.subCatId">
+                                <label class="col-form-label"><span>*</span> Brands</label>
+                                <select class="form-control" formControlName="brandId">
+                                    <option *ngFor="let b of brands" value="{{b.brand_id}}">{{b.brand_name}}</option>
+                                </select>
+                            </div>
+                            
+                            <!-- <div formArrayName="specs">
+                                <div class="form-group" *ngFor="let cs of catSpecs; let i = index;">
+                                   <label class="col-form-label pt-0"><span>*</span>{{cs.spec_name}}</label>
+                                   <input class="form-control" id="validation3m" formControlName="{{cs.spec_name}}"  type="text" required="">
+                                </div>
+                            </div> -->
+                            <div formArrayName="specs" *ngIf="addProduct.value.subCatId">                                
+                                <div class="form-group" *ngFor="let cs of catSpecs; let i = index;">
+                                    <label class="col-form-label"><span>*</span> {{cs.spec_name}}</label>
+                                    <select class="form-control" formControlName="{{cs.spec_id}}" >
+                                        <option *ngFor="let sv of cs.spec_id | specValues" value="{{sv.spec_value}}">{{sv.spec_value}}</option>
                                     </select>
-                                </div> -->
-                                <div class="form-group">
-                                    <label class="col-form-label">Sort Summary</label>
-                                    <textarea rows="5" name="description" formControlName="description" cols="12"></textarea>
                                 </div>
-                                <div class="form-group">
-                                    <label for="offers" class="col-form-label pt-0"><span>*</span> Offers</label>
-                                    <input class="form-control" id="validationram" name="offers" formControlName="offers" type="text" required="">
-                                </div>
-                                <div class="form-group">
-                                    <label for="qty" class="col-form-label pt-0"><span>*</span> Quantity</label>
-                                    <input class="form-control" id="qty" name="qty" formControlName="qty" type="number" required="">
-                                </div>
-                                <div class="form-group">
-                                    <label for="validationCustom02" class="col-form-label"><span>*</span> Security Deposit</label>
-                                    <input class="form-control" name="price" formControlName="price" id="validationCustom02" type="text" required="">
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="deliveryDate" class="col-form-label"><span>*</span> Product Delivery date</label>
-                                    <input class="form-control" name="deliveryDate" formControlName="deliveryDate" id="deliveryDate" type="number" required="">
-                                </div>
-                                
-                                
-                                    <label class="col-form-label pt-0"> Product Upload</label>
-                                    <input type="file" formControlName="product_image"  multiple (change)="onImageChange($event)" />        
-                                    
-
-                                    <div class="form-group">
-                                        <label class="col-form-label"><span>*</span> Brand</label>
-                                        <select class="custom-select" formControlName="brand">
-                                            <option value="">--Select--</option>
-                                            <option *ngFor="let b of brands" [ngValue]="b.brand_id">{{b.brand_name}}</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="col-form-label"><span>*</span> Categories</label>
-                                        <select class="custom-select" id="category" formControlName="category" (change)="getCategoryName()">
-                                            <option value="">--Select--</option>
-                                            <option *ngFor="let c of categories" [ngValue]="c.cat_id">{{c.cat_name}}</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="col-form-label"><span>*</span> Available in cities</label>
-                                        <select class="custom-select" id="cities" multiple formControlName="cities" (change)="selectCities()">
-                                            <option *ngFor="let c of cities" [ngValue]="c.cityid">
-                                                {{c.cityname}}</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="validationram" class="col-form-label pt-0"><span>*</span> RAM</label>
-                                        <input class="form-control" id="validationram" name="ram" formControlName="ram" type="text" required="">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="validationprocessor" class="col-form-label pt-0"><span>*</span> Processor</label>
-                                        <input class="form-control" id="validationprocessor" name="processor" formControlName="processor" type="text" required="">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="validationscreensz" class="col-form-label pt-0"><span>*</span> Screen Size</label>
-                                        <input class="form-control" id="validationscreensz" name="screen_size" formControlName="screen_size" type="text" required="">
-                                    </div>     
-                                    
-                                    <div class="form-group">
-                                        <label for="validationram" class="col-form-label pt-0"><span>*</span> Weight</label>
-                                        <input class="form-control" id="validationram" name="weight" formControlName="weight" type="text" required="">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="validationram" class="col-form-label pt-0"><span>*</span> USB ports</label>
-                                        <input class="form-control" id="validationram" name="usb" formControlName="usb" type="text" required="">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="validationram" class="col-form-label pt-0"><span>*</span> HDMI port</label>
-                                        <input class="form-control" id="validationram" name="hdmi" formControlName="hdmi" type="text" required="">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="validationram" class="col-form-label pt-0"><span>*</span> Clock speed</label>
-                                        <input class="form-control" id="validationram" name="clockSpeed" formControlName="clockSpeed" type="text" required="">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="validationram" class="col-form-label pt-0"><span>*</span> Battery</label>
-                                        <input class="form-control" id="validationram" name="battery" formControlName="battery" type="text" required="">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="col-form-label"><span>*</span> Touch screen</label>
-                                        <div class="m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
-                                            <label class="d-block" for="edo-ani">
-                                                <input class="radio_animated"  name="touchScreen" formControlName="touchScreen" [value]="1"  id="touchScreen" type="radio">
-                                                Yes
-                                            </label>
-                                            <label class="d-block" for="edo-ani1">
-                                                <input class="radio_animated" name="touchScreen" formControlName="touchScreen" [value]="0"  id="touchScreen" type="radio">
-                                                No
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="validationram" class="col-form-label pt-0"><span>*</span> Connectivity</label>
-                                        <input class="form-control" id="validationram" name="connectivity" formControlName="connectivity" type="text" required="">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="col-form-label"><span>*</span> Webcam</label>
-                                        <div class="m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
-                                            <label class="d-block" for="edo-ani">
-                                                <input class="radio_animated"  name="webcam" formControlName="webcam" [value]="1"  id="webcam" type="radio">
-                                                Yes
-                                            </label>
-                                            <label class="d-block" for="edo-ani1">
-                                                <input class="radio_animated" name="webcam" formControlName="webcam" [value]="0"  id="webcam" type="radio">
-                                                No
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="col-form-label"><span>*</span> Disk Type</label>
-                                        <div class="m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
-                                            <label class="d-block" for="edo-ani">
-                                                <input class="radio_animated"  name="disk_type" formControlName="disk_type" [value]="1"  id="edo-ani" type="radio">
-                                                HDD
-                                            </label>
-                                            <label class="d-block" for="edo-ani1">
-                                                <input class="radio_animated" name="disk_type" formControlName="disk_type" [value]="0"  id="edo-ani1" type="radio">
-                                                SSD
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="validationdisksz" class="col-form-label pt-0"><span>*</span>Disk Size</label>
-                                        <input class="form-control" id="validationdisksz" name="disk_size" formControlName="disk_size" type="text" required="">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="col-form-label"><span>*</span> Status</label>
-                                        <div class="m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
-                                            <label class="d-block" for="edo-ani">
-                                                <input class="radio_animated"  name="status" formControlName="status" [value]="1"  id="edo-ani3" type="radio">
-                                                Enable
-                                            </label>
-                                            <label class="d-block" for="edo-ani1">
-                                                <input class="radio_animated" name="status" formControlName="status" [value]="0" id="edo-ani4" type="radio">
-                                                Disable
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <div formGroupName="tenure">
-                                         <div class="form-group">
-                                            <label for="validation3m" class="col-form-label pt-0"><span>*</span> 1 Month</label>
-                                            <input class="form-control" id="validation3m" formControlName="oneMonth" type="text" required="">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="validation6m" class="col-form-label pt-0"><span>*</span> 3 Months</label>
-                                            <input class="form-control" id="validation6m" formControlName="threeMonths" type="text" required="">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="validation9m" class="col-form-label pt-0"><span>*</span> 6 Months</label>
-                                            <input class="form-control" id="validation9m" formControlName="sixMonths" type="text" required="">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="validation12m" class="col-form-label pt-0"><span>*</span> 12 Months</label>
-                                            <input class="form-control" id="validation12m" formControlName="twelveMonths" type="text" required="">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="validation18m" class="col-form-label pt-0"><span>*</span> 18 Months</label>
-                                            <input class="form-control" id="validation18m" formControlName="eighteenMonths" type="text" required="">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="validation24m" class="col-form-label pt-0"><span>*</span> 24 Months</label>
-                                            <input class="form-control" id="validation24m" formControlName="twentyFourMonths" type="text" required="">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="validation24m" class="col-form-label pt-0"><span>*</span> Featured</label>
-                                            <input class="form-control" id="featured" formControlName="featured" (change)="specialProducts($event)"  type="checkbox" required="">
-                                            <label for="validation24m" class="col-form-label pt-0"><span>*</span> Best seller</label>
-                                            <input class="form-control" id="bestSeller" formControlName="bestSeller" (change)="specialProducts($event)"  type="checkbox" required="">
-                                            <label for="validation24m" class="col-form-label pt-0"><span>*</span> New products</label>
-                                            <input class="form-control" id="newProducts" formControlName="newProducts" (change)="specialProducts($event)" type="checkbox" required="">
-                                        </div>
-
-                                        
-                                    </div>
-                                    
+                            </div>
+                            
+                                    <div *ngIf="prodRequied">All fields are required</div>
+                                    <!-- <div *ngIf="prodSuccessfull">Product added successfully</div> -->
                                 <button type="submit" class="btn btn-primary mr-1">Add</button>                        
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-xl-6">
-                <div class="card">
+                
+                <!-- <div class="card">
                     <div class="card-header">
                         <h5>Add Specifications</h5>
                     </div>
@@ -236,11 +146,12 @@
                             <div class="form-group mb-0">
                                 <div class="description-sm">
                                     <ck-editor name="specifications" formControlName="specifications" id="editor1" language="en" [fullPage]="false"></ck-editor>
+                                    
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <div class="card">
                     <div class="card-header">
                         <input type="file" (change)="onFileChange($event)" />
@@ -249,14 +160,6 @@
                     </div>
                     <div class="card-body">
                         <div class="digital-add needs-validation">
-                            <!-- <div class="form-group">
-                                <label for="validationCustom05" class="col-form-label pt-0"> Meta Title</label>
-                                <input class="form-control" id="validationCustom05" type="text" required="">
-                            </div>
-                            <div class="form-group">
-                                <label class="col-form-label">Meta Description</label>
-                                <textarea rows="4" cols="12"></textarea>
-                            </div> -->
                             <div class="form-group mb-0">
                                 <div class="product-buttons text-center">
                                     <button type="button" class="btn btn-primary mr-1" (click)="importExcelData()">Import</button>

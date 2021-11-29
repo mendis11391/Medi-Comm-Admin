@@ -10,6 +10,13 @@ import { ReplacementOrdersComponent } from './replacement-orders/replacement-ord
 import { UserRequestsComponent } from './user-requests/user-requests.component';
 import { ManageOrdersComponent } from './manage-orders/manage-orders.component';
 import { User, Role } from '../auth/user';
+import { OrderDetailsComponent } from './order-details/order-details.component';
+import { PrimaryOrderComponent } from './primary-order/primary-order.component';
+import { RenewalOrderComponent } from './renewal-order/renewal-order.component';
+import { ReplacementOrderComponent } from './replacement-order/replacement-order.component';
+import { ReturnOrderComponent } from './return-order/return-order.component';
+import { UpcomingRenewalsComponent } from './upcoming-renewals/upcoming-renewals.component';
+import { CreateOrderComponent } from './create-order/create-order.component';
 const routes: Routes = [
   {
     path: '',
@@ -17,14 +24,80 @@ const routes: Routes = [
     children: [
       {
         path: 'orders',
-        canLoad: [AuthGuard],
-        canActivate: [AuthGuard],
+        // canLoad: [AuthGuard],
+        // canActivate: [AuthGuard],
         data: {
           title: "Orders",
           breadcrumb: "Orders",
           roles: [Role.admin]
         },
         component: OrdersComponent,
+      },
+      {
+        path: 'orders/:id',
+        // canLoad: [AuthGuard],
+        // canActivate: [AuthGuard],
+        data: {
+          title: "Order details",
+          breadcrumb: "Order details",
+          // roles: [Role.admin]
+        },
+        component: OrderDetailsComponent,
+      },
+      {
+        path: 'upcoming-renewals',
+        // canLoad: [AuthGuard],
+        // canActivate: [AuthGuard],
+        data: {
+          title: "Upcoming renewals",
+          breadcrumb: "upcoming renewals",
+          // roles: [Role.admin]
+        },
+        component: UpcomingRenewalsComponent,
+      },
+      {
+        path: 'primary-order',
+        // canLoad: [AuthGuard],
+        // canActivate: [AuthGuard],
+        data: {
+          title: "Primary orders",
+          breadcrumb: "Primary-order",
+          // roles: [Role.admin]
+        },
+        component: PrimaryOrderComponent,
+      },
+      {
+        path: 'renewal-order',
+        // canLoad: [AuthGuard],
+        // canActivate: [AuthGuard],
+        data: {
+          title: "Renewal order",
+          breadcrumb: "Renewal order",
+          // roles: [Role.admin]
+        },
+        component: RenewalOrderComponent,
+      },
+      {
+        path: 'replacement-order',
+        // canLoad: [AuthGuard],
+        // canActivate: [AuthGuard],
+        data: {
+          title: "Replacement order",
+          breadcrumb: "Replacement order",
+          // roles: [Role.admin]
+        },
+        component: ReplacementOrderComponent,
+      },
+      {
+        path: 'return-order',
+        // canLoad: [AuthGuard],
+        // canActivate: [AuthGuard],
+        data: {
+          title: "Return order",
+          breadcrumb: "Return order",
+          // roles: [Role.admin]
+        },
+        component: ReturnOrderComponent,
       },
       {
         path: 'user-requests',
@@ -40,6 +113,14 @@ const routes: Routes = [
         data: {
           title: "Manage orders",
           breadcrumb: "Manage orders"
+        }
+      },
+      {
+        path: 'create-order',
+        component: CreateOrderComponent,
+        data: {
+          title: "Create order",
+          breadcrumb: "Create order"
         }
       },
       {

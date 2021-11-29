@@ -24,6 +24,7 @@ export class DigitalCategoryComponent implements OnInit {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
+
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -33,7 +34,6 @@ export class DigitalCategoryComponent implements OnInit {
       return `with: ${reason}`;
     }
   }
-
 
   public settings = {
     actions: {

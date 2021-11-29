@@ -22,4 +22,9 @@ export class DeliverydateService {
     const url = `${this.cty_url}/taxes`;
     return this.http.put(url, data);
   }
+
+  updatePadding(data, id) {
+    const url = `${this.cty_url}/padding/${id}`;
+    return this.http.put(url, data);
+  }
 }

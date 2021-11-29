@@ -188,7 +188,7 @@
                   <p>Customer name: {{o.firstName }}</p>
                   <p>Mobile: {{o.mobile}}</p>
                   <p>Email: {{o.email}}</p>
-                  <p>Address:{{o.address[0].address_line1}}, {{o.address[0].city}}-{{o.address[0].pincode}}</p>
+                  <!-- <p>Address:{{o.address[0].address_line1}}, {{o.address[0].city}}-{{o.address[0].pincode}}</p> -->
                 </div>
                 <div class="col-12">
                   <table class="table">
@@ -313,10 +313,11 @@
                         </select>
                         <input type="number" [(ngModel)]="damageCharges" placeholder="Damage charges">
                         <select [(ngModel)]="replacePaymentStatus">
-                          <option selected>To be paid</option>
-                            <option>Paid</option>
-                            <option>Complete refund</option>
-                      </select>
+                          <option *ngFor="let ps of paymentStatus" value="{{ps.id}}">{{ps.status_name}}</option>
+                          <!-- <option selected value="">To be paid</option> -->
+                            <!-- <option>Paid</option>
+                          <option>Complete refund</option> -->
+                        </select>
                         <!-- <input list="prodId" [(ngModel)]="prodId" (click)="selectProduct(prodId)">
                         <datalist id="prodId" >
                           <option *ngFor="let fp of filteredProducts">{{fp.prod_id}}</option>

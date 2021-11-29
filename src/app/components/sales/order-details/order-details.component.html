@@ -1,0 +1,210 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Actions</h5>
+                </div>
+                <div class="card-body">
+                    <button class="btn btn-warning" *ngIf="!editStatus" (click)="editStatus=!editStatus">Edit order</button>
+                    <button class="btn btn-warning" *ngIf="editStatus" (click)="editStatus=!editStatus">Cancel edit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" *ngFor="let o of fullOrderDetails; trackBy: trackByIndex">   
+            
+
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Customer details</h5>
+                </div>
+                <div class="card-body">
+                    <p>Customer #: {{customerDetails[0].customer_id}} </p>
+                    <p>Name: {{customerDetails[0].firstName}} {{customerDetails[0].lastName}}</p>
+                    <p>Email: {{customerDetails[0].email}}</p>
+                    <p>Mobile: {{customerDetails[0].mobile}}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Invoice</h5>
+                </div>
+                <div class="card-body">
+                    <p>Invoice # : 123412</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Email id">
+                        <div class="input-group-append">
+                          <button class="btn btn-warning" type="button">Send</button>
+                        </div>
+                    </div>
+                    <button class="btn btn-warning">Download Invoice</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Billing address</h5>
+                </div>
+                <div class="card-body">
+                    <p>Name: <span>{{o.firstName}}</span></p>
+                    <p>Address: <span>{{o.billingAddress[0].address_line1}},{{o.billingAddress[0].address_line2}},{{o.billingAddress[0].city}}-{{o.billingAddress[0].pincode}}.</span></p>
+                    <p>Mobile: <span>{{o.mobile}}</span></p>
+                    <p>Email: <span>{{o.email}}</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Shipping address</h5>
+                </div>
+                <div class="card-body">
+                    <p>Name: <span>{{o.firstName}}</span></p>
+                    <p>Address: <span>{{o.shippingAddress[0].address_line1}},{{o.shippingAddress[0].address_line2}},{{o.shippingAddress[0].city}}-{{o.shippingAddress[0].pincode}}.</span></p>
+                    <p>Mobile: <span>{{o.mobile}}</span></p>
+                    <p>Email: <span>{{o.email}}</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Order details</h5>
+                </div>
+                <div class="card-body">
+                    <p>Order date: {{o.createdAt | date:'dd MM yyyy'}}</p>
+                    <p>Order #: {{o.primary_id}}</p>
+                    <p>Invoice #: IRO-21-22-123421</p>
+                    <p *ngIf="!paymentStatusActive">Payment status: {{o.paymentStatus}} <i class="fa fa-pencil" *ngIf="editStatus" (click)="paymentStatusActive=!paymentStatusActive"></i></p>
+                    <div class="card" *ngIf="paymentStatusActive">
+                        <div class="card-header">
+                            <p>Payment status <span class="pull-right" (click)="paymentStatusActive=!paymentStatusActive">X</span></p>
+                        </div>
+                        <div class="card-body">
+                                <select class="form-control" [(ngModel)]="orderField">
+                                    <option *ngFor="let ps of paymentStatus" value="{{ps.id}}">{{ps.status_name}}</option>
+                                </select>
+                                <br>
+                                <button class="btn btn-warning" (click)="updateOrderField(o.primary_id,'paymentStatus',orderField)">Update</button>
+                                                   
+                        </div>
+                    </div>
+                    <p>Order type: {{o.order_type}}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Transaction details</h5>
+                </div>
+                <div class="card-body">
+                    <p>Transaction date: {{o.transactionDate | date:'dd MM yyyy'}}</p>
+                    <p>Transaction #: {{o.transaction_id}}</p>
+                    <p>Transaction type: {{o.type}}</p>
+                    <p>Transaction source : {{o.transaction_source}}</p>
+                    <p>Transaction amount : ₹{{o.transactionAmount}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row my-products" *ngFor="let o of fullOrderDetails">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Product details</h5>
+                </div>
+                <div class="card-body">
+        
+                    
+                    <table class="table table-striped table-bordered" >
+                        <thead>
+                          <tr>
+                            <th>Prod name</th>
+                            <th>Tenure</th>
+                            <th>Security Deposit</th>
+                            <th>Rent/mo</th>
+                            <th>Asset #</th>
+                            <th>Delivery Date</th>
+                            <th>Delivery status</th>
+                          </tr>
+                        </thead>
+                        <tbody *ngFor="let p of productDetails">
+                          <tr>
+                            <td>{{p.prod_name}}</td>
+                            <td>{{p.tenure_id}} Months</td>
+                            <td>₹{{p.security_deposit}}</td>
+                            <td>₹{{p.tenure_price}}</td>
+                            <td>{{p.asset_id}}</td> 
+                            <td>{{p.startDate | date:'dd MM yyyy'}}</td>                            
+                            <td>{{p.delivery_status}}</td>                         
+                          </tr> 
+                          <tr *ngIf="editStatus && (o.orderType_id==1 || o.orderType_id==3)">
+                            <td colspan="4"></td>
+                            <td>
+                                <form class="orders-form-popup" [formGroup]="assetAssign" (ngSubmit)="updateAssetId(p.order_item_id)">
+                                    <label> Asset #:
+                                        <select formControlName="assetId" class="form-control">
+                                            <option [value]="p.asset_id">select</option>
+                                            <option *ngFor="let a of assets" [value]="a.asset_no">{{a.asset_no}}</option>
+                                        </select> 
+                                    </label>
+                                    <div *ngIf="((deliveryStatus.value.deliveryStatus=='Shipped' && assetId=='') || (deliveryStatus.value.deliveryStatus=='Delivered' && assetId=='') || formError==true)" class="text text-danger">
+                                        Asset # is required.
+                                    </div><br>
+                                    <button class="btn btn-warning">Update</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form [formGroup]="deliveryDateStatus" (ngSubmit)="updateDeliveryDate(p.order_item_id)">
+                                    <label>Delivery date:<input class="form-control" type="date" formControlName="deliveryDate" [value]="currDate"> </label>
+                                    <!-- <div *ngIf="((deliveryDateStatus.value.deliveryStatus=='Shipped' && deliveryDateStatus.value.deliveryDate=='') || (deliveryDateStatus.value.deliveryStatus=='Delivered' && deliveryDateStatus.value.assetId==''))" class="text text-danger">
+                                        Delivery date is required.
+                                    </div> -->
+                                    <div *ngIf="p.deliveryDateAssigned==0 && (deliveryStatus.value.deliveryStatus=='Delivered' || deliveryStatus.value.deliveryStatus=='Shipped')" class="text text-danger">
+                                      Delivery date is required.
+                                    </div><br>
+                                    <button class="btn btn-warning">Update</button>
+                                  </form>
+                            </td>
+                            <td>
+                                <form [formGroup]="deliveryStatus" (ngSubmit)="updateProductDeliveryStatus(p.order_item_id)">                                
+                                    <label> Delivery status:
+                                      <select formControlName="deliveryStatus" class="form-control" required>   
+                                          <option [value]="p.delivery_status">Select</option>                
+                                          <!-- <option value="1">Awaiting KYC</option>
+                                          <option value="2">Delivery awaited</option> -->
+                                          <option value="3">Shipped</option>
+                                          <option value="4">Delivered</option>
+                                          <!-- <option value="5">Partially delivered</option> -->
+                                          <option value="6">Return</option>
+                                      </select> 
+                                    </label><br>
+                                    <button class="btn btn-warning">Update</button>
+                                  </form>
+                            </td>
+                          </tr>                         
+                        </tbody>
+                    </table>
+        
+                    <div *ngFor="let o of fullOrderDetails" class="pull-right text-right">
+                        <h4>Total security deposit: <span>₹{{o.totalSecurityDeposit}}</span></h4>
+                        <h4>Grand Total: <span>₹{{o.grandTotal}}</span></h4>
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

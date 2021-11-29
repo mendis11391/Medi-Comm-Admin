@@ -5,6 +5,11 @@ import { ConstantsURL } from '../../../../constants/constant-urls';
 import { BehaviorSubject, Observable, of, Subscriber} from 'rxjs';
 import { map, filter, scan } from 'rxjs/operators';
 
+export interface specValues {
+  spec_id?: number,
+  spec_value?: string,
+  status?: boolean
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -32,7 +37,7 @@ export class ProductService {
 
   // Get Products By Id
   public getProduct(id: string) {
-    return this.http.get(`${this.b_url}/${id}`);
+    return this.http.get(`${this.b_url}/prodById/${id}`);
   }
 
   updateProduct(id: string, data): Observable<any> {
@@ -46,7 +51,23 @@ export class ProductService {
   }
 
   getCategories() {
-    return this.http.get(this.c_url);
+    return this.http.get(this.c_url+'/getMainCategory');
+  }
+
+  getAllSpecs() {
+    return this.http.get(this.c_url+'/getAllSpecs');
+  }
+
+  getAllSpecValues(){
+    return this.http.get(this.b_url+'/getAllSpecValues');
+  }
+
+  getSpecsByCatId(id) {
+    return this.http.get(this.c_url+'/getSpecsByCatId/'+id);
+  }
+
+  getSpecValueByID(id){
+    return this.http.get(this.b_url+'/getSpecsValuesById/'+id);
   }
 
   updateCategory(id: string) {
@@ -55,12 +76,16 @@ export class ProductService {
   }
 
   addCategory(categoryName) {
-    return this.http.post(this.c_url, {cat_name: categoryName});
+    return this.http.post(this.c_url,  categoryName);
   }
 
   deleteCategory(id) {
     const url = `${this.c_url}/${id}`;
     return this.http.delete(url);
+  }
+
+  getSpecs() {
+    return this.http.get(this.c_url+'/getAllSpecs');
   }
 
   getAllCities() {

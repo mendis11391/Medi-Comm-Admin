@@ -72,7 +72,7 @@ export class OrdersPanelComponent implements OnInit {
   getOrders(){
     this.os.getAllOrders().subscribe((orders)=>{
       orders.reverse();
-      this.order=orders.filter(item => item.orderStatus=='Success' && item.orderType_id===1);
+      this.order=orders.filter(item => item.paymentStatus.toLowerCase()=='success' && item.orderType_id===1);
     });
   }
 
@@ -398,6 +398,11 @@ export class OrdersPanelComponent implements OnInit {
       
     }
     return ned;
+  }
+
+  totalTaxAmount(rentPrice) {
+    const gst=18;
+    return (parseInt(rentPrice) * (gst)/100);
   }
 
   exportAsXLSX():void {

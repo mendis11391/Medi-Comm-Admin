@@ -1,0 +1,37 @@
+<!-- Container-fluid starts-->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Digital Sub Category</h5>
+                </div>
+                <div class="card-body">
+
+                    <div class="btn-popup pull-right">
+                        <button type="button" class="btn btn-secondary" data-toggle="modal" data-original-title="test"
+                            data-target="#exampleModal" (click)="open(content)">Add Sub Category</button>
+                        
+                    </div>
+                    <div id="batchDelete" class="category-table custom-datatable">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered" >
+                                <thead>
+                                  <tr>
+                                    <th>Order Id</th>
+                                  </tr>
+                                </thead>
+                                <tbody *ngFor="let c of categories">
+                                  <tr *ngFor="let sc of c.subItems">
+                                    <td>{{sc.cat_name}}</td>                     
+                                  </tr>                          
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Container-fluid Ends-->

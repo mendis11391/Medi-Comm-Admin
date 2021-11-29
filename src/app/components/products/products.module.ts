@@ -25,6 +25,11 @@ import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { DROPZONE_CONFIG } from 'ngx-dropzone-wrapper';
 import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { DigitalSpecsComponent } from './digital/digital-specs/digital-specs.component';
+import { DigitalCategoryListComponent } from './digital/digital-category-list/digital-category-list.component';
+import { DigitalSubCategoryListComponent } from './digital/digital-sub-category-list/digital-sub-category-list.component';
+import { SpecPipe } from './pipes/spec.pipe';
+import { DigitalProductDetailsComponent } from './digital/digital-product-details/digital-product-details.component';
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
   maxFilesize: 50,
@@ -34,7 +39,7 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
 
 
 @NgModule({
-  declarations: [CategoryComponent, SubCategoryComponent, DigitalEditComponent,ProductListComponent, AddProductComponent, DigitalCategoryComponent, DigitalSubCategoryComponent, DigitalListComponent, DigitalAddComponent, ProductDetailComponent],
+  declarations: [SpecPipe,CategoryComponent, SubCategoryComponent, DigitalEditComponent,ProductListComponent, AddProductComponent, DigitalCategoryComponent, DigitalSubCategoryComponent, DigitalListComponent, DigitalAddComponent, ProductDetailComponent, DigitalSpecsComponent, DigitalCategoryListComponent, DigitalSubCategoryListComponent, DigitalProductDetailsComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -47,6 +52,7 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     GalleryModule.forRoot(),
     SharedModule
   ],
+  exports: [SpecPipe],
   providers: [
     {
       provide: DROPZONE_CONFIG,

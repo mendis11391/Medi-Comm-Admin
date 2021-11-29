@@ -1,10 +1,11 @@
 import { Component, OnInit, ElementRef, Input } from '@angular/core';
-import { FormGroup, FormBuilder } from  '@angular/forms';
+import { FormGroup, FormBuilder, FormArray, Validators } from  '@angular/forms';
 import { HttpClient} from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { ProductService } from '../../services/product.service';
 import { BrandService } from '../../services/brand.service';
 import * as XLSX from 'xlsx';
+
 const URL = 'http://localhost:3000/products/upload/';
 
 @Component({
@@ -34,6 +35,10 @@ export class DigitalAddComponent implements OnInit {
 
   cities;
 
+  subCat=[];
+  catSpecs;
+  prodRequied:boolean=false;
+  prodSuccessfull:boolean=false;
   public onUploadInit(args: any): void { }
 
   public onUploadError(args: any): void { }
@@ -42,42 +47,28 @@ export class DigitalAddComponent implements OnInit {
 
   productFields(){
     this.addProduct = this.formBuilder.group({
-      title: [''],
-      offers: ['["oid1","oid2","oid3","oid4"]'],
-      description: [''],
-      qty:[''],
-      price:[''],
-      deliveryDate:[''],
-      product_image:[''],
-      status: ['0'],
-      brand:[''],
-      ram:[''],
-      processor:[''],
-      screen_size:[''],
-      weight:[''],
-      usb:[''],
-      hdmi:[''],
-      clockSpeed:[''],
-      battery:[''],
-      touchScreen:['0'],
-      connectivity:[''],
-      webcam:['0'],
-      disk_type:['0'],
-      disk_size:[''],
-      specifications:[''],
-      tenure: this.formBuilder.group({
-        oneMonth: [0],
-        threeMonths: [0],
-        sixMonths: [0],
-        twelveMonths: [0],
-        eighteenMonths: [0],
-        twentyFourMonths: [0]
-      }),
-      featured:[0],
-      bestSeller:[0],
-      newProducts:[0],
-      category:[''],
-      cities: []
+      mainCatName:['', Validators.required],
+      subCatId:['', Validators.required],
+      brandId:['', Validators.required],
+      cityId:['', Validators.required],
+      deliveryTimeline:['', Validators.required],      
+      productName:['', Validators.required],
+      metaTitle:['', Validators.required],
+      slug:['', Validators.required],
+      prodImage:['', Validators.required],
+      prodDescription:['', Validators.required],
+      prodQty:['', Validators.required],
+      securityDeposit:['', Validators.required],
+      tenureBasePrice:['', Validators.required],
+      specs:new FormGroup({}),
+      highlightType:['', Validators.required],
+      prodStatus:[true],
+      publishedAt:[new Date()],
+      startsAt:[new Date()],
+      endsAt:[new Date()],
+      priority:['', Validators.required],
+      createdBy:[1],
+      modifiedBy:[1]
     });
   }
 
@@ -85,12 +76,32 @@ export class DigitalAddComponent implements OnInit {
     this.getAllCategories();
     this.getAllBrands();
     this.getAllCities();
+    this.getAllspecValuesBySpecId(1);
   }
 
   getAllCategories() {
     this.category.getCategories().subscribe(res => {
       this.categories = res;
     });
+  }
+
+  getSubCategory(){
+    this.subCat = this.categories.filter(item=>item.id==this.addProduct.value.mainCatName);
+    console.log(this.subCat[0].subItems);
+  }
+
+  getSpecsByCatId(){
+    let id = this.addProduct.value.subCatId;
+    this.category.getSpecsByCatId(id).subscribe((resp)=>{
+      var cSpecs:any = resp;
+      let sf:FormGroup = this.addProduct.get('specs') as FormGroup;
+      this.catSpecs=resp;
+      for(let i=0; i<cSpecs.length;i++){
+        let a = sf.addControl(cSpecs[i].spec_id , this.formBuilder.control(['']));
+      }
+      console.log(this.addProduct.value); 
+    });
+       
   }
 
   getAllBrands() {
@@ -103,6 +114,13 @@ export class DigitalAddComponent implements OnInit {
     this.category.getAllCities().subscribe((res) => {
       this.cities = res;
     })
+  }
+
+
+  getAllspecValuesBySpecId(id){
+    this.category.getSpecValueByID(id).subscribe((res)=>{
+      return res;
+    });
   }
 
   onImageChange(evt){
@@ -231,61 +249,71 @@ export class DigitalAddComponent implements OnInit {
   }
 
   addProducts() {
-    const tenureData = this.appendTenure();
-    const appendedcities: string = this.selectCities();
-    const formVal = this.addProduct.value;
-    const specs={
-      weight: formVal.weight,
-      usb: formVal.usb,
-      hdmi: formVal.hdmi,
-      clockSpeed: formVal.clockSpeed,
-      battery: formVal.battery,
-      touchScreen: formVal.touchScreen,
-      connectivity: formVal.connectivity,
-      webcam: formVal.webcam,
-    };
-    const dbSpecs=[];
-    dbSpecs.push(JSON.stringify(specs));
-    let categoryNameF: any = this.categoryName;
-    categoryNameF = categoryNameF[0].cat_name;
-    const formData = new FormData();
-    for (let img of this.fileData) {
-      formData.append('product_image', img);
-    }
-    formData.append('name', this.addProduct.value.title);
-    formData.append('offers', this.addProduct.value.offers);
-    formData.append('description', this.addProduct.value.description);
-    formData.append('qty', this.addProduct.value.qty);
-    formData.append('price', this.addProduct.value.price);
-    formData.append('deliveryDate', this.addProduct.value.deliveryDate);
-    formData.append('status', this.addProduct.value.status);
-    formData.append('brand', this.addProduct.value.brand);
-    formData.append('ram', this.addProduct.value.ram);
-    formData.append('processor', this.addProduct.value.processor);
-    formData.append('screen_size', this.addProduct.value.screen_size);
-    formData.append('specs', JSON.stringify(dbSpecs));
-    formData.append('disk_type', this.addProduct.value.disk_type);
-    formData.append('disk_size', this.addProduct.value.disk_size);
-    formData.append('specifications', this.addProduct.value.specifications);
-    formData.append('tenure', tenureData);
-    formData.append('featured', this.addProduct.value.featured);
-    formData.append('bestSeller', this.addProduct.value.bestSeller);
-    formData.append('newProducts', this.addProduct.value.newProducts);
-    formData.append('category', this.addProduct.value.category);
-    formData.append('cities', appendedcities);
-    formData.append('categoryName', categoryNameF);
-
-
-    this.addProduct.value.product_image = this.fileData;
-
-    this.http.post('http://localhost:3000/products/', formData).subscribe((res) => {
-      console.log(res);
-    });
+    this.prodRequied=false;
+    console.log(this.addProduct.value);
+    // if(this.addProduct.valid){
+    //   alert('Products added successfully');
+    //   this.http.post('http://localhost:3000/products', this.addProduct.value).subscribe((res) => {
+    //     console.log(res);
+    //     this.addProduct.reset();
+    //     // this.prodSuccessfull=true;
+    //     // setTimeout(() => {
+    //     //   this.prodSuccessfull=false;
+    //     // }, 3000);
+    //   });
+    // } else{
+    //   this.prodRequied=true;
+    // }
+    
   }
 
-  imageChange(evt) {
-    console.log(evt);
-    // this.images_name
+  imageChange(e) {
+    let inputEl: HTMLInputElement = this.el.nativeElement.querySelector('#product_image');
+
+    var fReader = new FileReader();
+    var imageData;
+    fReader.readAsDataURL(inputEl.files[0]);
+    fReader.onloadend = function(event){
+      console.log(event.target.result);
+      imageData = JSON.stringify(event.target.result);
+      console.log(imageData.split(",")[1].slice(0,-1));
+      const contentType = 'image/png';
+      // const b64Data = 'iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==';
+  
+      const blob = b64toBlob(imageData.split(",")[1].slice(0,-1), contentType);
+      
+    }
+    const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
+      const byteCharacters = atob(b64Data);
+      const byteArrays = [];
+    
+      for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        const slice = byteCharacters.slice(offset, offset + sliceSize);
+    
+        const byteNumbers = new Array(slice.length);
+        for (let i = 0; i < slice.length; i++) {
+          byteNumbers[i] = slice.charCodeAt(i);
+        }
+    
+        const byteArray = new Uint8Array(byteNumbers);
+        byteArrays.push(byteArray);
+        console.log(byteArrays);
+      }
+    
+      const blob = new Blob(byteArrays, {type: contentType});
+      return blob;
+    }
+
+    // const contentType = 'image/png';
+    // const b64Data = 'iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==';
+
+    // const blob = b64toBlob(b64Data, contentType);
+
+    // this.addProduct.patchValue({
+    //   prodImage:JSON.stringify(imageData),
+    //   prodQty:7
+    // });
+    // console.log(this.addProduct.value);
   }
 
   upload() {

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-create-user',
@@ -9,19 +10,20 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 export class CreateUserComponent implements OnInit {
   public accountForm: FormGroup;
   public permissionForm: FormGroup;
-
-  constructor(private formBuilder: FormBuilder) {
+  inputsRequired:boolean=false;
+  formSuccessfull:boolean=false;
+  constructor(private http: HttpClient,private formBuilder: FormBuilder) {
     this.createAccountForm();
     this.createPermissionForm();
   }
 
   createAccountForm() {
     this.accountForm = this.formBuilder.group({
-      fname: [''],
-      lname: [''],
-      email: [''],
-      password: [''],
-      confirmPwd: ['']
+      firstName: ['',Validators.required],
+      lastName: ['',Validators.required],
+      phone: ['',Validators.required],
+      email: ['',Validators.required],
+      password: [1234]
     })
   }
   createPermissionForm() {
@@ -30,6 +32,21 @@ export class CreateUserComponent implements OnInit {
   }
 
   ngOnInit() {
+  }
+
+  onSubmit(){
+    this.inputsRequired=false;
+    if(this.accountForm.valid){
+      this.http.post('http://localhost:3000/otpRegister', this.accountForm.value).subscribe((res) => {
+       console.log(res);
+       this.formSuccessfull=true;
+        setTimeout(() => {
+          this.formSuccessfull=false;
+        }, 3000);
+      });
+    } else{
+      this.inputsRequired=true;
+    }
   }
 
 }

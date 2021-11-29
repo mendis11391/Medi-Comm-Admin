@@ -1,13 +1,70 @@
 <!-- Container-fluid starts-->
 <div class="container-fluid">
     <div class="row">
-        <div class="col-sm-12">
+        <div class="col-sm-5">
             <div class="card">
                 <div class="card-header">
                     <h5>Digital Sub Category</h5>
                 </div>
                 <div class="card-body">
-                    <div class="btn-popup pull-right">
+
+                    <form  [formGroup]="addcategory" (ngSubmit)="addCategoryandSpecs()">
+                    
+                        <div class="form-group">
+                            <label class="col-form-label"><span>*</span> Category group</label>
+                            <select class="form-control" formControlName="mainCatName" >
+                                <option *ngFor="let c of categories" value="{{c.id}}">{{c.main_cat_name}}</option>
+                            </select>
+                            <div *ngIf="addcategory.controls.mainCatName.touched && addcategory.controls.mainCatName.errors?.required" class="text text-danger">
+                                This field is required.
+                            </div>
+                        </div>
+    
+                        <div class="form-group">
+                            <label class="col-form-label"><span>*</span> Category name</label>
+                            <input class="form-control" formControlName="subCatName" type="text" placeholder="Category name"/>
+                            <div *ngIf="addcategory.controls.subCatName.touched && addcategory.controls.subCatName.errors?.required" class="text text-danger">
+                                This field is required.
+                            </div>
+                        </div>
+    
+                        <div class="form-group">
+                            <label class="col-form-label"><span>*</span> Select specification</label>
+                            <select class="form-control specNames" formControlName="specNames" multiple >
+                                <option *ngFor="let s of specs" value="{{s.spec_id}}">{{s.spec_name}}</option>
+                            </select>
+                            <div *ngIf="addcategory.controls.specNames.touched && addcategory.controls.specNames.errors?.required" class="text text-danger">
+                                This field is required.
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-form-label"><span>*</span> Category slug</label>
+                            <input class="form-control" formControlName="subCatSlug" type="text" placeholder="Category slug"/>
+                            <div *ngIf="addcategory.controls.subCatSlug.touched && addcategory.controls.subCatSlug.errors?.required" class="text text-danger">
+                                This field is required.
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-form-label"><span>*</span> Category Meta title</label>
+                            <input class="form-control" formControlName="subCatMetaTitle" type="text" placeholder="Category meta title"/>
+                            <div *ngIf="addcategory.controls.subCatMetaTitle.touched && addcategory.controls.subCatMetaTitle.errors?.required" class="text text-danger">
+                                This field is required.
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-form-label"><span>*</span> Category Meta description</label>
+                            <input class="form-control" formControlName="subCatMetaDescription" type="text" placeholder="Category meta description"/>
+                            <div *ngIf="addcategory.controls.subCatMetaDescription.touched && addcategory.controls.subCatMetaDescription.errors?.required" class="text text-danger">
+                                This field is required.
+                            </div>
+                        </div>
+    
+                        <button type="submit" class="btn btn-secondary" >Add Sub Category</button>
+                    </form>
+                    <!-- <div class="btn-popup pull-right">
                         <button type="button" class="btn btn-secondary" data-toggle="modal" data-original-title="test"
                             data-target="#exampleModal" (click)="open(content)">Add Sub Category</button>
                         <ng-template #content let-modal>
@@ -23,7 +80,9 @@
                                     <div class="form">
                                         <div class="form-group">
                                             <label for="validationCustom01" class="mb-1">Sub Category Name :</label>
-                                            <input class="form-control" id="validationCustom01" type="text">
+                                            <select class="form-control" id="validationCustom01">
+                                                <option>Laptops</option>
+                                            </select>
                                         </div>
                                         <div class="form-group mb-0">
                                             <label for="validationCustom02" class="mb-1">Sub Category Image :</label>
@@ -43,7 +102,7 @@
                         <div class="table-responsive">
                             <ng2-smart-table [settings]="settings" [source]="digital_sub_categories"></ng2-smart-table>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>

@@ -3,34 +3,12 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="card">
-                <div class="card-header">
-                    <h5>Manage Order</h5>
-                </div>
                 <div class="card-body">
                     <div class="custom-datatable">
                         <input type='text' class="filter-ngx form-control" placeholder='Search...'
                             (keyup)='updateFilter($event)' />
                             <button class="pull-right btn btn-warning" (click)="exportAsXLSX()">Download</button><br><br>
-                        <!-- <ngx-datatable class="bootstrap"  [rows]="order" [columnMode]="'force'" [headerHeight]="50"
-                            [footerHeight]="50" [rowHeight]="'auto'" [limit]="15">
-                            <ngx-datatable-column prop="txnid"></ngx-datatable-column>
-                            <ngx-datatable-column prop="payuid"></ngx-datatable-column>
-                            <ngx-datatable-column name="userId"></ngx-datatable-column>
-                            <ngx-datatable-column prop="status"></ngx-datatable-column>
-                            <ngx-datatable-column name="orderdate"></ngx-datatable-column>
-                            <ngx-datatable-column name="amount"></ngx-datatable-column>
-                            <ngx-datatable-column prop="delivery_status"></ngx-datatable-column>
-                            <ngx-datatable-column prop="txnid">
-                                <ng-template class="action" let-row="row" let-value="value" ngx-datatable-cell-template>
-                                    <a  class="nav-link edit" (click)="open(value)">
-                                      <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                                    </a>
-                                    <a  class="nav-link edit" (click)="getOrderById(value)">
-                                        <i class="fa fa-eye" aria-hidden="true"></i>
-                                    </a>
-                                  </ng-template>
-                            </ngx-datatable-column>
-                        </ngx-datatable> -->
+                        
                         <select name="ordersFilter" (change)="filterOrders($event.target.value)">
                             <option>All orders</option>
                             <option>Primary order</option>
@@ -42,24 +20,22 @@
                           <thead>
                             <tr>
                               <th>Order Id</th>
-                              <th>Payu Trans Id</th>
+                              <th>Order type</th>
                               <th>Order date</th>
-                              <th>User Id</th>
-                              <th>User name</th>
-                              <th>Security deposit</th>
+                              <th>Customer</th>
+                              <th>Invoice value</th>
                               <th>Payment status</th>
                               <th>Delivery status</th>
                             </tr>
                           </thead>
                           <tbody *ngFor="let o of filteredOrders">
-                            <tr (click)="getOrderById(o.txnid)">
-                              <td>{{o.txnid}}</td>
-                              <td>{{o.payuid}}</td>
-                              <td>{{o.orderdate}}</td> 
-                              <td>{{o.userId}}</td>
-                              <td>{{o.fname}}</td> 
-                              <td>₹{{o.securitydeposit}}</td>    
-                              <td>{{o.refund_status}}</td> 
+                            <tr [routerLink]="[o.id]">
+                              <td>{{o.primary_id}}</td>
+                              <td>{{o.order_type}}</td>
+                              <td>{{o.createdAt | date:'dd MM yyyy'}}</td> 
+                              <td>{{o.firstName}}</td> 
+                              <td>₹ {{o.grandTotal}}</td>  
+                              <td>{{o.paymentStatus}}</td> 
                               <td>{{o.delivery_status}}</td>                       
                             </tr>                          
                           </tbody>

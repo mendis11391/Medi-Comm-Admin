@@ -9,9 +9,12 @@ import { CreateUserComponent } from './create-user/create-user.component';
 
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { CustomersComponent } from './customers/customers.component';
+import { ReplaceRequestComponent } from './replace-request/replace-request.component';
+import { ReturnRequestComponent } from './return-request/return-request.component';
 
 @NgModule({
-  declarations: [ListUserComponent, CreateUserComponent],
+  declarations: [ListUserComponent, CreateUserComponent, CustomersComponent, ReplaceRequestComponent, ReturnRequestComponent],
   imports: [
     CommonModule,
     NgbModule,

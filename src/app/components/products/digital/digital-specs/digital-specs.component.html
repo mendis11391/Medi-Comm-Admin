@@ -1,0 +1,49 @@
+<!-- Container-fluid starts-->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Add specifications</h5>
+                </div>
+                <div class="card-body">
+
+                    <!-- <select class="form-control" [(ngModel)]="mainCat" (change)="getSubCategory()">
+                        <option *ngFor="let c of categories" value="{{c.main_cat_name}}">{{c.main_cat_name}}</option>
+                    </select><br>
+
+                    <select class="form-control" [(ngModel)]="subCatValue" *ngIf="mainCat">
+                        <option *ngFor="let sc of subCat[0].subItems">{{sc.cat_name}}</option>
+                    </select><br> -->
+
+                    <input class="form-control" [(ngModel)]="specImage" type="file"  multiple/><br>
+
+                    <input type="text" class="form-control" [(ngModel)]="specName" placeholder="specification name" /><br>
+                    
+                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-original-title="test"
+                            data-target="#exampleModal" (click)="addSpecs()">Add specs</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Add specifications value</h5>
+                </div>
+                <div class="card-body">
+                    <select class="form-control" [(ngModel)]="getSpecName">
+                        <option *ngFor="let s of getAllSpecName" value="{{s.spec_id}}">{{s.spec_name}}</option>
+                    </select><br>
+
+                    <input type="text" class="form-control" [(ngModel)]="specValue" placeholder="specification value" /><br>
+                    
+                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-original-title="test"
+                            data-target="#exampleModal" (click)="addSpecValue()">Add specs value</button>
+                            <div *ngIf="specValueStatus"> Spec value added successfully</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Container-fluid Ends-->

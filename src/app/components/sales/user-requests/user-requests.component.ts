@@ -52,12 +52,14 @@ export class UserRequestsComponent implements OnInit {
   prodId;
   securityDepositDiff=0;
   rentDifference=0;
+  toBeRefunded=0;
   billPeriod;
   public productsList;
   public filteredProducts=[];
   public filteredOrders=[];
   orderitem=[];
   model: NgbDateStruct;
+  paymentStatus;
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
   constructor(private route: ActivatedRoute, private router:Router,private excelService:ExcelService,private http: HttpClient,private ps:ProductService,private os:OrdersService, private modalService: NgbModal, private formBuilder: FormBuilder) {
     // this.order = orderDB.list_order;
@@ -68,7 +70,7 @@ export class UserRequestsComponent implements OnInit {
 
     // filter our data
     const temp = this.temp.filter(function (d) {
-      return d.name.toLowerCase().indexOf(val) !== -1 || !val;
+      return d.primary_id.toLowerCase().indexOf(val) !== -1 || !val;
     });
 
     // update the rows
@@ -96,6 +98,9 @@ export class UserRequestsComponent implements OnInit {
       let a=[];
       a.push(res);
       this.orderitem =a[0].filter(item=>item.request_status==1)
+    });
+    this.http.get(`http://localhost:3000/orders/getAllPaymentStatus`).subscribe((res) => {
+      this.paymentStatus=res;
     });
   }
 
@@ -176,17 +181,23 @@ export class UserRequestsComponent implements OnInit {
     let orderItem;
     this.modalReference=this.modalService.open(this.returnRequest, { windowClass : "return-request"});  
     this.productDetails= requestedProduct
+    this.toBeRefunded=(this.productDetails.prod_price-0)-(this.returnDamageCharges+this.earlyReturnCharges);
     this.http.get(`http://localhost:3000/orders/orderId/${ordId}`).subscribe((res) => {
       this.fullOrderDetails=res;
       orderItem = res[0].orderItem.filter(item=>item.order_item_id == oiid);
       // this.productDetails=orderItem[0].renewals_timline.filter(item =>item.renewed==0 );
       // this.productDetails=orderItem[0].renewals_timline.slice(-1).pop();
     this.currentIndexs=this.productDetails.indexs;
+    
     }); 
     this.currentOrderItemId = oiid;
     this.currentOrderId=ordId;
     this.currentAssetId=assetId;
   }
+
+  // getRefundAmount(){
+  //   this.toBeRefunded=(this.productDetails.prod_price-0)-(this.returnDamageCharges+this.earlyReturnCharges);
+  // }
 
   returnProduct(){
     var day = this.model.day;
@@ -233,7 +244,15 @@ export class UserRequestsComponent implements OnInit {
     let cInfo=[];
     let pInfo=[];
     cInfo.push(ucid);
+    let charges=0;
+    let returnGrandTotal=0;
+    charges = (this.productDetails.prod_price-0)-(this.returnDamageCharges+this.earlyReturnCharges);
     // pInfo.push(productToReturn.prod_id);
+    if(charges>=0){
+      returnGrandTotal=0;
+    } else{
+      returnGrandTotal=Math.abs(charges);
+    }
 
     let returnOrder={
       uid: this.fullOrderDetails[0].customer_id,
@@ -243,7 +262,7 @@ export class UserRequestsComponent implements OnInit {
       damageProtection:0,
       total:this.returnDamageCharges+this.earlyReturnCharges,
       securityDeposit: 0,
-      grandTotal: this.returnDamageCharges+this.earlyReturnCharges,
+      grandTotal: returnGrandTotal,
       discount: 0,
       firstName: this.fullOrderDetails[0].firstName,
       lastName:this.fullOrderDetails[0].lastName,
@@ -252,8 +271,8 @@ export class UserRequestsComponent implements OnInit {
       billingAddress:this.fullOrderDetails[0].billingAddress,
       shippingAddress:this.fullOrderDetails[0].shippingAddress,
       orderType:4,
-      orderStatus:'Success',
-      deliveryStatus:'To be returned',
+      orderStatus:1,
+      deliveryStatus:6,
       refundStatus:'To be Paid',
       createdBy:1,
       modifiedBy:1,
@@ -385,6 +404,7 @@ export class UserRequestsComponent implements OnInit {
     // this.modalReference=this.modalService.open(this.returnRequest, { windowClass : "return-request"});   
     this.http.get(`http://localhost:3000/orders/orderId/${ordId}`).subscribe((res) => {
       this.fullOrderDetails=res;
+      console.log(this.fullOrderDetails);
       orderItem = res[0].orderItem.filter(item=>item.order_item_id == oiid);
       
       // this.productDetails=orderItem[0].renewals_timline.slice(-1).pop();
@@ -578,15 +598,16 @@ export class UserRequestsComponent implements OnInit {
           securityDeposit: filterP2[0].securityDeposit,
           grandTotal: (this.rentDifference)+this.damageCharges+this.totalTaxAmount((this.rentDifference)+this.damageCharges)+this.securityDepositDiff,
           discount: 0,
-          firstName: 'Manjesh',
-          lastName:'Sham',
-          mobile: 8971870126,
-          email: 'manjeshwar17@gmail.com', 
-          billingAddress:1,
-          shippingAddress:1,
-          orderType:1,
-          orderStatus:'Success',
-          deliveryStatus:'Delivered',
+          firstName: this.fullOrderDetails[0].firstName,
+          lastName:this.fullOrderDetails[0].lastName,
+          mobile: this.fullOrderDetails[0].mobile,
+          email: this.fullOrderDetails[0].email, 
+          billingAddress:this.fullOrderDetails[0].billingAddress[0].address_id,
+          shippingAddress:this.fullOrderDetails[0].shippingAddress[0].address_id,
+          orderType:3,
+          orderStatus:4,
+          deliveryStatus:2,
+          paymentStatus:this.replacePaymentStatus,
           refundStatus:this.replacePaymentStatus,
           createdBy:1,
           modifiedBy:1,

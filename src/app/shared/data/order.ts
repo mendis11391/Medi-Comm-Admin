@@ -15,6 +15,7 @@ export interface Orders {
     orderType_id?:number,
     order_type?:string,
     orderStatus?:string,
+    paymentStatus?:string,
     deliveryStatus?:string,
     refundStatus?:string,
     createdBy?:number,
@@ -47,6 +48,17 @@ export interface Orders {
     status: string,
     delivery_status: string,
     refund_status: string
+}
+
+export interface OrderItems {
+    order_item_id:number,
+    order_id:number,
+    renewals_timline:string,
+    orderType_id:number,
+    startDate:Date,
+    endDate:Date,
+    delivery_status:number,
+    status:boolean
 }
 
 export interface Assets {

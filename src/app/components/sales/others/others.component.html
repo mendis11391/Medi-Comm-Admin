@@ -65,6 +65,26 @@
                 </form>
             </div>
 
+            <div class="col-xl-6">
+                <form enctype="multipart/form-data" [formGroup]="padding" (ngSubmit)="updatePadding()">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Padding</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="digital-add needs-validation">                        
+                                    <div class="form-group">
+                                        <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Bangalore</label>
+                                        <input class="form-control" name="bangalore" formControlName="bangalore" type="text"  required="">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary mr-1">update</button>  
+                            </div>
+                            <div *ngIf="successMsg2"><span>Updated Successfully!</span></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
         </div>
 </div>
 

@@ -16,10 +16,17 @@ import { ReplacementOrdersComponent } from './replacement-orders/replacement-ord
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { UserRequestsComponent } from './user-requests/user-requests.component';
 import { ManageOrdersComponent } from './manage-orders/manage-orders.component';
+import { OrderDetailsComponent } from './order-details/order-details.component';
+import { PrimaryOrderComponent } from './primary-order/primary-order.component';
+import { RenewalOrderComponent } from './renewal-order/renewal-order.component';
+import { ReplacementOrderComponent } from './replacement-order/replacement-order.component';
+import { ReturnOrderComponent } from './return-order/return-order.component';
+import { UpcomingRenewalsComponent } from './upcoming-renewals/upcoming-renewals.component';
+import { CreateOrderComponent } from './create-order/create-order.component';
 
 
 @NgModule({
-  declarations: [OrdersComponent, TransactionsComponent, OthersComponent, DepositsComponent, OrdersPanelComponent, ReplacementOrdersComponent, UserRequestsComponent, ManageOrdersComponent],
+  declarations: [OrdersComponent, TransactionsComponent, OthersComponent, DepositsComponent, OrdersPanelComponent, ReplacementOrdersComponent, UserRequestsComponent, ManageOrdersComponent, OrderDetailsComponent, PrimaryOrderComponent, RenewalOrderComponent, ReplacementOrderComponent, ReturnOrderComponent, UpcomingRenewalsComponent, CreateOrderComponent],
   imports: [
     CommonModule,
     SalesRoutingModule,
