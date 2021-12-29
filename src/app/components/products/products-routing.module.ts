@@ -13,11 +13,13 @@ import { AuthGuard } from '../auth/auth.guard';
 import { DigitalEditComponent } from './digital/digital-edit/digital-edit.component';
 import { DigitalSpecsComponent } from './digital/digital-specs/digital-specs.component';
 import { DigitalSubCategoryListComponent } from './digital/digital-sub-category-list/digital-sub-category-list.component';
+import { PricingSchemesComponent } from './digital/pricing-schemes/pricing-schemes.component';
+import { DigitalAccessoriesComponent } from './digital/digital-accessories/digital-accessories.component';
 
 const routes: Routes = [
   {
     path: '',
-    // canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     children: [
       {
         path: 'physical/category',
@@ -80,16 +82,16 @@ const routes: Routes = [
         path: 'digital/digital-sub-category',
         component: DigitalSubCategoryComponent,
         data: {
-          title: "Sub Category",
-          breadcrumb: "Sub Category"
+          title: "Category",
+          breadcrumb: "Category"
         }
       },
       {
         path: 'digital/digital-specs',
         component: DigitalSpecsComponent,
         data: {
-          title: "Sub Category",
-          breadcrumb: "Sub Category"
+          title: "Specifications",
+          breadcrumb: "Specifications"
         }
       },
       {
@@ -115,6 +117,22 @@ const routes: Routes = [
         data: {
           title: "Edit Products",
           breadcrumb: "Edit Product"
+        }
+      },
+      {
+        path: 'digital/pricing-schemes',
+        component: PricingSchemesComponent,
+        data: {
+          title: "Pricing Schemes",
+          breadcrumb: "Pricing Schemes"
+        }
+      },
+      {
+        path: 'digital/accessories',
+        component: DigitalAccessoriesComponent,
+        data: {
+          title: "Accessories",
+          breadcrumb: "Accessories"
         }
       }
     ]

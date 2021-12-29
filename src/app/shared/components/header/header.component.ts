@@ -13,7 +13,7 @@ export class HeaderComponent implements OnInit {
   public openNav: boolean = false;
   public isOpenMobile : boolean;
   userName:string;
-
+  userID = localStorage.getItem('user_id');
   @Output() rightSidebarEvent = new EventEmitter<boolean>();
 
   constructor(public navServices: NavService, private router: Router) { }
@@ -34,12 +34,13 @@ export class HeaderComponent implements OnInit {
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('user_id');
+    localStorage.removeItem('adminName');
     this.router.navigate(['/auth/login']);
   }
 
 
   ngOnInit() { 
-    this.userName = localStorage.getItem('uname')
+    this.userName = localStorage.getItem('adminName');
    }
 
 }

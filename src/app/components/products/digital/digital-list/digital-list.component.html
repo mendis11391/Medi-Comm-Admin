@@ -22,7 +22,6 @@
                                   <tr>
                                     <th>Product id</th>
                                     <th>Product name</th>
-                                    <th>Qty</th>
                                     <th>Tenure Base price</th>
                                     <th>Security deposit</th>
                                     <th>Status</th>
@@ -30,21 +29,20 @@
                                   </tr>
                                 </thead>
                                 <tbody *ngFor="let row of filteredProducts">
-                                  <tr  [routerLink]="['../digital-edit-product',row.product_id]">
-                                    <td>{{row.product_id}}</td>
+                                  <tr  [routerLink]="['../digital-edit-product',row.id]">
+                                    <td>{{row.id}}</td>
                                     <td>{{row.prod_name}}</td>
-                                    <td>{{row.prod_qty}}</td>
                                     <td>{{row.tenure_base_price}}</td>
                                     <td>{{row.securityDeposit}}</td>
                                     <td>{{row.prod_status === 1 ? 'Active' : 'Inactive'}}</td>
                                     <td>
                                         <div class="row">
                                             <div class="col-md-2" *appUserRole="[Role.admin,Role.sales]">
-                                                <a (click)="onEdit(row.prod_id)"><i class="fa fa-pencil"></i></a>
+                                                <a (click)="onEdit(row.id)"><i class="fa fa-pencil"></i></a>
                                             </div>
-                                            <div class="col-md-2" *appUserRole="[Role.admin]">
-                                                <a (click)="onDelete(row.prod_id)"><i class="fa fa-trash"></i></a>
-                                            </div>
+                                            <!-- <div class="col-md-2" *appUserRole="[Role.admin]">
+                                                <a (click)="onDelete(row.id)"><i class="fa fa-trash"></i></a>
+                                            </div> -->
                                         </div>                            
                                     </td>
                                   </tr>

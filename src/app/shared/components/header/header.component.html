@@ -103,9 +103,12 @@
                                 class="main-circle"></span></div>
                     </div>
                     <ul class="profile-dropdown onhover-show-div p-20 profile-dropdown-hover">
-                        <li><a [routerLink]="'/settings/profile'">
+                        <li *ngIf="userID"><a [routerLink]="'/settings/profile'">
                                 <app-feather-icons [icon]="'user'"></app-feather-icons>{{userName}}
                             </a></li>
+                        <li *ngIf="!userID"><a [routerLink]="'/auth/login'">
+                            <app-feather-icons [icon]="'log-in'"></app-feather-icons>Login
+                        </a></li>
                         <li><a href="javascript:void(0)">
                                 <app-feather-icons [icon]="'mail'"></app-feather-icons>Inbox
                             </a></li>
@@ -115,7 +118,7 @@
                         <li><a href="javascript:void(0)">
                                 <app-feather-icons [icon]="'settings'"></app-feather-icons>Settings
                             </a></li>
-                        <li><a (click)="logout()">
+                        <li *ngIf="userID"><a (click)="logout()">
                                 <app-feather-icons [icon]="'log-out'"></app-feather-icons>Logout
                             </a></li>
                     </ul>

@@ -22,15 +22,32 @@
                                 </select>
                             </div>
 
-                            <div class="form-group" *ngIf="addProduct.value.mainCatName">
+                            <!-- <div class="form-group" *ngIf="addProduct.value.mainCatName">
                                 <label class="col-form-label"><span>*</span> cities</label>
                                 <select class="form-control" formControlName="cityId" multiple>
                                     <option *ngFor="let c of cities" value="{{c.city_id}}">{{c.city_name}}</option>
+                                </select>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Choose Accessories</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="digital-add needs-validation">
+                            <div class="form-group">
+                                <label class="col-form-label"><span>*</span> Accessories</label>
+                                <select class="form-control" formControlName="accessory" multiple>
+                                    <option *ngFor="let a of accessories" value="{{a.id}}">{{a.acceesory_name}}</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                 </div>
+
                 <div class="card">
                     <div class="card-header">
                         <h5>General</h5>
@@ -57,14 +74,14 @@
                                 <input class="form-control" formControlName="prodDescription" type="text" required="">
                             </div>
 
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Product quantity</label>
                                 <input class="form-control" formControlName="prodQty" type="number" required="">
                             </div>
                             <div class="form-group">
                                 <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Product delivery timeline</label>
                                 <input class="form-control" formControlName="deliveryTimeline" type="number" required="">
-                            </div>
+                            </div> -->
                             <div class="form-group">
                                 <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Security deposit</label>
                                 <input class="form-control" formControlName="securityDeposit" type="number" required="">
@@ -74,13 +91,19 @@
                                 <input class="form-control" formControlName="tenureBasePrice" type="number" required="">
                             </div>
                             <div class="form-group">
+                                <label class="col-form-label"><span>*</span> Pricing scheme</label>
+                                <select class="form-control" formControlName="priority">
+                                    <option *ngFor="let ps of pricingSchemes" value="{{ps.id}}">{{ps.scheme_name}}</option>
+                                </select>
+                            </div>
+                            <!-- <div class="form-group">
                                 <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Priority</label>
                                 <input class="form-control" formControlName="priority" type="number" required="">
-                            </div>
-                            <div class="form-group">
+                            </div> -->
+                            <!-- <div class="form-group">
                                 <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Product image</label>
                                 <input type="file" id="product_image" (change)="imageChange($event)"  formControlName="prodImage"  multiple  />
-                            </div>
+                            </div> -->
 
                             <div class="form-group">
                                 <label class="col-form-label"><span>*</span> Product status</label>
@@ -106,12 +129,12 @@
                             </div>
 
                             
-                            <div class="form-group" *ngIf="addProduct.value.subCatId">
+                            <!-- <div class="form-group" *ngIf="addProduct.value.subCatId">
                                 <label class="col-form-label"><span>*</span> Brands</label>
                                 <select class="form-control" formControlName="brandId">
                                     <option *ngFor="let b of brands" value="{{b.brand_id}}">{{b.brand_name}}</option>
                                 </select>
-                            </div>
+                            </div> -->
                             
                             <!-- <div formArrayName="specs">
                                 <div class="form-group" *ngFor="let cs of catSpecs; let i = index;">
@@ -152,6 +175,7 @@
                         </div>
                     </div>
                 </div> -->
+                
                 <div class="card">
                     <div class="card-header">
                         <input type="file" (change)="onFileChange($event)" />

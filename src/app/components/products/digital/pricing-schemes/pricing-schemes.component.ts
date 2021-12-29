@@ -4,11 +4,12 @@ import { HttpClient} from '@angular/common/http';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
-  selector: 'app-digital-specs',
-  templateUrl: './digital-specs.component.html',
-  styleUrls: ['./digital-specs.component.scss']
+  selector: 'app-pricing-schemes',
+  templateUrl: './pricing-schemes.component.html',
+  styleUrls: ['./pricing-schemes.component.scss']
 })
-export class DigitalSpecsComponent implements OnInit {
+export class PricingSchemesComponent implements OnInit {
+
 
   public categories;
   mainCat='';
@@ -16,16 +17,18 @@ export class DigitalSpecsComponent implements OnInit {
   subCatValue;
   specImage;
   specName='';
-  getAllSpecName;
+  getAllPricingSchemes;
   getSpecName;
   specValue;
-  editspecValues;
+  editTenureValues;
   specValueStatus:boolean=false;
-  specEdit={
+  tenureEdit={
     specId:'',
     specName:'',
     specValue:''
   }
+  AllTenures;
+  tenureByPriority;
   b_url = ` http://localhost:3000/products`;
   public closeResult: string;
   constructor(private modalService: NgbModal,private category: ProductService,private http: HttpClient) { }
@@ -48,10 +51,45 @@ export class DigitalSpecsComponent implements OnInit {
   }
 
   getAllSpecs(){
-    this.category.getAllSpecs().subscribe((res)=>{
-      this.getAllSpecName = res
+    this.category.getAllPricingSchemes().subscribe((res)=>{
+      this.getAllPricingSchemes = res
     });
   }
+
+  getAllTenures(id) {
+    this.category.getAllTenures().subscribe(allTenures => {
+      this.category.getTenureByPriorityId(id).subscribe((tenureByPriority)=>{
+        this.AllTenures = allTenures;
+        this.tenureByPriority=tenureByPriority[0];
+        for(let i=0;i<this.AllTenures.length;i++){
+          console.log(this.AllTenures[i].tenure_id);
+          this.AllTenures[i].checked=false;
+          for(let j=0;j<this.tenureByPriority.length;j++){
+            console.log(this.tenureByPriority[j].tenure_id);
+              if(this.tenureByPriority[j].tenure_id==this.AllTenures[i].tenure_id){
+                this.AllTenures[i].checked=true;
+              }
+          }
+        }        
+      });
+    });
+  }
+
+  tenurePriorityActions(e,tenureId){
+    let itemToDelete=this.tenureByPriority.find(item=> item.tenure_id==tenureId);
+    let itemToAdd = {priority:this.tenureByPriority[0].priority, tenure_id:tenureId};
+    if(e.target.checked){
+      this.category.postTenureDiscounts(itemToAdd).subscribe();
+    }else{
+      this.category.deleteTenureDiscountsById(itemToDelete.id).subscribe();
+    }   
+  }
+
+  reload(){
+    window.location.reload();
+  }
+
+
 
   addSpecs(){
     this.http.post(' http://localhost:3000/products/postSpecs', {spec_name:this.specName, specIMage:this.specImage,spec_status:1}).subscribe((res) => {
@@ -68,7 +106,7 @@ export class DigitalSpecsComponent implements OnInit {
   // }
 
   addSpecValue(){
-    this.http.post(' http://localhost:3000/category/addSpecValue', {specId:this.specEdit.specId,specValue:this.specEdit.specValue}).subscribe((res) => {
+    this.http.post(' http://localhost:3000/category/addSpecValue', {specId:this.tenureEdit.specId,specValue:this.tenureEdit.specValue}).subscribe((res) => {
       console.log(res);     
       this.specValueStatus=true;
       this.getAllSpecs();
@@ -81,13 +119,15 @@ export class DigitalSpecsComponent implements OnInit {
     return this.http.get(this.b_url+'/getSpecsValuesById/'+id);
   }
 
-  open(addSpec,specId, specName) {
-    let allSpecValues;
-    this.specEdit.specId=specId;
-    this.specEdit.specName=specName;
-    this.category.getAllSpecValues().subscribe((res)=>{
-      allSpecValues=res;
-      this.editspecValues = allSpecValues.filter(item =>item.spec_id==specId);
+  open(addSpec,priority, specName) {
+    let allTenureValues;
+    this.tenureEdit.specId=priority;
+    this.tenureEdit.specName=specName;
+    this.getAllTenures(priority);
+    this.category.getTenureByPriority().subscribe((res)=>{
+      allTenureValues=res;
+      this.editTenureValues = allTenureValues.filter(item =>item.priority==priority);
+      // console.log(this.editTenureValues);
     });
     this.modalService.open(addSpec, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
@@ -96,10 +136,10 @@ export class DigitalSpecsComponent implements OnInit {
     });
   }
 
-  onEditSpecValue(event):void {
+  onEditTenureDiscount(event):void {
     if (window.confirm('Are you sure you want to save?')) {
       console.log(event.newData);
-      this.http.put(' http://localhost:3000/category/updateSpecValue', event.newData).subscribe();
+      this.http.put(' http://localhost:3000/products/updateTenureDiscounts', event.newData).subscribe();
       this.getAllSpecs(); 
       event.confirm.resolve(event.newData);
     } else {
@@ -108,15 +148,26 @@ export class DigitalSpecsComponent implements OnInit {
   }
 
   public settings = {
+    hideSubHeader: true,
     edit: {
       confirmSave: true
     },
     actions: {
+      add: false,
       position: 'right'
     },
     columns: {      
-      spec_value: {
-        title: 'Specification value'
+      tenure: {
+        title: 'Tenure',
+        editable:false,
+      },
+      tenure_period:{
+        title: 'Tenure period',
+        editable:false,
+      },
+      discount: {
+        title: 'Discount %',
+        editable:true,
       }
     },
   };

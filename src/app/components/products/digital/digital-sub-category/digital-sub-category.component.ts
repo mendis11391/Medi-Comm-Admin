@@ -13,12 +13,16 @@ import { FormGroup, FormBuilder, Validators } from  '@angular/forms';
 export class DigitalSubCategoryComponent implements OnInit {
   public closeResult: string;
   public digital_sub_categories = []
+  public categorygroup;
   public categories;
   public specs;
   addcategory: FormGroup;
+  currentCatId;
+  AllSpecs;
+  catSpecs;
 
   constructor(private formBuilder: FormBuilder,private modalService: NgbModal,private category: ProductService,private http: HttpClient) {
-    this.digital_sub_categories = digitalSubCategoryDB.digital_sub_category;
+    // this.digital_sub_categories = digitalSubCategoryDB.digital_sub_category;
     this.addcategory = this.formBuilder.group({
       mainCatName:['', Validators.required],
       subCatName:['', Validators.required],
@@ -48,6 +52,39 @@ export class DigitalSubCategoryComponent implements OnInit {
     }
   }
 
+  getAllSpecsForCat(id) {
+    this.currentCatId=id;
+    this.category.getAllSpecs().subscribe((specs) =>{
+      this.AllSpecs = specs;
+      this.category.getSpecsByCatId(id).subscribe((catSpecs)=>{
+        this.catSpecs=catSpecs;
+        console.log(this.catSpecs)
+        for(let i=0;i<this.AllSpecs.length;i++){
+          this.AllSpecs[i].checked=false;
+          for(let j=0;j<this.catSpecs.length;j++){
+              if(this.catSpecs[j].spec_id==this.AllSpecs[i].spec_id){
+                this.AllSpecs[i].checked=true;
+              }
+          }
+        } 
+      });
+    });
+  }
+
+  catSpecsActions(e,SpecId){
+    let itemToDelete=this.catSpecs.find(item=> item.spec_id==SpecId);
+    let itemToAdd = {cat_id:this.currentCatId, spec_id:SpecId};
+    if(e.target.checked){
+      this.category.postCategorySpecs(itemToAdd).subscribe();
+    }else{
+      this.category.deleteCategorySpecsById(itemToDelete.cs_id).subscribe();
+    }   
+  }
+
+  reload(){
+    window.location.reload();
+  }
+
   public settings = {
     actions: {
       position: 'right'
@@ -74,14 +111,21 @@ export class DigitalSubCategoryComponent implements OnInit {
   };
 
   ngOnInit() {
+    this.getAllCategoryGroup();
     this.getAllCategories();
     this.getAllSpecs();
   }
 
 
-  getAllCategories() {
+  getAllCategoryGroup() {
     this.category.getCategories().subscribe(res => {
-      this.categories=res;
+      this.categorygroup=res;
+    });
+  }
+
+  getAllCategories(){
+    this.category.getAllCategories().subscribe(res => {
+      this.categories=res[0];
     });
   }
 

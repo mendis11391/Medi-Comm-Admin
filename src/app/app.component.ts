@@ -7,7 +7,7 @@ import { AuthService } from './components/auth/auth.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'multikart-backend';
+  title = 'irentout-backend';
   userRole= JSON.parse(JSON.stringify(localStorage.getItem('u_role')));
 
   constructor(private auth:AuthService){

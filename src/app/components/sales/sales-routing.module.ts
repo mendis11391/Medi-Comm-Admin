@@ -20,7 +20,7 @@ import { CreateOrderComponent } from './create-order/create-order.component';
 const routes: Routes = [
   {
     path: '',
-    // canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     children: [
       {
         path: 'orders',
@@ -35,8 +35,8 @@ const routes: Routes = [
       },
       {
         path: 'orders/:id',
-        // canLoad: [AuthGuard],
-        // canActivate: [AuthGuard],
+        canLoad: [AuthGuard],
+        canActivate: [AuthGuard],
         data: {
           title: "Order details",
           breadcrumb: "Order details",
@@ -79,8 +79,8 @@ const routes: Routes = [
       },
       {
         path: 'replacement-order',
-        // canLoad: [AuthGuard],
-        // canActivate: [AuthGuard],
+        canLoad: [AuthGuard],
+        canActivate: [AuthGuard],
         data: {
           title: "Replacement order",
           breadcrumb: "Replacement order",
@@ -90,8 +90,8 @@ const routes: Routes = [
       },
       {
         path: 'return-order',
-        // canLoad: [AuthGuard],
-        // canActivate: [AuthGuard],
+        canLoad: [AuthGuard],
+        canActivate: [AuthGuard],
         data: {
           title: "Return order",
           breadcrumb: "Return order",

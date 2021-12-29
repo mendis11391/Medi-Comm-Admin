@@ -29,7 +29,15 @@ import { DigitalSpecsComponent } from './digital/digital-specs/digital-specs.com
 import { DigitalCategoryListComponent } from './digital/digital-category-list/digital-category-list.component';
 import { DigitalSubCategoryListComponent } from './digital/digital-sub-category-list/digital-sub-category-list.component';
 import { SpecPipe } from './pipes/spec.pipe';
+import { TenurePipe } from './pipes/tenureByPriority.pipe';
+import { CheckTenurePipe } from './pipes/checkTenure.pipe';
+
 import { DigitalProductDetailsComponent } from './digital/digital-product-details/digital-product-details.component';
+import { PricingSchemesComponent } from './digital/pricing-schemes/pricing-schemes.component';
+import { DigitalAccessoriesComponent } from './digital/digital-accessories/digital-accessories.component';
+import { EditSpecPipe } from './pipes/editSpecsCheck.pipe';
+import { CategorySpecsPipe } from './pipes/categorySpecs.pipe';
+
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
   maxFilesize: 50,
@@ -39,7 +47,7 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
 
 
 @NgModule({
-  declarations: [SpecPipe,CategoryComponent, SubCategoryComponent, DigitalEditComponent,ProductListComponent, AddProductComponent, DigitalCategoryComponent, DigitalSubCategoryComponent, DigitalListComponent, DigitalAddComponent, ProductDetailComponent, DigitalSpecsComponent, DigitalCategoryListComponent, DigitalSubCategoryListComponent, DigitalProductDetailsComponent],
+  declarations: [CategorySpecsPipe,EditSpecPipe,CheckTenurePipe,TenurePipe,SpecPipe,CategoryComponent, SubCategoryComponent, DigitalEditComponent,ProductListComponent, AddProductComponent, DigitalCategoryComponent, DigitalSubCategoryComponent, DigitalListComponent, DigitalAddComponent, ProductDetailComponent, DigitalSpecsComponent, DigitalCategoryListComponent, DigitalSubCategoryListComponent, DigitalProductDetailsComponent, PricingSchemesComponent, DigitalAccessoriesComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -52,7 +60,7 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     GalleryModule.forRoot(),
     SharedModule
   ],
-  exports: [SpecPipe],
+  exports: [CategorySpecsPipe,EditSpecPipe,CheckTenurePipe,SpecPipe, TenurePipe],
   providers: [
     {
       provide: DROPZONE_CONFIG,

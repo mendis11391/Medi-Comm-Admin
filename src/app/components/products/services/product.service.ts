@@ -35,6 +35,10 @@ export class ProductService {
     return this.products();
   }
 
+  public getAllProducts(){
+    return this.http.get(`${this.b_url}/getAllProducts`);
+  }
+
   // Get Products By Id
   public getProduct(id: string) {
     return this.http.get(`${this.b_url}/prodById/${id}`);
@@ -54,8 +58,58 @@ export class ProductService {
     return this.http.get(this.c_url+'/getMainCategory');
   }
 
+  getAllCategories(){
+    return this.http.get(this.c_url);
+  }
+
+  getAllCategorySpecs(){
+    return this.http.get(this.c_url+'/getCategorySpecs');
+  }
+
   getAllSpecs() {
     return this.http.get(this.c_url+'/getAllSpecs');
+  }
+
+  getAllAccs() {
+    return this.http.get(this.c_url+'/getAllAccs');
+  }
+
+  getAllAccsByProductId(id) {
+    return this.http.get(this.b_url+'/accessories/'+id);
+  }
+
+  getAllTenures() {
+    return this.http.get(this.b_url+'/getAllTenures');
+  }
+
+  postTenureDiscounts(tenureDiscounts) {
+    return this.http.post(this.b_url+'/postTenureDiscounts',  tenureDiscounts);
+  }
+
+  postCategorySpecs(catSpecs) {
+    return this.http.post(this.c_url+'/postCategorySpecs',  catSpecs);
+  }
+
+  getTenureByPriority() {
+    return this.http.get(this.b_url+'/tenures');
+  }
+
+  getTenureByPriorityId(id) {
+    return this.http.get(this.b_url+'/tenures/'+id);
+  }
+
+  deleteTenureDiscountsById(id) {
+    const url = `${this.b_url}/deleteTenureDiscount/${id}`;
+    return this.http.delete(url);
+  }
+
+  deleteCategorySpecsById(id) {
+    const url = `${this.c_url}/deleteCategorySpecs/${id}`;
+    return this.http.delete(url);
+  }
+
+  getAllPricingSchemes() {
+    return this.http.get(this.c_url+'/getAllPricingSchemes');
   }
 
   getAllSpecValues(){

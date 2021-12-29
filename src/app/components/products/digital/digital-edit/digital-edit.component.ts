@@ -6,7 +6,8 @@ import { HttpClient} from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BrandService } from '../../services/brand.service';
-const URL = 'http://localhost:3000/products/upload/';
+import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+const URL = ' http://localhost:3000/products/upload/';
 
 @Component({
   selector: 'app-digital-edit',
@@ -20,8 +21,18 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
   categories;
   brands;
   prodImgs;
+  
+  public closeResult: string;
+  pricingSchemes;
+
+ // variables for edit
+ mainCatId=0;
+ subCatId=0;
+ specsCheck;
+ accsID;
 
   constructor(
+    private modalService: NgbModal,
     private http: HttpClient,
     private el: ElementRef,
     private formBuilder: FormBuilder,
@@ -39,32 +50,29 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
 
   subCat=[];
   catSpecs;
-  cities
+  cities;
+  accessories;
 
   productFields(){
     this.addProduct = this.formBuilder.group({
       mainCatName:['', Validators.required],
       subCatId:['', Validators.required],
-      brandId:['', Validators.required],
-      cityId:['', Validators.required],
-      deliveryTimeline:['', Validators.required],      
+      // brandId:['', Validators.required],
+      // cityId:['', Validators.required],
+      // deliveryTimeline:['', Validators.required],  
+      accessory:['', Validators.required],    
       productName:['', Validators.required],
       metaTitle:['', Validators.required],
       slug:['', Validators.required],
-      prodImage:['', Validators.required],
+      // prodImage:['', Validators.required],
       prodDescription:['', Validators.required],
-      prodQty:['', Validators.required],
+      // prodQty:['', Validators.required],
       securityDeposit:['', Validators.required],
       tenureBasePrice:['', Validators.required],
       specs:new FormGroup({}),
       highlightType:['', Validators.required],
       prodStatus:[true],
-      publishedAt:[new Date()],
-      startsAt:[new Date()],
-      endsAt:[new Date()],
-      priority:['', Validators.required],
-      createdBy:[1],
-      modifiedBy:[1]
+      priority:['', Validators.required]
     });
   }
 
@@ -72,14 +80,16 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
     this.prodId = this.route.snapshot.params['id'];
     this.getProducts(this.route.snapshot.params['id']);
     this.getAllCategories();
+    this.getAllaccessories();
+    this.getAllPricingSchemes();
     this.getAllBrands();
     this.getAllCities();
     this.getAllspecValuesBySpecId(1);
   }
 
   ngAfterViewInit(){
-    this.getSubCategory();
-    this.getSpecsByCatId();
+    // this.getSubCategory();
+    // this.getSpecsByCatId();
   }
 
 
@@ -100,33 +110,49 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
   getProducts(id) {
     this.productsService.getProduct(id).subscribe((res: any) => {
       let data = res[0];
+      console.log(data);
+      this.specsCheck = data.specs;
       // this.id = data.prod_id;
       // let specs= JSON.parse(JSON.parse(data.specs));
       // this.fileData=data.prod_img;
+      this.mainCatId = data.main_cat_id;
+      this.subCatId = data.cat_id;
       this.addProduct.patchValue({
         mainCatName:data.main_cat_id,
         subCatId:data.cat_id,
-        brandId:data.brand_id,
-        cityId:data.city_id,
+        // brandId:data.brand_id,
+        // cityId:data.city_id,
         deliveryTimeline:data.delivery_timeline,      
         productName:data.prod_name,
         metaTitle:data.metaTitle,
         slug:data.slug,
-        prodImage:data.prod_image,
+        // prodImage:data.prod_image,
         prodDescription:data.prod_description,
-        prodQty:data.prod_qty,
+        // prodQty:data.prod_qty,
         securityDeposit:data.securityDeposit,
         tenureBasePrice:data.tenure_base_price,
         specs:new FormGroup({}),
         // highlightType:['', Validators.required],
         prodStatus:data.prod_status,
-        publishedAt:[new Date()],
-        startsAt:[new Date()],
-        endsAt:[new Date()],
-        priority:data.priority,
-        createdBy:[1],
-        modifiedBy:[1]
+        priority:data.priority
       });
+
+      this.getAllAccessories(id);
+      // this.productsService.getAllAccsByProductId(id).subscribe((acc)=>{
+      //   let accessoryId = acc[0];
+      //   let accsArr=[];
+      //   for(let accI=0;accI<accessoryId.length;accI++){
+      //     accsArr.push(accessoryId[accI].accessory_id);
+      //   }
+      //   this.accsID=accsArr;
+      //   console.log(this.accsID);
+      //   if(this.accsID.includes(1)){
+      //     console.log(true)
+      //   }
+      //   this.addProduct.patchValue({
+      //     accessory:accsArr
+      //   });
+      // });
       
       // this.prodImgs = data.prod_img;
 
@@ -146,31 +172,92 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
       //   a.click();
       // }
     });
+
+
   }
 
   getAllCategories() {
     this.category.getCategories().subscribe(res => {
       this.categories = res;
+      this.getSubCategory();
+      this.getSpecsByCatId();
     });
   }
 
+  getAllAccessories(id) {
+    let accsIdArr=[];
+    this.productsService.getAllAccsByProductId(id).subscribe((acc)=>{      
+      for(let k=0;k<acc[0].length;k++){
+        accsIdArr.push(acc[0][k].id)
+      }
+      this.accsID=accsIdArr;
+      console.group(this.accsID);
+      for(let i=0;i<this.accessories.length;i++){
+        this.accessories[i].checked=false;
+        for(let j=0;j<this.accsID.length;j++){
+          if(this.accsID[j]==this.accessories[i].id){
+            this.accessories[i].checked=true;
+          }
+        }
+      }      
+    });
+  }
+
+  accsActions(e,id){
+    let accs=[];
+    accs=this.accsID;
+    if(e.target.checked){
+      accs.push(id);
+      this.accsID=accs;
+      this.addProduct.patchValue({
+        accessory:this.accsID
+      });
+    }else{
+      const index = accs.indexOf(id);
+      if (index > -1) {
+        accs.splice(index, 1);
+      }
+      this.accsID=accs;
+      this.addProduct.patchValue({
+        accessory:this.accsID
+      });
+    }
+  }
+
   getSubCategory(){
-    this.subCat = this.categories.filter(item=>item.id==this.addProduct.value.mainCatName);
-    console.log(this.subCat[0].subItems);
+    this.subCat = this.categories.filter(item=>item.id==this.mainCatId);
+    this.subCat = this.subCat[0].subItems;
+  }
+
+  getAllaccessories() {
+    this.category.getAllAccs().subscribe(res => {
+      this.accessories = res;
+    });
   }
 
   getSpecsByCatId(){
     let id = this.addProduct.value.subCatId;
-    this.category.getSpecsByCatId(id).subscribe((resp)=>{
+    let specsCheckArray=[];
+    this.category.getSpecsByCatId(this.subCatId).subscribe((resp)=>{
       var cSpecs:any = resp;
       let sf:FormGroup = this.addProduct.get('specs') as FormGroup;
       this.catSpecs=resp;
+      for(let j in this.specsCheck){
+        specsCheckArray.push(this.specsCheck[j])
+      }
       for(let i=0; i<cSpecs.length;i++){
-        let a = sf.addControl(cSpecs[i].spec_id , this.formBuilder.control(['']));
+        
+          let a = sf.addControl(cSpecs[i].spec_id , this.formBuilder.control(specsCheckArray[i]));
       }
       console.log(this.addProduct.value); 
     });
        
+  }
+
+  getAllPricingSchemes() {
+    this.category.getAllPricingSchemes().subscribe(res => {
+      this.pricingSchemes = res;
+    });
   }
 
   getAllBrands() {
@@ -198,45 +285,46 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
   }
 
   updateProducts() {  
-    const tenureData = this.appendTenure();
-    this.addProduct.patchValue({
-      tenureFinal: tenureData
-    });
-    const formData = new FormData();
-    for (let img of this.fileData) {
-      formData.append('product_image', img);
-    }
-    const specs={
-      weight: this.addProduct.value.weight,
-      usb: this.addProduct.value.usb,
-      hdmi: this.addProduct.value.hdmi,
-      clockSpeed: this.addProduct.value.clockSpeed,
-      battery: this.addProduct.value.battery,
-      touchScreen: this.addProduct.value.touchScreen,
-      connectivity: this.addProduct.value.connectivity,
-      webcam: this.addProduct.value.webcam,
-    };
-    const dbSpecs=[];
-    dbSpecs.push(JSON.stringify(specs));
-    formData.append('title', this.addProduct.value.title);
-    formData.append('description', this.addProduct.value.description);
-    formData.append('qty', this.addProduct.value.qty);
-    formData.append('price', this.addProduct.value.price);
-    formData.append('deliveryDate', this.addProduct.value.deliveryDate);
-    formData.append('status', this.addProduct.value.status);
-    formData.append('brand', this.addProduct.value.brand);
-    formData.append('ram', this.addProduct.value.ram);
-    formData.append('processor', this.addProduct.value.processor);
-    formData.append('screen_size', this.addProduct.value.screen_size);
-    formData.append('specs', JSON.stringify(dbSpecs));
-    formData.append('disk_type', this.addProduct.value.disk_type);
-    formData.append('disk_size', this.addProduct.value.disk_size);
-    formData.append('specifications', this.addProduct.value.specifications);
-    formData.append('tenure', tenureData);
+    console.log(this.addProduct.value);
+    // const tenureData = this.appendTenure();
+    // this.addProduct.patchValue({
+    //   tenureFinal: tenureData
+    // });
+    // const formData = new FormData();
+    // for (let img of this.fileData) {
+    //   formData.append('product_image', img);
+    // }
+    // const specs={
+    //   weight: this.addProduct.value.weight,
+    //   usb: this.addProduct.value.usb,
+    //   hdmi: this.addProduct.value.hdmi,
+    //   clockSpeed: this.addProduct.value.clockSpeed,
+    //   battery: this.addProduct.value.battery,
+    //   touchScreen: this.addProduct.value.touchScreen,
+    //   connectivity: this.addProduct.value.connectivity,
+    //   webcam: this.addProduct.value.webcam,
+    // };
+    // const dbSpecs=[];
+    // dbSpecs.push(JSON.stringify(specs));
+    // formData.append('title', this.addProduct.value.title);
+    // formData.append('description', this.addProduct.value.description);
+    // formData.append('qty', this.addProduct.value.qty);
+    // formData.append('price', this.addProduct.value.price);
+    // formData.append('deliveryDate', this.addProduct.value.deliveryDate);
+    // formData.append('status', this.addProduct.value.status);
+    // formData.append('brand', this.addProduct.value.brand);
+    // formData.append('ram', this.addProduct.value.ram);
+    // formData.append('processor', this.addProduct.value.processor);
+    // formData.append('screen_size', this.addProduct.value.screen_size);
+    // formData.append('specs', JSON.stringify(dbSpecs));
+    // formData.append('disk_type', this.addProduct.value.disk_type);
+    // formData.append('disk_size', this.addProduct.value.disk_size);
+    // formData.append('specifications', this.addProduct.value.specifications);
+    // formData.append('tenure', tenureData);
 
-    this.addProduct.value.product_image = this.fileData;
+    // this.addProduct.value.product_image = this.fileData;
 
-    this.http.put(`http://localhost:3000/products/${this.prodId}`, formData).subscribe((res) => {
+    this.http.put(` http://localhost:3000/products/${this.prodId}`, this.addProduct.value).subscribe((res) => {
       console.log(res);
     });
   }
@@ -262,4 +350,29 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
   }
 
 
+  open(addSpec) {
+    let allTenureValues;
+    this.category.getTenureByPriority().subscribe((res)=>{
+      allTenureValues=res;
+      // this.editTenureValues = allTenureValues.filter(item =>item.priority==priority);
+      // console.log(this.editTenureValues);
+    });
+    this.modalService.open(addSpec, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed`;
+    });
+  }
+
+  mainCatNameActions(e,mainCatId){
+    this.addProduct.patchValue({
+      mainCatName:mainCatId
+    });
+  }
+
+  subCatNameActions(e,subCatId){
+    this.addProduct.patchValue({
+      subCatId:subCatId
+    });
+  }
 }

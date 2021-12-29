@@ -1,10 +1,10 @@
 <!-- Container-fluid starts-->
 <div class="container-fluid">
     <div class="row">
-        <div class="col-sm-5">
+        <!-- <div class="col-sm-5">
             <div class="card">
                 <div class="card-header">
-                    <h5>Digital Sub Category</h5>
+                    <h5>Category</h5>
                 </div>
                 <div class="card-body">
 
@@ -13,7 +13,7 @@
                         <div class="form-group">
                             <label class="col-form-label"><span>*</span> Category group</label>
                             <select class="form-control" formControlName="mainCatName" >
-                                <option *ngFor="let c of categories" value="{{c.id}}">{{c.main_cat_name}}</option>
+                                <option *ngFor="let c of categorygroup" value="{{c.id}}">{{c.main_cat_name}}</option>
                             </select>
                             <div *ngIf="addcategory.controls.mainCatName.touched && addcategory.controls.mainCatName.errors?.required" class="text text-danger">
                                 This field is required.
@@ -62,50 +62,82 @@
                             </div>
                         </div>
     
-                        <button type="submit" class="btn btn-secondary" >Add Sub Category</button>
+                        <button type="submit" class="btn btn-secondary" >Add Category</button>
                     </form>
-                    <!-- <div class="btn-popup pull-right">
-                        <button type="button" class="btn btn-secondary" data-toggle="modal" data-original-title="test"
-                            data-target="#exampleModal" (click)="open(content)">Add Sub Category</button>
-                        <ng-template #content let-modal>
-                            <div class="modal-header">
-                                <h5 class="modal-title f-w-600" id="exampleModalLabel">Add Digital Product</h5>
-                                <button type="button" class="close" aria-label="Close"
-                                    (click)="modal.dismiss('Cross click')">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form class="needs-validation">
-                                    <div class="form">
-                                        <div class="form-group">
-                                            <label for="validationCustom01" class="mb-1">Sub Category Name :</label>
-                                            <select class="form-control" id="validationCustom01">
-                                                <option>Laptops</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group mb-0">
-                                            <label for="validationCustom02" class="mb-1">Sub Category Image :</label>
-                                            <input class="form-control" id="validationCustom02" type="file">
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" (click)="c('Save click')">Save</button>
-                                <button class="btn btn-secondary" type="button" data-dismiss="modal"
-                                    (click)="modal.dismiss('Cross click')">Close</button>
-                            </div>
-                        </ng-template>
+                </div>
+            </div>
+        </div> -->
+
+        <div class="col-sm-12">
+            <div class="card specifications">
+                <div class="card-header">
+                    <h5>Add Category and Specifications</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                              <tr>
+                                <th>Category</th>
+                                <th>Specifications</th>
+                                <th>Action</th>
+                              </tr>
+                            </thead>
+                            <tbody *ngFor="let c of categories">
+                              <tr>
+                                <td>{{c.cat_name}}</td>
+                                <td>
+                                    <div class="specValues" *ngFor="let cs of c.cat_id | CategorySpecs">{{cs.spec_name}} </div>
+                                </td>
+                                <td>
+                                    <a class="mr-2" data-toggle="modal" data-original-title="test"
+                                    data-target="#exampleModal" (click)="open(addCatSpecs); getAllSpecsForCat(c.cat_id)"><i class="fa fa-plus-circle"></i></a>
+                                    <!-- <a (click)="open(editTenure)"><i class="fa fa-percent"></i></a> -->
+                                </td>
+                              </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <div id="batchDelete" class="category-table custom-datatable">
-                        <div class="table-responsive">
-                            <ng2-smart-table [settings]="settings" [source]="digital_sub_categories"></ng2-smart-table>
-                        </div>
-                    </div> -->
                 </div>
             </div>
         </div>
     </div>
 </div>
 <!-- Container-fluid Ends-->
+
+
+<ng-template #addCatSpecs let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title f-w-600" id="exampleModalLabel">Edit</h5>
+        <button type="button" class="close" aria-label="Close"
+            (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <th>Specification</th>
+                    <th>Action</th>
+                </thead>
+                <tbody *ngFor="let a of AllSpecs">
+                    <td >
+                        {{a.spec_name}} 
+                    </td>
+                    <td>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" (change)="catSpecsActions($event,a.spec_id)" [checked]="a.checked">
+                        </div>
+                    </td>
+                </tbody>
+            </table>
+        </div>
+        <!-- <div class="specValues" *ngFor="let sv of tenureEdit.specId | tenurePriority">{{sv.tenure}} {{sv.tenure_period}}</div> -->
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary"  (click)="reload()">Save</button>
+        <button class="btn btn-secondary" type="button" data-dismiss="modal"
+            (click)="modal.dismiss('Cross click')">Close</button>
+    </div>
+</ng-template>

@@ -4,26 +4,28 @@ import { HttpClient} from '@angular/common/http';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
-  selector: 'app-digital-specs',
-  templateUrl: './digital-specs.component.html',
-  styleUrls: ['./digital-specs.component.scss']
+  selector: 'app-digital-accessories',
+  templateUrl: './digital-accessories.component.html',
+  styleUrls: ['./digital-accessories.component.scss']
 })
-export class DigitalSpecsComponent implements OnInit {
+export class DigitalAccessoriesComponent implements OnInit {
 
   public categories;
   mainCat='';
   subCat=[];
   subCatValue;
-  specImage;
-  specName='';
-  getAllSpecName;
+  accsImage;
+  accsName='';
+  getAllAccsName;
   getSpecName;
   specValue;
-  editspecValues;
+  editAccsValues;
   specValueStatus:boolean=false;
   specEdit={
     specId:'',
     specName:'',
+    AccsId:'',
+    AccsName:'',
     specValue:''
   }
   b_url = ` http://localhost:3000/products`;
@@ -32,7 +34,7 @@ export class DigitalSpecsComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAllCategories();
-    this.getAllSpecs();    
+    this.getAllAccs();    
     // this.getSubCategory(this.mainCat);
   }
 
@@ -47,14 +49,14 @@ export class DigitalSpecsComponent implements OnInit {
     console.log(this.subCat[0].subItems);
   }
 
-  getAllSpecs(){
-    this.category.getAllSpecs().subscribe((res)=>{
-      this.getAllSpecName = res
+  getAllAccs(){
+    this.category.getAllAccs().subscribe((res)=>{
+      this.getAllAccsName = res
     });
   }
 
-  addSpecs(){
-    this.http.post(' http://localhost:3000/products/postSpecs', {spec_name:this.specName, specIMage:this.specImage,spec_status:1}).subscribe((res) => {
+  addAccs(){
+    this.http.post(' http://localhost:3000/products/postAccs', {accsName:this.accsName, accsIMage:this.accsImage,accsStatus:1}).subscribe((res) => {
       console.log(res);
     });
   }
@@ -68,10 +70,10 @@ export class DigitalSpecsComponent implements OnInit {
   // }
 
   addSpecValue(){
-    this.http.post(' http://localhost:3000/category/addSpecValue', {specId:this.specEdit.specId,specValue:this.specEdit.specValue}).subscribe((res) => {
+    this.http.post(' http://localhost:3000/category/addSpecValue', {specId:this.specEdit.AccsId,specValue:this.specEdit.specValue}).subscribe((res) => {
       console.log(res);     
       this.specValueStatus=true;
-      this.getAllSpecs();
+      this.getAllAccs();
       this.modalService.dismissAll();
       setTimeout(() => { this.specValueStatus = false; }, 2000);
     });
@@ -81,13 +83,13 @@ export class DigitalSpecsComponent implements OnInit {
     return this.http.get(this.b_url+'/getSpecsValuesById/'+id);
   }
 
-  open(addSpec,specId, specName) {
-    let allSpecValues;
-    this.specEdit.specId=specId;
-    this.specEdit.specName=specName;
-    this.category.getAllSpecValues().subscribe((res)=>{
-      allSpecValues=res;
-      this.editspecValues = allSpecValues.filter(item =>item.spec_id==specId);
+  open(addSpec,AccsId, specName) {
+    let allAccsValues;
+    this.specEdit.AccsId=AccsId;
+    this.specEdit.AccsName=specName;
+    this.category.getAllAccs().subscribe((res)=>{
+      allAccsValues=res;
+      this.editAccsValues = allAccsValues.filter(item =>item.spec_id==AccsId);
     });
     this.modalService.open(addSpec, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
@@ -96,11 +98,11 @@ export class DigitalSpecsComponent implements OnInit {
     });
   }
 
-  onEditSpecValue(event):void {
+  onEditAccsValue(event):void {
     if (window.confirm('Are you sure you want to save?')) {
       console.log(event.newData);
-      this.http.put(' http://localhost:3000/category/updateSpecValue', event.newData).subscribe();
-      this.getAllSpecs(); 
+      this.http.put(' http://localhost:3000/category/updateAccsValue', event.newData).subscribe();
+      this.getAllAccs(); 
       event.confirm.resolve(event.newData);
     } else {
       event.confirm.reject();
@@ -115,9 +117,10 @@ export class DigitalSpecsComponent implements OnInit {
       position: 'right'
     },
     columns: {      
-      spec_value: {
-        title: 'Specification value'
+      acceesory_name: {
+        title: 'Accessory name'
       }
     },
   };
+
 }

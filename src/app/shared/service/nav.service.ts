@@ -67,9 +67,11 @@ export class NavService {
 		},
 		{
 			title: 'Catalogue', icon: 'box', type: 'sub', active: false, children: [
+				{title: 'Accessories', path: '/products/digital/accessories',  type: 'link'},
+				{title: 'Pricing Schemes', path: '/products/digital/pricing-schemes',  type: 'link'},
 				{title: 'Specification', type: 'link', path: '/products/digital/digital-specs'},
-				{title: 'Main category', type: 'sub', path: '/products/physical/digital-specs'},
-				{title: 'Sub category', type: 'link', path: '/products/digital/digital-sub-category'},
+				{title: 'Category group', type: 'sub', path: '/products/physical/digital-specs'},
+				{title: 'Category', type: 'link', path: '/products/digital/digital-sub-category'},
 				{title: 'Products', path: '/products/digital/digital-product-list',  type: 'link'},
 				// {
 				// 	title: 'Physical', type: 'sub', children: [

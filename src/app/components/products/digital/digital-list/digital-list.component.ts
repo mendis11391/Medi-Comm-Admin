@@ -61,7 +61,7 @@ export class DigitalListComponent implements OnInit {
   }
 
   loadProducts() {
-    this.list.getProducts().subscribe(res => {
+    this.list.getAllProducts().subscribe(res => {
       this.productsList = res;
       this.filteredProducts=this.productsList;
     }, error => {

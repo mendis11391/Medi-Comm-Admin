@@ -4,9 +4,10 @@ import { HttpClient} from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { ProductService } from '../../services/product.service';
 import { BrandService } from '../../services/brand.service';
+import { Router } from '@angular/router';
 import * as XLSX from 'xlsx';
 
-const URL = 'http://localhost:3000/products/upload/';
+const URL = ' http://localhost:3000/products/upload/';
 
 @Component({
   selector: 'app-digital-add',
@@ -17,6 +18,7 @@ export class DigitalAddComponent implements OnInit {
 
   addProduct: FormGroup;
   constructor(
+    private router: Router,
     private http: HttpClient,
     private el: ElementRef,
     private formBuilder: FormBuilder,
@@ -29,6 +31,8 @@ export class DigitalAddComponent implements OnInit {
   fileData=[];
   imagePath;
   categories;
+  accessories;
+  pricingSchemes;
   brands;
   categoryName;
   importExcel;
@@ -49,15 +53,16 @@ export class DigitalAddComponent implements OnInit {
     this.addProduct = this.formBuilder.group({
       mainCatName:['', Validators.required],
       subCatId:['', Validators.required],
-      brandId:['', Validators.required],
-      cityId:['', Validators.required],
-      deliveryTimeline:['', Validators.required],      
+      accessory:['', Validators.required],
+      brandId:[1],
+      // cityId:['', Validators.required],
+      deliveryTimeline:[0],      
       productName:['', Validators.required],
       metaTitle:['', Validators.required],
       slug:['', Validators.required],
-      prodImage:['', Validators.required],
+      prodImage:['asjdh'],
       prodDescription:['', Validators.required],
-      prodQty:['', Validators.required],
+      prodQty:[0],
       securityDeposit:['', Validators.required],
       tenureBasePrice:['', Validators.required],
       specs:new FormGroup({}),
@@ -74,6 +79,8 @@ export class DigitalAddComponent implements OnInit {
 
   ngOnInit() {
     this.getAllCategories();
+    this.getAllaccessories();
+    this.getAllPricingSchemes();
     this.getAllBrands();
     this.getAllCities();
     this.getAllspecValuesBySpecId(1);
@@ -85,20 +92,35 @@ export class DigitalAddComponent implements OnInit {
     });
   }
 
+  getAllaccessories() {
+    this.category.getAllAccs().subscribe(res => {
+      this.accessories = res;
+    });
+  }
+
+  getAllPricingSchemes() {
+    this.category.getAllPricingSchemes().subscribe(res => {
+      this.pricingSchemes = res;
+    });
+  }
+
   getSubCategory(){
     this.subCat = this.categories.filter(item=>item.id==this.addProduct.value.mainCatName);
     console.log(this.subCat[0].subItems);
   }
 
   getSpecsByCatId(){
+    let sf:FormGroup = this.addProduct.get('specs') as FormGroup;
+    sf.controls={};
     let id = this.addProduct.value.subCatId;
     this.category.getSpecsByCatId(id).subscribe((resp)=>{
       var cSpecs:any = resp;
-      let sf:FormGroup = this.addProduct.get('specs') as FormGroup;
+      
       this.catSpecs=resp;
       for(let i=0; i<cSpecs.length;i++){
         let a = sf.addControl(cSpecs[i].spec_id , this.formBuilder.control(['']));
       }
+      console.log(sf.controls);
       console.log(this.addProduct.value); 
     });
        
@@ -221,7 +243,7 @@ export class DigitalAddComponent implements OnInit {
     formData.append('name', item.Title);
     formData.append('offers', item.Offers);
     formData.append('description', item.Url);
-    formData.append('qty', item.Qty);
+    formData.append('qty', '0');
     formData.append('price', item.SecurityDeposit);
     formData.append('deliveryDate', item.DeliveryDate);
     formData.append('product_image', item.Images);
@@ -242,7 +264,7 @@ export class DigitalAddComponent implements OnInit {
     formData.append('cities', item.Cities);
     formData.append('categoryName', item.Categories);
 
-    that.http.post('http://localhost:3000/products/', formData).subscribe((res) => {
+    that.http.post(' http://localhost:3000/products/', formData).subscribe((res) => {
       console.log(res);
     });
     
@@ -250,20 +272,21 @@ export class DigitalAddComponent implements OnInit {
 
   addProducts() {
     this.prodRequied=false;
-    console.log(this.addProduct.value);
-    // if(this.addProduct.valid){
-    //   alert('Products added successfully');
-    //   this.http.post('http://localhost:3000/products', this.addProduct.value).subscribe((res) => {
-    //     console.log(res);
-    //     this.addProduct.reset();
-    //     // this.prodSuccessfull=true;
-    //     // setTimeout(() => {
-    //     //   this.prodSuccessfull=false;
-    //     // }, 3000);
-    //   });
-    // } else{
-    //   this.prodRequied=true;
-    // }
+    if(this.addProduct.valid){
+      alert('Products added successfully');
+      this.router.navigate(['/products/digital/digital-product-list']);
+      this.http.post(' http://localhost:3000/products', this.addProduct.value).subscribe((res) => {
+        // this.addProduct.reset();
+        
+        // this.prodSuccessfull=true;
+        // setTimeout(() => {
+        //   this.prodSuccessfull=false;
+        // }, 3000);
+      });
+      
+    } else{
+      this.prodRequied=true;
+    }
     
   }
 

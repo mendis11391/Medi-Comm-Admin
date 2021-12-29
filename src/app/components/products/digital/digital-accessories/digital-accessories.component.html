@@ -4,70 +4,40 @@
         <div class="col-sm-6">
             <div class="card">
                 <div class="card-header">
-                    <h5>Add specifications</h5>
+                    <h5>Add Accessories</h5>
                 </div>
                 <div class="card-body">
 
-                    <!-- <select class="form-control" [(ngModel)]="mainCat" (change)="getSubCategory()">
-                        <option *ngFor="let c of categories" value="{{c.main_cat_name}}">{{c.main_cat_name}}</option>
-                    </select><br>
+                    <input class="form-control" [(ngModel)]="accsImage" type="file"  multiple/><br>
 
-                    <select class="form-control" [(ngModel)]="subCatValue" *ngIf="mainCat">
-                        <option *ngFor="let sc of subCat[0].subItems">{{sc.cat_name}}</option>
-                    </select><br> -->
-
-                    <input class="form-control" [(ngModel)]="specImage" type="file"  multiple/><br>
-
-                    <input type="text" class="form-control" [(ngModel)]="specName" placeholder="specification name" /><br>
+                    <input type="text" class="form-control" [(ngModel)]="accsName" placeholder="Accessory name" /><br>
                     
                     <button type="button" class="btn btn-secondary" data-toggle="modal" data-original-title="test"
-                            data-target="#exampleModal" (click)="addSpecs()">Add specs</button>
+                            data-target="#exampleModal" (click)="addAccs()">Add accessory</button>
                 </div>
             </div>
         </div>
 
-        <!-- <div class="col-sm-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5>Add specifications value</h5>
-                </div>
-                <div class="card-body">
-                    <select class="form-control" [(ngModel)]="getSpecName">
-                        <option *ngFor="let s of getAllSpecName" value="{{s.spec_id}}">{{s.spec_name}}</option>
-                    </select><br>
-
-                    <input type="text" class="form-control" [(ngModel)]="specValue" placeholder="specification value" /><br>
-                    
-                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-original-title="test"
-                            data-target="#exampleModal" (click)="addSpecValue()">Add specs value</button>
-                            <div *ngIf="specValueStatus"> Spec value added successfully</div>
-                </div>
-            </div>
-        </div> -->
-
         <div class="col-sm-12">
             <div class="card specifications">
                 <div class="card-header">
-                    <h5>Add specifications</h5>
+                    <h5>Accessories</h5>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-bordered">
                             <thead>
                               <tr>
-                                <th>Specification Name</th>
-                                <th>Specification value</th>
+                                <th>Accessory Name</th>
                                 <th>Action</th>
                               </tr>
                             </thead>
-                            <tbody *ngFor="let s of getAllSpecName">
+                            <tbody *ngFor="let s of getAllAccsName">
                               <tr>
-                                <td>{{s.spec_name}}</td>
-                                <td><div class="specValues" *ngFor="let sv of s.spec_id | specValues">{{sv.spec_value}}</div></td>
-                                <td>
-                                    <a class="mr-2" data-toggle="modal" data-original-title="test"
-                                    data-target="#exampleModal" (click)="open(addSpec, s.spec_id, s.spec_name)"><i class="fa fa-plus-circle"></i></a>
-                                    <a (click)="open(editSpec, s.spec_id, s.spec_name)"><i class="fa fa-pencil"></i></a>
+                                <td>{{s.acceesory_name}}</td>
+                                
+                                <td>                                    
+                                    <a (click)="open(editAccs, s.spec_id, s.acceesory_name)"><i class="fa fa-pencil"></i></a>
                                 </td>
                               </tr>
                             </tbody>
@@ -108,7 +78,7 @@
     </div>
 </ng-template>
 
-<ng-template #editSpec let-modal>
+<ng-template #editAccs let-modal>
     <div class="modal-header">
         <h5 class="modal-title f-w-600" id="exampleModalLabel">Edit {{specEdit.specName}}</h5>
         <button type="button" class="close" aria-label="Close"
@@ -117,7 +87,7 @@
         </button>
     </div>
     <div class="modal-body">
-        <ng2-smart-table [settings]="settings" [source]="editspecValues" (editConfirm)="onEditSpecValue($event)"></ng2-smart-table>
+        <ng2-smart-table [settings]="settings" [source]="editAccsValues" (editConfirm)="onEditAccsValue($event)"></ng2-smart-table>
         <!-- <div class="editSpecValues" *ngFor="let sv of specEdit.specId | specValues">            
             <div class="row">
                 <div class="col-8">
