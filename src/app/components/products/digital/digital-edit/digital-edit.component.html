@@ -40,6 +40,9 @@
                         <div class="digital-add needs-validation">
                             <div class="form-group">
                                 <label class="col-form-label"><span>*</span> Accessories <a (click)="open(editAccs);"><i class="fa fa-pencil"></i></a></label>
+                                <div *ngFor="let a of accsID">
+                                    <p>{{a.acceesory_name}}</p>
+                                </div>
                                 <!-- <select class="form-control" formControlName="accessory" multiple>
                                     <option *ngFor="let a of accessories"  value="{{a.id}}">{{a.acceesory_name}}</option>
                                 </select> -->
@@ -100,10 +103,10 @@
                                     <option *ngFor="let ps of pricingSchemes" value="{{ps.id}}">{{ps.scheme_name}}</option>
                                 </select>
                             </div>
-                            <!-- <div class="form-group">
+                            <div class="form-group">
                                 <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Product image</label>
-                                <input type="file" id="product_image"  formControlName="prodImage"  multiple  />
-                            </div> -->
+                                <input type="file" id="product_image" (change)="imageChange($event)"/>
+                            </div>
 
                             <div class="form-group">
                                 <label class="col-form-label"><span>*</span> Product status</label>
@@ -146,7 +149,8 @@
                                 <div class="form-group" *ngFor="let cs of catSpecs; let i = index;">
                                     <label class="col-form-label"><span>*</span> {{cs.spec_name}}</label>
                                     <select class="form-control" formControlName="{{cs.spec_id}}" >
-                                        <option *ngFor="let sv of cs.spec_id | specValues"  [selected]="sv.spec_value | editSpecCheck: specsCheck">{{sv.spec_value}}</option>
+                                        <option>Value not specified</option>
+                                        <option *ngFor="let sv of cs.spec_id | specValues"  [selected]="sv.id | editSpecCheck: prodId">{{sv.spec_value}}</option>
                                     </select>
                                     <!-- <div *ngFor="let sv of cs.spec_id | specValues">                                        
                                         <input type="radio" name="cs.spec_id" class="form-check-input"  [checked]="sv.spec_value | editSpecCheck: specsCheck">

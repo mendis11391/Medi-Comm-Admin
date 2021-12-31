@@ -30,7 +30,7 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
  subCatId=0;
  specsCheck;
  accsID;
-
+ finalBlob;
   constructor(
     private modalService: NgbModal,
     private http: HttpClient,
@@ -64,7 +64,7 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
       productName:['', Validators.required],
       metaTitle:['', Validators.required],
       slug:['', Validators.required],
-      // prodImage:['', Validators.required],
+      prodImage:[''],
       prodDescription:['', Validators.required],
       // prodQty:['', Validators.required],
       securityDeposit:['', Validators.required],
@@ -112,6 +112,7 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
       let data = res[0];
       console.log(data);
       this.specsCheck = data.specs;
+      console.log(this.specsCheck);
       // this.id = data.prod_id;
       // let specs= JSON.parse(JSON.parse(data.specs));
       // this.fileData=data.prod_img;
@@ -126,7 +127,7 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
         productName:data.prod_name,
         metaTitle:data.metaTitle,
         slug:data.slug,
-        // prodImage:data.prod_image,
+        prodImage:data.prod_image,
         prodDescription:data.prod_description,
         // prodQty:data.prod_qty,
         securityDeposit:data.securityDeposit,
@@ -154,23 +155,7 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
       //   });
       // });
       
-      // this.prodImgs = data.prod_img;
 
-      // if(this.addProduct.value.disk_type === '0') {
-      //   let a: HTMLElement = document.querySelector('#edo-ani1');
-      //   a.click();
-      // } else {
-      //   let a: HTMLElement = document.querySelector('#edo-ani');
-      //   a.click();
-      // }
-
-      // if(this.addProduct.value.status === '0') {
-      //   let a: HTMLElement = document.querySelector('#edo-ani4');
-      //   a.click();
-      // } else {
-      //   let a: HTMLElement = document.querySelector('#edo-ani3');
-      //   a.click();
-      // }
     });
 
 
@@ -188,7 +173,7 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
     let accsIdArr=[];
     this.productsService.getAllAccsByProductId(id).subscribe((acc)=>{      
       for(let k=0;k<acc[0].length;k++){
-        accsIdArr.push(acc[0][k].id)
+        accsIdArr.push(acc[0][k].accessory_id)
       }
       this.accsID=accsIdArr;
       console.group(this.accsID);
@@ -285,48 +270,44 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
   }
 
   updateProducts() {  
+    if(this.finalBlob){
+      this.addProduct.patchValue({
+        prodImage:this.finalBlob
+      });
+    }
     console.log(this.addProduct.value);
-    // const tenureData = this.appendTenure();
-    // this.addProduct.patchValue({
-    //   tenureFinal: tenureData
-    // });
-    // const formData = new FormData();
-    // for (let img of this.fileData) {
-    //   formData.append('product_image', img);
-    // }
-    // const specs={
-    //   weight: this.addProduct.value.weight,
-    //   usb: this.addProduct.value.usb,
-    //   hdmi: this.addProduct.value.hdmi,
-    //   clockSpeed: this.addProduct.value.clockSpeed,
-    //   battery: this.addProduct.value.battery,
-    //   touchScreen: this.addProduct.value.touchScreen,
-    //   connectivity: this.addProduct.value.connectivity,
-    //   webcam: this.addProduct.value.webcam,
-    // };
-    // const dbSpecs=[];
-    // dbSpecs.push(JSON.stringify(specs));
-    // formData.append('title', this.addProduct.value.title);
-    // formData.append('description', this.addProduct.value.description);
-    // formData.append('qty', this.addProduct.value.qty);
-    // formData.append('price', this.addProduct.value.price);
-    // formData.append('deliveryDate', this.addProduct.value.deliveryDate);
-    // formData.append('status', this.addProduct.value.status);
-    // formData.append('brand', this.addProduct.value.brand);
-    // formData.append('ram', this.addProduct.value.ram);
-    // formData.append('processor', this.addProduct.value.processor);
-    // formData.append('screen_size', this.addProduct.value.screen_size);
-    // formData.append('specs', JSON.stringify(dbSpecs));
-    // formData.append('disk_type', this.addProduct.value.disk_type);
-    // formData.append('disk_size', this.addProduct.value.disk_size);
-    // formData.append('specifications', this.addProduct.value.specifications);
-    // formData.append('tenure', tenureData);
-
-    // this.addProduct.value.product_image = this.fileData;
 
     this.http.put(` http://localhost:3000/products/${this.prodId}`, this.addProduct.value).subscribe((res) => {
-      console.log(res);
+      alert('Product modified successfully');
     });
+  }
+
+
+  imageChange(e) {
+    let inputEl: HTMLInputElement = this.el.nativeElement.querySelector('#product_image');
+
+    var fReader = new FileReader();
+    var imageData;
+    var finalBlob;
+    fReader.readAsDataURL(inputEl.files[0]);
+    fReader.onloadend = function(event){
+      console.log(event.target.result);
+      imageData = JSON.stringify(event.target.result);
+      // console.log(imageData.split(",")[1].slice(0,-1));
+      const contentType = 'image/png';
+      const blob = b64toBlob(imageData.split(",")[1].slice(0,-1), contentType);
+
+      
+    }
+
+    const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
+      finalBlob=b64Data;
+    }
+    
+    setTimeout(()=>{
+      this.finalBlob=finalBlob;
+    }, 100);
+    
   }
 
   upload() {

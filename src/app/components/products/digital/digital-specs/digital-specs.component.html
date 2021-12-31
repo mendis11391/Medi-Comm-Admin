@@ -16,7 +16,7 @@
                         <option *ngFor="let sc of subCat[0].subItems">{{sc.cat_name}}</option>
                     </select><br> -->
 
-                    <input class="form-control" [(ngModel)]="specImage" type="file"  multiple/><br>
+                    <input class="form-control" id="product_image" (change)="imageChange($event)" [(ngModel)]="specImage" type="file" /><br>
 
                     <input type="text" class="form-control" [(ngModel)]="specName" placeholder="specification name" /><br>
                     
@@ -55,19 +55,29 @@
                         <table class="table table-bordered">
                             <thead>
                               <tr>
-                                <th>Specification Name</th>
-                                <th>Specification value</th>
+                                <th>Spec Image</th>
+                                <th>Spec Name</th>
+                                <th>Spec value</th>
                                 <th>Action</th>
                               </tr>
                             </thead>
                             <tbody *ngFor="let s of getAllSpecName">
                               <tr>
+                                <td><img class="img-responsive" 
+                                    [src]="s.spec_image | BlobImage" 
+                                     >
+                                </td>
                                 <td>{{s.spec_name}}</td>
                                 <td><div class="specValues" *ngFor="let sv of s.spec_id | specValues">{{sv.spec_value}}</div></td>
                                 <td>
                                     <a class="mr-2" data-toggle="modal" data-original-title="test"
-                                    data-target="#exampleModal" (click)="open(addSpec, s.spec_id, s.spec_name)"><i class="fa fa-plus-circle"></i></a>
-                                    <a (click)="open(editSpec, s.spec_id, s.spec_name)"><i class="fa fa-pencil"></i></a>
+                                    data-target="#exampleModal" (click)="open(addSpec); getCurrentSpecValues(s.spec_id, s.spec_name)"><i class="fa fa-plus-circle"></i></a>
+                                    <a (click)="open(editSpec);getCurrentSpecValues(s.spec_id, s.spec_name)"><i class="fa fa-pencil"></i></a>
+                                    <label>
+                                        <input class="form-control" (change)="specImageUpdate($event,s.spec_id)" type="file" style="display: none;">
+                                        <a><i class="fa fa-upload"></i></a>
+                                    </label>
+                                    
                                 </td>
                               </tr>
                             </tbody>
@@ -135,3 +145,59 @@
             (click)="modal.dismiss('Cross click')">Close</button>
     </div>
 </ng-template>
+
+
+<ng-template #editSpecName let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title f-w-600" >Edit {{specEdit.specName}}</h5>
+        <button type="button" class="close" aria-label="Close"
+            (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        
+        <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Specification Name</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody *ngFor="let s of getAllSpecName">
+              <tr>
+                <td>{{s.spec_name}}</td>
+                
+                <td>
+                    <a class="mr-2" data-toggle="modal" data-original-title="test"
+                    data-target="#exampleModal" (click)="open(addSpec); getCurrentSpecValues(s.spec_id, s.spec_name)"><i class="fa fa-plus-circle"></i></a>
+                    <a (click)="open(editSpec);getCurrentSpecValues(s.spec_id, s.spec_name)"><i class="fa fa-pencil"></i></a>
+                </td>
+              </tr>
+            </tbody>
+        </table>       
+    </div>
+    <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-primary">Save</button> -->
+        <button class="btn btn-secondary" type="button" data-dismiss="modal"
+            (click)="modal.dismiss('Cross click')">Close</button>
+    </div>
+</ng-template>
+
+<!-- <ng-template #editSpecImage let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title f-w-600" >Change {{specEdit.specName}} Image</h5>
+        <button type="button" class="close" aria-label="Close"
+            (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <input class="form-control" id="{{specEdit.specId}}" (change)="specImageUpdate(specEdit.specId)"  type="file"/>           
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="updateSpecImage(specEdit.specId)">Save</button>
+        <button class="btn btn-secondary" type="button" data-dismiss="modal"
+            (click)="modal.dismiss('Cross click')">Close</button>
+    </div>
+</ng-template> -->

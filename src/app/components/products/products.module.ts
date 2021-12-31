@@ -37,6 +37,7 @@ import { PricingSchemesComponent } from './digital/pricing-schemes/pricing-schem
 import { DigitalAccessoriesComponent } from './digital/digital-accessories/digital-accessories.component';
 import { EditSpecPipe } from './pipes/editSpecsCheck.pipe';
 import { CategorySpecsPipe } from './pipes/categorySpecs.pipe';
+import { BlobPipe } from './pipes/blob.pipe';
 
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
@@ -47,7 +48,7 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
 
 
 @NgModule({
-  declarations: [CategorySpecsPipe,EditSpecPipe,CheckTenurePipe,TenurePipe,SpecPipe,CategoryComponent, SubCategoryComponent, DigitalEditComponent,ProductListComponent, AddProductComponent, DigitalCategoryComponent, DigitalSubCategoryComponent, DigitalListComponent, DigitalAddComponent, ProductDetailComponent, DigitalSpecsComponent, DigitalCategoryListComponent, DigitalSubCategoryListComponent, DigitalProductDetailsComponent, PricingSchemesComponent, DigitalAccessoriesComponent],
+  declarations: [BlobPipe,CategorySpecsPipe,EditSpecPipe,CheckTenurePipe,TenurePipe,SpecPipe,CategoryComponent, SubCategoryComponent, DigitalEditComponent,ProductListComponent, AddProductComponent, DigitalCategoryComponent, DigitalSubCategoryComponent, DigitalListComponent, DigitalAddComponent, ProductDetailComponent, DigitalSpecsComponent, DigitalCategoryListComponent, DigitalSubCategoryListComponent, DigitalProductDetailsComponent, PricingSchemesComponent, DigitalAccessoriesComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -60,7 +61,7 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     GalleryModule.forRoot(),
     SharedModule
   ],
-  exports: [CategorySpecsPipe,EditSpecPipe,CheckTenurePipe,SpecPipe, TenurePipe],
+  exports: [BlobPipe,CategorySpecsPipe,EditSpecPipe,CheckTenurePipe,SpecPipe, TenurePipe],
   providers: [
     {
       provide: DROPZONE_CONFIG,

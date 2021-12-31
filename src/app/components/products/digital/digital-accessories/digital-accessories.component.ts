@@ -28,6 +28,8 @@ export class DigitalAccessoriesComponent implements OnInit {
     AccsName:'',
     specValue:''
   }
+  editAccsImage;
+  addAccsImage;
   b_url = ` http://localhost:3000/products`;
   public closeResult: string;
   constructor(private modalService: NgbModal,private category: ProductService,private http: HttpClient) { }
@@ -56,8 +58,9 @@ export class DigitalAccessoriesComponent implements OnInit {
   }
 
   addAccs(){
-    this.http.post(' http://localhost:3000/products/postAccs', {accsName:this.accsName, accsIMage:this.accsImage,accsStatus:1}).subscribe((res) => {
-      console.log(res);
+    this.http.post(' http://localhost:3000/products/postAccs', {accsName:this.accsName, accsIMage:this.addAccsImage,accsStatus:1}).subscribe((res) => {
+      alert("accessory added successfully");
+      this.getAllAccs();
     });
   }
 
@@ -122,5 +125,62 @@ export class DigitalAccessoriesComponent implements OnInit {
       }
     },
   };
+
+  addAccsImageUpdate(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const files = target.files as FileList;
+    console.log(files);
+    var fReader = new FileReader();
+    var imageData;
+    var finalBlob;
+    fReader.readAsDataURL(files[0]);
+    fReader.onloadend = function(event){
+      console.log(event.target.result);
+      imageData = JSON.stringify(event.target.result);
+      const contentType = 'image/png';
+      const blob = b64toBlob(imageData.split(",")[1].slice(0,-1), contentType);      
+    }
+
+    const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
+      finalBlob=b64Data;
+    }
+    
+    setTimeout(()=>{
+      this.addAccsImage=finalBlob;
+    }, 100);
+    
+  }
+
+
+  accsImageUpdate(event: Event,id) {
+    const target = event.target as HTMLInputElement;
+    const files = target.files as FileList;
+    console.log(files);
+    var fReader = new FileReader();
+    var imageData;
+    var finalBlob;
+    fReader.readAsDataURL(files[0]);
+    fReader.onloadend = function(event){
+      console.log(event.target.result);
+      imageData = JSON.stringify(event.target.result);
+      const contentType = 'image/png';
+      const blob = b64toBlob(imageData.split(",")[1].slice(0,-1), contentType);      
+    }
+
+    const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
+      finalBlob=b64Data;
+    }
+    
+    setTimeout(()=>{
+      this.editAccsImage=finalBlob;
+      this.updateAccsImage(id)
+    }, 100);
+    
+  }
+
+  updateAccsImage(id){
+    this.http.put('http://localhost:3000/category/updateAccsImage', {id:id, accs_image:this.editAccsImage}).subscribe();
+    this.getAllAccs();
+  }
 
 }

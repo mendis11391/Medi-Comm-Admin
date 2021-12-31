@@ -6,6 +6,7 @@ import { ProductService } from '../../services/product.service';
 import { BrandService } from '../../services/brand.service';
 import { Router } from '@angular/router';
 import * as XLSX from 'xlsx';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 const URL = ' http://localhost:3000/products/upload/';
 
@@ -43,6 +44,8 @@ export class DigitalAddComponent implements OnInit {
   catSpecs;
   prodRequied:boolean=false;
   prodSuccessfull:boolean=false;
+  finalBlob;
+
   public onUploadInit(args: any): void { }
 
   public onUploadError(args: any): void { }
@@ -60,7 +63,7 @@ export class DigitalAddComponent implements OnInit {
       productName:['', Validators.required],
       metaTitle:['', Validators.required],
       slug:['', Validators.required],
-      prodImage:['asjdh'],
+      prodImage:['', Validators.required],
       prodDescription:['', Validators.required],
       prodQty:[0],
       securityDeposit:['', Validators.required],
@@ -271,7 +274,11 @@ export class DigitalAddComponent implements OnInit {
   }
 
   addProducts() {
+    this.addProduct.patchValue({
+      prodImage:this.finalBlob
+    });
     this.prodRequied=false;
+    
     if(this.addProduct.valid){
       alert('Products added successfully');
       this.router.navigate(['/products/digital/digital-product-list']);
@@ -295,49 +302,104 @@ export class DigitalAddComponent implements OnInit {
 
     var fReader = new FileReader();
     var imageData;
+    var finalBlob;
     fReader.readAsDataURL(inputEl.files[0]);
     fReader.onloadend = function(event){
       console.log(event.target.result);
       imageData = JSON.stringify(event.target.result);
-      console.log(imageData.split(",")[1].slice(0,-1));
+      // console.log(imageData.split(",")[1].slice(0,-1));
       const contentType = 'image/png';
       // const b64Data = 'iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==';
   
+      // const blob = b64toBlob(imageData.split(",")[1].slice(0,-1), contentType);
       const blob = b64toBlob(imageData.split(",")[1].slice(0,-1), contentType);
+
       
     }
+
     const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
-      const byteCharacters = atob(b64Data);
-      const byteArrays = [];
-    
-      for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-        const slice = byteCharacters.slice(offset, offset + sliceSize);
-    
-        const byteNumbers = new Array(slice.length);
-        for (let i = 0; i < slice.length; i++) {
-          byteNumbers[i] = slice.charCodeAt(i);
-        }
-    
-        const byteArray = new Uint8Array(byteNumbers);
-        byteArrays.push(byteArray);
-        console.log(byteArrays);
-      }
-    
-      const blob = new Blob(byteArrays, {type: contentType});
-      return blob;
+      finalBlob=b64Data;
     }
-
-    // const contentType = 'image/png';
-    // const b64Data = 'iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==';
-
-    // const blob = b64toBlob(b64Data, contentType);
-
-    // this.addProduct.patchValue({
-    //   prodImage:JSON.stringify(imageData),
-    //   prodQty:7
-    // });
-    // console.log(this.addProduct.value);
+    
+    setTimeout(()=>{
+      this.finalBlob=finalBlob;
+    }, 100);
+    
   }
+
+  // imageChange(e) {
+  //   let inputEl: HTMLInputElement = this.el.nativeElement.querySelector('#product_image');
+
+  //   var fReader = new FileReader();
+  //   var imageData;
+  //   var finalBlob;
+  //   fReader.readAsDataURL(inputEl.files[0]);
+  //   fReader.onloadend = function(event){
+  //     console.log(event.target.result);
+  //     imageData = JSON.stringify(event.target.result);
+  //     console.log(imageData.split(",")[1].slice(0,-1));
+  //     const contentType = 'image/png';
+  //     // const b64Data = 'iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==';
+  
+  //     const blob = b64toBlob(imageData.split(",")[1].slice(0,-1), contentType);
+
+      
+  //   }
+
+  //   const b64toBlob = (b64Data, contentType)=>{
+  //     const byteCharacters = atob(b64Data);
+
+  //     const byteNumbers = new Array(byteCharacters.length);
+  //     for (let i = 0; i < byteCharacters.length; i++) {
+  //         byteNumbers[i] = byteCharacters.charCodeAt(i);
+  //     }
+
+  //     const byteArray = new Uint8Array(byteNumbers);
+  //     const blob = new Blob([byteArray], {type: contentType});
+  //     console.log(blob);
+  //     finalBlob = byteArray;
+  //     return blob;
+  //   }
+  //   setTimeout(()=>{
+  //     this.finalBlob=finalBlob;
+  //   }, 100);
+    
+  //   // this.addProduct.patchValue({
+  //   //   prodImage:JSON.stringify(finalBlob)
+  //   // });
+  //   // console.log(this.addProduct.value);
+  //   // const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
+  //   //   const byteCharacters = atob(b64Data);
+  //   //   const byteArrays = [];
+    
+  //   //   for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+  //   //     const slice = byteCharacters.slice(offset, offset + sliceSize);
+    
+  //   //     const byteNumbers = new Array(slice.length);
+  //   //     for (let i = 0; i < slice.length; i++) {
+  //   //       byteNumbers[i] = slice.charCodeAt(i);
+  //   //     }
+    
+  //   //     const byteArray = new Uint8Array(byteNumbers);
+  //   //     byteArrays.push(byteArray);
+  //   //     console.log(byteArrays);
+  //   //   }
+    
+  //   //   const blob = new Blob(byteArrays, {type: contentType});
+  //   //   return blob;
+  //   // }
+
+  //   // const contentType = 'image/png';
+  //   // const b64Data = 'iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==';
+
+  //   // const blob = b64toBlob(b64Data, contentType);
+
+  //   // this.addProduct.patchValue({
+  //   //   prodImage:JSON.stringify(imageData),
+  //   //   prodQty:7
+  //   // });
+  //   // console.log(this.addProduct.value);
+  // }
 
   upload() {
     //locate the file element meant for the file upload.

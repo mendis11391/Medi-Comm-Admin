@@ -8,7 +8,7 @@
                 </div>
                 <div class="card-body">
 
-                    <input class="form-control" [(ngModel)]="accsImage" type="file"  multiple/><br>
+                    <input class="form-control" (change)="addAccsImageUpdate($event)" type="file" /><br>
 
                     <input type="text" class="form-control" [(ngModel)]="accsName" placeholder="Accessory name" /><br>
                     
@@ -28,16 +28,24 @@
                         <table class="table table-bordered">
                             <thead>
                               <tr>
+                                <th>Image</th>
                                 <th>Accessory Name</th>
                                 <th>Action</th>
                               </tr>
                             </thead>
                             <tbody *ngFor="let s of getAllAccsName">
                               <tr>
+                                <td><img class="img-responsive" 
+                                    [src]="s.accessory_image | BlobImage">
+                                </td>
                                 <td>{{s.acceesory_name}}</td>
                                 
                                 <td>                                    
                                     <a (click)="open(editAccs, s.spec_id, s.acceesory_name)"><i class="fa fa-pencil"></i></a>
+                                    <label>
+                                        <input class="form-control" (change)="accsImageUpdate($event,s.id)" type="file" style="display: none;">
+                                        <a><i class="fa fa-upload"></i></a>
+                                    </label>
                                 </td>
                               </tr>
                             </tbody>

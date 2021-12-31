@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,ElementRef } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import { HttpClient} from '@angular/common/http';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
@@ -28,7 +28,10 @@ export class DigitalSpecsComponent implements OnInit {
   }
   b_url = ` http://localhost:3000/products`;
   public closeResult: string;
-  constructor(private modalService: NgbModal,private category: ProductService,private http: HttpClient) { }
+  finalBlob;
+  editSpecImage;
+
+  constructor(private el: ElementRef,private modalService: NgbModal,private category: ProductService,private http: HttpClient) { }
 
   ngOnInit(): void {
     this.getAllCategories();
@@ -54,7 +57,13 @@ export class DigitalSpecsComponent implements OnInit {
   }
 
   addSpecs(){
-    this.http.post(' http://localhost:3000/products/postSpecs', {spec_name:this.specName, specIMage:this.specImage,spec_status:1}).subscribe((res) => {
+    this.http.post(' http://localhost:3000/products/postSpecs', {spec_name:this.specName, specIMage:this.finalBlob,spec_status:1}).subscribe((res) => {
+      console.log(res);
+    });
+  }
+
+  editSpecs(){
+    this.http.post(' http://localhost:3000/products/putSpecs', {spec_name:this.specName, specIMage:this.finalBlob,spec_status:1}).subscribe((res) => {
       console.log(res);
     });
   }
@@ -81,19 +90,18 @@ export class DigitalSpecsComponent implements OnInit {
     return this.http.get(this.b_url+'/getSpecsValuesById/'+id);
   }
 
-  open(addSpec,specId, specName) {
-    let allSpecValues;
-    this.specEdit.specId=specId;
-    this.specEdit.specName=specName;
-    this.category.getAllSpecValues().subscribe((res)=>{
-      allSpecValues=res;
-      this.editspecValues = allSpecValues.filter(item =>item.spec_id==specId);
-    });
+  open(addSpec) {    
     this.modalService.open(addSpec, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed`;
     });
+  }
+
+  getCurrentSpecValues(specId, specName){
+    let allSpecValues;
+    this.specEdit.specId=specId;
+    this.specEdit.specName=specName;
   }
 
   onEditSpecValue(event):void {
@@ -120,4 +128,60 @@ export class DigitalSpecsComponent implements OnInit {
       }
     },
   };
+
+
+  imageChange(e) {
+    let inputEl: HTMLInputElement = this.el.nativeElement.querySelector('#product_image');
+
+    var fReader = new FileReader();
+    var imageData;
+    var finalBlob;
+    fReader.readAsDataURL(inputEl.files[0]);
+    fReader.onloadend = function(event){
+      console.log(event.target.result);
+      imageData = JSON.stringify(event.target.result);
+      const contentType = 'image/png';
+      const blob = b64toBlob(imageData.split(",")[1].slice(0,-1), contentType);      
+    }
+
+    const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
+      finalBlob=b64Data;
+    }
+    
+    setTimeout(()=>{
+      this.finalBlob=finalBlob;
+    }, 100);
+    
+  }
+
+  specImageUpdate(event: Event,id) {
+    const target = event.target as HTMLInputElement;
+    const files = target.files as FileList;
+    console.log(files);
+    var fReader = new FileReader();
+    var imageData;
+    var finalBlob;
+    fReader.readAsDataURL(files[0]);
+    fReader.onloadend = function(event){
+      console.log(event.target.result);
+      imageData = JSON.stringify(event.target.result);
+      const contentType = 'image/png';
+      const blob = b64toBlob(imageData.split(",")[1].slice(0,-1), contentType);      
+    }
+
+    const b64toBlob = (b64Data, contentType='', sliceSize=512) => {
+      finalBlob=b64Data;
+    }
+    
+    setTimeout(()=>{
+      this.editSpecImage=finalBlob;
+      this.updateSpecImage(id)
+    }, 100);
+    
+  }
+
+  updateSpecImage(id){
+    this.http.put('http://localhost:3000/category/updateSpecNameAndImage', {id:id, spec_image:this.editSpecImage}).subscribe();
+    this.getAllSpecs();
+  }
 }

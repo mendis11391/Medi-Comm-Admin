@@ -70,6 +70,14 @@ export class ProductService {
     return this.http.get(this.c_url+'/getAllSpecs');
   }
 
+  getAllProductSpecs() {
+    return this.http.get(this.b_url+'/specs');
+  }
+
+  getAllSpecsByProductId(id) {
+    return this.http.get(this.b_url+'/specs/'+id);
+  }
+
   getAllAccs() {
     return this.http.get(this.c_url+'/getAllAccs');
   }
