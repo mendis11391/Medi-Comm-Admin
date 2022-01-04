@@ -45,6 +45,7 @@ export class DigitalAddComponent implements OnInit {
   prodRequied:boolean=false;
   prodSuccessfull:boolean=false;
   finalBlob;
+  highlights;
 
   public onUploadInit(args: any): void { }
 
@@ -83,6 +84,7 @@ export class DigitalAddComponent implements OnInit {
   ngOnInit() {
     this.getAllCategories();
     this.getAllaccessories();
+    this.getAllHighlights();
     this.getAllPricingSchemes();
     this.getAllBrands();
     this.getAllCities();
@@ -121,7 +123,7 @@ export class DigitalAddComponent implements OnInit {
       
       this.catSpecs=resp;
       for(let i=0; i<cSpecs.length;i++){
-        let a = sf.addControl(cSpecs[i].spec_id , this.formBuilder.control(['']));
+        let a = sf.addControl(cSpecs[i].spec_id , this.formBuilder.control(''));
       }
       console.log(sf.controls);
       console.log(this.addProduct.value); 
@@ -278,7 +280,7 @@ export class DigitalAddComponent implements OnInit {
       prodImage:this.finalBlob
     });
     this.prodRequied=false;
-    
+    console.log(this.addProduct.value)
     if(this.addProduct.valid){
       alert('Products added successfully');
       this.router.navigate(['/products/digital/digital-product-list']);
@@ -327,6 +329,11 @@ export class DigitalAddComponent implements OnInit {
     
   }
 
+  getAllHighlights() {
+    this.category.getAllHighlights().subscribe(res => {
+      this.highlights = res;
+    });
+  }
   // imageChange(e) {
   //   let inputEl: HTMLInputElement = this.el.nativeElement.querySelector('#product_image');
 

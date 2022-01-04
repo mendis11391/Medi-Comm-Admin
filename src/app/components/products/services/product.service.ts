@@ -39,9 +39,13 @@ export class ProductService {
     return this.http.get(`${this.b_url}/getAllProducts`);
   }
 
+  public getAllProductsByCityId(id){
+    return this.http.get(`${this.b_url}/productsByCity/${id}`);
+  }
+
   // Get Products By Id
   public getProduct(id: string) {
-    return this.http.get(`${this.b_url}/prodById/${id}`);
+    return this.http.get(`${this.b_url}/adminProdById/${id}`);
   }
 
   updateProduct(id: string, data): Observable<any> {
@@ -70,6 +74,10 @@ export class ProductService {
     return this.http.get(this.c_url+'/getAllSpecs');
   }
 
+  getAllScrollers() {
+    return this.http.get(this.c_url+'/getAllScrollersNames');
+  }
+
   getAllProductSpecs() {
     return this.http.get(this.b_url+'/specs');
   }
@@ -78,12 +86,24 @@ export class ProductService {
     return this.http.get(this.b_url+'/specs/'+id);
   }
 
+  getAllHighlights() {
+    return this.http.get(this.b_url+'/getAllHighlights');
+  }
+
   getAllAccs() {
     return this.http.get(this.c_url+'/getAllAccs');
   }
 
   getAllAccsByProductId(id) {
     return this.http.get(this.b_url+'/accessories/'+id);
+  }
+
+  getAllHighlightsByProductId(id) {
+    return this.http.get(this.b_url+'/getHighlights/'+id);
+  }
+
+  getCityTimelineByProductId(id) {
+    return this.http.get(this.b_url+'/getCityTimelineProduct/'+id);
   }
 
   getAllTenures() {
@@ -122,6 +142,10 @@ export class ProductService {
 
   getAllSpecValues(){
     return this.http.get(this.b_url+'/getAllSpecValues');
+  }
+
+  getAllScrollerValues(){
+    return this.http.get(this.b_url+'/getAllScrollerValues');
   }
 
   getSpecsByCatId(id) {

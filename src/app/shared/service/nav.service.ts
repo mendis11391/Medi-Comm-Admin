@@ -73,6 +73,7 @@ export class NavService {
 				{title: 'Category group', type: 'sub', path: '/products/physical/digital-specs'},
 				{title: 'Category', type: 'link', path: '/products/digital/digital-sub-category'},
 				{title: 'Products', path: '/products/digital/digital-product-list',  type: 'link'},
+				{title: 'Scrollers', path: '/products/digital/digital-scrollers',  type: 'link'},
 				// {
 				// 	title: 'Physical', type: 'sub', children: [
 				// 		{ path: '/products/physical/category', title: 'Category', type: 'link' },

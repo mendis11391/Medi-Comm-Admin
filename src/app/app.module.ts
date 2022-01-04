@@ -24,6 +24,8 @@ import { AuthModule } from './components/auth/auth.module';
 import { AuthGuard } from './components/auth/auth.guard';
 import { TokenInterceptorService } from './components/auth/token-interceptor.service';
 
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -48,6 +50,7 @@ import { TokenInterceptorService } from './components/auth/token-interceptor.ser
     MenusModule,
     UsersModule,
     HttpClientModule,
+    NgMultiSelectDropDownModule.forRoot()
   ],
   providers: [AuthGuard, {
     provide: HTTP_INTERCEPTORS,

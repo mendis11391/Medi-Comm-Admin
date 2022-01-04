@@ -57,13 +57,13 @@ export class DigitalSpecsComponent implements OnInit {
   }
 
   addSpecs(){
-    this.http.post(' http://localhost:3000/products/postSpecs', {spec_name:this.specName, specIMage:this.finalBlob,spec_status:1}).subscribe((res) => {
+    this.http.post('http://localhost:3000/products/postSpecs', {spec_name:this.specName, specIMage:this.finalBlob,spec_status:1}).subscribe((res) => {
       console.log(res);
     });
   }
 
   editSpecs(){
-    this.http.post(' http://localhost:3000/products/putSpecs', {spec_name:this.specName, specIMage:this.finalBlob,spec_status:1}).subscribe((res) => {
+    this.http.post('http://localhost:3000/products/putSpecs', {spec_name:this.specName, specIMage:this.finalBlob,spec_status:1}).subscribe((res) => {
       console.log(res);
     });
   }

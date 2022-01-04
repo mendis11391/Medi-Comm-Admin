@@ -38,7 +38,9 @@ import { DigitalAccessoriesComponent } from './digital/digital-accessories/digit
 import { EditSpecPipe } from './pipes/editSpecsCheck.pipe';
 import { CategorySpecsPipe } from './pipes/categorySpecs.pipe';
 import { BlobPipe } from './pipes/blob.pipe';
-
+import { DigitalScrollersComponent } from './digital/digital-scrollers/digital-scrollers.component';
+import { ScrollerPipe } from './pipes/scoller.pipe';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
   maxFilesize: 50,
@@ -48,7 +50,7 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
 
 
 @NgModule({
-  declarations: [BlobPipe,CategorySpecsPipe,EditSpecPipe,CheckTenurePipe,TenurePipe,SpecPipe,CategoryComponent, SubCategoryComponent, DigitalEditComponent,ProductListComponent, AddProductComponent, DigitalCategoryComponent, DigitalSubCategoryComponent, DigitalListComponent, DigitalAddComponent, ProductDetailComponent, DigitalSpecsComponent, DigitalCategoryListComponent, DigitalSubCategoryListComponent, DigitalProductDetailsComponent, PricingSchemesComponent, DigitalAccessoriesComponent],
+  declarations: [ScrollerPipe,BlobPipe,CategorySpecsPipe,EditSpecPipe,CheckTenurePipe,TenurePipe,SpecPipe,CategoryComponent, SubCategoryComponent, DigitalEditComponent,ProductListComponent, AddProductComponent, DigitalCategoryComponent, DigitalSubCategoryComponent, DigitalListComponent, DigitalAddComponent, ProductDetailComponent, DigitalSpecsComponent, DigitalCategoryListComponent, DigitalSubCategoryListComponent, DigitalProductDetailsComponent, PricingSchemesComponent, DigitalAccessoriesComponent, DigitalScrollersComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -59,9 +61,10 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     NgbModule,
     DropzoneModule,
     GalleryModule.forRoot(),
+    NgMultiSelectDropDownModule.forRoot(),
     SharedModule
   ],
-  exports: [BlobPipe,CategorySpecsPipe,EditSpecPipe,CheckTenurePipe,SpecPipe, TenurePipe],
+  exports: [ScrollerPipe,BlobPipe,CategorySpecsPipe,EditSpecPipe,CheckTenurePipe,SpecPipe, TenurePipe],
   providers: [
     {
       provide: DROPZONE_CONFIG,

@@ -127,7 +127,6 @@ export class PricingSchemesComponent implements OnInit {
     this.category.getTenureByPriority().subscribe((res)=>{
       allTenureValues=res;
       this.editTenureValues = allTenureValues.filter(item =>item.priority==priority);
-      // console.log(this.editTenureValues);
     });
     this.modalService.open(addSpec, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;

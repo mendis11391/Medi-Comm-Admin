@@ -15,6 +15,7 @@ import { DigitalSpecsComponent } from './digital/digital-specs/digital-specs.com
 import { DigitalSubCategoryListComponent } from './digital/digital-sub-category-list/digital-sub-category-list.component';
 import { PricingSchemesComponent } from './digital/pricing-schemes/pricing-schemes.component';
 import { DigitalAccessoriesComponent } from './digital/digital-accessories/digital-accessories.component';
+import { DigitalScrollersComponent } from './digital/digital-scrollers/digital-scrollers.component';
 
 const routes: Routes = [
   {
@@ -92,6 +93,14 @@ const routes: Routes = [
         data: {
           title: "Specifications",
           breadcrumb: "Specifications"
+        }
+      },
+      {
+        path: 'digital/digital-scrollers',
+        component: DigitalScrollersComponent,
+        data: {
+          title: "Scrollers",
+          breadcrumb: "Scrollers"
         }
       },
       {

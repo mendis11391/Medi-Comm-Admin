@@ -30,16 +30,19 @@
                                 </thead>
                                 <tbody *ngFor="let row of filteredProducts">
                                   <tr  [routerLink]="['../digital-edit-product',row.id]">
-                                    <td>{{row.id}}</td>
+                                    <td>{{row.prod_id}}</td>
                                     <td>{{row.prod_name}}</td>
                                     <td>{{row.tenure_base_price}}</td>
                                     <td>{{row.securityDeposit}}</td>
                                     <td>{{row.prod_status === 1 ? 'Active' : 'Inactive'}}</td>
                                     <td>
                                         <div class="row">
-                                            <div class="col-md-2" *appUserRole="[Role.admin,Role.sales]">
+                                            <div class="col-md-2">
                                                 <a (click)="onEdit(row.id)"><i class="fa fa-pencil"></i></a>
                                             </div>
+                                            <!-- <div class="col-md-2" *appUserRole="[Role.admin,Role.sales]">
+                                                <a (click)="onEdit(row.id)"><i class="fa fa-pencil"></i></a>
+                                            </div> -->
                                             <!-- <div class="col-md-2" *appUserRole="[Role.admin]">
                                                 <a (click)="onDelete(row.id)"><i class="fa fa-trash"></i></a>
                                             </div> -->

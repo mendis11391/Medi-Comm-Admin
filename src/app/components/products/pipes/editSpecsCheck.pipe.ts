@@ -26,7 +26,7 @@ export class EditSpecPipe implements PipeTransform {
     }
 
     
-  transform(value: any, args?: any): any {
+  transform(value: any, args?: any, args2?: any): any {
     // if (!value) {
     //   return value;
     // }
@@ -43,14 +43,13 @@ export class EditSpecPipe implements PipeTransform {
     // } else{
     //     return false;
     // }
-    return this.getAllspecValuesBySpecId(value, args);
+    return this.getAllspecValuesBySpecId(value, args, args2);
   }
 
 
-  getAllspecValuesBySpecId(id, prodId) {
+  getAllspecValuesBySpecId(id, prodId, specId) {
     this.result='';
-    this.result = this.specValues.find(item =>item.Spec_Value_Id==id && item.product_id==prodId);
-    console.log(this.result);
+    this.result = this.specValues.find(item =>item.Spec_Value_Id==id && item.spec_id==specId && item.product_id==prodId );
     if(this.result){
       return true;
     } else{ 

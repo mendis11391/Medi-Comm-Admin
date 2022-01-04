@@ -1,6 +1,13 @@
 <div class="container-fluid">
     <form enctype="multipart/form-data" [formGroup]="addProduct" (ngSubmit)="updateProducts()">
         <div class="row product-adding">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="theme-color">{{prodById}}</h5>
+                    </div>
+                </div>
+            </div>
             <div class="col-xl-6">
                 <div class="card">
                     <div class="card-header">
@@ -39,10 +46,27 @@
                     <div class="card-body">
                         <div class="digital-add needs-validation">
                             <div class="form-group">
-                                <label class="col-form-label"><span>*</span> Accessories <a (click)="open(editAccs);"><i class="fa fa-pencil"></i></a></label>
+                                <label class="col-form-label"><span>*</span> Accessories <a (click)="open(editAccs);callGetAccByID()"><i class="fa fa-pencil"></i></a></label>
                                 <div *ngFor="let a of accsID">
                                     <p>{{a.acceesory_name}}</p>
                                 </div>
+                                <!-- <select class="form-control" formControlName="accessory" multiple>
+                                    <option *ngFor="let a of accessories"  value="{{a.id}}">{{a.acceesory_name}}</option>
+                                </select> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Choose Highlights</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="digital-add needs-validation">
+                            <div class="form-group">
+                                <label class="col-form-label"><span>*</span> Highlights <a (click)="open(editHighlights);callGetHighlightsByID()"><i class="fa fa-pencil"></i></a></label>
+                                
                                 <!-- <select class="form-control" formControlName="accessory" multiple>
                                     <option *ngFor="let a of accessories"  value="{{a.id}}">{{a.acceesory_name}}</option>
                                 </select> -->
@@ -105,7 +129,9 @@
                             </div>
                             <div class="form-group">
                                 <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Product image</label>
-                                <input type="file" id="product_image" (change)="imageChange($event)"/>
+                                <input type="file" id="product_image" (change)="imageChange($event)"/><br>
+                                <img class="img-responsive w-25" 
+                                    [src]="addProduct.value.prodImage | BlobImage">
                             </div>
 
                             <div class="form-group">
@@ -149,8 +175,9 @@
                                 <div class="form-group" *ngFor="let cs of catSpecs; let i = index;">
                                     <label class="col-form-label"><span>*</span> {{cs.spec_name}}</label>
                                     <select class="form-control" formControlName="{{cs.spec_id}}" >
-                                        <option>Value not specified</option>
-                                        <option *ngFor="let sv of cs.spec_id | specValues"  [selected]="sv.id | editSpecCheck: prodId">{{sv.spec_value}}</option>
+                                        <option value="0">Select</option>
+                                        <option *ngFor="let sv of cs.spec_id | specValues"  value="{{sv.id}}">{{sv.spec_value}}</option>
+                                        <!-- <option *ngFor="let sv of cs.spec_id | specValues"  [selected]="sv.id | editSpecCheck: prodId: cs.spec_id" value="{{sv.id}}">{{sv.spec_value}}</option> -->
                                     </select>
                                     <!-- <div *ngFor="let sv of cs.spec_id | specValues">                                        
                                         <input type="radio" name="cs.spec_id" class="form-check-input"  [checked]="sv.spec_value | editSpecCheck: specsCheck">
@@ -168,6 +195,15 @@
                 </div>
             </div>
             <div class="col-xl-6">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Stocks</h5>
+                    </div>
+                    <div class="card-body">
+                        <ng2-smart-table [settings]="settings" [source]="editProducts" (editConfirm)="onEditStockUpdate($event)"></ng2-smart-table>
+                    </div>
+                </div>
                 
                 <!-- <div class="card">
                     <div class="card-header">
@@ -286,6 +322,43 @@
                     <td>
                         <div class="form-check">
                             <input type="checkbox" class="form-check-input" (change)="accsActions($event,a.id)" [checked]="a.checked">
+                        </div>
+                        <!-- <input type="checkbox" [checked]="at.checked"> -->
+                    </td>
+                </tbody>
+            </table>
+        </div>
+        <!-- <div class="specValues" *ngFor="let sv of tenureEdit.specId | tenurePriority">{{sv.tenure}} {{sv.tenure_period}}</div> -->
+    </div>
+    <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-primary"  (click)="reload()">Save</button> -->
+        <button class="btn btn-secondary" type="button" data-dismiss="modal"
+            (click)="modal.dismiss('Cross click')">Close</button>
+    </div>
+</ng-template>
+
+<ng-template #editHighlights let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title f-w-600" id="exampleModalLabel">Edit accessories</h5>
+        <button type="button" class="close" aria-label="Close"
+            (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <th>Highlights</th>
+                    <th>Action</th>
+                </thead>
+                <tbody *ngFor="let h of highlights">
+                    <td >
+                        {{h.highlight_name}}
+                    </td>
+                    <td>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" (change)="highlightsActions($event,h.id)" [checked]="h.checked">
                         </div>
                         <!-- <input type="checkbox" [checked]="at.checked"> -->
                     </td>

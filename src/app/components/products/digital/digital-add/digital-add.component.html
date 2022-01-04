@@ -122,9 +122,10 @@
                             <div class="form-group" *ngIf="addProduct.value.mainCatName">
                                 <label class="col-form-label"><span>*</span> Highlights</label>
                                 <select class="form-control" formControlName="highlightType" multiple>
-                                    <option value="1">Featured</option>
+                                    <!-- <option value="1">Featured</option>
                                     <option value="2">Best seller</option>
-                                    <option value="3">New products</option>
+                                    <option value="3">New products</option> -->
+                                    <option *ngFor="let h of highlights" value="{{h.id}}">{{h.highlight_name}}</option>
                                 </select>
                             </div>
 
@@ -146,7 +147,7 @@
                                 <div class="form-group" *ngFor="let cs of catSpecs; let i = index;">
                                     <label class="col-form-label"><span>*</span> {{cs.spec_name}}</label>
                                     <select class="form-control" formControlName="{{cs.spec_id}}" >
-                                        <option *ngFor="let sv of cs.spec_id | specValues" value="{{sv.spec_value}}">{{sv.spec_value}}</option>
+                                        <option *ngFor="let sv of cs.spec_id | specValues" value="{{sv.id}}">{{sv.spec_value}}</option>
                                     </select>
                                 </div>
                             </div>

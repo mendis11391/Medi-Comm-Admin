@@ -47,6 +47,10 @@ del {
     color: $font-grey;
     font-weight: 400;
 }
+
+.theme-color{
+  color: #f36f02;
+}
 @keyframes sidebar-menu-open {
   0% {
     transform: translate(0px, -50%) scale(1, 0);
