@@ -23,7 +23,7 @@ export class PricingSchemesComponent implements OnInit {
   editTenureValues;
   specValueStatus:boolean=false;
   tenureEdit={
-    specId:'',
+    priority:'',
     specName:'',
     specValue:''
   }
@@ -77,12 +77,13 @@ export class PricingSchemesComponent implements OnInit {
 
   tenurePriorityActions(e,tenureId){
     let itemToDelete=this.tenureByPriority.find(item=> item.tenure_id==tenureId);
-    let itemToAdd = {priority:this.tenureByPriority[0].priority, tenure_id:tenureId};
+    let itemToAdd = {priority:this.tenureEdit.priority, tenure_id:tenureId};
     if(e.target.checked){
       this.category.postTenureDiscounts(itemToAdd).subscribe();
     }else{
       this.category.deleteTenureDiscountsById(itemToDelete.id).subscribe();
     }   
+    
   }
 
   reload(){
@@ -91,29 +92,6 @@ export class PricingSchemesComponent implements OnInit {
 
 
 
-  addSpecs(){
-    this.http.post(' http://localhost:3000/products/postSpecs', {spec_name:this.specName, specIMage:this.specImage,spec_status:1}).subscribe((res) => {
-      console.log(res);
-    });
-  }
-
-  // addSpecValue(){
-  //   this.http.post(' http://localhost:3000/category/addSpecValue', {specId:this.getSpecName,specValue:this.specValue}).subscribe((res) => {
-  //     console.log(res);     
-  //     this.specValueStatus=true;
-  //     setTimeout(() => { this.specValueStatus = false; }, 2000);
-  //   });
-  // }
-
-  addSpecValue(){
-    this.http.post(' http://localhost:3000/category/addSpecValue', {specId:this.tenureEdit.specId,specValue:this.tenureEdit.specValue}).subscribe((res) => {
-      console.log(res);     
-      this.specValueStatus=true;
-      this.getAllSpecs();
-      this.modalService.dismissAll();
-      setTimeout(() => { this.specValueStatus = false; }, 2000);
-    });
-  }
 
   getSpecValueByID(id){
     return this.http.get(this.b_url+'/getSpecsValuesById/'+id);
@@ -121,7 +99,7 @@ export class PricingSchemesComponent implements OnInit {
 
   open(addSpec,priority, specName) {
     let allTenureValues;
-    this.tenureEdit.specId=priority;
+    this.tenureEdit.priority=priority;
     this.tenureEdit.specName=specName;
     this.getAllTenures(priority);
     this.category.getTenureByPriority().subscribe((res)=>{
@@ -166,6 +144,10 @@ export class PricingSchemesComponent implements OnInit {
       },
       discount: {
         title: 'Discount %',
+        editable:true,
+      },
+      default_tenure: {
+        title: 'Default tenure',
         editable:true,
       }
     },

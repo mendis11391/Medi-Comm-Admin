@@ -84,7 +84,7 @@ export class OrderDetailsComponent implements OnInit {
       deliveryStatus:['']
     });
     // this.getOrderById(this.route.snapshot.url[1].path);
-    this.http.get(`http://localhost:3000/orders/getAllPaymentStatus`).subscribe((res) => {
+    this.http.get(` http://localhost:3000/orders/getAllPaymentStatus`).subscribe((res) => {
       this.paymentStatus=res;
     });
   }
@@ -105,7 +105,7 @@ export class OrderDetailsComponent implements OnInit {
   open(ordId) {
     this.modalReference=this.modalService.open(this.content);
     this.orderId=ordId;
-    this.http.get(`http://localhost:3000/orders/${ordId}`).subscribe((res) => {
+    this.http.get(` http://localhost:3000/orders/${ordId}`).subscribe((res) => {
       this.updateStatus.patchValue({
         deliveryStatus: res[0].delivery_status,
         refundStatus: res[0].refund_status
@@ -114,7 +114,7 @@ export class OrderDetailsComponent implements OnInit {
   }
 
   updateDeliveryStatus(id){
-    this.http.put(`http://localhost:3000/orders/update/${id}`, this.updateStatus.value).subscribe((res) => {
+    this.http.put(` http://localhost:3000/orders/update/${id}`, this.updateStatus.value).subscribe((res) => {
       
     });
   }
@@ -122,11 +122,11 @@ export class OrderDetailsComponent implements OnInit {
 
   getOrderById(ordId){
     this.fullOrderDetails=[];
-    this.http.get(`http://localhost:3000/orders/orderId/${ordId}`).subscribe((res) => {
+    this.http.get(` http://localhost:3000/orders/orderId/${ordId}`).subscribe((res) => {
       this.fullOrderDetails.push(res[0]);
       this.customer_id = res[0].customer_id
       this.productDetails=res[0].orderItem;
-      this.http.get(`http://localhost:3000/users/getCustomerById/${this.customer_id}`).subscribe((customerDetails)=>{
+      this.http.get(` http://localhost:3000/users/getCustomerById/${this.customer_id}`).subscribe((customerDetails)=>{
         this.customerDetails = customerDetails;
       });
     });
@@ -137,7 +137,7 @@ export class OrderDetailsComponent implements OnInit {
   }
 
   updateOrderField(ordId, field, value){
-    this.http.put(`http://localhost:3000/orders/updateAnyOrderField/${ordId}`, {orderField: field, orderValue: value}).subscribe();
+    this.http.put(` http://localhost:3000/orders/updateAnyOrderField/${ordId}`, {orderField: field, orderValue: value}).subscribe();
     this.paymentStatusActive=!this.paymentStatusActive;
     this.getOrderById(this.oid);
     // this.changeDetection.detectChanges();
@@ -168,9 +168,9 @@ export class OrderDetailsComponent implements OnInit {
   //   });
   //   console.log(forQtyProduct);
   //   console.log(getAllProduct);
-  //   this.http.put(`http://localhost:3000/orders/updateDelivery/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct),checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
+  //   this.http.put(` http://localhost:3000/orders/updateDelivery/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct),checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
   //     console.log(res);
-  //     this.http.put(`http://localhost:3000/assets/update/${assetId}`, {availability:0}).subscribe();
+  //     this.http.put(` http://localhost:3000/assets/update/${assetId}`, {availability:0}).subscribe();
   //     this.modalReference.close();
   //     // this.assetAssign.reset();
   //     window.location.reload();
@@ -186,15 +186,15 @@ export class OrderDetailsComponent implements OnInit {
     let expiryDate;
     let nextStartDate;
     let orderItem;
-    this.http.get(`http://localhost:3000/orders/orderItemsByorderId/${OrderId}`).subscribe((res) => {
+    this.http.get(` http://localhost:3000/orders/orderItemsByorderId/${OrderId}`).subscribe((res) => {
       orderItem=res;
       getAllProduct=orderItem[0].renewals_timline;
       currentAssetId=getAllProduct[0].assetId ;
       if(orderItem[0].asset_id=='To be assigned'){
         getAllProduct[0].assetId = assetId;
-        this.http.put(`http://localhost:3000/orders/updateOrderItemAsset/${OrderId}`, {assetId:assetId,renewalTimeline:JSON.stringify(getAllProduct)}).subscribe((res) => {});
+        this.http.put(` http://localhost:3000/orders/updateOrderItemAsset/${OrderId}`, {assetId:assetId,renewalTimeline:JSON.stringify(getAllProduct)}).subscribe((res) => {});
           
-        this.http.put(`http://localhost:3000/assets/update/${assetId}`, {availability:0, startDate:startDate, expiryDate:expiryDate, nextStartDate:nextStartDate}).subscribe();
+        this.http.put(` http://localhost:3000/assets/update/${assetId}`, {availability:0, startDate:startDate, expiryDate:expiryDate, nextStartDate:nextStartDate}).subscribe();
         this.assetAssign.reset();
         this.getAssets();
         this.getOrderById(this.oid);
@@ -202,10 +202,10 @@ export class OrderDetailsComponent implements OnInit {
         // window.location.reload();
       } else{
         getAllProduct[0].assetId = assetId;
-        this.http.put(`http://localhost:3000/orders/updateOrderItemAsset/${OrderId}`, {assetId:assetId,renewalTimeline:JSON.stringify(getAllProduct)}).subscribe((res) => {});
+        this.http.put(` http://localhost:3000/orders/updateOrderItemAsset/${OrderId}`, {assetId:assetId,renewalTimeline:JSON.stringify(getAllProduct)}).subscribe((res) => {});
           
-        this.http.put(`http://localhost:3000/assets/update/${assetId}`, {availability:0, startDate:startDate, expiryDate:expiryDate, nextStartDate:nextStartDate}).subscribe();
-        this.http.put(`http://localhost:3000/assets/update/${currentAssetId}`, {availability:1, startDate:startDate, expiryDate:expiryDate, nextStartDate:nextStartDate}).subscribe();
+        this.http.put(` http://localhost:3000/assets/update/${assetId}`, {availability:0, startDate:startDate, expiryDate:expiryDate, nextStartDate:nextStartDate}).subscribe();
+        this.http.put(` http://localhost:3000/assets/update/${currentAssetId}`, {availability:1, startDate:startDate, expiryDate:expiryDate, nextStartDate:nextStartDate}).subscribe();
         this.assetAssign.reset();
         this.getAssets();
         this.getOrderById(this.oid);
@@ -247,12 +247,12 @@ export class OrderDetailsComponent implements OnInit {
 
     // Promise.all([od,cid]).then((success)=>{
     //   console.log(success);
-    //   this.http.put(`http://localhost:3000/orders/updateOD/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct)}).subscribe((res) => {});
-    //     this.http.put(`http://localhost:3000/orders/updateCID/${OrderId}`, {checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
+    //   this.http.put(` http://localhost:3000/orders/updateOD/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct)}).subscribe((res) => {});
+    //     this.http.put(` http://localhost:3000/orders/updateCID/${OrderId}`, {checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
     //     console.log(res);
         
-    //     this.http.put(`http://localhost:3000/assets/update/${assetId}`, {availability:0, startDate:startDate, expiryDate:expiryDate, nextStartDate:nextStartDate}).subscribe();
-    //     this.http.put(`http://localhost:3000/assets/update/${currentAssetId}`, {availability:1, startDate:'', expiryDate:'', nextStartDate:''}).subscribe();
+    //     this.http.put(` http://localhost:3000/assets/update/${assetId}`, {availability:0, startDate:startDate, expiryDate:expiryDate, nextStartDate:nextStartDate}).subscribe();
+    //     this.http.put(` http://localhost:3000/assets/update/${currentAssetId}`, {availability:1, startDate:'', expiryDate:'', nextStartDate:''}).subscribe();
     //     this.assetAssign.reset();
     //     this.getAssets();
     //     this.modalReference.close();
@@ -264,7 +264,7 @@ export class OrderDetailsComponent implements OnInit {
 
   updateDeliveryDate(OrderId){
     let getOrder;
-    let getAllProduct;
+    let getAllProduct=[];
     let forQtyProduct;
     this.formError=false;
     let orderItem;
@@ -292,10 +292,10 @@ export class OrderDetailsComponent implements OnInit {
       
       let db= getdeliveryDate.getDate()+'/'+(getdeliveryDate.getMonth()+1)+'/'+getdeliveryDate.getFullYear();
 
-      this.http.get(`http://localhost:3000/orders/orderItemsByorderId/${OrderId}`).subscribe((res) => {
+      this.http.get(` http://localhost:3000/orders/orderItemsByorderId/${OrderId}`).subscribe((res) => {
 
         orderItem=res;
-        getAllProduct=orderItem[0].renewals_timline;
+        getAllProduct.push(orderItem[0].renewals_timline[0]);
         currentAssetId=getAllProduct[0].assetId ;
         let expiryDate=this.getDates(db);
         let edb=expiryDate.getDate()+'/'+(expiryDate.getMonth()+1)+'/'+expiryDate.getFullYear();
@@ -305,13 +305,15 @@ export class OrderDetailsComponent implements OnInit {
         let exp=this.getDates(db);
         exp.setDate(exp.getDate() + 1);
 
+        getAllProduct[0].renewed=0;
+        getAllProduct[0].overdew=0;
         getAllProduct[0].actualStartDate=db;
         getAllProduct[0].startDate=db;
         getAllProduct[0].expiryDate=edb;
         getAllProduct[0].nextStartDate=nextStartDate;      
         getAllProduct[0].billPeriod = db+'-'+edb; 
         getAllProduct[0].deliveryDateAssigned=1;
-        
+        console.log(getAllProduct);
         // let cid = new Promise((resolve, reject) => {
         //   Array.prototype.forEach.call(forQtyProduct, res => {
         //     if(res.id===prodId){          
@@ -340,9 +342,11 @@ export class OrderDetailsComponent implements OnInit {
       
         if(currentAssetId!='To be assigned'){
           this.formError=false;
-          this.http.put(`http://localhost:3000/orders/updateOrderItemDeliveryDate/${OrderId}`, {deliveryDate:getdeliveryDate, expiryDate:exp,renewalTimeline:JSON.stringify(getAllProduct)}).subscribe((res) => {
+          console.log(getdeliveryDate);
+          console.log(exp);
+          this.http.put(` http://localhost:3000/orders/updateOrderItemDeliveryDate/${OrderId}`, {deliveryDate:getdeliveryDate, expiryDate:exp,renewalTimeline:JSON.stringify(getAllProduct)}).subscribe((res) => {
               console.log(res);
-              this.http.put(`http://localhost:3000/assets/update/${currentAssetId}`, {availability:0, startDate:db, expiryDate:edb, nextStartDate:nextStartDate}).subscribe();
+              this.http.put(` http://localhost:3000/assets/update/${currentAssetId}`, {availability:0, startDate:db, expiryDate:edb, nextStartDate:nextStartDate}).subscribe();
               // const userId = localStorage.getItem('user_id');
               // const uname = localStorage.getItem('uname');
               // const uid = uname.substring(0, 3);
@@ -353,7 +357,7 @@ export class OrderDetailsComponent implements OnInit {
               //   userId:userId,
               //   activityLog:JSON.stringify(log),
               // }
-              // this.http.post(`http://localhost:3000/backendActivity/createActivity`, activity).subscribe();
+              // this.http.post(` http://localhost:3000/backendActivity/createActivity`, activity).subscribe();
               this.deliveryDateStatus.reset();
               this.getAssets();
               this.getOrderById(this.oid);
@@ -376,9 +380,10 @@ export class OrderDetailsComponent implements OnInit {
     let orderItem;
     let currentAssetId;
     let delvStatus = this.deliveryStatus.value.deliveryStatus;
-    this.http.put(`http://localhost:3000/orders/updateRenewTimline/${OrderId}`, {deliveryStatus:delvStatus}).subscribe((res)=>{
+    this.http.put(` http://localhost:3000/orders/updateRenewTimline/${OrderId}`, {deliveryStatus:delvStatus, orderId:this.oid}).subscribe((res)=>{
       // this.modalReference.close();
-      this.http.get(`http://localhost:3000/orders/${this.customer_id}`).subscribe();
+      this.deliveryStatus.reset();
+      this.http.get(` http://localhost:3000/orders/${this.customer_id}`).subscribe();
       this.getOrderById(this.oid);
           // window.location.reload();
     });
@@ -408,9 +413,9 @@ export class OrderDetailsComponent implements OnInit {
     
     // Promise.all([od,cid]).then((success)=>{
     //   if(this.assetId!=''){
-    //     this.http.put(`http://localhost:3000/orders/updateDelivery/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct),checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
+    //     this.http.put(` http://localhost:3000/orders/updateDelivery/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct),checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
     //       console.log(res);
-    //       // this.http.put(`http://localhost:3000/assets/update/${assetId}`, {availability:0}).subscribe();
+    //       // this.http.put(` http://localhost:3000/assets/update/${assetId}`, {availability:0}).subscribe();
     //       this.deliveryStatus.reset();
     //       this.modalReference.close();
     //       window.location.reload();

@@ -5,7 +5,7 @@ import { ProductService } from '../services/product.service';
 export interface tenurePriority {
   discount?:number,
   id?: number,
-  is_min_tenure?: number,
+  default_tenure?: number,
   priority?: number,
   scheme_name?: string,
   tenure?: number,

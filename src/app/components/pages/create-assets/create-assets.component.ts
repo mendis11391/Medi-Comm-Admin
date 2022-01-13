@@ -29,7 +29,7 @@ export class CreateAssetsComponent implements OnInit {
   }
 
   addAsset(){
-    this.http.post(`http://localhost:3000/assets/createAsset`, {assets:this.asset.value.assetId}).subscribe((res) => {
+    this.http.post(` http://localhost:3000/assets/createAsset`, {assets:this.asset.value.assetId}).subscribe((res) => {
       alert("asset added");
       this.asset.reset();
     });

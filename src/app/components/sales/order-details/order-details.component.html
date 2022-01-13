@@ -35,7 +35,7 @@
                     <h5>Invoice</h5>
                 </div>
                 <div class="card-body">
-                    <p>Invoice # : 123412</p>
+                    <p>Invoice # : {{fullOrderDetails[0].invoice_id}}</p>
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" placeholder="Email id">
                         <div class="input-group-append">
@@ -83,7 +83,7 @@
                 <div class="card-body">
                     <p>Order date: {{o.createdAt | date:'dd MM yyyy'}}</p>
                     <p>Order #: {{o.primary_id}}</p>
-                    <p>Invoice #: IRO-21-22-123421</p>
+                    <p>Invoice #: {{fullOrderDetails[0].invoice_id}}</p>
                     <p *ngIf="!paymentStatusActive">Payment status: {{o.paymentStatus}} <i class="fa fa-pencil" *ngIf="editStatus" (click)="paymentStatusActive=!paymentStatusActive"></i></p>
                     <div class="card" *ngIf="paymentStatusActive">
                         <div class="card-header">
@@ -144,7 +144,7 @@
                         <tbody *ngFor="let p of productDetails">
                           <tr>
                             <td>{{p.prod_name}}</td>
-                            <td>{{p.tenure_id}} Months</td>
+                            <td>{{p.tenure_period}}</td>
                             <td>₹{{p.security_deposit}}</td>
                             <td>₹{{p.tenure_price}}</td>
                             <td>{{p.asset_id}}</td> 
@@ -156,10 +156,11 @@
                             <td>
                                 <form class="orders-form-popup" [formGroup]="assetAssign" (ngSubmit)="updateAssetId(p.order_item_id)">
                                     <label> Asset #:
-                                        <select formControlName="assetId" class="form-control">
+                                        <!-- <select formControlName="assetId" class="form-control">
                                             <option [value]="p.asset_id">select</option>
                                             <option *ngFor="let a of assets" [value]="a.asset_no">{{a.asset_no}}</option>
-                                        </select> 
+                                        </select>  -->
+                                        <input type="text" formControlName="assetId" class="form-control">
                                     </label>
                                     <div *ngIf="((deliveryStatus.value.deliveryStatus=='Shipped' && assetId=='') || (deliveryStatus.value.deliveryStatus=='Delivered' && assetId=='') || formError==true)" class="text text-danger">
                                         Asset # is required.

@@ -90,6 +90,7 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
     this.getAllBrands();
     this.getAllCities();
     this.getAllspecValuesBySpecId(1);
+    console.log(this.addProduct.value.accessory);
   }
 
   ngAfterViewInit(){
@@ -388,6 +389,10 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
 
   appendTenure() {
     return `1:${this.addProduct.value.tenure.oneMonth}[--split--]3:${this.addProduct.value.tenure.threeMonths}[--split--]6:${this.addProduct.value.tenure.sixMonths}[--split--]12:${this.addProduct.value.tenure.twelveMonths}[--split--]18:${this.addProduct.value.tenure.eighteenMonths}[--split--]24:${this.addProduct.value.tenure.twentyFourMonths}`;
+  }
+
+  updateprodStatus(e){
+    console.log(e);
   }
 
   updateProducts() {  

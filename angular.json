@@ -30,7 +30,8 @@
             "styles": [
               "src/styles.scss",
               "src/assets/scss/style.scss",
-              "node_modules/font-awesome/scss/font-awesome.scss"
+              "node_modules/font-awesome/scss/font-awesome.scss",
+              "node_modules/ngx-ui-switch/ui-switch.component.css"
             ],
             "scripts": []
           },

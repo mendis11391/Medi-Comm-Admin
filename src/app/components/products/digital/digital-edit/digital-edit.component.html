@@ -5,22 +5,22 @@
                 <div class="card">
                     <div class="card-header">
                         <h5 class="theme-color">{{prodById}}</h5>
+                        <div class="pull-right">
+                            <ui-switch uncheckedLabel="Disabled" checkedLabel="Enabled" formControlName="prodStatus" (change)="updateprodStatus($event)"></ui-switch>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-xl-6">
                 <div class="card">
-                    <div class="card-header">
+                    <!-- <div class="card-header">
                         <h5>Choose Category</h5>
-                    </div>
+                    </div> -->
                     <div class="card-body">
                         <div class="digital-add needs-validation">
-                            <div class="form-group"  *ngFor="let c of categories">
-                                <label class="col-form-label" *ngIf="c.id==mainCatId"><span>*</span> Category group : {{c.main_cat_name}} <a (click)="open(editMainCatId);"><i class="fa fa-pencil"></i></a></label>
-                                <!-- <select class="form-control" formControlName="mainCatName" (change)="getSubCategory()">
-                                    <option *ngFor="let c of categories" value="{{c.id}}">{{c.main_cat_name}}</option>
-                                </select> -->
-                            </div>
+                            <!-- <div class="form-group"  *ngFor="let c of categories">
+                                <label class="col-form-label" *ngIf="c.id==mainCatId"><span>*</span> Category group : {{c.main_cat_name}} <a (click)="open(editMainCatId);"><i class="fa fa-pencil"></i></a></label>                                
+                            </div> -->
 
                             <div class="form-group" *ngFor="let sc of subCat">
                                 <label class="col-form-label" *ngIf="sc.cat_id==subCatId"><span>*</span> Category name: {{sc.cat_name}} <a (click)="open(editSubCatId);"><i class="fa fa-pencil"></i></a></label>
@@ -38,47 +38,12 @@
                         </div>
                     </div>
                 </div>
+                
 
                 <div class="card">
-                    <div class="card-header">
-                        <h5>Choose Accessories</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="digital-add needs-validation">
-                            <div class="form-group">
-                                <label class="col-form-label"><span>*</span> Accessories <a (click)="open(editAccs);callGetAccByID()"><i class="fa fa-pencil"></i></a></label>
-                                <div *ngFor="let a of accsID">
-                                    <p>{{a.acceesory_name}}</p>
-                                </div>
-                                <!-- <select class="form-control" formControlName="accessory" multiple>
-                                    <option *ngFor="let a of accessories"  value="{{a.id}}">{{a.acceesory_name}}</option>
-                                </select> -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h5>Choose Highlights</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="digital-add needs-validation">
-                            <div class="form-group">
-                                <label class="col-form-label"><span>*</span> Highlights <a (click)="open(editHighlights);callGetHighlightsByID()"><i class="fa fa-pencil"></i></a></label>
-                                
-                                <!-- <select class="form-control" formControlName="accessory" multiple>
-                                    <option *ngFor="let a of accessories"  value="{{a.id}}">{{a.acceesory_name}}</option>
-                                </select> -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
+                    <!-- <div class="card-header">
                         <h5>General</h5>
-                    </div>
+                    </div> -->
                     <div class="card-body">
                         <div class="digital-add needs-validation">    
                             <div class="form-group">
@@ -127,26 +92,13 @@
                                     <option *ngFor="let ps of pricingSchemes" value="{{ps.id}}">{{ps.scheme_name}}</option>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Product image</label>
-                                <input type="file" id="product_image" (change)="imageChange($event)"/><br>
-                                <img class="img-responsive w-25" 
-                                    [src]="addProduct.value.prodImage | BlobImage">
-                            </div>
+                            
 
-                            <div class="form-group">
-                                <label class="col-form-label"><span>*</span> Product status</label>
-                                <div class="m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
-                                    <label class="d-block" for="edo-ani">
-                                        <input class="radio_animated"  formControlName="prodStatus" [value]="1"   type="radio">
-                                        Yes
-                                    </label>
-                                    <label class="d-block" for="edo-ani1">
-                                        <input class="radio_animated" formControlName="prodStatus" [value]="0"   type="radio">
-                                        No
-                                    </label>
-                                </div>
-                            </div>
+                            <!-- <div class="form-group">
+                                <label class="col-form-label"><span>*</span> Product status</label><br>
+                                <ui-switch uncheckedLabel="Disabled" checkedLabel="Enabled" formControlName="prodStatus" (change)="updateprodStatus($event)"></ui-switch>
+                                
+                            </div> -->
 
                             <!-- <div class="form-group" *ngIf="addProduct.value.mainCatName">
                                 <label class="col-form-label"><span>*</span> Highlights</label>
@@ -193,8 +145,24 @@
                         </div>
                     </div>
                 </div>
+
+                
             </div>
             <div class="col-xl-6">
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Product Image</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Product image</label>
+                            <input type="file" id="product_image" (change)="imageChange($event)"/><br>
+                            <img class="img-responsive w-25" 
+                                [src]="addProduct.value.prodImage | BlobImage">
+                        </div>
+                    </div>
+                </div>
 
                 <div class="card">
                     <div class="card-header">
@@ -202,6 +170,45 @@
                     </div>
                     <div class="card-body">
                         <ng2-smart-table [settings]="settings" [source]="editProducts" (editConfirm)="onEditStockUpdate($event)"></ng2-smart-table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Choose Accessories</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="digital-add needs-validation">
+                            <div class="form-group">
+                                <label class="col-form-label"><span>*</span> Accessories <a (click)="open(editAccs);callGetAccByID()"><i class="fa fa-pencil"></i></a></label>
+                                <div *ngFor="let a of accsID">
+                                    <p>{{a.acceesory_name}}</p>
+                                </div>
+                                <div>
+                                    {{addProduct.value.accessory}}
+                                </div>
+                                <!-- <select class="form-control" formControlName="accessory" multiple>
+                                    <option *ngFor="let a of accessories"  value="{{a.id}}">{{a.acceesory_name}}</option>
+                                </select> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Choose Highlights</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="digital-add needs-validation">
+                            <div class="form-group">
+                                <label class="col-form-label"><span>*</span> Highlights <a (click)="open(editHighlights);callGetHighlightsByID()"><i class="fa fa-pencil"></i></a></label>
+                                
+                                <!-- <select class="form-control" formControlName="accessory" multiple>
+                                    <option *ngFor="let a of accessories"  value="{{a.id}}">{{a.acceesory_name}}</option>
+                                </select> -->
+                            </div>
+                        </div>
                     </div>
                 </div>
                 

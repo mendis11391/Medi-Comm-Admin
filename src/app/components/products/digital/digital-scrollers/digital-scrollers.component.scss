@@ -1,0 +1,38 @@
+.specValues{
+    display: inline-block;
+    border: 1px solid #f36f02;
+    padding:1%;
+    margin-right:4px;
+    margin-bottom: 10px;
+}
+.editSpecValues{
+    display: block;
+    border-bottom: 1px solid #e2e2e2;
+    padding:1%;
+    margin-right:4px;
+    margin-bottom: 10px;
+}
+::ng-deep .my-modal .modal-dialog { 
+    max-width: 80%;
+    width: 80%;
+    min-height: 500px !important;
+}
+
+.specifications{
+    table{
+        tbody{
+            td{
+                a{
+                    font-size: 25px;
+                    color: #f36f02;
+                }
+            }
+            .specValues{
+                display: inline-block;
+                border: 1px solid #f36f02;
+                padding:1%;
+                margin-right:4px;
+            }
+        }
+    }
+}

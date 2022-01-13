@@ -42,6 +42,8 @@ import { DigitalScrollersComponent } from './digital/digital-scrollers/digital-s
 import { ScrollerPipe } from './pipes/scoller.pipe';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
+import { UiSwitchModule } from 'ngx-ui-switch';
+
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
   maxFilesize: 50,
   url: 'https://httpbin.org/post',
@@ -62,7 +64,8 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     DropzoneModule,
     GalleryModule.forRoot(),
     NgMultiSelectDropDownModule.forRoot(),
-    SharedModule
+    SharedModule,
+    UiSwitchModule
   ],
   exports: [ScrollerPipe,BlobPipe,CategorySpecsPipe,EditSpecPipe,CheckTenurePipe,SpecPipe, TenurePipe],
   providers: [

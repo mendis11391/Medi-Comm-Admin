@@ -30,6 +30,7 @@ export class OrdersComponent implements OnInit {
   diffInRent=0;
   diffInDeposit=0;
   ddCharges=0;
+  orderName:string;
   public filteredOrders=[];
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
   constructor(private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: FormBuilder) {
@@ -71,13 +72,16 @@ export class OrdersComponent implements OnInit {
       orders.reverse();
       // this.order=orders.filter(item => item.paymentStatus=='Success');
       this.order=orders;
-      this.filteredOrders=this.order;
+      this.filteredOrders=this.order.filter(item => item.orderType_id==1 && item.deliveryStatus!='4');
+      this.orderName='New orders';
     });
   }
 
-  filterOrders(e){
+  filterOrders(e){    
     if(e=='All orders'){
       this.filteredOrders=this.order;
+    } else if(e=='New orders'){
+      this.filteredOrders=this.order.filter(item => item.orderType_id==1 && item.deliveryStatus!='4');
     } else if(e=='Primary order'){
       this.filteredOrders=this.order.filter(item => item.orderType_id==1);
     } else if(e=='Renewal order'){
@@ -87,6 +91,7 @@ export class OrdersComponent implements OnInit {
     } else if(e=='Return order'){
       this.filteredOrders=this.order.filter(item => item.orderType_id==4);
     }
+    this.orderName=e;
   }
 
   getAssets(){
@@ -99,7 +104,7 @@ export class OrdersComponent implements OnInit {
   open(ordId) {
     this.modalReference=this.modalService.open(this.content);
     this.orderId=ordId;
-    this.http.get(`http://localhost:3000/products/ordDetails/${ordId}`).subscribe((res) => {
+    this.http.get(` http://localhost:3000/products/ordDetails/${ordId}`).subscribe((res) => {
       this.updateStatus.patchValue({
         deliveryStatus: res[0].delivery_status,
         refundStatus: res[0].refund_status
@@ -108,7 +113,7 @@ export class OrdersComponent implements OnInit {
   }
 
   updateDeliveryStatus(id){
-    this.http.put(`http://localhost:3000/orders/update/${id}`, this.updateStatus.value).subscribe((res) => {
+    this.http.put(` http://localhost:3000/orders/update/${id}`, this.updateStatus.value).subscribe((res) => {
       console.log(res);
       this.modalReference.close();
     });
@@ -121,7 +126,7 @@ export class OrdersComponent implements OnInit {
     this.subTotal=0;
     let orderedProducts;
     this.modalReference=this.modalService.open(this.orderDetails, { windowClass : "order-details"});
-    this.http.get(`http://localhost:3000/products/ordDetails/${ordId}`).subscribe((res) => {
+    this.http.get(` http://localhost:3000/products/ordDetails/${ordId}`).subscribe((res) => {
       this.fullOrderDetails=res;
       this.productDetails=res[0].checkoutItemData;
       orderedProducts=JSON.parse(res[0].orderedProducts);
@@ -161,9 +166,9 @@ export class OrdersComponent implements OnInit {
     });
     console.log(forQtyProduct);
     console.log(getAllProduct);
-    this.http.put(`http://localhost:3000/orders/updateDelivery/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct),checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
+    this.http.put(` http://localhost:3000/orders/updateDelivery/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct),checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
       console.log(res);
-      this.http.put(`http://localhost:3000/assets/update/${assetId}`, {availability:0}).subscribe();
+      this.http.put(` http://localhost:3000/assets/update/${assetId}`, {availability:0}).subscribe();
       this.modalReference.close();
       // this.assetAssign.reset();
       window.location.reload();
@@ -204,7 +209,7 @@ export class OrdersComponent implements OnInit {
       }
     });
     console.log(forQtyProduct);
-    this.http.put(`http://localhost:3000/orders/updateDelivery/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct),checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
+    this.http.put(` http://localhost:3000/orders/updateDelivery/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct),checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
       console.log(res);
       this.modalReference.close();
     });

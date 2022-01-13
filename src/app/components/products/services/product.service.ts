@@ -148,6 +148,10 @@ export class ProductService {
     return this.http.get(this.b_url+'/getAllScrollerValues');
   }
 
+  getAllScrollerValues2(){
+    return this.http.get(this.b_url+'/getAllScrollerValues2');
+  }
+
   getSpecsByCatId(id) {
     return this.http.get(this.c_url+'/getSpecsByCatId/'+id);
   }

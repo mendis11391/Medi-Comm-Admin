@@ -1,0 +1,76 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Add Scroller</h5>
+                </div>
+                <div class="card-body">
+
+
+                    <input type="text" class="form-control" [(ngModel)]="scrollerName" placeholder="Scroller name" /><br>
+                    
+                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-original-title="test"
+                            data-target="#exampleModal" (click)="addScroller()">Add Scroller</button>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="card specifications">
+                <div class="card-header">
+                    <h5>Scrollers</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                              <tr>
+                                <th>Scroller Name</th>
+                                <th>Scroller Products</th>
+                                <th>Action</th>
+                              </tr>
+                            </thead>
+                            <tbody *ngFor="let s of getAllScrollerNames">
+                              <tr>
+                                <td>{{s.promotion_name}}</td>
+                                <td><div class="specValues" *ngFor="let pv of s.id | scrollerValues">{{pv.mainProdId}}</div></td>
+                                <td><a class="mr-2" (click)="open(addproducts); getcurrentPromotionId(s.id)"><i class="fa fa-plus-circle"></i></a></td>
+                              </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<ng-template #addproducts let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title f-w-600" id="exampleModalLabel">Add products</h5>
+        <button type="button" class="close" aria-label="Close"
+            (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <ng-multiselect-dropdown class="mx-5"
+                        [placeholder]="'custom placeholder'"
+                        [settings]="dropdownSettings"
+                        [data]="products"
+                        [(ngModel)]="selectedItems"
+                        (onSelect)="onItemSelect($event)"
+                        (onDeSelect)="onItemDeSelect($event)"
+                        >
+        </ng-multiselect-dropdown>
+        <!-- <div class="specValues" *ngFor="let sv of tenureEdit.specId | tenurePriority">{{sv.tenure}} {{sv.tenure_period}}</div> -->
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary"  >Save</button>
+        <button class="btn btn-secondary" type="button" data-dismiss="modal"
+            (click)="modal.dismiss('Cross click')">Close</button>
+    </div>
+</ng-template>
