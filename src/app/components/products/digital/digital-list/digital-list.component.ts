@@ -16,6 +16,8 @@ export class DigitalListComponent implements OnInit {
   public productsList;
   public filteredProducts=[];
   Role = Role;
+  categories:any;
+  public temp = [];
 
   constructor(private excelService:ExcelService,private list:ProductService, private router:Router) {
   }
@@ -58,18 +60,26 @@ export class DigitalListComponent implements OnInit {
 
   ngOnInit() {
     this.loadProducts();
+    this.getAllCategories();
   }
 
   loadProducts() {
-    this.list.getAllProducts().subscribe(res => {
+    this.list.getAllProductsLite().subscribe(res => {
       this.productsList = res;
       this.filteredProducts=this.productsList;
+      console.log(this.filteredProducts)
     }, error => {
       if (error.status === 401) {
         this.router.navigate(['/auth/login']);
       } else if(error.status === 403) {
         alert('session expired');
       }
+    });
+  }
+
+  getAllCategories(){
+    this.list.getAllCategories().subscribe((res)=>{
+      this.categories = res[0];
     });
   }
 
@@ -91,19 +101,30 @@ export class DigitalListComponent implements OnInit {
   }
 
   filterproducts(e){
-    if(e=='All products'){
+    if(e=='All'){
       this.filteredProducts=this.productsList;
-    } else if(e=='Laptops'){
-      this.filteredProducts=this.productsList.filter(item => item.cat_name=='Laptops');
-    } else if(e=='Desktops'){
-      this.filteredProducts=this.productsList.filter(item => item.cat_name=='Desktops');
-    } else if(e=='Camera'){
-      this.filteredProducts=this.productsList.filter(item => item.cat_name=='Camera');
+    } else{
+      this.filteredProducts=this.productsList.filter(item => item.cat_id==e);
     }
   }
 
   exportAsXLSX():void {
     this.excelService.exportAsExcelFile(this.filteredProducts, 'Products');
+  }
+
+  updateFilter(event) {
+    this.temp=this.productsList;
+    const val = event.target.value.toLowerCase();
+
+    // filter our data
+    const temp = this.temp.filter(function (d) {
+      return d.prod_id.toLowerCase().indexOf(val) !== -1 || d.prod_name.toLowerCase().indexOf(val) !== -1 || !val;
+    });
+
+    // update the rows
+    this.filteredProducts = temp;
+    // Whenever the filter changes, always go back to the first page
+    // this.table.offset = 0;
   }
 
 }

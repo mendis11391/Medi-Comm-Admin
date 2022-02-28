@@ -20,7 +20,8 @@ export class ProductService {
   b_url = `http://localhost:3000/products`;
   c_url = `http://localhost:3000/category`;
   cty_url = `http://localhost:3000/cities`;
-  pay_url = `http://localhost:3000/payments`
+  pay_url = `http://localhost:3000/payments`;
+  user_url = `http://localhost:3000/users`;
 
   // public compareProducts : BehaviorSubject<Product[]> = new BehaviorSubject([]);
   public observer   :  Subscriber<{}>;
@@ -35,8 +36,16 @@ export class ProductService {
     return this.products();
   }
 
+  public getProductsBycityId(id){
+    return this.http.get(`${this.b_url}/productsByCity/${id}`);
+  }
+
   public getAllProducts(){
     return this.http.get(`${this.b_url}/getAllProducts`);
+  }
+
+  public getAllProductsLite(){
+    return this.http.get(`${this.b_url}/getAllProductsLite`);
   }
 
   public getAllProductsByCityId(id){
@@ -184,6 +193,10 @@ export class ProductService {
 
   addReplacement(val){
     return this.http.post(`${this.pay_url}/replacement`, val)
+  }
+
+  getCartByCustomerId(id) {
+    return this.http.get(this.user_url+'/getCartByCustomerId/'+id);
   }
 
 }

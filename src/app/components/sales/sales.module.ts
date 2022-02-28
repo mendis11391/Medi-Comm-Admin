@@ -23,7 +23,7 @@ import { ReplacementOrderComponent } from './replacement-order/replacement-order
 import { ReturnOrderComponent } from './return-order/return-order.component';
 import { UpcomingRenewalsComponent } from './upcoming-renewals/upcoming-renewals.component';
 import { CreateOrderComponent } from './create-order/create-order.component';
-
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 @NgModule({
   declarations: [OrdersComponent, TransactionsComponent, OthersComponent, DepositsComponent, OrdersPanelComponent, ReplacementOrdersComponent, UserRequestsComponent, ManageOrdersComponent, OrderDetailsComponent, PrimaryOrderComponent, RenewalOrderComponent, ReplacementOrderComponent, ReturnOrderComponent, UpcomingRenewalsComponent, CreateOrderComponent],
@@ -34,7 +34,8 @@ import { CreateOrderComponent } from './create-order/create-order.component';
     NgxDatatableModule,
     FormsModule,
     ReactiveFormsModule,
-    NgbModule
+    NgbModule,
+    NgMultiSelectDropDownModule.forRoot(),
   ]
 })
 export class SalesModule { }

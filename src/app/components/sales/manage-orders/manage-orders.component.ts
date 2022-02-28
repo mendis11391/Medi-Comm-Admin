@@ -109,7 +109,7 @@ export class ManageOrdersComponent implements OnInit {
   open(ordId) {
     this.modalReference=this.modalService.open(this.content);
     this.orderId=ordId;
-    this.http.get(`http://localhost:3000/products/ordDetails/${ordId}`).subscribe((res) => {
+    this.http.get(` http://localhost:3000/products/ordDetails/${ordId}`).subscribe((res) => {
       this.updateStatus.patchValue({
         deliveryStatus: res[0].delivery_status,
         refundStatus: res[0].refund_status
@@ -118,7 +118,7 @@ export class ManageOrdersComponent implements OnInit {
   }
 
   updateDeliveryStatus(id){
-    this.http.put(`http://localhost:3000/orders/update/${id}`, this.updateStatus.value).subscribe((res) => {
+    this.http.put(` http://localhost:3000/orders/update/${id}`, this.updateStatus.value).subscribe((res) => {
       console.log(res);
       this.modalReference.close();
     });
@@ -129,7 +129,7 @@ export class ManageOrdersComponent implements OnInit {
 
   getOrderById(ordId){
     this.modalReference=this.modalService.open(this.orderDetails, { windowClass : "order-details"});
-    this.http.get(`http://localhost:3000/products/ordDetails/${ordId}`).subscribe((res) => {
+    this.http.get(` http://localhost:3000/products/ordDetails/${ordId}`).subscribe((res) => {
       this.fullOrderDetails=res;
       this.productDetails=res[0].checkoutItemData;
     });
@@ -157,9 +157,9 @@ export class ManageOrdersComponent implements OnInit {
     });
     console.log(forQtyProduct);
     console.log(getAllProduct);
-    this.http.put(`http://localhost:3000/orders/updateDelivery/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct),checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
+    this.http.put(` http://localhost:3000/orders/updateDelivery/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct),checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
       console.log(res);
-      this.http.put(`http://localhost:3000/assets/update/${assetId}`, {availability:0}).subscribe();
+      this.http.put(` http://localhost:3000/assets/update/${assetId}`, {availability:0}).subscribe();
       this.modalReference.close();
       // this.assetAssign.reset();
       window.location.reload();
@@ -190,10 +190,10 @@ export class ManageOrdersComponent implements OnInit {
 
   editOrderById(ordId){
     this.modalReference=this.modalService.open(this.editOrder, { windowClass : "edit-order"});
-    this.http.get(`http://localhost:3000/products/ordDetails/${ordId}`).subscribe((res) => {
+    this.http.get(` http://localhost:3000/products/ordDetails/${ordId}`).subscribe((res) => {
       this.fullOrderDetails=res;
       this.productDetails=res[0].checkoutItemData;
-      this.http.get('http://localhost:3000/cities').subscribe((resCity:any)=>{
+      this.http.get(' http://localhost:3000/cities').subscribe((resCity:any)=>{
       if (resCity) {
         const a = resCity.filter((city) => {
           if (city.cityname === res[0].city) {

@@ -69,10 +69,10 @@ export class OrdersComponent implements OnInit {
 
   getOrders(){
     this.os.getAllOrders().subscribe((orders)=>{
-      orders.reverse();
+      // orders.reverse();
       // this.order=orders.filter(item => item.paymentStatus=='Success');
       this.order=orders;
-      this.filteredOrders=this.order.filter(item => item.orderType_id==1 && item.deliveryStatus!='4');
+      this.filteredOrders=this.order.filter(item => item.orderType_id==1 && item.deliveryStatus!='4' && item.paymentStatus=='Success');
       this.orderName='New orders';
     });
   }
@@ -81,13 +81,13 @@ export class OrdersComponent implements OnInit {
     if(e=='All orders'){
       this.filteredOrders=this.order;
     } else if(e=='New orders'){
-      this.filteredOrders=this.order.filter(item => item.orderType_id==1 && item.deliveryStatus!='4');
+      this.filteredOrders=this.order.filter(item => item.orderType_id==1 && item.deliveryStatus!='4' && item.paymentStatus=='Success');
     } else if(e=='Primary order'){
-      this.filteredOrders=this.order.filter(item => item.orderType_id==1);
+      this.filteredOrders=this.order.filter(item => item.orderType_id==1 && item.paymentStatus=='Success');
     } else if(e=='Renewal order'){
-      this.filteredOrders=this.order.filter(item => item.orderType_id==2);
+      this.filteredOrders=this.order.filter(item => item.orderType_id==2 && item.paymentStatus=='Success');
     } else if(e=='Replacement order'){
-      this.filteredOrders=this.order.filter(item => item.orderType_id==3);
+      this.filteredOrders=this.order.filter(item => item.orderType_id==3 && item.paymentStatus=='Success');
     } else if(e=='Return order'){
       this.filteredOrders=this.order.filter(item => item.orderType_id==4);
     }

@@ -57,14 +57,24 @@
                             </div>
 
                             <div class="form-group">
+                                <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Meta description</label>
+                                <input class="form-control" formControlName="metaDescription" type="text" required="">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Meta keywords</label>
+                                <input class="form-control" formControlName="metaKeywords" type="text" required="">
+                            </div>
+
+                            <div class="form-group">
                                 <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Product slug</label>
                                 <input class="form-control" formControlName="slug" type="text" required="">
                             </div>
 
-                            <div class="form-group">
+                            <!-- <div class="form-group">
                                 <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Product description</label>
                                 <input class="form-control" formControlName="prodDescription" type="text" required="">
-                            </div>
+                            </div> -->
 
                             <!-- <div class="form-group">
                                 <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Product quantity</label>
@@ -91,6 +101,11 @@
                                 <select class="form-control" formControlName="priority">
                                     <option *ngFor="let ps of pricingSchemes" value="{{ps.id}}">{{ps.scheme_name}}</option>
                                 </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-form-label"><span>*</span> Position</label>
+                                <input class="form-control" formControlName="position" type="number" required="">
                             </div>
                             
 
@@ -212,21 +227,23 @@
                     </div>
                 </div>
                 
-                <!-- <div class="card">
+                <div class="card">
                     <div class="card-header">
-                        <h5>Add Specifications</h5>
+                        <h5>Product Description</h5>
+                        <!-- <a class="btn btn-primary pull-right" (click)="ckEdit=!ckEdit">Edit</a> -->
                     </div>
                     <div class="card-body">
                         <div class="digital-add needs-validation">
                             <div class="form-group mb-0">
                                 <div class="description-sm">
-                                    <ck-editor name="specifications" formControlName="specifications" id="editor1" language="en" [fullPage]="false"></ck-editor>
+                                    <!-- <textarea disabled rows="10" *ngIf="!ckEdit" class="form-control" value="{{addProduct.value.prodDescription}}"></textarea> -->
+                                    <ck-editor formControlName="prodDescription" id="editor1" language="en" [fullPage]="false"></ck-editor>
                                     
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div> -->
+                </div>
             </div>
         </div>
     </form>

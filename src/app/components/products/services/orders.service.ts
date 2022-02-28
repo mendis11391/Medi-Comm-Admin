@@ -24,11 +24,23 @@ export class OrdersService {
     return this.http.get<Orders[]>(`${this.orders_url}`)
   }
 
+  getAllOrdersByCustomerId(id): Observable<Orders[]> {
+    return this.http.get<Orders[]>(`${this.orders_url}/${id}`)
+  }
+
+  getRenewalsByCustomerId(id){
+    return this.http.get<Customers[]>(`${this.orders_url}/renewals/${id}`)
+  }
+
   getAllCustomers(): Observable<Customers[]> {
     return this.http.get<Customers[]>(`${this.customer_url}`)
   }
   getAllCustomersByid(id): Observable<Customers[]> {
     return this.http.get<Customers[]>(`${this.customer_url}/getCustomerById/${id}`)
+  }
+
+  getAllAddressByCustomersByid(id): Observable<Customers[]> {
+    return this.http.get<Customers[]>(`${this.customer_url}/getUserAddressInfo/${id}`)
   }
 
   getAllOrderItems(): Observable<OrderItems[]> {

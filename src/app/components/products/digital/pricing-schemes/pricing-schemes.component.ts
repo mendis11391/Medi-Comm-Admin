@@ -90,9 +90,6 @@ export class PricingSchemesComponent implements OnInit {
     window.location.reload();
   }
 
-
-
-
   getSpecValueByID(id){
     return this.http.get(this.b_url+'/getSpecsValuesById/'+id);
   }

@@ -94,7 +94,7 @@ export class UserRequestsComponent implements OnInit {
       assetId: ['']
     });
     this.transactionId();
-    this.http.get(`http://localhost:3000/users/getCustomerRequests`).subscribe((res) => {
+    this.http.get(`http://localhost:3000/admin/getCustomerRequests`).subscribe((res) => {
       let a=[];
       a.push(res);
       this.orderitem =a[0].filter(item=>item.request_status==1)
@@ -157,10 +157,10 @@ export class UserRequestsComponent implements OnInit {
 
   getOrderById(ordId){
     this.modalReference=this.modalService.open(this.orderDetails, { windowClass : "order-details"});
-    this.http.get(`http://localhost:3000/products/ordDetails/${ordId}`).subscribe((res) => {
-      this.fullOrderDetails=res;
-      this.productDetails=res[0].checkoutItemData;
-    });
+    // this.http.get(`http://localhost:3000/products/ordDetails/${ordId}`).subscribe((res) => {
+    //   this.fullOrderDetails=res;
+    //   this.productDetails=res[0].checkoutItemData;
+    // });
   }
 
   transactionId() {
@@ -377,8 +377,9 @@ export class UserRequestsComponent implements OnInit {
           } else{
           this.p2DP=0;
         }
-        p1RentBalance = this.calcDiffPrice(assetRes[0].startDate,assetRes[0].EndDate, deliverDate,assetRes[0].EndDate,this.productDetails.price, this.productDetails.dp);
-        p2RentAmount = this.calcDiffPrice(assetRes[0].startDate,assetRes[0].EndDate, deliverDate,assetRes[0].EndDate,this.p2TenurePrice, this.p2DP);
+        console.log(this.productDetails);
+        p1RentBalance = this.calcDiffPrice(this.productDetails.startDate,this.productDetails.expiryDate, deliverDate,this.productDetails.expiryDate,this.productDetails.price, this.productDetails.dp);
+        p2RentAmount = this.calcDiffPrice(this.productDetails.startDate,this.productDetails.expiryDate, deliverDate,this.productDetails.expiryDate,this.p2TenurePrice, this.p2DP);
         this.rentDifference = p2RentAmount-p1RentBalance;
       });    
   }  

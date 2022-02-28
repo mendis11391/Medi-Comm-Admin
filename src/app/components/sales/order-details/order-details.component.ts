@@ -38,8 +38,11 @@ export class OrderDetailsComponent implements OnInit {
   formError:boolean;
   urlParam;
   paymentStatus;
+  orderDeliveryStatus;
   orderField = '';
+  orderDeliveryField='';
   paymentStatusActive:boolean = false;
+  deliveryStatusActive:boolean = false;
   editStatus:boolean=false;
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
   constructor(private changeDetection: ChangeDetectorRef,private route: ActivatedRoute,private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: FormBuilder) {
@@ -87,6 +90,10 @@ export class OrderDetailsComponent implements OnInit {
     this.http.get(` http://localhost:3000/orders/getAllPaymentStatus`).subscribe((res) => {
       this.paymentStatus=res;
     });
+
+    this.http.get(` http://localhost:3000/orders/getAllDeliveryStatus`).subscribe((DSres) => {
+      this.orderDeliveryStatus=DSres;
+    });
   }
 
   getOrders(){
@@ -100,6 +107,24 @@ export class OrderDetailsComponent implements OnInit {
     this.os.getAllassets().subscribe((assets)=>{
       this.assets=assets.filter(item => item.availability==true);
     });
+  }
+
+  placeReturnRequest(oid,oiid,renewals_timline){
+    
+    let returnAsset = renewals_timline.filter(item=>item.renewed==1 || item.renewed==4);
+    let renewalsData = returnAsset.slice(-1)[0];
+    let orderItem={
+      order_item_id:oiid,
+      order_id:oid,
+      renewals:renewalsData,
+      request_id:2,
+      requested_date:new Date(),
+      approval_status:0,
+      approval_date:0,
+      request_status:1
+    }
+    console.log(orderItem);
+    this.http.post(`http://localhost:3000/users/updateorderItem`,orderItem).subscribe();
   }
 
   open(ordId) {
@@ -140,6 +165,15 @@ export class OrderDetailsComponent implements OnInit {
     this.http.put(` http://localhost:3000/orders/updateAnyOrderField/${ordId}`, {orderField: field, orderValue: value}).subscribe();
     this.paymentStatusActive=!this.paymentStatusActive;
     this.getOrderById(this.oid);
+    // this.changeDetection.detectChanges();
+    // console.log(this.orderField)
+  }
+
+  updateOrderDeliveryField(ordId, field, value){
+    this.http.put(` http://localhost:3000/orders/updateAnyOrderField/${ordId}`, {orderField: field, orderValue: value}).subscribe();
+    this.deliveryStatusActive=!this.deliveryStatusActive;
+    this.getOrderById(this.oid);
+    this.os.getRenewalsByCustomerId(this.customer_id);
     // this.changeDetection.detectChanges();
     // console.log(this.orderField)
   }
@@ -283,7 +317,7 @@ export class OrderDetailsComponent implements OnInit {
 
     // let delvStatus = this.deliveryDateStatus.value.deliveryStatus;
       let assetId;
-      let getdeliveryDate;
+      let getdeliveryDate:Date;
       if(this.deliveryDateStatus.value.deliveryDate==''){
         getdeliveryDate=new Date();
       }else{

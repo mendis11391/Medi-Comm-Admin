@@ -9,7 +9,7 @@ const routes: Routes = [
   {
     path: '',
     redirectTo: 'dashboard/default',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
   {
     path: '',

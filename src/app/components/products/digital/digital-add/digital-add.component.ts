@@ -63,6 +63,8 @@ export class DigitalAddComponent implements OnInit {
       deliveryTimeline:[0],      
       productName:['', Validators.required],
       metaTitle:['', Validators.required],
+      metaDescription:['', Validators.required],
+      metaKeywords:['', Validators.required],
       slug:['', Validators.required],
       prodImage:['', Validators.required],
       prodDescription:['', Validators.required],
@@ -76,6 +78,7 @@ export class DigitalAddComponent implements OnInit {
       startsAt:[new Date()],
       endsAt:[new Date()],
       priority:['', Validators.required],
+      position:['', Validators.required],
       createdBy:[1],
       modifiedBy:[1]
     });

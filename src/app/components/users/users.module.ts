@@ -7,11 +7,12 @@ import { UsersRoutingModule } from './users-routing.module';
 import { ListUserComponent } from './list-user/list-user.component';
 import { CreateUserComponent } from './create-user/create-user.component';
 
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CustomersComponent } from './customers/customers.component';
 import { ReplaceRequestComponent } from './replace-request/replace-request.component';
 import { ReturnRequestComponent } from './return-request/return-request.component';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 @NgModule({
   declarations: [ListUserComponent, CreateUserComponent, CustomersComponent, ReplaceRequestComponent, ReturnRequestComponent],
@@ -19,8 +20,10 @@ import { ReturnRequestComponent } from './return-request/return-request.componen
     CommonModule,
     NgbModule,
     Ng2SmartTableModule,
+    FormsModule,
     ReactiveFormsModule,
-    UsersRoutingModule
+    UsersRoutingModule,
+    NgMultiSelectDropDownModule.forRoot(),
   ]
 })
 export class UsersModule { }

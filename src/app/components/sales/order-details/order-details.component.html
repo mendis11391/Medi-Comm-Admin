@@ -1,5 +1,5 @@
 <div class="container-fluid">
-    <div class="row">
+    <!-- <div class="row">
         <div class="col-sm-6">
             <div class="card">
                 <div class="card-header">
@@ -11,7 +11,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     <div class="row" *ngFor="let o of fullOrderDetails; trackBy: trackByIndex">   
             
 
@@ -22,7 +22,7 @@
                 </div>
                 <div class="card-body">
                     <p>Customer #: {{customerDetails[0].customer_id}} </p>
-                    <p>Name: {{customerDetails[0].firstName}} {{customerDetails[0].lastName}}</p>
+                    <p [routerLink]="['../../../users/customers',customerDetails[0].customer_id]">Name: {{customerDetails[0].firstName}} {{customerDetails[0].lastName}}</p>
                     <p>Email: {{customerDetails[0].email}}</p>
                     <p>Mobile: {{customerDetails[0].mobile}}</p>
                 </div>
@@ -94,8 +94,20 @@
                                     <option *ngFor="let ps of paymentStatus" value="{{ps.id}}">{{ps.status_name}}</option>
                                 </select>
                                 <br>
-                                <button class="btn btn-warning" (click)="updateOrderField(o.primary_id,'paymentStatus',orderField)">Update</button>
-                                                   
+                                <button class="btn btn-warning" (click)="updateOrderField(o.primary_id,'paymentStatus',orderField)">Update</button>                                                   
+                        </div>
+                    </div>
+                    <p *ngIf="!deliveryStatusActive">Delivery status: {{o.delivery_status}} <i class="fa fa-pencil" *ngIf="editStatus" (click)="deliveryStatusActive=!deliveryStatusActive"></i></p>
+                    <div class="card" *ngIf="deliveryStatusActive">
+                        <div class="card-header">
+                            <p>Delivery status <span class="pull-right" (click)="deliveryStatusActive=!deliveryStatusActive">X</span></p>
+                        </div>
+                        <div class="card-body">
+                                <select class="form-control" [(ngModel)]="orderDeliveryField">
+                                    <option *ngFor="let ds of orderDeliveryStatus" value="{{ds.id}}">{{ds.delivery_status}}</option>
+                                </select>
+                                <br>
+                                <button class="btn btn-warning" (click)="updateOrderDeliveryField(o.primary_id,'deliveryStatus',orderDeliveryField)">Update</button>                                                   
                         </div>
                     </div>
                     <p>Order type: {{o.order_type}}</p>
@@ -125,6 +137,8 @@
             <div class="card">
                 <div class="card-header">
                     <h5>Product details</h5>
+                    <button class="btn btn-warning pull-right" *ngIf="!editStatus" (click)="editStatus=!editStatus">Edit order</button>
+                    <button class="btn btn-warning pull-right" *ngIf="editStatus" (click)="editStatus=!editStatus">Cancel edit</button>
                 </div>
                 <div class="card-body">
         
@@ -136,6 +150,7 @@
                             <th>Tenure</th>
                             <th>Security Deposit</th>
                             <th>Rent/mo</th>
+                            <th>Damage protection</th>
                             <th>Asset #</th>
                             <th>Delivery Date</th>
                             <th>Delivery status</th>
@@ -143,16 +158,22 @@
                         </thead>
                         <tbody *ngFor="let p of productDetails">
                           <tr>
-                            <td>{{p.prod_name}}</td>
-                            <td>{{p.tenure_period}}</td>
+                            <td><p>{{p.prod_name}}</p>
+                                <p>Product #: {{p.prod_id}}</p>
+                            </td>
+                            <td>{{p.tenure_period}}</td> 
                             <td>₹{{p.security_deposit}}</td>
-                            <td>₹{{p.tenure_price}}</td>
+                            <td>₹{{p.tenure_price+p.damage_protection}}</td>
+                            <td *ngIf="p.damage_protection>0">Yes</td>
+                            <td *ngIf="p.damage_protection<=0">No</td>
                             <td>{{p.asset_id}}</td> 
                             <td>{{p.startDate | date:'dd MM yyyy'}}</td>                            
-                            <td>{{p.delivery_status}}</td>                         
+                            <td>{{p.delivery_status}}
+                                <br><a (click)="placeReturnRequest(p.order_id,p.order_item_id,p.renewals_timline)">Place return request</a>
+                            </td>                         
                           </tr> 
                           <tr *ngIf="editStatus && (o.orderType_id==1 || o.orderType_id==3)">
-                            <td colspan="4"></td>
+                            <td colspan="5"></td>
                             <td>
                                 <form class="orders-form-popup" [formGroup]="assetAssign" (ngSubmit)="updateAssetId(p.order_item_id)">
                                     <label> Asset #:
@@ -201,6 +222,9 @@
                     </table>
         
                     <div *ngFor="let o of fullOrderDetails" class="pull-right text-right">
+                        <h4>Sub total: <span>₹{{o.subTotal+o.damageProtection}}</span></h4>
+                        <h4>Taxes: <span>₹{{o.total-(o.subTotal+o.damageProtection)}}</span></h4>
+                        <h4>Total: <span>₹{{o.total}}</span></h4>
                         <h4>Total security deposit: <span>₹{{o.totalSecurityDeposit}}</span></h4>
                         <h4>Grand Total: <span>₹{{o.grandTotal}}</span></h4>
                     </div> 

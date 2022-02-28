@@ -33,6 +33,7 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
  accsID;
  HighlightsID;
  finalBlob;
+ ckEdit:boolean=false;
  
   constructor(
     private modalService: NgbModal,
@@ -67,6 +68,8 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
       accessory:['', Validators.required],    
       productName:['', Validators.required],
       metaTitle:['', Validators.required],
+      metaDescription:['', Validators.required],
+      metaKeywords:['', Validators.required],
       slug:['', Validators.required],
       prodImage:[''],
       prodDescription:['', Validators.required],
@@ -76,24 +79,33 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
       specs:new FormGroup({}),
       highlightType:['', Validators.required],
       prodStatus:[true],
-      priority:['', Validators.required]
+      priority:['', Validators.required],
+      position:['', Validators.required]
     });
   }
 
   ngOnInit() {
-    this.prodId = this.route.snapshot.params['id'];
-    this.getProducts(this.route.snapshot.params['id']);
-    this.getAllCategories();
-    this.getAllHighlights();
-    this.getAllaccessories();
-    this.getAllPricingSchemes();
-    this.getAllBrands();
-    this.getAllCities();
-    this.getAllspecValuesBySpecId(1);
-    console.log(this.addProduct.value.accessory);
+    let data = new Promise((resolve, reject)=>{
+      this.prodId = this.route.snapshot.params['id'];
+      this.getProducts(this.route.snapshot.params['id']);
+      resolve('successs');
+    });
+
+    data.then((success)=>{  
+      this.getAllCategories();
+      this.getAllHighlights();
+      this.getAllaccessories();
+      this.getAllPricingSchemes();
+      // this.getAllBrands();
+      this.getAllCities();
+      // this.getAllspecValuesBySpecId(1);
+    });
+    
+    
   }
 
   ngAfterViewInit(){
+    
     // this.getSubCategory();
     // this.getSpecsByCatId();
   }
@@ -133,6 +145,8 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
         deliveryTimeline:data.delivery_timeline,      
         productName:data.prod_name,
         metaTitle:data.metaTitle,
+        metaDescription:data.metaDescription,
+        metaKeywords:data.metaKeywords,
         slug:data.slug,
         prodImage:data.prod_image,
         prodDescription:data.prod_description,
@@ -142,7 +156,8 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
         specs:new FormGroup({}),
         // highlightType:['', Validators.required],
         prodStatus:data.prod_status,
-        priority:data.priority
+        priority:data.priority,
+        position:data.position
       });
 
       this.getAllAccessories(id);
@@ -181,8 +196,13 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
   }
 
   getAllCategories() {
-    this.category.getCategories().subscribe(res => {
-      this.categories = res;
+    let data = new Promise((resolve, reject)=>{
+      this.category.getCategories().subscribe(res => {
+        this.categories = res;      
+        resolve('data success');
+      });
+    });
+    data.then((success)=>{      
       this.getSubCategory();
       this.getSpecsByCatId();
     });

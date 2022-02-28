@@ -25,6 +25,22 @@ export interface Product {
   specifications?: string;
   tenure?:[];
   price_list?: any;
+  specs?:any
+  main_cat_id?:number;
+  cat_id?:number;
+  delivery_timeline?:number;
+  prod_name?:string;
+  metaTitle?:string;
+  metaDescription?:string;
+  metaKeywords?:string;
+  slug?:string;
+  prod_image?:string;
+  prod_description?:string;
+  securityDeposit?:string;
+  tenure_base_price?:string;
+  prod_status?:Boolean;
+  priority?:number;
+  position?:number;
 }
 
 export interface Category {

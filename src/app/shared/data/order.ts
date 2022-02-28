@@ -53,6 +53,7 @@ export interface Orders {
 export interface OrderItems {
     order_item_id:number,
     order_id:number,
+    customer_id:number,
     renewals_timline:string,
     orderType_id:number,
     startDate:Date,

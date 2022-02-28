@@ -47,11 +47,12 @@ export class UpcomingRenewalsComponent implements OnInit {
   }
 
   updateFilter(event) {
+    this.order = this.filteredOrders
     const val = event.target.value.toLowerCase();
 
     // filter our data
     const temp = this.temp.filter(function (d) {
-      return d.name.toLowerCase().indexOf(val) !== -1 || !val;
+      return d.customer_id.toLowerCase().indexOf(val) !== -1 || d.firstName.toLowerCase().indexOf(val) !== -1 || !val;
     });
 
     // update the rows
@@ -80,6 +81,10 @@ export class UpcomingRenewalsComponent implements OnInit {
       this.order=orderItems.filter(item => item.status==true && item.delivery_status==4 );
       for(let o=0;o<this.order.length;o++){
         let otParse = JSON.parse(this.order[o].renewals_timline);
+        console.log(this.order);
+        this.os.getRenewalsByCustomerId(this.order[o].customer_id).subscribe((res)=>{
+          console.log(res);
+        });
         for(let p=0;p<otParse.length;p++){
           this.filteredOrders.push(otParse[p]);
           this.filteredOrderItems = this.filteredOrders.filter(item=>item.renewed==0);

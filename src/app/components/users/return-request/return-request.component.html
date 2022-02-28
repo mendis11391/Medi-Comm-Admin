@@ -1,0 +1,204 @@
+<!-- Container-fluid starts-->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-6" *ngIf="!toggleReplaceDetails">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Return requests</h5>
+                </div>
+                <div class="card-body">
+                    <div class="custom-datatable">
+                        <!-- <input type='text' class="filter-ngx form-control" placeholder='Search...'
+                            (keyup)='updateFilter($event)' />
+                            <button class="pull-right btn btn-warning" (click)="exportAsXLSX()">Download</button><br><br> -->
+                     
+                        <table class="table table-striped table-bordered" >
+                          <thead>
+                            <tr>
+                              <th>Order Id</th>
+                              <th>Product name</th>
+                              <th>Asset #</th>
+                              <th>Action</th>
+                            </tr>
+                          </thead>
+                          <tbody *ngFor="let o of orderitem">
+                            <tr *ngIf="o.request_id==2">
+                              <td>{{o.order_item_id}}</td>
+                              <td>{{o.prod_name.substring(0,50)+'...'}}</td>
+                              <td>{{o.asset_id}}</td>
+                              <td (click)="returnProductOrderById(o.order_id, o.order_item_id,o.renewals_timline,o.asset_id); toggleReplaceDetails=!toggleReplaceDetails"><a><i class="fa fa-pencil"></i></a></td>                   
+                            </tr>                          
+                          </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12" *ngIf="toggleReplaceDetails">
+            <div class="card">
+              <div class="card-header">
+                <h4><a (click)="resetFormData(); toggleReplaceDetails=!toggleReplaceDetails"><i class="fa fa-arrow-left"></i></a> <button class="btn btn-primary pull-right" (click)="reject(productDetails.order_item_id)">Reject</button> </h4>
+              </div>
+              <div class="card-body">
+                <div class="row" *ngFor="let o of fullOrderDetails">   
+                    <div class="col-6" >
+                      <h1>Order details</h1>
+                      <p>Primary order# : {{o.order_id}}</p>
+                      <p>Order date: {{o.createdAt | date:'dd MMM yyyy'}}</p>
+                      <!-- <p>Subscription period:{{productDetails[0].startDate}}-{{productDetails[0].expiryDate}}</p>
+                      <p>Requested return date:{{productDetails[0].returnDate}}</p>
+                      <p>Start date: {{productDetails[0].actualStartDate}}</p> -->
+                  </div>    
+                  <div class="col-6">
+                    <h1>User details</h1>
+                    <p>Customer# : {{o.customer_id}}</p>
+                    <p>Customer name: {{o.firstName }}</p>
+                    <p>Mobile: {{o.mobile}}</p>
+                    <p>Email: {{o.email}}</p>
+                    <!-- <p>Address:{{o.address[0].address_line1}}, {{o.address[0].city}}-{{o.address[0].pincode}}</p> -->
+                  </div>
+                  <div class="col-12">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">Product id</th>
+                          <th scope="col">Product name</th>
+                          <th>Tenure</th>
+                          <th>Security deposit</th>
+                          <th>Rent/ mo</th>
+                          <th>Asset #</th>
+                          <!-- <th>Damage charges</th> -->
+                          <th>Refund status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr >
+                          <td>{{productDetails.id}}</td>
+                          <td>{{productDetails.prod_name}}</td>
+                          <td>{{productDetails.tenure}}</td>
+                          <td>{{productDetails.prod_price}}</td>
+                          <td>{{(productDetails.price-0)+(productDetails.dp-0)}}</td>
+                          <td>{{productDetails.assetId}}</td>
+                          <td hidden>getBillPeriod(productDetails.expiryDate)</td>
+                          <!-- <td>                          
+                              <input min="0" class="form-control" type="number" [(ngModel)]="returnDamageCharges" placeholder="Damage charges"> <br>
+                              <input min="0" class="form-control" type="number" [(ngModel)]="earlyReturnCharges" placeholder="Early return charges">                           
+                          </td> -->
+                          <td>
+                            <select class="form-control" [(ngModel)]="refundStatus">
+                                <option *ngFor="let ps of paymentStatus" value="{{ps.id}}">{{ps.status_name}}</option>
+                              <!-- <option selected>Refund initiated</option>
+                              <option>Deposit refunded</option>
+                              <option>Complete refund</option> -->
+                            </select>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>   
+                  <div class="col-9">
+                      <ngb-datepicker #dp [(ngModel)]="model" (navigate)="date = $event.next"></ngb-datepicker><br><br>     
+                  </div>
+                  <hr>
+                <div class="col pull-right">
+                    <label>Damage charges
+                        <input min="0" class="form-control" type="number" [(ngModel)]="returnDamageCharges" placeholder="Damage charges">
+                    </label>
+                    <label>Early return charges
+                        <input min="0" class="form-control" type="number" [(ngModel)]="earlyReturnCharges" placeholder="Early return charges">
+                    </label>              
+                  
+                  <p>Damage charges: {{returnDamageCharges}}</p>
+                  <p>Early return charges: {{earlyReturnCharges}}</p>
+                  <p>To be refunded: {{(productDetails.prod_price-0)-(returnDamageCharges+earlyReturnCharges)}}</p>
+                  
+                  <button class="btn btn-primary mr-1" (click)="returnProduct()">Return</button>   
+                  <!-- <button class="btn btn-primary" (click)="reject(productDetails.order_item_id)">Reject</button>    -->
+                </div>
+              </div>
+              </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+    
+    <!-- Return request modal -->
+    <ng-template class="return-request" #returnRequest let-c="close" let-d="dismiss">
+        <div class="modal-header text-center">
+          <h4 class="col-12 modal-title text-center" id="modal-basic-title">Order details</h4>
+          <button type="button" class="close" aria-label="Close" (click)="d()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="row" *ngFor="let o of fullOrderDetails">   
+                  <div class="col-6" >
+                    <h1>Order details</h1>
+                    <p>Primary order# : {{o.order_id}}</p>
+                    <p>Order date: {{o.createdAt | date:'dd MMM yyyy'}}</p>
+                    <!-- <p>Subscription period:{{productDetails[0].startDate}}-{{productDetails[0].expiryDate}}</p>
+                    <p>Requested return date:{{productDetails[0].returnDate}}</p>
+                    <p>Start date: {{productDetails[0].actualStartDate}}</p> -->
+                </div>    
+                <div class="col-6">
+                  <h1>User details</h1>
+                  <p>Customer# : {{o.customer_id}}</p>
+                  <p>Customer name: {{o.firstName }}</p>
+                  <p>Mobile: {{o.mobile}}</p>
+                  <p>Email: {{o.email}}</p>
+                  <!-- <p>Address:{{o.address[0].address_line1}}, {{o.address[0].city}}-{{o.address[0].pincode}}</p> -->
+                </div>
+                <div class="col-12">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Product id</th>
+                        <th scope="col">Product name</th>
+                        <th>Tenure</th>
+                        <th>Security deposit</th>
+                        <th>Rent/ mo</th>
+                        <th>Asset #</th>
+                        <th>Damage charges</th>
+                        <th>Refund status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr >
+                        <td>{{productDetails.id}}</td>
+                        <td>{{productDetails.prod_name}}</td>
+                        <td>{{productDetails.tenure}}</td>
+                        <td>{{productDetails.prod_price}}</td>
+                        <td>{{(productDetails.price-0)+(productDetails.dp-0)}}</td>
+                        <td>{{productDetails.assetId}}</td>
+                        <td hidden>getBillPeriod(productDetails.expiryDate)</td>
+                        <td>                          
+                            <input type="number" [(ngModel)]="returnDamageCharges" placeholder="Damage charges"> 
+                            <input type="number" [(ngModel)]="earlyReturnCharges" placeholder="Early return charges">                           
+                        </td>
+                        <td>
+                          <select [(ngModel)]="refundStatus">
+                            <option selected>Refund initiated</option>
+                            <option>Deposit refunded</option>
+                            <option>Complete refund</option>
+                          </select>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>   
+                <div class="col-9">
+                    <!-- <ngb-datepicker #dp [(ngModel)]="model" (navigate)="date = $event.next"></ngb-datepicker><br><br>      -->
+                </div>
+                <hr>
+              <div class="col pull-right">
+                <p>Damage charges: {{returnDamageCharges + earlyReturnCharges}}</p>
+                <p>To be refunded: {{(productDetails.prod_price-0)-(returnDamageCharges+earlyReturnCharges)}}</p>
+                
+                <button class="btn btn-primary mr-1" (click)="returnProduct()">Return</button>   
+                <button class="btn btn-primary" (click)="reject(productDetails.order_item_id)">Reject</button>   
+              </div>
+            </div>
+        </div>
+    </ng-template>
