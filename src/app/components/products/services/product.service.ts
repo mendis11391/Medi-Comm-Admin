@@ -40,6 +40,10 @@ export class ProductService {
     return this.http.get(`${this.b_url}/productsByCity/${id}`);
   }
 
+  public getProductPriority(id){
+    return this.http.get(`http://localhost:3000/products/tenures/${id}`)
+  }
+
   public getAllProducts(){
     return this.http.get(`${this.b_url}/getAllProducts`);
   }

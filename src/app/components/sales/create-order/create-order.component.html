@@ -1,1 +1,289 @@
-<p>create-order works!</p>
+<!-- Container-fluid starts-->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="card">
+                <button class="btn btn-warning" (click)="open(customerModal)">Choose customer</button>
+            </div>
+        </div>
+    </div>
+    <div class="row" *ngIf="selectedItems">
+        <div class="col-sm-4">
+            <div class="card my-index">
+                <div class="card-header">
+                    Customer details
+                </div>
+                <div class="card-body p-2">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <p>Customer name: {{customerDetails.firstName}}</p>   
+                            <p>Mobile: {{customerDetails.mobile}}</p>   
+                            <p>Email: {{customerDetails.email}}</p>  
+                            <p>Order date: {{currentDate | date: 'dd-MMM-yyyy'}}</p>                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-header">
+                    Shipping address
+                </div>
+                <div class="card-body p-2">
+                    <div class="custom-datatable">
+                        
+                        <h5>{{defaultAddressFields.displayName}} <span *ngIf="defaultAddressFields.nickName">({{defaultAddressFields.nickName}})</span></h5>
+                        <p class="pa m-0 mb-1">{{defaultAddressFields.address_line1}}, {{defaultAddressFields.address_line2}} </p>
+                        <p class="m-0 mb-1" *ngIf="defaultAddressFields.landmark">Landmark : {{defaultAddressFields.landmark}}</p>
+                        <p class="m-0 mb-1">City : {{defaultAddressFields.city}}</p>
+                        <p class="m-0 mb-1">Pincode : {{defaultAddressFields.pincode}}</p>
+                        <p>Phone: {{defaultAddressFields.mobile}}</p>
+                        <a class="text-primary" (click)="open(addressModal)">Change address</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-header">
+                    Billing address
+                </div>
+                <div class="card-body p-2">
+                    <div class="custom-datatable" *ngFor="let a of defaultAddress">
+                        
+                        <h5>{{defaultBillAddressFields.displayName}} <span *ngIf="defaultBillAddressFields.nickName">({{defaultBillAddressFields.nickName}})</span></h5>
+                        <p class="pa m-0 mb-1">{{defaultBillAddressFields.address_line1}}, {{defaultBillAddressFields.address_line2}} </p>
+                        <p class="m-0 mb-1" *ngIf="defaultBillAddressFields.landmark">Landmark : {{defaultBillAddressFields.landmark}}</p>
+                        <p class="m-0 mb-1">City : {{defaultBillAddressFields.city}}</p>
+                        <p class="m-0 mb-1">Pincode : {{defaultBillAddressFields.pincode}}</p>
+                        <p>Phone: {{defaultBillAddressFields.mobile}}</p>
+                        <a class="text-primary" (click)="open(billAddressModal)">Change address</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" *ngIf="selectedItems">
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-body p-2">
+                    <button class="btn btn-warning" (click)="open(productModal)">Select Product</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" *ngIf="selectedItems">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body p-2">
+                    <table class="table">
+                        <thead class="thead-light">
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Product name</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Tenure</th>
+                            <th scope="col">Security deposit</th>
+                            <th scope="col">Rent/ Mo</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let p of ProductDetails">
+                            <th scope="row">1</th>
+                            <td>{{p.prod_name}}</td>
+                            <td>
+                                <!-- <a class="theme-color" *ngIf="ProductDetails.prod_qty<1">Out of stock</a> -->
+                                <input type="number" min="1" [(ngModel)]="p.quantity" (keyup)="tenureTotalAmount()">
+                            </td>
+                            <td (click)="open(tenure, p.priority,p.tenure_id)">{{p.tenures}}</td>
+                            <td>{{p.securityDeposit*p.quantity}}</td>
+                            <td>{{p.tenure_price*p.quantity}}</td>
+                            <!-- The Tenure Modal -->
+                            <ng-template class="modal-tenure" #tenure let-c="close" let-d="dismiss">
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                <h3 class="ml-2">Select Minimum Tenure</h3>
+                                <div class="my-close" #closeTenureModal (click)="d('Cross click')">
+                                    <i class="ti-close"></i>
+                                </div>
+                                <!-- <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">&times;</button> -->
+                                </div>
+
+                                <!-- Modal body -->
+                                <div class="modal-body">
+                                    <!-- <h6>{{product.prod_name}}</h6> -->
+                                    <table class="table">
+                                        <thead>
+                                        <tr class="my-table-ml">
+                                            <th class="pl-5">Tenure</th>
+                                            <th class="text-center">Rent/ month</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody *ngFor="let tenure of tenuresOfProduct; let i=index">
+                                        <tr [ngClass]="tenure.isSelected==1 ? 'row-bg' : '' " (click)="calcPrice(tenure.discount, security_deposit, tenure.tenure +' '+tenure.tenure_period, tenure.tenure_id,p.tenure_base_price,p, p.quantity); d('Cross click')">
+                                            <td class="pl-4">
+                                            <div class="radio-item">
+                                                <input type="radio" [checked]="tenure.isSelected==1" id="tenure{{tenure.tenure}}" name="tenure" (change)="calcPrice(tenure.discount, security_deposit, tenure.tenure +' '+tenure.tenure_period, tenure.tenure_id,p.tenure_base_price,p, p.quantity); d('Cross click')" value="{{tenure.tenure}}">
+                                                <label for="tenure{{tenure.tenure}}" [ngClass]="tenure.isSelected==1 ? 'theme-color' : '' "><span class="ml-3" >{{tenure.tenure}} {{tenure.tenure_period}}</span></label>
+                                            </div>
+                                            </td>
+                                            <td class="text-center" for="tenure">
+                                            <label for="tenure{{tenure.tenure}}" [ngClass]="tenure.isSelected==1 ? 'theme-color' : '' ">
+                                                ₹ {{calcTenures(tenure.discount, p.tenure_base_price)}}
+                                            </label>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+
+                                    
+                                </div>
+
+                                <!-- Modal footer -->
+                                <!-- <div class="modal-footer">
+                                <button type="button" class="btn btn-solid" aria-label="Close" (click)="d('Cross click')">Submit</button>
+                                </div> -->
+
+                            </ng-template>
+                          </tr>
+                          
+                        </tbody>
+                    </table>
+                    <h4>Total tenure price: {{tenureTotalPrice}}</h4>
+                    <h4>Total deposit price: {{totalDepositPrice}}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- Container-fluid Ends-->
+
+
+<!-- Delivery address modal -->
+<ng-template  #addressModal let-c="close" let-d="dismiss">
+    <div class="modal-header text-center">
+      <h4 class="col-12 modal-title text-center" id="modal-basic-title">Select shipping address</h4>
+      <button type="button" class="close" aria-label="Close" (click)="d(); ">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">  
+          <div class="col-sm-6" *ngFor="let a of address">
+            <div class="card">
+                <div class="card-body">
+                    <div class="custom-datatable" >
+                        
+                        <p>Name : <span>{{a.display_name}} ({{a.nickName}})</span></p>
+                        <p>First name : <span>{{a.firstName}}</span></p>
+                        <p>Address : <span>{{a.address_line1}} {{a.address_line2}}, {{a.landmark}}, {{a.city}}-{{a.pincode}}</span></p>
+                        <p>Landmark : <span></span></p>
+                        <p>Mobile : <span>{{a.addressMobile}}</span></p>
+                        <p>Email : <span>{{a.email}}</span></p>
+                        <button class="btn btn-warning" (click)="changeAddr(a.address_id)">Select address</button>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+    </div>
+</ng-template>
+
+<!--------Bill address modal------------->
+<ng-template  #billAddressModal let-c="close" let-d="dismiss">
+    <div class="modal-header text-center">
+      <h4 class="col-12 modal-title text-center" id="modal-basic-title">Select bill address</h4>
+      <button type="button" class="close" aria-label="Close" (click)="d(); ">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">  
+          <div class="col-sm-6" *ngFor="let a of address">
+            <div class="card">
+                <div class="card-body">
+                    <div class="custom-datatable" >
+                        
+                        <p>Name : <span>{{a.display_name}} ({{a.nickName}})</span></p>
+                        <p>First name : <span>{{a.firstName}}</span></p>
+                        <p>Address : <span>{{a.address_line1}} {{a.address_line2}}, {{a.landmark}}, {{a.city}}-{{a.pincode}}</span></p>
+                        <p>Landmark : <span></span></p>
+                        <p>Mobile : <span>{{a.addressMobile}}</span></p>
+                        <p>Email : <span>{{a.email}}</span></p>
+                        <button class="btn btn-warning" (click)="changeDefaultBillAddr(a.address_id)">Select address</button>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+    </div>
+</ng-template>
+
+
+
+<!--------choose customer modal------------->
+<ng-template  #customerModal let-c="close" let-d="dismiss">
+    <div class="modal-header text-center">
+      <h4 class="col-12 modal-title text-center" id="modal-basic-title">Choose customer</h4>
+      <button type="button" class="close" aria-label="Close" (click)="d(); ">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">  
+          <div class="col-sm-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <ng-multiselect-dropdown
+                                [placeholder]="'Select customer'"
+                                [settings]="dropdownSettings"
+                                [data]="customers"
+                                (onSelect)="onItemSelect($event)"
+                                >
+                            </ng-multiselect-dropdown>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+    </div>
+</ng-template>
+
+<!--------choose product modal------------->
+<ng-template  #productModal let-c="close" let-d="dismiss">
+    <div class="modal-header text-center">
+      <h4 class="col-12 modal-title text-center" id="modal-basic-title">Choose Products</h4>
+      <button type="button" class="close" aria-label="Close" (click)="d(); ">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">  
+          <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <ng-multiselect-dropdown 
+                                [placeholder]="'Select Product'"
+                                [settings]="productDropdownSettings"
+                                [data]="products"
+                                (onSelect)="onProductSelect($event)"
+                                (onDeSelect)="onProductDeSelect($event)"
+                                >
+                            </ng-multiselect-dropdown>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+    </div>
+</ng-template>

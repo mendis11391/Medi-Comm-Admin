@@ -10,8 +10,8 @@
                     <ngb-tabset class="tab-coupon">
                         <ngb-tab title="Account">
                             <ng-template ngbTabContent>
-                                                                                                                                        <div class="tab-pane fade active show" id="account" role="tabpanel"
-                                                                                                                                            aria-labelledby="account-tab">
+                                <div class="tab-pane fade active show" id="account" role="tabpanel"
+                                    aria-labelledby="account-tab">
                                     <form [formGroup]="accountForm" (ngSubmit)="onSubmit()"
                                         class="needs-validation user-add" novalidate="">
                                         <!-- <h4>Account Details</h4> -->
@@ -51,11 +51,139 @@
                                             <input class="form-control col-xl-8 col-md-7" id="validationCustom4"
                                                 type="password" required="">
                                         </div> -->
-                                        <div *ngIf="formSuccessfull">Customer added successfully</div>
+                                        <!-- <div *ngIf="formSuccessfull">Customer added successfully</div> -->
                                         <div *ngIf="inputsRequired">All fields are required</div>  
                                         <div class="pull-right">
                                             <button type="submit" class="btn btn-primary">Save</button>
                                         </div>
+                                    </form>
+                                </div>
+                            </ng-template>
+                        </ngb-tab>
+                        <ngb-tab title="Add address">
+                            <ng-template ngbTabContent>
+                                <div class="tab-pane fade active show" id="account" role="tabpanel"
+                                    aria-labelledby="account-tab">
+                                    <ng-multiselect-dropdown class="mx-5"
+                                        [placeholder]="'Select customer'"
+                                        [settings]="dropdownSettings"
+                                        [data]="customers"
+                                        (onSelect)="onItemSelect($event)"
+                                        >
+                                    </ng-multiselect-dropdown>
+                                    
+                                    <form [formGroup]="billingAddressForm" *ngIf="selectedItems">
+                                        <!-- <div class="checkout-title">
+                                            <h3>Add Billing address</h3>
+                                        </div> -->
+                                        <div class="row">
+                                               
+                                            <div class="col-md-12 col-sm-12 col-xs-12"></div>
+                                            <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                                <div class="field-label">Address type</div>
+                                                <select class="form-control" [(ngModel)]="otherAddress" formControlName="addresstype" (change)="setAddressValue()">
+                                                    <option value="">Select an address type</option>
+                                                    <option [disabled]="isHome" value="Home">Home</option>
+                                                    <option [disabled]="isWork" value="Work">Work</option>
+                                                    <option value='Other'>Other</option>
+                                                </select>
+                                                <div *ngIf="billingAddressForm.controls.addresstype.touched && billingAddressForm.controls.addresstype.errors?.required" class="text theme-color">
+                                                    Address type is required
+                                                </div>
+                                            </div>
+                                            <div *ngIf="otherAddress=='Other'" class="form-group col-md-6 col-sm-6 col-xs-12">
+                                                <div class="field-label">Nickname</div>
+                                                <input  class="form-control" type="text" name="nickname" formControlName="nickname"  value="" placeholder="Dad's home or Sister's home..." autocomplete="off">
+                                                <div *ngIf="billingAddressForm.controls.nickname.touched && billingAddressForm.controls.nickname.errors?.required" class="text theme-color">
+                                                    nickname  is required.
+                                                </div>
+                                                <div *ngIf="billingAddressForm.controls.nickname.touched && billingAddressForm.controls.nickname.errors?.pattern" class="text theme-color">
+                                                    nickname No is must be alphabets.
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                        <hr>
+                                        <div class="row">   
+                                            <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                                                <div class="field-label">Name</div>
+                                                <input class="form-control" type="text" name="Name" formControlName="Name"  id="Name" [formControl]="billingAddressForm.controls['Name']" value="" placeholder="" autocomplete="off">
+                                                <div *ngIf="billingAddressForm.controls.Name.touched && billingAddressForm.controls.Name.errors?.required" class="text theme-color">
+                                                 Name is required
+                                                </div>
+                                                <div *ngIf="billingAddressForm.controls.Name.touched && billingAddressForm.controls.Name.errors?.maxlength" class="text theme-color">
+                                                  Maximum 30 character
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                                                <div class="field-label">Contact No.</div>
+                                                <input class="form-control" type="text" name="Contact" formControlName="Contact"  id="Contact" [formControl]="billingAddressForm.controls['Contact']" value="" placeholder="" autocomplete="off">                            
+                                                <div *ngIf="billingAddressForm.controls.Contact.touched && billingAddressForm.controls.Contact.errors?.maxlength" class="text theme-color">
+                                                  Maximum 11 character
+                                                </div>
+                                            </div>      
+                                            
+                                            <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                                                <div class="field-label">Address line 1</div>
+                                                <input class="form-control" type="text" name="addressLine1" formControlName="addressLine1"  id="addressLine1" [formControl]="billingAddressForm.controls['addressLine1']" value="" placeholder="" autocomplete="off">
+                                                <div *ngIf="billingAddressForm.controls.addressLine1.touched && billingAddressForm.controls.addressLine1.errors?.required" class="text theme-color">
+                                                 Address is required
+                                                </div>
+                                                <div *ngIf="billingAddressForm.controls.addressLine1.touched && billingAddressForm.controls.addressLine1.errors?.maxlength" class="text theme-color">
+                                                  Maximum 200 character
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                                                <div class="field-label">Address line 2</div>
+                                                <input class="form-control" type="text" name="addressLine2" formControlName="addressLine2"  id="addressLine2" [formControl]="billingAddressForm.controls['addressLine2']" value="" placeholder="" autocomplete="off">
+                                                <div *ngIf="billingAddressForm.controls.addressLine2.touched && billingAddressForm.controls.addressLine2.errors?.maxlength" class="text theme-color">
+                                                  Maximum 200 character
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-6 col-sm-12 col-xs-12">
+                                                <div class="field-label">Landmark</div>
+                                                <input class="form-control" type="text" name="landmark" formControlName="landmark"  id="landmark" [formControl]="billingAddressForm.controls['landmark']" value="" placeholder="" autocomplete="off">
+                                                <!-- <div *ngIf="billingAddressForm.controls.landmark.touched && billingAddressForm.controls.landmark.errors?.required" class="text theme-color">
+                                                 Landmark is required
+                                                </div> -->
+                                                <div *ngIf="billingAddressForm.controls.landmark.touched && billingAddressForm.controls.landmark.errors?.maxlength" class="text theme-color">
+                                                  Maximum 200 character
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                                <div class="field-label">Town/City</div>
+                                                <input class="form-control" type="text" name="town" formControlName="town"  id="town" [formControl]="billingAddressForm.controls['town']" value="" placeholder="" autocomplete="off">
+                                                 <div *ngIf="billingAddressForm.controls.town.touched && billingAddressForm.controls.town.errors?.required" class="text theme-color">
+                                                 City is required
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                                <div class="field-label">State</div>
+                                                <input class="form-control" type="text" name="state" formControlName="state"  id="state" [formControl]="billingAddressForm.controls['state']" value="" placeholder="" autocomplete="off">
+                                                 <div *ngIf="billingAddressForm.controls.state.touched && billingAddressForm.controls.state.errors?.required" class="text theme-color">
+                                                 State is required
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                                                <div class="field-label">Postal Code</div>
+                                                <input class="form-control" type="text" name="pincode" formControlName="pincode" id="pincode" [formControl]="billingAddressForm.controls['pincode']" value="" placeholder="" autocomplete="off">
+                                                <div *ngIf="billingAddressForm.controls.pincode.touched && billingAddressForm.controls.pincode.errors?.required" class="text theme-color">
+                                                    pincode is required
+                                                </div>
+                                                <div *ngIf="billingAddressForm.controls.pincode.touched && billingAddressForm.controls.pincode.errors?.minlength" class="text theme-color">
+                                                    Postal code should be of 6 digits
+                                                </div>
+                                                <div *ngIf="invalidPostal && !billingAddressForm.controls.pincode.errors?.minlength" class="text theme-color">We don't deliver to this postal code</div>
+                                            </div>
+                                                                 
+                                        </div>
+                                        <div class="text-center">
+                                            <div class="field-label"></div>
+                                            <button class="btn-solid btn mt-3" type="button" (click)="addBillAddress()">
+                                                Save address
+                                            </button>  
+                                        </div> 
+                    
                                     </form>
                                 </div>
                             </ng-template>

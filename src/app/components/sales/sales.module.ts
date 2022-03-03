@@ -24,9 +24,10 @@ import { ReturnOrderComponent } from './return-order/return-order.component';
 import { UpcomingRenewalsComponent } from './upcoming-renewals/upcoming-renewals.component';
 import { CreateOrderComponent } from './create-order/create-order.component';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { AllOrdersComponent } from './all-orders/all-orders.component';
 
 @NgModule({
-  declarations: [OrdersComponent, TransactionsComponent, OthersComponent, DepositsComponent, OrdersPanelComponent, ReplacementOrdersComponent, UserRequestsComponent, ManageOrdersComponent, OrderDetailsComponent, PrimaryOrderComponent, RenewalOrderComponent, ReplacementOrderComponent, ReturnOrderComponent, UpcomingRenewalsComponent, CreateOrderComponent],
+  declarations: [OrdersComponent, TransactionsComponent, OthersComponent, DepositsComponent, OrdersPanelComponent, ReplacementOrdersComponent, UserRequestsComponent, ManageOrdersComponent, OrderDetailsComponent, PrimaryOrderComponent, RenewalOrderComponent, ReplacementOrderComponent, ReturnOrderComponent, UpcomingRenewalsComponent, CreateOrderComponent, AllOrdersComponent],
   imports: [
     CommonModule,
     SalesRoutingModule,

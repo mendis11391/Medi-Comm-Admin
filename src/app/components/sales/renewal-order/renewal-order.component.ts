@@ -69,7 +69,7 @@ export class RenewalOrderComponent implements OnInit {
   getOrders(){
     this.os.getAllOrders().subscribe((orders)=>{
       orders.reverse();
-      this.order=orders.filter(item =>  item.orderType_id==2);
+      this.order=orders.filter(item => (item.paymentStatus.toLowerCase()=='success' || item.paymentStatus.toLowerCase()=='to be paid') && item.orderType_id==2);
       this.filteredOrders=this.order;
     });
   }

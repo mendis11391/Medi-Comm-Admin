@@ -17,11 +17,23 @@ import { ReplacementOrderComponent } from './replacement-order/replacement-order
 import { ReturnOrderComponent } from './return-order/return-order.component';
 import { UpcomingRenewalsComponent } from './upcoming-renewals/upcoming-renewals.component';
 import { CreateOrderComponent } from './create-order/create-order.component';
+import { AllOrdersComponent } from './all-orders/all-orders.component';
 const routes: Routes = [
   {
     path: '',
     canActivate: [AuthGuard],
     children: [
+      {
+        path: 'all-orders',
+        // canLoad: [AuthGuard],
+        // canActivate: [AuthGuard],
+        data: {
+          title: "Orders",
+          breadcrumb: "Orders",
+          roles: [Role.admin]
+        },
+        component: AllOrdersComponent,
+      },
       {
         path: 'orders',
         // canLoad: [AuthGuard],

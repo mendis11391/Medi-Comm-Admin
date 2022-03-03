@@ -9,11 +9,12 @@ import { FormGroup,FormBuilder } from '@angular/forms';
 import { ExcelService } from '../services/excel.service';
 
 @Component({
-  selector: 'app-orders',
-  templateUrl: './orders.component.html',
-  styleUrls: ['./orders.component.scss']
+  selector: 'app-all-orders',
+  templateUrl: './all-orders.component.html',
+  styleUrls: ['./all-orders.component.scss']
 })
-export class OrdersComponent implements OnInit {
+export class AllOrdersComponent implements OnInit {
+
   public order :Orders[] = [];
   public assets: Assets[]=[];
   public temp = [];
@@ -72,8 +73,8 @@ export class OrdersComponent implements OnInit {
       // orders.reverse();
       // this.order=orders.filter(item => item.paymentStatus=='Success');
       this.order=orders;
-      this.filteredOrders=this.order.filter(item => item.orderType_id==1 && item.deliveryStatus!='4' && item.paymentStatus=='Success');
-      this.orderName='New orders';
+      this.filteredOrders=this.order;
+      this.orderName='All orders';
     });
   }
 
@@ -259,5 +260,4 @@ export class OrdersComponent implements OnInit {
   exportAsXLSX():void {
     this.excelService.exportAsExcelFile(this.order, 'Orders');
   }
-
 }

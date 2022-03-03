@@ -118,6 +118,7 @@ export class ReplaceRequestComponent implements OnInit {
 
   loadProducts() {
     this.ps.getProductsBycityId(1).subscribe(res => {
+      console.log(res);
       this.productsList = res;
       this.filteredProducts=this.productsList.filter(item=>item.prod_status==1 && item.prod_qty>0);
       let data2;
@@ -574,7 +575,7 @@ export class ReplaceRequestComponent implements OnInit {
         
         let ucid={      
           indexs:Math.floor((Math.random() * 9999) + 1),
-          id: filterP2[0].product_id,
+          id: filterP2[0].id,
           prod_name:filterP2[0].prod_name,
           prod_price:filterP2[0].securityDeposit,
           prod_img:filterP2[0].prod_img,

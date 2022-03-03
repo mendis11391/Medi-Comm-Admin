@@ -42,7 +42,8 @@ export class NavService {
 		},
 		{
 			title: 'Orders', icon: 'dollar-sign', type: 'sub', active: false, children: [
-				{ path: '/sales/orders', title: 'Orders', type: 'link' },
+				{ path: '/sales/all-orders', title: 'All orders', type: 'link' },
+				{ path: '/sales/orders', title: 'New orders', type: 'link' },
 				{ path: '/sales/primary-order', title: 'Primary order', type: 'link' },
 				{ path: '/sales/renewal-order', title: 'Renewal order', type: 'link' },
 				{ path: '/sales/replacement-order', title: 'Replacement order', type: 'link' },

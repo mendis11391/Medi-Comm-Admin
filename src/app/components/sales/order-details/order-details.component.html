@@ -81,7 +81,7 @@
                     <h5>Order details</h5>
                 </div>
                 <div class="card-body">
-                    <p>Order date: {{o.createdAt | date:'dd MM yyyy'}}</p>
+                    <p>Order date: {{o.createdAt | date:'dd MM yyyy HH:mm'}}</p>
                     <p>Order #: {{o.primary_id}}</p>
                     <p>Invoice #: {{fullOrderDetails[0].invoice_id}}</p>
                     <p *ngIf="!paymentStatusActive">Payment status: {{o.paymentStatus}} <i class="fa fa-pencil" *ngIf="editStatus" (click)="paymentStatusActive=!paymentStatusActive"></i></p>
@@ -121,11 +121,23 @@
                     <h5>Transaction details</h5>
                 </div>
                 <div class="card-body">
-                    <p>Transaction date: {{o.transactionDate | date:'dd MM yyyy'}}</p>
+                    <p>Transaction date: {{o.transactionDate | date:'dd MM yyyy HH:mm'}}</p>
                     <p>Transaction #: {{o.transaction_id}}</p>
                     <p>Transaction type: {{o.type}}</p>
                     <p>Transaction source : {{o.transaction_source}}</p>
                     <p>Transaction amount : ₹{{o.transactionAmount}}</p>
+                    <div class="card" *ngIf="paymentStatusActive">
+                        <div class="card-header">
+                            <p>Payment status <span class="pull-right" (click)="paymentStatusActive=!paymentStatusActive">X</span></p>
+                        </div>
+                        <div class="card-body">
+                                <select class="form-control" [(ngModel)]="orderField">
+                                    <option *ngFor="let ps of paymentStatus" value="{{ps.id}}">{{ps.status_name}}</option>
+                                </select>
+                                <br>
+                                <button class="btn btn-warning" (click)="updateOrderField(o.primary_id,'paymentStatus',orderField)">Update</button>                                                   
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -169,7 +181,7 @@
                             <td>{{p.asset_id}}</td> 
                             <td>{{p.startDate | date:'dd MM yyyy'}}</td>                            
                             <td>{{p.delivery_status}}
-                                <br><a (click)="placeReturnRequest(p.order_id,p.order_item_id,p.renewals_timline)">Place return request</a>
+                                <br><a class="text-primary" (click)="placeReturnRequest(p.order_id,p.order_item_id,p.renewals_timline)">Place return request</a>
                             </td>                         
                           </tr> 
                           <tr *ngIf="editStatus && (o.orderType_id==1 || o.orderType_id==3)">

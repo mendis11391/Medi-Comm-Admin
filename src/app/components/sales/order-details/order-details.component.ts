@@ -111,12 +111,12 @@ export class OrderDetailsComponent implements OnInit {
 
   placeReturnRequest(oid,oiid,renewals_timline){
     
-    let returnAsset = renewals_timline.filter(item=>item.renewed==1 || item.renewed==4);
+    let returnAsset = renewals_timline.filter(item=>item.renewed==1 || item.renewed==4 || item.ordered ==1);
     let renewalsData = returnAsset.slice(-1)[0];
     let orderItem={
       order_item_id:oiid,
       order_id:oid,
-      renewals:renewalsData,
+      renewals:JSON.stringify(renewalsData),
       request_id:2,
       requested_date:new Date(),
       approval_status:0,
