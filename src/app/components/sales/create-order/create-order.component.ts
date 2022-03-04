@@ -6,6 +6,7 @@ import { OrdersService } from '../../products/services/orders.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ProductService } from '../../products/services/product.service';
 import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-order',
@@ -18,7 +19,7 @@ export class CreateOrderComponent implements OnInit {
   public orderForm: FormGroup;
   city:string;
   taxInfo = '';
-  gst: number=0;
+  gst: number=18;
   deliveryFee = 200;
   damageProtection=0;
   dp=0;
@@ -45,6 +46,7 @@ export class CreateOrderComponent implements OnInit {
   tenure_price;
   tenureId;
   currentDate = new Date();
+  orderValidated:boolean=true;
   public address=[];
   public defaultAddress=[];
   products:any;
@@ -82,7 +84,13 @@ export class CreateOrderComponent implements OnInit {
     default_address:'',
     landmark:''
   };
-
+  transactionNo;
+  paymentTypes;
+  paymentStatus:string;
+  Description:string;
+  paymentType:string;
+  transactionDate:Date;
+  currDate=new Date();
   modalReference;
   public closeResult: string;
   tenureTotalPrice:number=0;
@@ -94,7 +102,7 @@ export class CreateOrderComponent implements OnInit {
   @ViewChild('productModal') productModal;
   quantity:number=1;
 
-  constructor(private ps:ProductService,private modalService: NgbModal,private os:OrdersService,private http: HttpClient,private fb: FormBuilder) { 
+  constructor(private router: Router,private ps:ProductService,private modalService: NgbModal,private os:OrdersService,private http: HttpClient,private fb: FormBuilder) { 
     this.orderForm = this.fb.group({
       uid: '',
       orderID: this.txnId,
@@ -155,6 +163,9 @@ export class CreateOrderComponent implements OnInit {
     this.getAllCustomers();
     this.getAllProductBycity(1);
     this.transactionId();
+    this.http.get(` http://localhost:3000/orders/getAllPaymenttypes`).subscribe((res) => {
+      this.paymentTypes=res;
+    });
   }
 
   getAllCustomers(){
@@ -174,7 +185,14 @@ export class CreateOrderComponent implements OnInit {
     this.selectedItems = e.customer_id;
     let filterCustomer = this.customers.filter(item=>item.customer_id ==this.selectedItems)
     this.customerDetails = filterCustomer[0];
-    this.getAllAddresses(this.selectedItems);
+    this.getAllAddresses(this.selectedItems);   
+    this.orderForm.patchValue({
+      uid:filterCustomer[0].customer_id,
+      firstName:filterCustomer[0].firstName,
+      lastName:filterCustomer[0].lastName,
+      mobile:filterCustomer[0].mobile,
+      email:filterCustomer[0].email
+    }); 
     this.modalService.dismissAll();
   }
 
@@ -182,9 +200,40 @@ export class CreateOrderComponent implements OnInit {
     this.os.getAllAddressByCustomersByid(id).subscribe((address)=>{
       this.address = address;
       this.defaultAddress = this.address.filter(item => item.default_address==1);
+      this.billAddressId = this.defaultAddress[0].address_id;
+      this.shipAddressId = this.defaultAddress[0].address_id;
+      this.orderForm.patchValue({
+        billingAddress:this.billAddressId,
+        shippingAddress:this.shipAddressId,
+      });
       this.patchFormValues(this.defaultAddress[0]);
       this.patchBillForm(this.defaultAddress[0]);
     })
+  }
+
+  test(){
+    if(this.ProductDetails.length>0 && this.transactionNo && this.paymentType && this.paymentStatus && this.Description && this.transactionDate){
+      this.orderForm.patchValue({
+        orderStatus:this.paymentStatus
+      });
+      let transaction = {
+        transactionNo:this.transactionNo,
+        orderId:this.orderForm.value.orderID,
+        orderAmount:this.orderForm.value.grandTotal,
+        paymentMode:this.paymentType,
+        txMsg:this.Description,
+        tDate:this.transactionDate
+      };
+      this.getProducts();
+      this.http.post(`http://localhost:3000/payments/saveNewOrder`, this.orderForm.value).subscribe((resp1)=>{
+        this.http.post(`http://localhost:3000/payments/postManualOrderTransaction`,transaction).subscribe((resp2)=>{
+          alert('Order created successfully');
+          this.router.navigate(['/sales/primary-order']);
+        });
+      });
+    } else{
+      this.orderValidated=false;
+    }
   }
 
 
@@ -324,11 +373,11 @@ export class CreateOrderComponent implements OnInit {
   public tenureTotalAmount() {
     this.tenureTotalPrice=0;
     this.totalDepositPrice=0;
-    console.log(this.tenureTotalPrice);
     this.ProductDetails.forEach((product) => {
       this.tenureTotalPrice+=product.tenure_price * product.quantity;
       this.totalDepositPrice+=product.securityDeposit * product.quantity;
-    });
+    });    
+    this.calculateTotal();
   }
 
   transactionId() {
@@ -354,6 +403,78 @@ export class CreateOrderComponent implements OnInit {
     // console.log(this.txnId);
     this.orderForm.patchValue({
       orderID:txnid
+    });
+  }
+
+  calculateTotal() {
+    this.damageProtection=(this.tenureTotalPrice)*(8)/100;
+    this.total = this.tenureTotalPrice + (this.tenureTotalPrice * (this.gst)/100);
+    this.grandTotal = this.tenureTotalPrice + (this.tenureTotalPrice * (this.gst)/100) + this.totalDepositPrice;
+    
+    this.orderForm.patchValue({
+      subTotal:this.tenureTotalPrice,
+      total:this.total,
+      grandTotal:Math.round(this.grandTotal),
+      securityDeposit:this.totalDepositPrice,
+    });
+  }
+
+  updateDamageProtection(evt) {
+    let dpTax= (this.damageProtection+(this.damageProtection* (this.gst)/100));
+    if (evt==true) {
+      this.dp=Math.round(this.damageProtection);
+      this.grandTotal = Math.round(this.grandTotal + dpTax);
+      this.total = Math.round(this.total + dpTax);
+    } else {
+      this.dp=0;
+      this.grandTotal = Math.round(this.grandTotal - dpTax);
+      this.total = Math.round(this.total- dpTax);
+    }
+    this.orderForm.patchValue({
+      total:this.total,
+      grandTotal: Math.round(this.grandTotal),
+      damageProtection:this.dp
+    });
+  }
+
+  getProducts() {
+    const delvDta = [];
+    const productsId=[];
+    let dp;
+    let billAmount=0;
+    this.ProductDetails.forEach((res) => {
+      if(res.delivery_timeline){
+        let current = new Date();
+        let month = current.getMonth()+1;
+        current.setDate(current.getDate() + res.delivery_timeline);
+        let deliveryDate= current.getDate() + '/' + month + '/' + current.getFullYear();
+        if(res.quantity>1){
+          let qty=res.quantity;
+          for(let i=0;i<qty;i++){
+            delvDta.push({id: res.id,prod_name:res.prod_name, prod_price:res.securityDeposit, prod_img:res.prod_image, tenureBasePrice:res.tenure_base_price, tenure_id:res.tenure_id, delvdate: deliveryDate, actualStartDate:res.delivery_date, qty: 1, price: res.tenure_price, tenure: res.tenures,primaryOrderNo:this.txnId, currentOrderNo:this.txnId, renewed:0, overdew:0, ordered:1, replacement:0, assetId:[],deliveryDateAssigned:0, deliveryAssigned: 0, deliveryStatus: 'Delivered', returnDate:'', billAmount:0, damageCharges:0});
+          }
+        } else{
+          delvDta.push({id: res.id,prod_name:res.prod_name, prod_price:res.securityDeposit, prod_img:res.prod_image, tenureBasePrice:res.tenure_base_price,tenure_id:res.tenure_id, delvdate: deliveryDate, actualStartDate:res.delivery_date, qty: 1, price: res.tenure_price, tenure: res.tenures,primaryOrderNo:this.txnId, currentOrderNo:this.txnId, renewed:0, overdew:0, ordered:1, replacement:0, assetId:[],deliveryDateAssigned:0, deliveryAssigned: 0, deliveryStatus: 'Delivered', returnDate:'', billAmount:0, damageCharges:0});
+        }        
+        productsId.push(res.id);
+      } else {
+        let current = new Date();
+        let month = current.getMonth()+1;
+        current.setDate(current.getDate() + res.delivery_timeline);
+        let deliveryDate= current.getDate() + '/' + month + '/' + current.getFullYear();
+        if(res.quantity>1){
+          let qty=res.quantity;
+          for(let i=0;i<qty;i++){
+            delvDta.push({id: res.id,prod_name:res.prod_name, prod_price:res.securityDeposit, prod_img:res.prod_image, tenureBasePrice:res.tenure_base_price, tenure_id:res.tenure_id, delvdate: deliveryDate, actualStartDate:res.delivery_date, qty: 1, price: res.tenure_price, tenure: res.tenures,primaryOrderNo:this.txnId, currentOrderNo:this.txnId, renewed:0, overdew:0, ordered:1, replacement:0, assetId:[],deliveryDateAssigned:0, deliveryAssigned: 0, deliveryStatus: 'Delivery awaited', returnDate:'', billAmount:0, damageCharges:0});
+          }
+        } else{
+          delvDta.push({id: res.id,prod_name:res.prod_name, prod_price:res.securityDeposit, prod_img:res.prod_image, tenureBasePrice:res.tenure_base_price, tenure_id:res.tenure_id, delvdate: deliveryDate, actualStartDate:res.delivery_date, qty: 1, price: res.tenure_price, tenure: res.tenures,primaryOrderNo:this.txnId, currentOrderNo:this.txnId, renewed:0, overdew:0, ordered:1, replacement:0, assetId:[],deliveryDateAssigned:0, deliveryAssigned: 0, deliveryStatus: 'Delivery awaited', returnDate:'', billAmount:0, damageCharges:0});
+        }         
+        productsId.push(res.id);
+      }     
+    });
+    this.orderForm.patchValue({
+      products:JSON.stringify(delvDta)
     });
   }
   

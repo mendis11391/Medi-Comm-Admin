@@ -53,7 +53,7 @@
                             </tr>
                           </thead>
                           <tbody *ngFor="let o of filteredOrders">
-                            <tr [routerLink]="[o.id]">
+                            <tr [routerLink]="['../orders',o.id]">
                               <td>{{o.primary_id}}</td>
                               <td>{{o.order_type}}</td>
                               <td>{{o.createdAt | date:'dd-MMM-yyyy HH:mm' : '+5:30'}}</td> 

@@ -25,6 +25,7 @@ import { UpcomingRenewalsComponent } from './upcoming-renewals/upcoming-renewals
 import { CreateOrderComponent } from './create-order/create-order.component';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { AllOrdersComponent } from './all-orders/all-orders.component';
+import { UiSwitchModule } from 'ngx-ui-switch';
 
 @NgModule({
   declarations: [OrdersComponent, TransactionsComponent, OthersComponent, DepositsComponent, OrdersPanelComponent, ReplacementOrdersComponent, UserRequestsComponent, ManageOrdersComponent, OrderDetailsComponent, PrimaryOrderComponent, RenewalOrderComponent, ReplacementOrderComponent, ReturnOrderComponent, UpcomingRenewalsComponent, CreateOrderComponent, AllOrdersComponent],
@@ -36,6 +37,7 @@ import { AllOrdersComponent } from './all-orders/all-orders.component';
     FormsModule,
     ReactiveFormsModule,
     NgbModule,
+    UiSwitchModule,
     NgMultiSelectDropDownModule.forRoot(),
   ]
 })

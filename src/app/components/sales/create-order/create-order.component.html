@@ -99,8 +99,8 @@
                                 <input type="number" min="1" [(ngModel)]="p.quantity" (keyup)="tenureTotalAmount()">
                             </td>
                             <td (click)="open(tenure, p.priority,p.tenure_id)">{{p.tenures}}</td>
-                            <td>{{p.securityDeposit*p.quantity}}</td>
-                            <td>{{p.tenure_price*p.quantity}}</td>
+                            <td><input (keyup)="tenureTotalAmount()" [(ngModel)]="p.securityDeposit"></td>
+                            <td><input (keyup)="tenureTotalAmount()" [(ngModel)]="p.tenure_price"></td>
                             <!-- The Tenure Modal -->
                             <ng-template class="modal-tenure" #tenure let-c="close" let-d="dismiss">
                                 <!-- Modal Header -->
@@ -152,8 +152,53 @@
                           
                         </tbody>
                     </table>
-                    <h4>Total tenure price: {{tenureTotalPrice}}</h4>
-                    <h4>Total deposit price: {{totalDepositPrice}}</h4>
+                    <div class="row">
+                        <div class="col-6">
+                            <h4>Total tenure price: {{tenureTotalPrice}}</h4>
+                            <label>Damage protection: <ui-switch size="small" uncheckedLabel=" NO" checkedLabel="YES " (change)="updateDamageProtection($event)"></ui-switch> 
+                                ₹ {{dp}}
+                            </label>
+                            <h4>Taxes: ₹ {{((tenureTotalPrice)+dp)*(gst)/100  | number: '1.0-0'}}</h4>
+                            <h4>Total deposit price: {{totalDepositPrice}}</h4>
+                            <h4>Grand total: {{grandTotal}}</h4>
+                        </div>
+                        <div class="col-6 pull-right">
+                            <h4>Transaction Source: Manual</h4>  
+                            <label>Transaction #:
+                                <input class="form-control" type="text" [(ngModel)]="transactionNo">
+                            </label>  
+                            <div class="text-danger" *ngIf="!transactionNo && !orderValidated">Transaction# is required</div>
+                            <br>                        
+                            <label>Payment type
+                                <select class="form-control" [(ngModel)]="paymentType">
+                                    <option>Select</option>
+                                    <option *ngFor="let ps of paymentTypes" value="{{ps.type}}">{{ps.type}}</option>
+                                </select>
+                            </label>
+                            <div class="text-danger" *ngIf="!paymentType && !orderValidated">Payment type is required</div>
+                            <br>
+                            <label> Payment status
+                                <select class="form-control" [(ngModel)]="paymentStatus">
+                                    <option>Select</option>
+                                    <option value="1">Success</option>
+                                    <option value="4">To be paid</option>
+                                    <option value="9">Mandate Presented</option>
+                                </select>
+                            </label>
+                            <div class="text-danger" *ngIf="!paymentStatus && !orderValidated">Payment status is required</div>
+                            <br>
+                            <label>Description
+                                <textarea class="form-control" maxlength="200" [(ngModel)]="Description">
+
+                                </textarea>
+                            </label>
+                            <div class="text-danger" *ngIf="!Description && !orderValidated">Description is required</div>
+                            <br>
+                            <label>Transaction date:<input class="form-control" [(ngModel)]="transactionDate" type="date" [value]="currDate"> </label>
+                            <div class="text-danger" *ngIf="!transactionDate && !orderValidated">Transaction date is required</div>
+                        </div>
+                    </div>
+                    <br><button class="btn btn-warning" (click)="test()">Create order</button>
                 </div>
             </div>
         </div>

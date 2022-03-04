@@ -68,25 +68,25 @@ export class PrimaryOrderComponent implements OnInit {
 
   getOrders(){
     this.os.getAllOrders().subscribe((orders)=>{
-      orders.reverse();
-      this.order=orders.filter(item => (item.paymentStatus.toLowerCase()=='success' || item.paymentStatus.toLowerCase()=='to be paid') && item.orderType_id==1);
-      this.filteredOrders=this.order;
+      // orders.reverse();
+      this.order=orders;
+      this.filteredOrders=this.order.filter(item => (item.paymentStatus.toLowerCase()=='success' || item.paymentStatus.toLowerCase()=='to be paid') && item.orderType_id==1);
     });
   }
 
-  filterOrders(e){
-    if(e=='All orders'){
-      this.filteredOrders=this.order.filter(item => item.paymentStatus=='Success');
-    } else if(e=='Primary order'){
-      this.filteredOrders=this.order.filter(item => item.orderType_id==1);
-    } else if(e=='Renewal order'){
-      this.filteredOrders=this.order.filter(item => item.orderType_id==2);
-    } else if(e=='Replacement order'){
-      this.filteredOrders=this.order.filter(item => item.orderType_id==3);
-    } else if(e=='Return order'){
-      this.filteredOrders=this.order.filter(item => item.orderType_id==4);
-    }
-  }
+  // filterOrders(e){
+  //   if(e=='All orders'){
+  //     this.filteredOrders=this.order.filter(item => item.paymentStatus=='Success');
+  //   } else if(e=='Primary order'){
+  //     this.filteredOrders=this.order.filter(item => item.orderType_id==1);
+  //   } else if(e=='Renewal order'){
+  //     this.filteredOrders=this.order.filter(item => item.orderType_id==2);
+  //   } else if(e=='Replacement order'){
+  //     this.filteredOrders=this.order.filter(item => item.orderType_id==3);
+  //   } else if(e=='Return order'){
+  //     this.filteredOrders=this.order.filter(item => item.orderType_id==4);
+  //   }
+  // }
 
   getAssets(){
     this.os.getAllassets().subscribe((assets)=>{

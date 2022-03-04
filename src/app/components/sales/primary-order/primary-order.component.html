@@ -25,6 +25,7 @@
                               <th>Order date</th>
                               <th>Customer name</th>
                               <th>Security deposit</th>
+                              <th>Invoice value</th>
                               <th>Payment status</th>
                               <th>Delivery status</th>
                             </tr>
@@ -35,8 +36,9 @@
                               <!-- <td>{{o.payuid}}</td> -->
                               <td>{{o.createdAt}}</td> 
                               <td>{{o.firstName}}</td> 
-                              <td>₹{{o.totalSecurityDeposit}}</td>    
-                              <td>{{o.refundStatus}}</td> 
+                              <td>₹{{o.totalSecurityDeposit}}</td>  
+                              <td>₹ {{o.grandTotal}}</td>  
+                              <td>{{o.paymentStatus}}</td> 
                               <td>{{o.delivery_status}}</td>                       
                             </tr>                          
                           </tbody>
