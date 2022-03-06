@@ -7,6 +7,7 @@
                     <div class="custom-datatable">
                         <input type='text' class="filter-ngx form-control" placeholder='Search...'
                             (keyup)='updateFilter($event)' />
+                            <button class="pull-left btn btn-warning" [routerLink]="'../create-renewal-order'">Create order <i class="fa fa-plus"></i></button>
                             <button class="pull-right btn btn-warning" (click)="exportAsXLSX()">Download</button><br><br>
                         
                         <!-- <select name="ordersFilter" (change)="filterOrders($event.target.value)">

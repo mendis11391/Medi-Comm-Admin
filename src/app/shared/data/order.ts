@@ -47,7 +47,11 @@ export interface Orders {
     coupon: string,
     status: string,
     delivery_status: string,
-    refund_status: string
+    refund_status: string,
+    order_item_id?:number,
+    cr?:any,
+    request_status?:any,
+    request_id?:any
 }
 
 export interface OrderItems {

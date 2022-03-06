@@ -1,0 +1,294 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="card">
+                <button class="btn btn-warning" (click)="open(customerModal)">Choose customer</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" *ngIf="uid">
+        <div class="col-sm-4">
+            <div class="card my-index">
+                <div class="card-header">
+                    Customer details
+                </div>
+                <div class="card-body p-2">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <p>Customer name: {{customerDetails.firstName}}</p>   
+                            <p>Mobile: {{customerDetails.mobile}}</p>   
+                            <p>Email: {{customerDetails.email}}</p>  
+                            <p>Order date: {{currentDate | date: 'dd-MMM-yyyy'}}</p>                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Transaction Source: Manual</h4> 
+                </div>
+                <div class="card-body p-2">
+                    <div class="row">
+                        <div class="col-6">
+                             
+                            <label>Transaction #:
+                                <input class="form-control" type="text" [(ngModel)]="transactionNo">
+                            </label>  
+                            <div class="text-danger" *ngIf="!transactionNo && !orderValidated">Transaction# is required</div>
+                            <br>                        
+                            <label>Payment type
+                                <select class="form-control" [(ngModel)]="paymentType">
+                                    <option>Select</option>
+                                    <option *ngFor="let ps of paymentTypes" value="{{ps.type}}">{{ps.type}}</option>
+                                </select>
+                            </label>
+                            <div class="text-danger" *ngIf="!paymentType && !orderValidated">Payment type is required</div>
+                            <br>
+
+                        </div>
+                        <div class="col-6">
+                            <label> Payment status
+                                <select class="form-control" [(ngModel)]="paymentStatus">
+                                    <option>Select</option>
+                                    <option value="1">Success</option>
+                                    <option value="4">To be paid</option>
+                                    <option value="9">Mandate Presented</option>
+                                </select>
+                            </label>
+                            <div class="text-danger" *ngIf="!paymentStatus && !orderValidated">Payment status is required</div>
+                            <br>
+                            <label>Description
+                                <textarea class="form-control" maxlength="200" [(ngModel)]="Description">
+    
+                                </textarea>
+                            </label>
+                            <div class="text-danger" *ngIf="!Description && !orderValidated">Description is required</div>
+                            <br>
+                            <label>Transaction date:<input class="form-control" [(ngModel)]="transactionDate" type="date" [value]="currDate"> </label>
+                            <div class="text-danger" *ngIf="!transactionDate && !orderValidated">Transaction date is required</div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--section start-->
+<section class="section-b-space" *ngIf="uid">
+    <div class="container">
+      <div class="col-md-12 empty-cart-cls text-center" *ngIf='!tableData.length'>
+        <h3 class="mt-4"><b>No Products to renew!!!</b></h3>
+      </div>
+      <div class="row" *ngIf='tableData.length'>
+        <div class="col-sm-12">
+            <div class="text-center">
+                <small class="text-center" *ngIf="noCheck==1">Please select the products to renew</small>
+                <small *ngIf="errorStatus==1">You cant renew current product until you pay the overdue amount</small>                
+            </div>
+            <table class="table table-responsive-xs renewals-table" >
+                <thead>
+                    <tr class="table-head">
+                        <th><input type="checkbox" class="checkbox" (click)="checkAllItems($event)" [(ngModel)]="allChecked"></th>
+                        <!-- <th scope="col">Image</th> -->
+                        <th>Primary order#</th>
+                        <th scope="col">Product</th>
+                        <th scope="col">Asset #</th>
+                        <th scope="col">Start date</th>
+                        <th scope="col">End date</th>
+                        <th scope="col">Due date</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Rent/Mo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let p of tableData" class="shadow-lg p-3 mt-3 bg-white rounded">
+                        <td>
+                            <input class="checkbox" type="checkbox"  (click)="checkItem($event, p);renewalsTotal($event, p.data, p.data.currentOrderNo, p.data.dp)" 
+                                [name]="p.data.indexs"
+                                [id]="p.data.indexs"    
+                                [value]="[p.data.price*p.data.qty]"
+                                [disabled]="p.isDisabled"
+                                [(ngModel)]="p.isSelected">
+                        </td>  <!-- && dateDiffInDays(p.data.startDate)>=-2 -->
+                        <!-- <td  [class.fade]="p.data.renewed==2">
+                            <label for="{{p.data.id}}">
+                            <a><img [routerLink]="['/','Laptops',p.data.prod_name.split(' ').join('-')]" [src]='blobImage(p.data.prod_img.data)' alt="" class="img-fluid my-img"></a> 
+                            </label>                                                       
+                        </td> -->
+                        
+                        <td  [class.fade]="p.data.renewed==2">
+                            <label for="{{p.data.id}}" class="pt-4"><a class="tdAnchor" data-toggle="modal" data-target="#orderDetailsModal1" (click)="ordersPopup(p.data.primaryOrderNo)">{{p.data.primaryOrderNo}} </a></label>
+                            <!-- <a class="renew-status theme-color">Asset # : {{p.data.assetId}}</a> -->
+                        </td>
+                        <td  [class.fade]="p.data.renewed==2">
+                            <label for="{{p.data.id}}"  class="pt-4 mb-0">
+                                <a placement="top" ngbTooltip="{{p.data.prod_name}}">
+                                    {{p.data.prod_name.substring(0, 40)+'...' }}
+                                </a>
+                                <!-- <a class="ml-5 mav-h pull-right" *ngIf="p.data.overdew==1">Overdue</a> -->
+                            </label>
+                            <!-- <a class="renew-status mv-h" *ngIf="p.data.dp>0">Damage Protection: Included</a>
+                            <a class="renew-status mv-h" *ngIf="p.data.dp==0">Damage Protection: No</a> -->
+                            <!-- <a class="renew-status light-red mv-h" *ngIf="p.data.overdew==1">Overdue</a> -->
+                            <!-- <a class="renew-status light-red mv-h" *ngIf="returnDueDate(p.data.startDate)">Overdue</a>
+                            <a class="renew-status theme-color mv-h" *ngIf="!returnDueDate(p.data.startDate)">Due</a> -->
+                            <!-- <a class="renew-status light-green" *ngIf="p.data.overdew==0">Upcoming renewal</a> -->
+                            <!-- <div class="renew-prodName">
+                                sdjfhsdkjfdhskfjsdhkjfsdhkjfhsdkjfhuehfdjksfdjfdsjkfhlksdjfhsdjkfhsdfhsdkjf
+                            </div> -->
+                            <div class="renewals-mv mav-h mb-2">
+                                <div class="row">
+                                    <!-- <div class="col-12">
+                                        <a class="renew-status" *ngIf="p.data.dp>0">Damage Protection: Yes</a>
+                                        <a class="renew-status" *ngIf="p.data.dp==0">Damage Protection: No</a>
+                                    </div>
+                                    <div class="col-6 text-right">
+                                        <a class="renew-status">Asset #: {{p.data.assetId}}</a>
+                                    </div> -->
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <a class="renew-status">Asset #: {{p.data.assetId}}</a>
+                                    </div>
+                                    <div class="col-6 text-right">
+                                        <a class="renew-status">Rent: ₹{{((p.data.price-0)+(p.data.dp-0))*p.data.qty}}</a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    
+                                    <div class="col-8">
+                                        <a>Due date: {{dueDate(p.data.startDate)}}</a>
+                                        <!-- <a class="renew-status">Primary order #: </a> -->
+                                    </div>
+                                    <!-- <div class="col-6 text-center">
+                                        <a class="renew-status" >Status:</a>
+                                    </div> -->
+                                    
+                                    <div class="col-4">
+                                        <!-- <a *ngIf="p.data.overdew==1">Overdue</a> -->
+                                        <a class="renew-status light-red text-left" *ngIf="returnDueDate(p.data.startDate)">Overdue</a>
+                                        <a class="renew-status theme-color text-left" *ngIf="!returnDueDate(p.data.startDate)">Due</a>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mt-2 mb-2">                                    
+                                    <div class="col-12">
+                                        <a class="renew-status" >Subscription: {{p.data.startDate}} - {{p.data.expiryDate}}</a>
+                                    </div>
+                                    <div class="col-12">
+                                        <a>Primary order #: {{p.data.primaryOrderNo}}</a>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            
+                        </td>
+                        
+                        <td  [class.fade]="p.data.renewed==2">    
+                            <label for="{{p.data.id}}"  class="pt-4">
+                                <a class="renew-status">{{p.data.assetId}}</a>
+                            </label> 
+                        </td>
+                        <td  [class.fade]="p.data.renewed==2">
+                            <!-- <a>
+                                {{o.orderdate[0] | date:'dd MMM yyyy'}} 
+                            </a> -->
+                            <label for="{{p.data.id}}"  class="pt-4">
+                                <a>
+                                    {{p.data.startDate}}
+                                </a>
+                            </label>
+                        </td>
+                        <td  [class.fade]="p.data.renewed==2">
+                            <!-- <a>
+                                {{o.orderdate[0] | date:'dd MMM yyyy'}} 
+                            </a> -->
+                            <label for="{{p.data.id}}"  class="pt-4">
+                                <a>
+                                    {{p.data.expiryDate}}
+                                </a>
+                            </label>
+                        </td>
+                        <td  [class.fade]="p.data.renewed==2">
+                            <label for="{{p.data.id}}"  class="pt-4">
+                                <a>
+                                    {{dueDate(p.data.startDate)}}
+                                </a>
+                            </label>
+                        </td>
+                        <td  [class.fade]="p.data.renewed==2">
+                            <label for="{{p.data.id}}"  class="pt-4">
+                                <a class="renew-status light-red mv-h" *ngIf="returnDueDate(p.data.startDate)">Overdue</a>
+                            <a class="renew-status theme-color mv-h" *ngIf="!returnDueDate(p.data.startDate)">Due</a>
+                            </label>
+                        </td>
+                        <td  [class.fade]="p.data.renewed==2">
+                            <label for="{{p.data.id}}"  class="pt-4">
+                                <a>₹{{((p.data.price-0)+(p.data.dp-0))*p.data.qty}}</a>    
+                                <input type="number" [(ngModel)]="p.data.price" >
+                            </label>                      
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="pull-right text-right calcRenew">
+                <!-- //*ngIf="productsArr.length" -->
+                <div *ngIf="productsArr.length"> 
+                    <h4>Sub total : <span>₹{{subTotal}}</span></h4>
+                    <!-- <h4>Damage protection <i placement="top" ngbTooltip="{{taxInfo}}" class="fa fa-info-circle"></i> : <span>₹{{dp}}</span></h4> -->
+                    <h4>Taxes <i placement="top" ngbTooltip="{{taxInfo}}" class="fa fa-info-circle"></i> : <span>₹{{(subTotal) * (this.gst)/100 | number: '1.0-0'}}</span></h4>                    
+                    <h4>Total : <span>₹{{renewTotal | number: '1.0-0'}}</span></h4>
+                </div>
+                <!-- <button class="btn btn-solid" data-toggle="modal" data-target="#returnModal" *ngIf="overdue==0 || !overdue">Return</button> -->
+                <!-- <button class="btn btn-solid ml-3 mv-h" (click)="placeOrderTest()">Renew</button>              -->
+            </div>
+            <div class="renew-button">
+                <button class="btn btn-warning ml-3 mv-h" (click)="renew()">Renew</button>  
+            </div>
+            <!-- <div class="pull-right text-right calcRenew">
+                <button class="btn btn-solid ml-3" (click)="renew()">Renew</button> 
+            </div> -->
+        </div>
+      </div>
+      
+    </div>
+</section>
+  <!--section end-->
+
+
+
+<!--------choose customer modal------------->
+<ng-template  #customerModal let-c="close" let-d="dismiss">
+    <div class="modal-header text-center">
+      <h4 class="col-12 modal-title text-center" id="modal-basic-title">Choose customer</h4>
+      <button type="button" class="close" aria-label="Close" (click)="d(); ">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">  
+          <div class="col-sm-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <ng-multiselect-dropdown
+                                [placeholder]="'Select customer'"
+                                [settings]="dropdownSettings"
+                                [data]="customers"
+                                (onSelect)="onItemSelect($event)"
+                                >
+                            </ng-multiselect-dropdown>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+    </div>
+</ng-template>

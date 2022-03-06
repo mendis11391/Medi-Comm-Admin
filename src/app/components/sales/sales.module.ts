@@ -26,9 +26,11 @@ import { CreateOrderComponent } from './create-order/create-order.component';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { AllOrdersComponent } from './all-orders/all-orders.component';
 import { UiSwitchModule } from 'ngx-ui-switch';
+import { CreateRenewalOrderComponent } from './create-renewal-order/create-renewal-order.component';
+import { CreateRequestComponent } from './create-request/create-request.component';
 
 @NgModule({
-  declarations: [OrdersComponent, TransactionsComponent, OthersComponent, DepositsComponent, OrdersPanelComponent, ReplacementOrdersComponent, UserRequestsComponent, ManageOrdersComponent, OrderDetailsComponent, PrimaryOrderComponent, RenewalOrderComponent, ReplacementOrderComponent, ReturnOrderComponent, UpcomingRenewalsComponent, CreateOrderComponent, AllOrdersComponent],
+  declarations: [OrdersComponent, TransactionsComponent, OthersComponent, DepositsComponent, OrdersPanelComponent, ReplacementOrdersComponent, UserRequestsComponent, ManageOrdersComponent, OrderDetailsComponent, PrimaryOrderComponent, RenewalOrderComponent, ReplacementOrderComponent, ReturnOrderComponent, UpcomingRenewalsComponent, CreateOrderComponent, AllOrdersComponent, CreateRenewalOrderComponent, CreateRequestComponent],
   imports: [
     CommonModule,
     SalesRoutingModule,

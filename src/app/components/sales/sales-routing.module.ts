@@ -18,6 +18,8 @@ import { ReturnOrderComponent } from './return-order/return-order.component';
 import { UpcomingRenewalsComponent } from './upcoming-renewals/upcoming-renewals.component';
 import { CreateOrderComponent } from './create-order/create-order.component';
 import { AllOrdersComponent } from './all-orders/all-orders.component';
+import { CreateRenewalOrderComponent } from './create-renewal-order/create-renewal-order.component';
+import { CreateRequestComponent } from './create-request/create-request.component';
 const routes: Routes = [
   {
     path: '',
@@ -133,6 +135,22 @@ const routes: Routes = [
         data: {
           title: "Create order",
           breadcrumb: "Create order"
+        }
+      },
+      {
+        path: 'create-request',
+        component: CreateRequestComponent,
+        data: {
+          title: "Create request",
+          breadcrumb: "Create request"
+        }
+      },
+      {
+        path: 'create-renewal-order',
+        component: CreateRenewalOrderComponent,
+        data: {
+          title: "Create renewal order",
+          breadcrumb: "Create renewal order"
         }
       },
       {
