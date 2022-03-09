@@ -6,6 +6,7 @@ import { OrdersService } from '../../products/services/orders.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 declare const $ :any;
 declare const bolt :any;
@@ -28,7 +29,11 @@ export class CreateRenewalOrderComponent implements OnInit {
   tableData: TableData[] = [];
   allChecked:boolean = false;
   checked:boolean = false;
-  customerDetails={};
+  customerDetails={
+    firstName:'',
+    mobile:'',
+    email:''
+  };
   public closeResult: string;
   public products=[];
   public orders = [];
@@ -87,7 +92,7 @@ export class CreateRenewalOrderComponent implements OnInit {
   ngOnInit(): void {
     this.getAllCustomers();
     this.transactionId();
-    this.http.get(` http://localhost:3000/orders/getAllPaymenttypes`).subscribe((res) => {
+    this.http.get(`${environment.apiUrl}/orders/getAllPaymenttypes`).subscribe((res) => {
       this.paymentTypes=res;
     });
   }
@@ -616,7 +621,7 @@ export class CreateRenewalOrderComponent implements OnInit {
             paymentStatus:this.paymentStatus
           };
           this.os.newRenewProducts(products).subscribe((resp1)=>{
-            this.http.post(`http://localhost:3000/payments/postManualRenewalOrderTransaction`,transaction).subscribe((resp2)=>{
+            this.http.post(`${environment.apiUrl}/payments/postManualRenewalOrderTransaction`,transaction).subscribe((resp2)=>{
               alert('Renewal Order created successfully');
               this.router.navigate(['/sales/renewal-order']);
             });
@@ -637,6 +642,20 @@ export class CreateRenewalOrderComponent implements OnInit {
     }, (reason) => {
       this.closeResult = `Dismissed`;
     });
+  }
+
+  updateTenurePrice(orderItemId, updatedPrice){
+    let renewals_timline;
+    this.http.get(`${environment.apiUrl}/orders/orderItemsByorderId/${orderItemId}`).subscribe((res) => {
+      renewals_timline=res[0].renewals_timline;
+      console.log(renewals_timline)
+      renewals_timline.map(a=>a.price=updatedPrice);
+      console.log(renewals_timline);
+      this.http.put(`${environment.apiUrl}/orders/updateRenewalTimelineByorderItemId/${orderItemId}`, {renewals_timline:JSON.stringify(renewals_timline)}).subscribe(()=>{
+        window.location.reload();
+      });
+    });
+    
   }
   
 

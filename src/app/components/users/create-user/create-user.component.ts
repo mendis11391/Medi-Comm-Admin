@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient} from '@angular/common/http';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-create-user',
@@ -20,6 +21,10 @@ export class CreateUserComponent implements OnInit {
   customers:any;
   selectedItems;
   allAddresses;
+  isHome:boolean;
+  isWork:boolean;
+  public temp = [];
+  customerExist:boolean;
 
   constructor(private http: HttpClient,private formBuilder: FormBuilder) {
     this.getAllCustomers();
@@ -35,6 +40,25 @@ export class CreateUserComponent implements OnInit {
     this.createAccountForm();
     this.createPermissionForm();
     
+  }
+
+  updateFilter(event) {
+    this.temp=this.customers;
+    const val = event.target.value.toLowerCase();
+
+    // filter our data
+    const temp = this.temp.filter(function (d) {
+      return d.mobile.toLowerCase().indexOf(val) !== -1 || !val;
+    });
+
+    // update the rows
+    if(temp.length>=1){
+      this.customerExist= true;
+    } else{
+      this.customerExist= false;
+    }
+    // Whenever the filter changes, always go back to the first page
+    // this.table.offset = 0; 
   }
 
   getAllCustomers(){
@@ -89,15 +113,17 @@ export class CreateUserComponent implements OnInit {
 
   onSubmit(){
     this.inputsRequired=false;
-    if(this.accountForm.valid){
-      this.http.post('http://localhost:3000/otpRegister', this.accountForm.value).subscribe((res) => {
-      //  this.formSuccessfull=true;       
-       this.accountForm.reset();
-        alert('Customer added successfully')
-      });
-    } else{
-      this.inputsRequired=true;
-    }
+    if(!this.customerExist){
+      if(this.accountForm.valid){
+        this.http.post('http://localhost:3000/otpRegister', this.accountForm.value).subscribe((res) => {
+        //  this.formSuccessfull=true;       
+         this.accountForm.reset();
+          alert('Customer added successfully')
+        });
+      } else{
+        this.inputsRequired=true;
+      }
+    }     
   }
 
   async addBillAddress() {
@@ -107,7 +133,7 @@ export class CreateUserComponent implements OnInit {
       controls[key].markAsTouched();
     });
 
-    this.http.get(`http://localhost:3000/users/getUserAddressInfo/${this.selectedItems}`).subscribe((addresses)=>{
+    this.http.get(`${environment.apiUrl}/users/getUserAddressInfo/${this.selectedItems}`).subscribe((addresses)=>{
       this.allAddresses = addresses;
       if(this.billingAddressForm.valid){
         const formVal = this.billingAddressForm.value;

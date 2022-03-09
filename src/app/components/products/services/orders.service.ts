@@ -3,15 +3,17 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Orders,OrderItems, Assets } from "../../../shared/data/order";
 import { Customers } from "../../../shared/data/customer";
+import { environment } from 'src/environments/environment';
+
 @Injectable({
   providedIn: 'root'
 })
 export class OrdersService {
 
-  b_url = `http://localhost:3000/`;
-  orders_url = `http://localhost:3000/orders`;
-  assets_url = `http://localhost:3000/assets`;
-  customer_url = `http://localhost:3000/users`;
+  b_url = `${environment.apiUrl}/`;
+  orders_url = `${environment.apiUrl}/orders`;
+  assets_url = `${environment.apiUrl}/assets`;
+  customer_url = `${environment.apiUrl}/users`;
   
   constructor(private http: HttpClient) { 
     
@@ -31,6 +33,14 @@ export class OrdersService {
 
   public getCustomerRequests(id): Observable<Orders[]>{
     return this.http.get<Orders[]>(`${this.orders_url}/customerRequests/${id}`)
+  }
+
+  public updateCustomersDetails(id, val){
+    return this.http.put(`${this.customer_url}/updateUserDetail/${id}`, val)
+  }
+
+  public updateCustomerAddressFeild(id, val){
+    return this.http.put(`${this.customer_url}/updateUserAddressFeild/${id}`, val)
   }
 
   getRenewalsByCustomerId(id){

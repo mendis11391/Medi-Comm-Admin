@@ -20,19 +20,51 @@ export class CustomersComponent implements OnInit {
   public customers :Customers[] = [];
   public temp = [];
   public filteredCustomers=[];
-  public orders=[]
+  public orders=[];
+  product;
   public orderItems=[];
   public products;
   public address=[];
   public defaultAddress=[];
-  public cartDetails:any;
+  public cartDetails=[];
   public cartProducts:any;
+  editCustomer:boolean;
   dropdownSettings:IDropdownSettings = {};
   customerId;
   modalReference;
   selectedItems;
+  firstName:string;
+  lastName:string;
+  email:string;
+  fname:boolean;
+  lname:boolean;
+  eemail:boolean;
+
+  displayName:boolean;
+  nickName:boolean;
+  firstNameAddress:boolean;
+  address1:boolean;
+  address2:boolean;
+  landmark:boolean;
+  city:boolean;
+  pincode:boolean;
+  mobile:boolean;
+  eemail2:boolean;
+
+  tenuresOfProduct;
+  tenures:string;
+  tenureId=0;
+  tenure_price=0;
+  tenure_period:string;
+  security_deposit=0;
+  productTenure;
+  productTenureBasePrice=0;
+  currentProduct;
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
   @ViewChild('addressModal') addressModal;
+  @ViewChild('prodModal') prodModal;
+  @ViewChild('tenure') tenure;
+  
   constructor(private ps:ProductService,private route: ActivatedRoute,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: FormBuilder) {
     // this.order = orderDB.list_order;
   }
@@ -62,7 +94,7 @@ export class CustomersComponent implements OnInit {
     this.dropdownSettings = {
       singleSelection: false,
       idField: 'id',
-      textField: 'product_id',
+      textField: 'prod_id',
       selectAllText: 'Select All',
       unSelectAllText: 'UnSelect All',
       itemsShowLimit: 10,
@@ -77,14 +109,38 @@ export class CustomersComponent implements OnInit {
     });
   }
 
+  updateCustomer(uid, value, fieldName){
+    let CustomerObj={
+      value:value,
+      fieldName:fieldName
+    };
+    this.os.updateCustomersDetails(uid,CustomerObj).subscribe((resp)=>{
+      alert('customer details updated successfully');
+      this.editCustomer=!this.editCustomer;
+      this.getCustomers(uid);
+      this.fname=false;
+      this.lname=false;
+      this.eemail=false;
+    });
+  }
+
+  updateCustomerAddressFeild(addresssId, value, fieldName){
+    let AddressObj={
+      value:value,
+      fieldName:fieldName
+    };
+    this.os.updateCustomerAddressFeild(addresssId,AddressObj).subscribe((resp)=>{
+      alert('Address feild updated successfully');      
+    });
+  }
+
   getAllOrders(id){
     let products;
     let filteredProducts;
     let AllProductsOf=[];
     
     this.os.getAllOrdersByCustomerId(id).subscribe((orders)=>{
-      this.orders = orders;
-      console.log(this.orders)
+      this.orders = orders.filter(item=>item.paymentStatus=='Success');
       this.orders.forEach((res)=>{
         filteredProducts = res.orderItem;
         for(let k=0;k<filteredProducts.length;k++){
@@ -117,10 +173,42 @@ export class CustomersComponent implements OnInit {
   }
 
   onItemSelect(e){
-    console.log(e);
+    let productTenure;
+    let currDate= new Date();
+    let product = this.cartProducts.filter(item=>item.id==e.id);
+    product=product[0];
+    this.product = product;
+    this.ps.getProductPriority(this.product.priority).subscribe((res)=>{
+      productTenure=res[0];
+      // this.tenuresOfProduct=[];
+      for(let i=0;i<productTenure.length;i++){
+        if(productTenure[i].default_tenure==1){
+          productTenure[i].isSelected=1;
+          let tenures = productTenure[i].tenure+' '+ productTenure[i].tenure_period;
+          let tenure_period = productTenure[i].tenure_period;
+          let tenure_price = this.calcTenures(productTenure[i].discount);
+          product.quantity =  1;
+          product.tenure_id = productTenure[i].id;
+          product.tenures=tenures;
+          product.tenure_price=Math.round(tenure_price);
+          product.tenure_period = tenure_period;
+          product.delivery_date=currDate.setDate(currDate.getDate() + product.delivery_timeline);
+          console.log(product);
+          this.addToCart(product);
+        }
+      }
+    });
   }
+
   onItemDeSelect(e){
     console.log(e);
+  }
+
+  calcTenures(discount){
+    let tenurePrice=this.product.tenure_base_price;
+    let discountPrice = tenurePrice*discount/100;
+    let tenureDiscountPrice=tenurePrice-discountPrice;
+    return tenureDiscountPrice;
   }
 
   public addToCart(product): any {
@@ -137,7 +225,7 @@ export class CustomersComponent implements OnInit {
         cartItem.tenures = tenures;  
         cartItem.tenure_price = tenure_price;  
     } else {
-      this.cartDetails.cart.push({
+      this.cartDetails.push({
         ...product,
         quantity: qty,
         tenures:tenures,
@@ -145,13 +233,41 @@ export class CustomersComponent implements OnInit {
       })
     }
     
-    const allAddedProducts = JSON.stringify(this.cartDetails.cart);
-    const uid = localStorage.getItem("uid");
+    const allAddedProducts = JSON.stringify(this.cartDetails);
     console.log(allAddedProducts);
-    // this.http.put(`http://localhost:3000/users/cart/${this.customerId}`, { cart: allAddedProducts }).subscribe((res) => {
-    //   // console.log(res);
-    // });
+    this.http.put(`https://api.irentout.com/users/cart/${this.customerId}`, { cart: allAddedProducts }).subscribe((res) => {
+      // console.log(res);
+    });
+  }
+
+  // Remove Cart items
+  public removeCartItem(product): any {
+    const index = this.cartDetails.indexOf(product);
+    this.cartDetails.splice(index, 1);
+    const allAddedProducts = JSON.stringify(this.cartDetails);
+    const uid = this.customerId;
+    this.http.put(`https://api.irentout.com/users/cart/${uid}`, { cart: allAddedProducts }).subscribe((res) => {
+      // console.log(res);
+    });
     return true;
+  }
+
+  // Update Cart Quantity
+  public updateCartQuantity(product, quantity: number) {
+    const allAddedProducts = JSON.stringify(this.cartDetails);
+    const uid = this.customerId;
+    this.http.put(`https://api.irentout.com/users/cart/${uid}`, { cart: allAddedProducts }).subscribe((res) => {
+      // console.log(res);
+    });
+  }
+
+  // Update Cart Quantity
+  public updateCartTenurePrice(product) {
+    const allAddedProducts = JSON.stringify(this.cartDetails);
+    const uid = this.customerId;
+    this.http.put(`https://api.irentout.com/users/cart/${uid}`, { cart: allAddedProducts }).subscribe((res) => {
+      // console.log(res);
+    });
   }
 
   
@@ -165,6 +281,65 @@ export class CustomersComponent implements OnInit {
 
   open() {
     this.modalReference=this.modalService.open(this.addressModal,{ windowClass: 'my-address'});
+  }
+
+  openProdModal() {
+    this.modalReference=this.modalService.open(this.prodModal,{ windowClass: 'my-prod'});
+  }
+
+
+  async calcPrice(price,deposit, month,tenureId, tenure_base_price, product:any, quantity){
+    this.tenuresOfProduct.forEach((res)=>{
+      res.isSelected=0;
+      if(tenureId==res.tenure_id){
+        res.isSelected=1
+      }
+    })
+    let tenurePrice=this.productTenureBasePrice;
+    let discount = tenurePrice*price/100;
+    this.tenure_price=Math.round(tenurePrice-discount);
+    // this.tenure_price=price;
+    this.security_deposit=deposit;
+    this.tenures = month;
+    this.tenureId =tenureId;
+    this.currentProduct.tenure_id = this.tenureId;
+    this.currentProduct.tenures=this.tenures;
+    this.currentProduct.tenure_price=this.tenure_price;
+    this.currentProduct.tenure_period = this.tenure_period;
+    // this.productService.addToCart(product);
+    const status = await this.removeCartItem(this.currentProduct);
+    if(status){
+      this.addToCart(this.currentProduct);
+    }
+  }
+
+  openTenureModal(tenure, p, tenureId, tenureBasePrice, product) {
+    this.modalService.open(tenure);
+    this.productTenureBasePrice=tenureBasePrice;
+    this.currentProduct=product;
+    this.ps.getProductPriority(p).subscribe((res)=>{
+      this.productTenure=res[0];
+      this.tenuresOfProduct=[];
+      for(let i=0;i<this.productTenure.length;i++){
+        if(this.productTenure[i].tenure_id==tenureId){
+          this.productTenure[i].isSelected=1;
+          this.tenures = this.productTenure[i].tenure+' '+ this.productTenure[i].tenure_period;
+          this.tenure_period = this.productTenure[i].tenure_period;
+          this.tenure_price = this.calcTenures2(this.productTenure[i].discount, this.productTenure[i].tenure_base_price)
+          this.tenuresOfProduct.push(this.productTenure[i]);
+        } else{
+          this.productTenure[i].isSelected=0;
+          this.tenuresOfProduct.push(this.productTenure[i]);
+        }
+      }
+    });
+   }
+
+   calcTenures2(discount, tenure_base_price){
+    let tenurePrice=this.productTenureBasePrice;
+    let discountPrice = tenurePrice*discount/100;
+    let tenureDiscountPrice=tenurePrice-discountPrice;
+    return Math.round(tenureDiscountPrice);
   }
 
   

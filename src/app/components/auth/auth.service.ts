@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { BehaviorSubject, Observable } from 'rxjs';
 import { User, Role, UserData } from './user';
+import { environment } from 'src/environments/environment';
 
 
 @Injectable({
@@ -11,7 +12,7 @@ import { User, Role, UserData } from './user';
 })
 export class AuthService {
 
-  b_url = `http://localhost:3000/`;
+  b_url = `${environment.apiUrl}`;
   private currentUserSubject: BehaviorSubject<UserData>;
   public currentUser: Observable<UserData>;
   private user: User;

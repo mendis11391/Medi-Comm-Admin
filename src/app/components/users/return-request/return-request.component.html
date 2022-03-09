@@ -5,6 +5,7 @@
             <div class="card">
                 <div class="card-header">
                     <h5>Return requests</h5>
+                    <button class="btn btn-warning" [routerLink]="['../../sales/create-request']">Create request</button>
                 </div>
                 <div class="card-body">
                     <div class="custom-datatable">
@@ -18,6 +19,7 @@
                               <th>Order Id</th>
                               <th>Product name</th>
                               <th>Asset #</th>
+                              <th>Pickup date</th>
                               <th>Action</th>
                             </tr>
                           </thead>
@@ -26,6 +28,7 @@
                               <td>{{o.order_item_id}}</td>
                               <td>{{o.prod_name.substring(0,50)+'...'}}</td>
                               <td>{{o.asset_id}}</td>
+                              <td>{{o.requested_date | date:'dd MMM yyyy HH:mm'}}</td>
                               <td (click)="returnProductOrderById(o.order_id, o.order_item_id,o.renewals_timline,o.asset_id); toggleReplaceDetails=!toggleReplaceDetails"><a><i class="fa fa-pencil"></i></a></td>                   
                             </tr>                          
                           </tbody>
@@ -38,7 +41,7 @@
         <div class="col-sm-12" *ngIf="toggleReplaceDetails">
             <div class="card">
               <div class="card-header">
-                <h4><a (click)="resetFormData(); toggleReplaceDetails=!toggleReplaceDetails"><i class="fa fa-arrow-left"></i></a> <button class="btn btn-primary pull-right" (click)="reject(productDetails.order_item_id)">Reject</button> </h4>
+                <h4><a (click)="resetFormData(); toggleReplaceDetails=!toggleReplaceDetails"><i class="fa fa-arrow-left"></i></a> <button class="btn btn-primary pull-right" (click)="reject(productDetails.order_item_id); toggleReplaceDetails=!toggleReplaceDetails">Reject</button> </h4>
               </div>
               <div class="card-body">
                 <div class="row" *ngFor="let o of fullOrderDetails">   

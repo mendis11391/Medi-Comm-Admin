@@ -5,6 +5,7 @@ import { Orders, Assets } from "../../../shared/data/order";
 import { OrdersService } from '../../products/services/orders.service';
 import { HttpClient} from '@angular/common/http';
 import { NgbModal, NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-replacement-orders',
@@ -41,7 +42,7 @@ export class ReplacementOrdersComponent implements OnInit {
   }
 
   getOrderById(ordId){
-    this.http.get(`http://localhost:3000/products/ordDetails/${ordId}`).subscribe((res) => {
+    this.http.get(`${environment.apiUrl}/products/ordDetails/${ordId}`).subscribe((res) => {
       this.fullOrderDetails=res;
       this.productDetails=res[0].checkoutItemData.filter(item =>item.replacement==1 && item.ordered==1);
     });
@@ -166,7 +167,7 @@ export class ReplacementOrdersComponent implements OnInit {
     let securityDepositDiff = filterP2[0].prod_price-filterP1[0].prod_price;
     
 
-    this.http.get(`http://localhost:3000/assets/${p1AssetId}`).subscribe((assetRes) => { //for startdate & expirydate of that asset#
+    this.http.get(`${environment.apiUrl}/assets/${p1AssetId}`).subscribe((assetRes) => { //for startdate & expirydate of that asset#
 
       p2TenureArr=filterP2[0].prod_tenure;
       for(let i=0;i<p2TenureArr.length;i++){//this loop is for rent/mo of that specific month from p1
@@ -276,8 +277,8 @@ export class ReplacementOrdersComponent implements OnInit {
       };  
       
 
-      this.http.post(`http://localhost:3000/payments/replace`,  replaceOrder).subscribe((res) => {
-        this.http.get(`http://localhost:3000/products/ordDetails/${txnid}`).subscribe((resOrd) => {
+      this.http.post(`${environment.apiUrl}/payments/replace`,  replaceOrder).subscribe((res) => {
+        this.http.get(`${environment.apiUrl}/products/ordDetails/${txnid}`).subscribe((resOrd) => {
           let cid = resOrd[0].checkoutItemData;
           cid.forEach(element => {
             if(element.indexs===filterP1[0].indexs){              
@@ -287,10 +288,10 @@ export class ReplacementOrdersComponent implements OnInit {
               element.returnDate=deliverDate;
             }
           });     
-          this.http.put(`http://localhost:3000/orders/updateCID/${txnid}`, {checkoutProducts:JSON.stringify(cid)}).subscribe();  
+          this.http.put(`${environment.apiUrl}/orders/updateCID/${txnid}`, {checkoutProducts:JSON.stringify(cid)}).subscribe();  
         });
-        this.http.put(`http://localhost:3000/assets/update/${p1AssetId}`, {availability:1, startDate:'',expiryDate:'',nextStartDate:''}).subscribe();
-        this.http.put(`http://localhost:3000/assets/update/${this.assetId}`, {availability:0, startDate:assetRes[0].startDate,expiryDate:assetRes[0].expiryDate,nextStartDate:assetRes[0].nextStartDate}).subscribe();
+        this.http.put(`${environment.apiUrl}/assets/update/${p1AssetId}`, {availability:1, startDate:'',expiryDate:'',nextStartDate:''}).subscribe();
+        this.http.put(`${environment.apiUrl}/assets/update/${this.assetId}`, {availability:0, startDate:assetRes[0].startDate,expiryDate:assetRes[0].expiryDate,nextStartDate:assetRes[0].nextStartDate}).subscribe();
       });
     });
 

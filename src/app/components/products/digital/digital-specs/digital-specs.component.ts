@@ -2,6 +2,7 @@ import { Component, OnInit,ElementRef } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import { HttpClient} from '@angular/common/http';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-digital-specs',
@@ -26,7 +27,7 @@ export class DigitalSpecsComponent implements OnInit {
     specName:'',
     specValue:''
   }
-  b_url = ` http://localhost:3000/products`;
+  b_url = `${environment.apiUrl}/products`;
   public closeResult: string;
   finalBlob;
   editSpecImage;
@@ -69,7 +70,7 @@ export class DigitalSpecsComponent implements OnInit {
   }
 
   // addSpecValue(){
-  //   this.http.post(' http://localhost:3000/category/addSpecValue', {specId:this.getSpecName,specValue:this.specValue}).subscribe((res) => {
+  //   this.http.post('http://localhost:3000/category/addSpecValue', {specId:this.getSpecName,specValue:this.specValue}).subscribe((res) => {
   //     console.log(res);     
   //     this.specValueStatus=true;
   //     setTimeout(() => { this.specValueStatus = false; }, 2000);
@@ -77,7 +78,7 @@ export class DigitalSpecsComponent implements OnInit {
   // }
 
   addSpecValue(){
-    this.http.post(' http://localhost:3000/category/addSpecValue', {specId:this.specEdit.specId,specValue:this.specEdit.specValue}).subscribe((res) => {
+    this.http.post('http://localhost:3000/category/addSpecValue', {specId:this.specEdit.specId,specValue:this.specEdit.specValue}).subscribe((res) => {
       console.log(res);     
       this.specValueStatus=true;
       this.getAllSpecs();
@@ -107,7 +108,7 @@ export class DigitalSpecsComponent implements OnInit {
   onEditSpecValue(event):void {
     if (window.confirm('Are you sure you want to save?')) {
       console.log(event.newData);
-      this.http.put(' http://localhost:3000/category/updateSpecValue', event.newData).subscribe();
+      this.http.put('http://localhost:3000/category/updateSpecValue', event.newData).subscribe();
       this.getAllSpecs(); 
       event.confirm.resolve(event.newData);
     } else {

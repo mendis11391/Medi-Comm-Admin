@@ -38,18 +38,18 @@ export class ListUserComponent implements OnInit {
   }
 
   updateFilter(event) {
-    this.temp=this.order;
+    this.temp=this.customers;
     const val = event.target.value.toLowerCase();
 
     // filter our data
     const temp = this.temp.filter(function (d) {
-      return d.primary_id.toLowerCase().indexOf(val) !== -1 || d.delivery_status.toLowerCase().indexOf(val) !== -1 || !val;
+      return d.mobile.toLowerCase().indexOf(val) !== -1 || !val;
     });
 
     // update the rows
     this.filteredCustomers = temp;
     // Whenever the filter changes, always go back to the first page
-    this.table.offset = 0;
+    // this.table.offset = 0; 
   }
 
   ngOnInit() {    

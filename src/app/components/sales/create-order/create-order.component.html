@@ -3,7 +3,7 @@
     <div class="row">
         <div class="col-sm-4">
             <div class="card">
-                <button class="btn btn-warning" (click)="open(customerModal)">Choose customer</button>
+                <button class="btn btn-warning" (click)="open(customerModal,1,1)">Choose customer</button>
             </div>
         </div>
     </div>
@@ -39,7 +39,7 @@
                         <p class="m-0 mb-1">City : {{defaultAddressFields.city}}</p>
                         <p class="m-0 mb-1">Pincode : {{defaultAddressFields.pincode}}</p>
                         <p>Phone: {{defaultAddressFields.mobile}}</p>
-                        <a class="text-primary" (click)="open(addressModal)">Change address</a>
+                        <a class="text-primary" (click)="open(addressModal,1,1)">Change address</a>
                     </div>
                 </div>
             </div>
@@ -58,7 +58,7 @@
                         <p class="m-0 mb-1">City : {{defaultBillAddressFields.city}}</p>
                         <p class="m-0 mb-1">Pincode : {{defaultBillAddressFields.pincode}}</p>
                         <p>Phone: {{defaultBillAddressFields.mobile}}</p>
-                        <a class="text-primary" (click)="open(billAddressModal)">Change address</a>
+                        <a class="text-primary" (click)="open(billAddressModal,1,1)">Change address</a>
                     </div>
                 </div>
             </div>
@@ -69,7 +69,7 @@
         <div class="col-sm-6">
             <div class="card">
                 <div class="card-body p-2">
-                    <button class="btn btn-warning" (click)="open(productModal)">Select Product</button>
+                    <button class="btn btn-warning" (click)="open(productModal,1,1)">Select Product</button>
                 </div>
             </div>
         </div>

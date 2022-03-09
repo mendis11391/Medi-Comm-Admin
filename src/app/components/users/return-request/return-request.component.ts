@@ -3,11 +3,12 @@ import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { orderDB } from "../../../shared/tables/order-list";
 import { Orders, Assets } from "../../../shared/data/order";
 import { OrdersService } from '../../products/services/orders.service';
-import { NgbDateStruct, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateStruct, NgbModal, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient} from '@angular/common/http';
 import { FormGroup,FormBuilder } from '@angular/forms';
 import { ProductService } from '../../products/services/product.service';
 import { ActivatedRoute, Router} from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-return-request',
@@ -62,8 +63,9 @@ export class ReturnRequestComponent implements OnInit {
   model: NgbDateStruct;
   paymentStatus;
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
-  constructor(private route: ActivatedRoute, private router:Router,private http: HttpClient,private ps:ProductService,private os:OrdersService, private modalService: NgbModal, private formBuilder: FormBuilder) {
+  constructor(private calendar: NgbCalendar,private route: ActivatedRoute, private router:Router,private http: HttpClient,private ps:ProductService,private os:OrdersService, private modalService: NgbModal, private formBuilder: FormBuilder) {
     // this.order = orderDB.list_order;
+    this.model = this.calendar.getToday();
   }
 
   updateFilter(event) {
@@ -95,12 +97,12 @@ export class ReturnRequestComponent implements OnInit {
       assetId: ['']
     });
     this.transactionId();
-    this.http.get(`http://localhost:3000/admin/getCustomerRequests`).subscribe((res) => {
+    this.http.get(`${environment.apiUrl}/admin/getCustomerRequests`).subscribe((res) => {
       let a=[];
       a.push(res);
       this.orderitem =a[0].filter(item=>item.request_status==1)
     });
-    this.http.get(`http://localhost:3000/orders/getAllPaymentStatus`).subscribe((res) => {
+    this.http.get(`${environment.apiUrl}/orders/getAllPaymentStatus`).subscribe((res) => {
       this.paymentStatus=res;
     });
   }
@@ -144,7 +146,7 @@ export class ReturnRequestComponent implements OnInit {
   open(ordId) {
     this.modalReference=this.modalService.open(this.content);
     this.orderId=ordId;
-    this.http.get(`http://localhost:3000/products/ordDetails/${ordId}`).subscribe((res) => {
+    this.http.get(`${environment.apiUrl}/products/ordDetails/${ordId}`).subscribe((res) => {
       this.updateStatus.patchValue({
         deliveryStatus: res[0].delivery_status,
         refundStatus: res[0].refund_status
@@ -158,7 +160,7 @@ export class ReturnRequestComponent implements OnInit {
 
   getOrderById(ordId){
     // this.modalReference=this.modalService.open(this.orderDetails, { windowClass : "order-details"});
-    this.http.get(`http://localhost:3000/products/ordDetails/${ordId}`).subscribe((res) => {
+    this.http.get(`${environment.apiUrl}/products/ordDetails/${ordId}`).subscribe((res) => {
       this.fullOrderDetails=res;
       // this.productDetails=res[0].checkoutItemData;
     });
@@ -181,7 +183,7 @@ export class ReturnRequestComponent implements OnInit {
     this.productDetails= requestedProduct;
     console.log(this.productDetails);
     this.toBeRefunded=(this.productDetails.prod_price-0)-(this.returnDamageCharges+this.earlyReturnCharges);
-    this.http.get(`http://localhost:3000/orders/orderId/${ordId}`).subscribe((res) => {
+    this.http.get(`${environment.apiUrl}/orders/orderId/${ordId}`).subscribe((res) => {
       this.fullOrderDetails=res;
       console.log(this.fullOrderDetails);
       orderItem = res[0].orderItem.filter(item=>item.order_item_id == oiid);
@@ -292,10 +294,13 @@ export class ReturnRequestComponent implements OnInit {
       requestStatus:0
     };
     console.log(returnOrder);
-    this.http.post(`http://localhost:3000/payments/newReturn`,  returnOrder).subscribe((res) => {
-    this.http.put(`http://localhost:3000/orders/updateOrderItemStatus/${this.currentOrderItemId}`,returnOrderItem).subscribe();
-    this.http.put(`http://localhost:3000/users/updatecustomerRequests/${this.currentOrderItemId}`,customerRequest).subscribe();
-      // this.http.get(`http://localhost:3000/products/ordDetails/${this.currentOrderId}`).subscribe((resOrd) => {
+    this.http.post(`${environment.apiUrl}/payments/newReturn`,  returnOrder).subscribe((res) => {
+    this.http.put(`${environment.apiUrl}/orders/updateOrderItemStatus/${this.currentOrderItemId}`,returnOrderItem).subscribe();
+    this.http.put(`${environment.apiUrl}/users/updatecustomerRequests/${this.currentOrderItemId}`,customerRequest).subscribe();
+    setTimeout(() => {
+      window.location.reload();
+    }, 2000);
+      // this.http.get(`${environment.apiUrl}/products/ordDetails/${this.currentOrderId}`).subscribe((resOrd) => {
       //   let cid = resOrd[0].checkoutItemData;
       //   cid.forEach(element => {
       //     if(element.assetId===this.currentAssetId){ 
@@ -303,9 +308,9 @@ export class ReturnRequestComponent implements OnInit {
       //       element.returnDate=this.returnDate;
       //     }
       //   });     
-      //   this.http.put(`http://localhost:3000/orders/updateCID/${this.currentOrderId}`, {checkoutProducts:JSON.stringify(cid)}).subscribe();  
+      //   this.http.put(`${environment.apiUrl}/orders/updateCID/${this.currentOrderId}`, {checkoutProducts:JSON.stringify(cid)}).subscribe();  
       // });
-      // this.http.put(`http://localhost:3000/assets/update/${this.currentAssetId}`, {availability:1, startDate:0,expiryDate:0,nextStartDate:0}).subscribe();
+      // this.http.put(`${environment.apiUrl}/assets/update/${this.currentAssetId}`, {availability:1, startDate:0,expiryDate:0,nextStartDate:0}).subscribe();
       // this.modalReference.close();
     });
   }
@@ -314,7 +319,7 @@ export class ReturnRequestComponent implements OnInit {
     this.toggleReplaceDetails=!this.toggleReplaceDetails;
     let filterP1;
     filterP1=this.productDetails.filter(item => item.indexs===p1Indexs);
-    this.http.get(`http://localhost:3000/products/ordDetails/${txnid}`).subscribe((resOrd) => {
+    this.http.get(`${environment.apiUrl}/products/ordDetails/${txnid}`).subscribe((resOrd) => {
       let cid = resOrd[0].checkoutItemData;
       cid.forEach(element => {
         if(element.indexs===filterP1[0].indexs){              
@@ -323,7 +328,7 @@ export class ReturnRequestComponent implements OnInit {
           element.renewed=1;
         }
       });     
-      this.http.put(`http://localhost:3000/orders/updateCID/${txnid}`, {checkoutProducts:JSON.stringify(cid)}).subscribe();  
+      this.http.put(`${environment.apiUrl}/orders/updateCID/${txnid}`, {checkoutProducts:JSON.stringify(cid)}).subscribe();  
     });
   }
 
@@ -383,13 +388,17 @@ export class ReturnRequestComponent implements OnInit {
 
   reject(order_item_id){
     let orderItem={approvalStatus:0, requestStatus:'0'}
-    this.http.put(`http://localhost:3000/users/updatecustomerRequests/${order_item_id}`,orderItem).subscribe((resOrd) => {
-      this.modalReference.close();
+    this.http.put(`${environment.apiUrl}/users/updatecustomerRequests/${this.currentOrderItemId}`,orderItem).subscribe((resOrd) => {
+      // this.modalReference.close();
+      
     });
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
     // let filterP1;
     // let log={orderID:txnid, request:'Replacement', adminResponse:'Rejected'}
     // filterP1=this.productDetails.filter(item => item.indexs===p1Indexs);
-    // this.http.get(`http://localhost:3000/products/ordDetails/${txnid}`).subscribe((resOrd) => {
+    // this.http.get(`${environment.apiUrl}/products/ordDetails/${txnid}`).subscribe((resOrd) => {
     //   let cid = resOrd[0].checkoutItemData;
     //   cid.forEach(element => {
     //     if(element.indexs===filterP1[0].indexs){              
@@ -409,8 +418,8 @@ export class ReturnRequestComponent implements OnInit {
     //     userId:userId,
     //     activityLog:JSON.stringify(log),
     //   }
-    //   this.http.post(`http://localhost:3000/backendActivity/createActivity`, activity).subscribe();
-    //   this.http.put(`http://localhost:3000/orders/updateCID/${txnid}`, {checkoutProducts:JSON.stringify(cid)}).subscribe();  
+    //   this.http.post(`${environment.apiUrl}/backendActivity/createActivity`, activity).subscribe();
+    //   this.http.put(`${environment.apiUrl}/orders/updateCID/${txnid}`, {checkoutProducts:JSON.stringify(cid)}).subscribe();  
     // });
     
   }

@@ -7,6 +7,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient} from '@angular/common/http';
 import { FormGroup,FormBuilder } from '@angular/forms';
 import {NgbDate, NgbCalendar} from '@ng-bootstrap/ng-bootstrap';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-create-assets',
@@ -29,7 +30,7 @@ export class CreateAssetsComponent implements OnInit {
   }
 
   addAsset(){
-    this.http.post(` http://localhost:3000/assets/createAsset`, {assets:this.asset.value.assetId}).subscribe((res) => {
+    this.http.post(`${environment.apiUrl}/assets/createAsset`, {assets:this.asset.value.assetId}).subscribe((res) => {
       alert("asset added");
       this.asset.reset();
     });

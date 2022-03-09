@@ -7,6 +7,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ProductService } from '../../products/services/product.service';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-create-order',
@@ -36,7 +37,11 @@ export class CreateOrderComponent implements OnInit {
   dropdownSettings:IDropdownSettings = {};
   productDropdownSettings:IDropdownSettings = {};
   selectedItems;
-  customerDetails={};
+  customerDetails={
+    firstName:'',
+    mobile:'',
+    email:''
+  };
   ProductDetails=[];
   security_deposit = 0;
   productTenure;
@@ -163,7 +168,7 @@ export class CreateOrderComponent implements OnInit {
     this.getAllCustomers();
     this.getAllProductBycity(1);
     this.transactionId();
-    this.http.get(` http://localhost:3000/orders/getAllPaymenttypes`).subscribe((res) => {
+    this.http.get(`${environment.apiUrl}/orders/getAllPaymenttypes`).subscribe((res) => {
       this.paymentTypes=res;
     });
   }
@@ -225,8 +230,8 @@ export class CreateOrderComponent implements OnInit {
         tDate:this.transactionDate
       };
       this.getProducts();
-      this.http.post(`http://localhost:3000/payments/saveNewOrder`, this.orderForm.value).subscribe((resp1)=>{
-        this.http.post(`http://localhost:3000/payments/postManualOrderTransaction`,transaction).subscribe((resp2)=>{
+      this.http.post(`${environment.apiUrl}/payments/saveNewOrder`, this.orderForm.value).subscribe((resp1)=>{
+        this.http.post(`${environment.apiUrl}/payments/postManualOrderTransaction`,transaction).subscribe((resp2)=>{
           alert('Order created successfully');
           this.router.navigate(['/sales/primary-order']);
         });
@@ -298,7 +303,7 @@ export class CreateOrderComponent implements OnInit {
     this.ProductDetails.push(filterProduct[0]);
     console.log(this.ProductDetails);
     this.ProductDetails.forEach((products)=>{
-      this.http.get(`http://localhost:3000/products/productsDetailsByCityIdAndSlug/1/${products.slug}`).subscribe((prodDetails)=>{
+      this.http.get(`${environment.apiUrl}/products/productsDetailsByCityIdAndSlug/1/${products.slug}`).subscribe((prodDetails)=>{
         products.quantity=1;
         let defaultTenure = prodDetails[0].tenures.filter(item=>item.default_tenure==1);
         products.tenures = defaultTenure[0].tenure+' '+ defaultTenure[0].tenure_period;

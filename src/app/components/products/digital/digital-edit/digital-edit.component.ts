@@ -7,7 +7,8 @@ import { map } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BrandService } from '../../services/brand.service';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-const URL = ' http://localhost:3000/products/upload/';
+import { environment } from 'src/environments/environment';
+const URL = 'http://localhost:3000/products/upload/';
 
 @Component({
   selector: 'app-digital-edit',
@@ -423,7 +424,7 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
     }
     console.log(this.addProduct.value);
 
-    this.http.put(` http://localhost:3000/products/${this.prodId}`, this.addProduct.value).subscribe((res) => {
+    this.http.put(`${environment.apiUrl}/products/${this.prodId}`, this.addProduct.value).subscribe((res) => {
       alert('Product modified successfully');
       this.router.navigate(['/products/digital/digital-product-list']);
     });

@@ -30,7 +30,7 @@
                                         <div class="form-group row">
                                             <label  class="col-xl-3 col-md-4"><span>*</span> 
                                                 Mobile</label>
-                                            <input formControlName="phone" class="form-control col-xl-8 col-md-7" id="validationCustom1"
+                                            <input (keyup)='updateFilter($event)' formControlName="phone" class="form-control col-xl-8 col-md-7" id="validationCustom1"
                                                 type="text" required="">
                                         </div>
                                         <div class="form-group row">
@@ -52,9 +52,10 @@
                                                 type="password" required="">
                                         </div> -->
                                         <!-- <div *ngIf="formSuccessfull">Customer added successfully</div> -->
+                                        <div class="text-center text-danger" *ngIf="customerExist">Customer already exist</div>
                                         <div *ngIf="inputsRequired">All fields are required</div>  
                                         <div class="pull-right">
-                                            <button type="submit" class="btn btn-primary">Save</button>
+                                            <button type="submit" [class.disabled]="customerExist" class="btn btn-primary">Save</button>
                                         </div>
                                     </form>
                                 </div>
@@ -173,7 +174,7 @@
                                                 <div *ngIf="billingAddressForm.controls.pincode.touched && billingAddressForm.controls.pincode.errors?.minlength" class="text theme-color">
                                                     Postal code should be of 6 digits
                                                 </div>
-                                                <div *ngIf="invalidPostal && !billingAddressForm.controls.pincode.errors?.minlength" class="text theme-color">We don't deliver to this postal code</div>
+                                                <!-- <div *ngIf="invalidPostal && !billingAddressForm.controls.pincode.errors?.minlength" class="text theme-color">We don't deliver to this postal code</div> -->
                                             </div>
                                                                  
                                         </div>

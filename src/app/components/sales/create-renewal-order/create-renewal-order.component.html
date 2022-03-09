@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-sm-4">
             <div class="card">
-                <button class="btn btn-warning" (click)="open(customerModal)">Choose customer</button>
+                <button class="btn btn-warning" (click)="open(customerModal,1,1)">Choose customer</button>
             </div>
         </div>
     </div>
@@ -122,7 +122,7 @@
                         </td> -->
                         
                         <td  [class.fade]="p.data.renewed==2">
-                            <label for="{{p.data.id}}" class="pt-4"><a class="tdAnchor" data-toggle="modal" data-target="#orderDetailsModal1" (click)="ordersPopup(p.data.primaryOrderNo)">{{p.data.primaryOrderNo}} </a></label>
+                            <label for="{{p.data.id}}" class="pt-4"><a class="tdAnchor" data-toggle="modal" data-target="#orderDetailsModal1">{{p.data.primaryOrderNo}} </a></label>
                             <!-- <a class="renew-status theme-color">Asset # : {{p.data.assetId}}</a> -->
                         </td>
                         <td  [class.fade]="p.data.renewed==2">
@@ -231,6 +231,7 @@
                             <label for="{{p.data.id}}"  class="pt-4">
                                 <a>₹{{((p.data.price-0)+(p.data.dp-0))*p.data.qty}}</a>    
                                 <input type="number" [(ngModel)]="p.data.price" >
+                                <button (click)="updateTenurePrice(p.data.order_item_id, p.data.price)">Update price</button>
                             </label>                      
                         </td>
                     </tr>

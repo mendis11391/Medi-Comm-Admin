@@ -3,6 +3,7 @@ import { ProductService } from '../../services/product.service';
 import { HttpClient} from '@angular/common/http';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-digital-scrollers',
@@ -96,7 +97,7 @@ export class DigitalScrollersComponent implements OnInit {
     let promotionProduct = {promotion_id:this.currentPromotionId, product_id:e.id};
     let itemToDelete = this.scrollerValues.filter(item => item.promotion_id==this.currentPromotionId && item.id==e.id);
 
-    this.http.delete(`http://localhost:3000/products/deletePromotionProduct/${itemToDelete[0].PPID}`).subscribe((res) => {
+    this.http.delete(`${environment.apiUrl}/products/deletePromotionProduct/${itemToDelete[0].PPID}`).subscribe((res) => {
         // console.log(res);
       alert('scroller item deleted successfully');
     });

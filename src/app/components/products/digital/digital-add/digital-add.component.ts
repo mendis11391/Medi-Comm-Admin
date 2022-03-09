@@ -7,8 +7,9 @@ import { BrandService } from '../../services/brand.service';
 import { Router } from '@angular/router';
 import * as XLSX from 'xlsx';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { environment } from 'src/environments/environment';
 
-const URL = ' http://localhost:3000/products/upload/';
+const URL = 'http://localhost:3000/products/upload/';
 
 @Component({
   selector: 'app-digital-add',
@@ -272,7 +273,7 @@ export class DigitalAddComponent implements OnInit {
     formData.append('cities', item.Cities);
     formData.append('categoryName', item.Categories);
 
-    that.http.post(' http://localhost:3000/products/', formData).subscribe((res) => {
+    that.http.post('http://localhost:3000/products/', formData).subscribe((res) => {
       console.log(res);
     });
     
@@ -287,7 +288,7 @@ export class DigitalAddComponent implements OnInit {
     if(this.addProduct.valid){
       alert('Products added successfully');
       this.router.navigate(['/products/digital/digital-product-list']);
-      this.http.post(' http://localhost:3000/products', this.addProduct.value).subscribe((res) => {
+      this.http.post('http://localhost:3000/products', this.addProduct.value).subscribe((res) => {
         // this.addProduct.reset();
         
         // this.prodSuccessfull=true;

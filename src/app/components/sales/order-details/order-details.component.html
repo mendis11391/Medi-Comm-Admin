@@ -181,7 +181,6 @@
                             <td>{{p.asset_id}}</td> 
                             <td>{{p.startDate | date:'dd MM yyyy'}}</td>                            
                             <td>{{p.delivery_status}}
-                                <br><a class="text-primary" (click)="placeReturnRequest(p.order_id,p.order_item_id,p.renewals_timline)">Place return request</a>
                             </td>                         
                           </tr> 
                           <tr *ngIf="editStatus && (o.orderType_id==1 || o.orderType_id==3)">

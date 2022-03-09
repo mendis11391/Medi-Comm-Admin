@@ -4,6 +4,8 @@ import { HttpClient} from '@angular/common/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { OrdersService } from '../../products/services/orders.service';
 import { Orders,OrderItems, Assets } from "../../../shared/data/order";
+import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-create-request',
@@ -16,7 +18,11 @@ export class CreateRequestComponent implements OnInit {
   public products;
   public filteredProducts:   Orders[] = [];
   customers;
-  customerDetails={};
+  customerDetails={
+    firstName:'',
+    mobile:'',
+    email:''
+  };
   public address=[];
   public defaultAddress=[];
   billAddressId;
@@ -58,9 +64,12 @@ export class CreateRequestComponent implements OnInit {
     default_address:'',
     landmark:''
   };
+  currentDate=new Date();
   @ViewChild('customerModal') customerModal;
+  @ViewChild('addressModal') addressModal;
+  @ViewChild('billAddressModal') billAddressModal;
 
-  constructor(private os:OrdersService,private http: HttpClient,private modalService: NgbModal) {
+  constructor(private router: Router,private os:OrdersService,private http: HttpClient,private modalService: NgbModal) {
     this.dropdownSettings = {
       singleSelection: true,
       idField: 'customer_id',
@@ -221,12 +230,16 @@ export class CreateRequestComponent implements OnInit {
       renewals:JSON.stringify(renewalsData),
       request_id:2,
       requested_date:new Date(),
+      request_reason:'',
+      request_message:'',
       approval_status:0,
       approval_date:0,
       request_status:1
     }
     console.log(orderItem);
-    this.http.post(`http://localhost:3000/users/updateorderItem`,orderItem).subscribe();
+    this.http.post(`${environment.apiUrl}/users/updateorderItem`,orderItem).subscribe(()=>{
+      this.router.navigate(['../users/return-request']);
+    });
   }
 
   placeReplaceRequest(oid,oiid,renewals_timline){
@@ -239,12 +252,16 @@ export class CreateRequestComponent implements OnInit {
       renewals:JSON.stringify(renewalsData),
       request_id:1,
       requested_date:new Date(),
+      request_reason:'',
+      request_message:'',
       approval_status:0,
       approval_date:0,
       request_status:1
     }
     console.log(orderItem);
-    this.http.post(`http://localhost:3000/users/updateorderItem`,orderItem).subscribe();
+    this.http.post(`${environment.apiUrl}/users/updateorderItem`,orderItem).subscribe(()=>{
+      this.router.navigate(['../users/replacement-request']);
+    });
   }
 
   uniq(a) {

@@ -93,15 +93,15 @@
                                 <!-- <a class="theme-color" *ngIf="p.replacement==1">Replacement request sent</a> -->
                             </td>
                             <td [class.my-fade]="p.request_status==1">
-                                <label  class="pt-4"><a class="tdAnchor" data-toggle="modal" data-target="#orderDetailsModal1" (click)="ordersPopup(p.primaryOrderNo)">{{p.renewals_timline[0].primaryOrderNo}} </a></label>
+                                <label  class="pt-4"><a class="tdAnchor" data-toggle="modal" data-target="#orderDetailsModal1">{{p.renewals_timline[0].primaryOrderNo}} </a></label>
                             </td>
         
                             <td [class.my-fade]="p.request_status==1">
                                 <label  class="pt-4" >{{p.asset_id}}</label>
                             </td>
                             <td>
-                                <button class="btn btn-warning" (click)="placeReplaceRequest(p.order_id,p.order_item_id,p.renewals_timline)">Replace request</button>
-                                <button class="btn btn-warning ml-2" (click)="placeReturnRequest(p.order_id,p.order_item_id,p.renewals_timline)">return request</button>                            
+                                <button *ngIf="p.request_status!=1" class="btn btn-warning" (click)="placeReplaceRequest(p.order_id,p.order_item_id,p.renewals_timline)">Replace request</button>
+                                <button *ngIf="p.request_status!=1" class="btn btn-warning ml-2" (click)="placeReturnRequest(p.order_id,p.order_item_id,p.renewals_timline)">return request</button>                            
                             </td>
                           </tr>
                         </tbody>

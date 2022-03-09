@@ -6,12 +6,33 @@
                   <div class="card-body">
                       <div class="custom-datatable" *ngFor="let o of filteredCustomers">
                           
-                          <p>Customer #: <span>{{o.customer_id}}</span></p>
-                          <p>First name : <span>{{o.firstName}}</span></p>
-                          <p>Last name : <span>{{o.lastName}}</span></p>
-                          <p>Mobile : <span>{{o.mobile}}</span></p>
-                          <p>Email : <span>{{o.email}}</span></p>
-                    
+                          <div class="my-2">Customer #: <span>{{o.customer_id}}</span></div>
+                          <div class="my-2">First name : <span>{{o.firstName}} </span> <span class="text-primary" (click)="fname=!fname"> <i class="fa fa-pencil"></i></span> 
+                            <div class="input-group mb-3" *ngIf="fname">
+                              <input type="text" class="form-control" [(ngModel)]="o.firstName" aria-describedby="basic-addon1">
+                              <div class="input-group-append">
+                                <span class="input-group-text" id="basic-addon1" (click)="updateCustomer(o.customer_id,o.firstName, 'firstName')">Update</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="my-2">Last name : <span>{{o.lastName}} </span> <span class="text-primary" (click)="lname=!lname"> <i class="fa fa-pencil"></i></span>
+                            <div class="input-group mb-3" *ngIf="lname">
+                              <input type="text" class="form-control" [(ngModel)]="o.lastName" aria-describedby="basic-addon2">
+                              <div class="input-group-append">
+                                <span class="input-group-text" id="basic-addon2" (click)="updateCustomer(o.customer_id,o.lastName, 'lastName')">Update</span>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="my-2">Mobile : <span>{{o.mobile}} </span></div>
+                          <div class="my-2">Email : <span>{{o.email}} </span><span class="text-primary" (click)="eemail=!eemail"> <i class="fa fa-pencil"></i></span> 
+                            <div class="input-group mb-3" *ngIf="eemail">
+                              <input type="text" class="form-control" [(ngModel)]="o.email" aria-describedby="basic-addon3">
+                              <div class="input-group-append">
+                                <span class="input-group-text" id="basic-addon3" (click)="updateCustomer(o.customer_id,o.email, 'email')">Update</span>
+                              </div>
+                            </div>
+                          </div>
+                          
                       </div>
                   </div>
               </div>
@@ -40,14 +61,7 @@
                   <h3>Cart details</h3>
               </div>
                 <div class="card-body">
-                    <ng-multiselect-dropdown class="mx-5"
-                        [placeholder]="'Add products'"
-                        [settings]="dropdownSettings"
-                        [data]="cartProducts"
-                        (onSelect)="onItemSelect($event)"
-                        (onDeSelect)="onItemDeSelect($event)"
-                        >
-                    </ng-multiselect-dropdown>
+                    <button class="btn btn-warning" (click)="openProdModal()">Add product to cart</button><br><br>
                     <div class="custom-datatable">                        
                         <table class="table table-striped table-bordered" >
                           <thead>
@@ -61,15 +75,61 @@
                               <th>Action</th>
                             </tr>
                           </thead>
-                          <tbody >
-                            <tr *ngFor="let c of cartDetails">
+                          <tbody *ngFor="let c of cartDetails">
+                            <tr >
                               <td>{{c.product_id}}</td>
                               <td>{{c.prod_name}}</td>
-                              <td>{{c.securityDeposit}}</td> 
-                              <td>{{c.quantity}}</td>  
-                              <td>{{c.tenures}}</td> 
-                              <td>{{c.tenure_price}}</td>
-                              <td><a><i class="fa fa-trash"></i></a></td>                    
+                              <td>{{c.securityDeposit * c.quantity}}</td> 
+                              <td><input [(ngModel)]="c.quantity" (keyup)="updateCartQuantity(c, c.quantity)"></td>  
+                              <td>
+                                <a (click)="openTenureModal(tenure, c.priority, c.tenure_id, c.tenure_base_price, c)">
+                                  {{ c.tenures }} 
+                                </a>
+                                <!-- The Modal -->
+                              <ng-template class="modal-tenure" #tenure let-c="close" let-d="dismiss">
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                  <h3 class="ml-2">Select Minimum Tenure</h3>
+                                  <div class="my-close" (click)="d('Cross click')">
+                                    x
+                                  </div>
+                                </div>
+
+                                <!-- Modal body -->
+                                <div class="modal-body">
+                                    <!-- <h6>{{product.prod_name}}</h6> -->
+                                    <table class="table">
+                                        <thead>
+                                        <tr class="my-table-ml">
+                                            <th class="pl-5">Tenure</th>
+                                            <th class="text-right">Rent/ Mo</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody *ngFor="let tenure of tenuresOfProduct; let i=index">
+                                        <tr>
+                                            <td>
+                                                <div class="radio-item">
+                                                    <input type="radio" [checked]="tenure.isSelected==1" id="tenure{{tenure.tenure}}" name="tenure" (change)="calcPrice(tenure.discount, security_deposit, tenure.tenure +' '+tenure.tenure_period, tenure.tenure_id, c.tenure_base_price,c, c.quantity);d('Cross click')" value="{{tenure.tenure}}"> 
+                                                    <label for="tenure{{tenure.tenure}}"><span class="ml-2">{{tenure.tenure}} {{tenure.tenure_period}}</span></label>
+                                                </div>
+                                            </td>
+                                            <td class="pull-right" for="tenure">
+                                              <label for="tenure{{tenure.tenure}}">
+                                                ₹ {{calcTenures2(tenure.discount, c.tenure_base_price)}} 
+                                              </label>                                                
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>                                                                  
+                                </div>
+
+                              </ng-template> 
+                              </td> 
+                              <td>{{c.tenure_price * c.quantity}}
+                               <br> <input [(ngModel)]="c.tenure_price" (keyup)="updateCartTenurePrice(c)">
+                              </td>
+                              <td><a (click)="removeCartItem(c)"><i class="fa fa-trash"></i></a></td>  
+                                               
                             </tr>                          
                           </tbody>
                         </table>
@@ -179,12 +239,72 @@
                       <div class="card-body">
                           <div class="custom-datatable" >
                               
-                              <p>Name : <span>{{a.display_name}} ({{a.nickName}})</span></p>
-                              <p>First name : <span>{{a.firstName}}</span></p>
-                              <p>Address : <span>{{a.address_line1}} {{a.address_line2}}, {{a.landmark}}, {{a.city}}-{{a.pincode}}</span></p>
-                              <p>Landmark : <span></span></p>
-                              <p>Mobile : <span>{{a.addressMobile}}</span></p>
-                              <p>Email : <span>{{a.email}}</span></p>
+                              <div class="p-0 m-0">Display name : <span>{{a.display_name}} </span><span class="text-primary" (click)="displayName=!displayName"> <i class="fa fa-pencil"></i></span>
+                                <div class="input-group mb-3" *ngIf="displayName">
+                                  <input type="text" class="form-control" [(ngModel)]="a.display_name" aria-describedby="basic-addon1">
+                                  <div class="input-group-append">
+                                    <span class="input-group-text" id="basic-addon1" (click)="updateCustomerAddressFeild(a.address_id,a.display_name, 'display_name')">Update</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="p-0 m-0">Nick Name: ({{a.nickName}}) <span class="text-primary" (click)="nickName=!nickName"> <i class="fa fa-pencil"></i></span>
+                                <div class="input-group mb-3" *ngIf="nickName">
+                                  <input type="text" class="form-control" [(ngModel)]="a.nickName" aria-describedby="basic-addon1">
+                                  <div class="input-group-append">
+                                    <span class="input-group-text" id="basic-addon1" (click)="updateCustomerAddressFeild(a.address_id,a.nickName, 'nickName')">Update</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="p-0 m-0">First name : <span>{{a.firstName}}</span></div>
+                              <div class="p-0 m-0">Address line 1 : <span>{{a.address_line1}}</span><span class="text-primary" (click)="address1=!address1"> <i class="fa fa-pencil"></i></span>
+                                <div class="input-group mb-3" *ngIf="address1">
+                                  <input type="text" class="form-control" [(ngModel)]="a.address_line1" aria-describedby="basic-addon1">
+                                  <div class="input-group-append">
+                                    <span class="input-group-text" id="basic-addon1" (click)="updateCustomerAddressFeild(a.address_id,a.address_line1, 'address_line1')">Update</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="p-0 m-0">Addresss line 2: <span>{{a.address_line2}} </span><span class="text-primary" (click)="address2=!address2"> <i class="fa fa-pencil"></i></span>
+                                <div class="input-group mb-3" *ngIf="address2">
+                                  <input type="text" class="form-control" [(ngModel)]="a.address_line2" aria-describedby="basic-addon1">
+                                  <div class="input-group-append">
+                                    <span class="input-group-text" id="basic-addon1" (click)="updateCustomerAddressFeild(a.address_id,a.address_line2, 'address_line2')">Update</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="p-0 m-0">city <span>{{a.city}} </span><span class="text-primary" (click)="city=!city"> <i class="fa fa-pencil"></i></span>
+                                <div class="input-group mb-3" *ngIf="city">
+                                  <input type="text" class="form-control" [(ngModel)]="a.city" aria-describedby="basic-addon1">
+                                  <div class="input-group-append">
+                                    <span class="input-group-text" id="basic-addon1" (click)="updateCustomerAddressFeild(a.address_id,a.city, 'city')">Update</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="p-0 m-0">pincode: <span>{{a.pincode}} </span><span class="text-primary" (click)="pincode=!pincode"> <i class="fa fa-pencil"></i></span>
+                                <div class="input-group mb-3" *ngIf="pincode">
+                                  <input type="text" class="form-control" [(ngModel)]="a.pincode" aria-describedby="basic-addon1">
+                                  <div class="input-group-append">
+                                    <span class="input-group-text" id="basic-addon1" (click)="updateCustomerAddressFeild(a.address_id,a.pincode, 'pincode')">Update</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="p-0 m-0">Landmark : <span>{{a.landmark}} </span><span class="text-primary" (click)="landmark=!landmark"> <i class="fa fa-pencil"></i></span>
+                                <div class="input-group mb-3" *ngIf="landmark">
+                                  <input type="text" class="form-control" [(ngModel)]="a.landmark" aria-describedby="basic-addon1">
+                                  <div class="input-group-append">
+                                    <span class="input-group-text" id="basic-addon1" (click)="updateCustomerAddressFeild(a.address_id,a.landmark, 'landmark')">Update</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="p-0 m-0">Mobile : <span>{{a.addressMobile}} </span><span class="text-primary" (click)="mobile=!mobile"> <i class="fa fa-pencil"></i></span>
+                                <div class="input-group mb-3" *ngIf="mobile">
+                                  <input type="text" class="form-control" [(ngModel)]="a.addressMobile" aria-describedby="basic-addon1">
+                                  <div class="input-group-append">
+                                    <span class="input-group-text" id="basic-addon1" (click)="updateCustomerAddressFeild(a.address_id,a.addressMobile, 'addressMobile')">Update</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="p-0 m-0">Email : <span>{{a.email}}</span></div>
                         
                           </div>
                       </div>
@@ -193,6 +313,66 @@
               </div>
           </div>
       </ng-template>
+
+      <!-- Replacement request modal -->
+      <ng-template  #prodModal let-c="close" let-d="dismiss">
+          <div class="modal-header text-center">
+            <h4 class="col-12 modal-title text-center" id="modal-basic-title">Product details</h4>
+            <button type="button" class="close" aria-label="Close" (click)="d(); ">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+              <div class="row">  
+                <div class="col-sm-6">
+                  <div class="card">
+                      <div class="card-body">
+                        <ng-multiselect-dropdown class="mx-5"
+                        [placeholder]="'Add products'"
+                        [settings]="dropdownSettings"
+                        [data]="cartProducts"
+                        (onSelect)="onItemSelect($event)"
+                        (onDeSelect)="onItemDeSelect($event)"
+                        >
+                        </ng-multiselect-dropdown>
+                      </div>
+                  </div>
+                </div>
+                <!-- <div class="col-sm-12">
+                  <div class="card">
+                    <div class="card-body">
+                      <table class="table table-striped table-bordered" >
+                        <thead>
+                          <tr>
+                            <th>Product Id</th>
+                            <th>Product name</th>
+                            <th>securityDeposit</th>
+                            <th>Quantity</th>
+                            <th>Tenure period</th>
+                            <th>Tenure price</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody >
+                          <tr *ngFor="let c of cartDetails">
+                            <td>{{c.product_id}}</td>
+                            <td>{{c.prod_name}}</td>
+                            <td>{{c.securityDeposit}}</td> 
+                            <td>{{c.quantity}}</td>  
+                            <td>{{c.tenures}}</td> 
+                            <td>{{c.tenure_price}}</td>
+                            <td><a><i class="fa fa-trash"></i></a></td>                    
+                          </tr>                          
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div> -->
+              </div>
+          </div>
+      </ng-template>
+
+      
 
     <!-- <ng-template #content let-c="close" let-d="dismiss">
         <div class="modal-header text-center">

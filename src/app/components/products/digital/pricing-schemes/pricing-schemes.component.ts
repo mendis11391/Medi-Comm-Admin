@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import { HttpClient} from '@angular/common/http';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-pricing-schemes',
@@ -29,7 +30,7 @@ export class PricingSchemesComponent implements OnInit {
   }
   AllTenures;
   tenureByPriority;
-  b_url = ` http://localhost:3000/products`;
+  b_url = `${environment.apiUrl}/products`;
   public closeResult: string;
   constructor(private modalService: NgbModal,private category: ProductService,private http: HttpClient) { }
 
@@ -113,7 +114,7 @@ export class PricingSchemesComponent implements OnInit {
   onEditTenureDiscount(event):void {
     if (window.confirm('Are you sure you want to save?')) {
       console.log(event.newData);
-      this.http.put(' http://localhost:3000/products/updateTenureDiscounts', event.newData).subscribe();
+      this.http.put('http://localhost:3000/products/updateTenureDiscounts', event.newData).subscribe();
       this.getAllSpecs(); 
       event.confirm.resolve(event.newData);
     } else {

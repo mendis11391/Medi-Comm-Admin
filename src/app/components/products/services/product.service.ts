@@ -4,6 +4,7 @@ import { Product, Category } from '../../../shared/tables/product';
 import { ConstantsURL } from '../../../../constants/constant-urls';
 import { BehaviorSubject, Observable, of, Subscriber} from 'rxjs';
 import { map, filter, scan } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 
 export interface specValues {
   spec_id?: number,
@@ -17,11 +18,11 @@ export class ProductService {
 
   constructor(private http: HttpClient) { }
 
-  b_url = `http://localhost:3000/products`;
-  c_url = `http://localhost:3000/category`;
-  cty_url = `http://localhost:3000/cities`;
-  pay_url = `http://localhost:3000/payments`;
-  user_url = `http://localhost:3000/users`;
+  b_url = `${environment.apiUrl}/products`;
+  c_url = `${environment.apiUrl}/category`;
+  cty_url = `${environment.apiUrl}/cities`;
+  pay_url = `${environment.apiUrl}/payments`;
+  user_url = `${environment.apiUrl}/users`;
 
   // public compareProducts : BehaviorSubject<Product[]> = new BehaviorSubject([]);
   public observer   :  Subscriber<{}>;
@@ -41,7 +42,7 @@ export class ProductService {
   }
 
   public getProductPriority(id){
-    return this.http.get(`http://localhost:3000/products/tenures/${id}`)
+    return this.http.get(`${environment.apiUrl}/products/tenures/${id}`)
   }
 
   public getAllProducts(){

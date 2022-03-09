@@ -160,8 +160,8 @@ export var smallLineChartOptions: any = {
 export var smallLineChartColors: Array<any> = [
   {
     backgroundColor: "transparent",
-    borderColor: "#ff8084",
-    pointColor: "#ff8084",
+    borderColor: "#f36f02",
+    pointColor: "#f36f02",
   },
 
 ];
@@ -449,7 +449,7 @@ export var lineChart: any = {
     [90, 20, 0]
   ],
   options: {
-    colors: ["#ff8084", "#a5a5a5"],
+    colors: ["#f36f02", "#a5a5a5"],
     legend: { position: 'none' },
     height: 500,
     width: '100%',

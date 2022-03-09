@@ -7,6 +7,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient} from '@angular/common/http';
 import { FormGroup,FormBuilder } from '@angular/forms';
 import { ExcelService } from '../services/excel.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-orders',
@@ -104,7 +105,7 @@ export class OrdersComponent implements OnInit {
   open(ordId) {
     this.modalReference=this.modalService.open(this.content);
     this.orderId=ordId;
-    this.http.get(` http://localhost:3000/products/ordDetails/${ordId}`).subscribe((res) => {
+    this.http.get(`${environment.apiUrl}/products/ordDetails/${ordId}`).subscribe((res) => {
       this.updateStatus.patchValue({
         deliveryStatus: res[0].delivery_status,
         refundStatus: res[0].refund_status
@@ -113,7 +114,7 @@ export class OrdersComponent implements OnInit {
   }
 
   updateDeliveryStatus(id){
-    this.http.put(` http://localhost:3000/orders/update/${id}`, this.updateStatus.value).subscribe((res) => {
+    this.http.put(`${environment.apiUrl}/orders/update/${id}`, this.updateStatus.value).subscribe((res) => {
       console.log(res);
       this.modalReference.close();
     });
@@ -126,7 +127,7 @@ export class OrdersComponent implements OnInit {
     this.subTotal=0;
     let orderedProducts;
     this.modalReference=this.modalService.open(this.orderDetails, { windowClass : "order-details"});
-    this.http.get(` http://localhost:3000/products/ordDetails/${ordId}`).subscribe((res) => {
+    this.http.get(`${environment.apiUrl}/products/ordDetails/${ordId}`).subscribe((res) => {
       this.fullOrderDetails=res;
       this.productDetails=res[0].checkoutItemData;
       orderedProducts=JSON.parse(res[0].orderedProducts);
@@ -166,9 +167,9 @@ export class OrdersComponent implements OnInit {
     });
     console.log(forQtyProduct);
     console.log(getAllProduct);
-    this.http.put(` http://localhost:3000/orders/updateDelivery/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct),checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
+    this.http.put(`${environment.apiUrl}/orders/updateDelivery/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct),checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
       console.log(res);
-      this.http.put(` http://localhost:3000/assets/update/${assetId}`, {availability:0}).subscribe();
+      this.http.put(`${environment.apiUrl}/assets/update/${assetId}`, {availability:0}).subscribe();
       this.modalReference.close();
       // this.assetAssign.reset();
       window.location.reload();
@@ -209,7 +210,7 @@ export class OrdersComponent implements OnInit {
       }
     });
     console.log(forQtyProduct);
-    this.http.put(` http://localhost:3000/orders/updateDelivery/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct),checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
+    this.http.put(`${environment.apiUrl}/orders/updateDelivery/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct),checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
       console.log(res);
       this.modalReference.close();
     });

@@ -7,6 +7,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient} from '@angular/common/http';
 import { FormGroup,FormBuilder,Validators } from '@angular/forms';
 import { ExcelService } from '../services/excel.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-orders-panel',
@@ -85,7 +86,7 @@ export class OrdersPanelComponent implements OnInit {
   open(ordId) {
     this.modalReference=this.modalService.open(this.content);
     this.orderId=ordId;
-    this.http.get(`http://localhost:3000/orders/${ordId}`).subscribe((res) => {
+    this.http.get(`${environment.apiUrl}/orders/${ordId}`).subscribe((res) => {
       this.updateStatus.patchValue({
         deliveryStatus: res[0].delivery_status,
         refundStatus: res[0].refund_status
@@ -94,7 +95,7 @@ export class OrdersPanelComponent implements OnInit {
   }
 
   updateDeliveryStatus(id){
-    this.http.put(`http://localhost:3000/orders/update/${id}`, this.updateStatus.value).subscribe((res) => {
+    this.http.put(`${environment.apiUrl}/orders/update/${id}`, this.updateStatus.value).subscribe((res) => {
       console.log(res);
       this.modalReference.close();
     });
@@ -103,7 +104,7 @@ export class OrdersPanelComponent implements OnInit {
 
   getOrderById(ordId){
     this.modalReference=this.modalService.open(this.orderDetails, { windowClass : "order-details"});
-    this.http.get(`http://localhost:3000/orders/orderId/${ordId}`).subscribe((res) => {
+    this.http.get(`${environment.apiUrl}/orders/orderId/${ordId}`).subscribe((res) => {
       this.fullOrderDetails=res;
       this.customer_id = res[0].customer_id
       this.productDetails=res[0].orderItem;
@@ -132,9 +133,9 @@ export class OrdersPanelComponent implements OnInit {
   //   });
   //   console.log(forQtyProduct);
   //   console.log(getAllProduct);
-  //   this.http.put(`http://localhost:3000/orders/updateDelivery/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct),checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
+  //   this.http.put(`${environment.apiUrl}/orders/updateDelivery/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct),checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
   //     console.log(res);
-  //     this.http.put(`http://localhost:3000/assets/update/${assetId}`, {availability:0}).subscribe();
+  //     this.http.put(`${environment.apiUrl}/assets/update/${assetId}`, {availability:0}).subscribe();
   //     this.modalReference.close();
   //     // this.assetAssign.reset();
   //     window.location.reload();
@@ -150,25 +151,25 @@ export class OrdersPanelComponent implements OnInit {
     let expiryDate;
     let nextStartDate;
     let orderItem;
-    this.http.get(`http://localhost:3000/orders/orderItemsByorderId/${OrderId}`).subscribe((res) => {
+    this.http.get(`${environment.apiUrl}/orders/orderItemsByorderId/${OrderId}`).subscribe((res) => {
       orderItem=res;
       getAllProduct=orderItem[0].renewals_timline;
       currentAssetId=getAllProduct[0].assetId ;
       if(orderItem[0].asset_id=='To be assigned'){
         getAllProduct[0].assetId = assetId;
-        this.http.put(`http://localhost:3000/orders/updateOrderItemAsset/${OrderId}`, {assetId:assetId,renewalTimeline:JSON.stringify(getAllProduct)}).subscribe((res) => {});
+        this.http.put(`${environment.apiUrl}/orders/updateOrderItemAsset/${OrderId}`, {assetId:assetId,renewalTimeline:JSON.stringify(getAllProduct)}).subscribe((res) => {});
           
-        this.http.put(`http://localhost:3000/assets/update/${assetId}`, {availability:0, startDate:startDate, expiryDate:expiryDate, nextStartDate:nextStartDate}).subscribe();
+        this.http.put(`${environment.apiUrl}/assets/update/${assetId}`, {availability:0, startDate:startDate, expiryDate:expiryDate, nextStartDate:nextStartDate}).subscribe();
         this.assetAssign.reset();
         this.getAssets();
         this.modalReference.close();
         // window.location.reload();
       } else{
         getAllProduct[0].assetId = assetId;
-        this.http.put(`http://localhost:3000/orders/updateOrderItemAsset/${OrderId}`, {assetId:assetId,renewalTimeline:JSON.stringify(getAllProduct)}).subscribe((res) => {});
+        this.http.put(`${environment.apiUrl}/orders/updateOrderItemAsset/${OrderId}`, {assetId:assetId,renewalTimeline:JSON.stringify(getAllProduct)}).subscribe((res) => {});
           
-        this.http.put(`http://localhost:3000/assets/update/${assetId}`, {availability:0, startDate:startDate, expiryDate:expiryDate, nextStartDate:nextStartDate}).subscribe();
-        this.http.put(`http://localhost:3000/assets/update/${currentAssetId}`, {availability:1, startDate:startDate, expiryDate:expiryDate, nextStartDate:nextStartDate}).subscribe();
+        this.http.put(`${environment.apiUrl}/assets/update/${assetId}`, {availability:0, startDate:startDate, expiryDate:expiryDate, nextStartDate:nextStartDate}).subscribe();
+        this.http.put(`${environment.apiUrl}/assets/update/${currentAssetId}`, {availability:1, startDate:startDate, expiryDate:expiryDate, nextStartDate:nextStartDate}).subscribe();
         this.assetAssign.reset();
         this.getAssets();
         this.modalReference.close();
@@ -209,12 +210,12 @@ export class OrdersPanelComponent implements OnInit {
 
     // Promise.all([od,cid]).then((success)=>{
     //   console.log(success);
-    //   this.http.put(`http://localhost:3000/orders/updateOD/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct)}).subscribe((res) => {});
-    //     this.http.put(`http://localhost:3000/orders/updateCID/${OrderId}`, {checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
+    //   this.http.put(`${environment.apiUrl}/orders/updateOD/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct)}).subscribe((res) => {});
+    //     this.http.put(`${environment.apiUrl}/orders/updateCID/${OrderId}`, {checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
     //     console.log(res);
         
-    //     this.http.put(`http://localhost:3000/assets/update/${assetId}`, {availability:0, startDate:startDate, expiryDate:expiryDate, nextStartDate:nextStartDate}).subscribe();
-    //     this.http.put(`http://localhost:3000/assets/update/${currentAssetId}`, {availability:1, startDate:'', expiryDate:'', nextStartDate:''}).subscribe();
+    //     this.http.put(`${environment.apiUrl}/assets/update/${assetId}`, {availability:0, startDate:startDate, expiryDate:expiryDate, nextStartDate:nextStartDate}).subscribe();
+    //     this.http.put(`${environment.apiUrl}/assets/update/${currentAssetId}`, {availability:1, startDate:'', expiryDate:'', nextStartDate:''}).subscribe();
     //     this.assetAssign.reset();
     //     this.getAssets();
     //     this.modalReference.close();
@@ -254,7 +255,7 @@ export class OrdersPanelComponent implements OnInit {
       
       let db= getdeliveryDate.getDate()+'/'+(getdeliveryDate.getMonth()+1)+'/'+getdeliveryDate.getFullYear();
 
-      this.http.get(`http://localhost:3000/orders/orderItemsByorderId/${OrderId}`).subscribe((res) => {
+      this.http.get(`${environment.apiUrl}/orders/orderItemsByorderId/${OrderId}`).subscribe((res) => {
 
         orderItem=res;
         getAllProduct=orderItem[0].renewals_timline;
@@ -302,9 +303,9 @@ export class OrdersPanelComponent implements OnInit {
       
         if(currentAssetId!='To be assigned'){
           this.formError=false;
-          this.http.put(`http://localhost:3000/orders/updateOrderItemDeliveryDate/${OrderId}`, {deliveryDate:getdeliveryDate, expiryDate:exp,renewalTimeline:JSON.stringify(getAllProduct)}).subscribe((res) => {
+          this.http.put(`${environment.apiUrl}/orders/updateOrderItemDeliveryDate/${OrderId}`, {deliveryDate:getdeliveryDate, expiryDate:exp,renewalTimeline:JSON.stringify(getAllProduct)}).subscribe((res) => {
               console.log(res);
-              this.http.put(`http://localhost:3000/assets/update/${currentAssetId}`, {availability:0, startDate:db, expiryDate:edb, nextStartDate:nextStartDate}).subscribe();
+              this.http.put(`${environment.apiUrl}/assets/update/${currentAssetId}`, {availability:0, startDate:db, expiryDate:edb, nextStartDate:nextStartDate}).subscribe();
               // const userId = localStorage.getItem('user_id');
               // const uname = localStorage.getItem('uname');
               // const uid = uname.substring(0, 3);
@@ -315,7 +316,7 @@ export class OrdersPanelComponent implements OnInit {
               //   userId:userId,
               //   activityLog:JSON.stringify(log),
               // }
-              // this.http.post(`http://localhost:3000/backendActivity/createActivity`, activity).subscribe();
+              // this.http.post(`${environment.apiUrl}/backendActivity/createActivity`, activity).subscribe();
               this.deliveryDateStatus.reset();
               this.getAssets();
               this.modalReference.close();
@@ -337,9 +338,9 @@ export class OrdersPanelComponent implements OnInit {
     let orderItem;
     let currentAssetId;
     let delvStatus = this.deliveryStatus.value.deliveryStatus;
-    this.http.put(`http://localhost:3000/orders/updateRenewTimline/${OrderId}`, {deliveryStatus:delvStatus}).subscribe((res)=>{
+    this.http.put(`${environment.apiUrl}/orders/updateRenewTimline/${OrderId}`, {deliveryStatus:delvStatus}).subscribe((res)=>{
       this.modalReference.close();
-      this.http.get(`http://localhost:3000/orders/${this.customer_id}`).subscribe();
+      this.http.get(`${environment.apiUrl}/orders/${this.customer_id}`).subscribe();
           // window.location.reload();
     });
     // console.log(forQtyProduct);
@@ -368,9 +369,9 @@ export class OrdersPanelComponent implements OnInit {
     
     // Promise.all([od,cid]).then((success)=>{
     //   if(this.assetId!=''){
-    //     this.http.put(`http://localhost:3000/orders/updateDelivery/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct),checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
+    //     this.http.put(`${environment.apiUrl}/orders/updateDelivery/${OrderId}`, {ordProducts:JSON.stringify(getAllProduct),checkoutProducts:JSON.stringify(forQtyProduct)}).subscribe((res) => {
     //       console.log(res);
-    //       // this.http.put(`http://localhost:3000/assets/update/${assetId}`, {availability:0}).subscribe();
+    //       // this.http.put(`${environment.apiUrl}/assets/update/${assetId}`, {availability:0}).subscribe();
     //       this.deliveryStatus.reset();
     //       this.modalReference.close();
     //       window.location.reload();
