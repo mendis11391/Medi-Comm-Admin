@@ -17,17 +17,17 @@
                         {{ date.day }}
                       </span>
                     </ng-template> -->
-                    <label>From date:<div class="form-group">
+                    <label class="mx-2">As on date:<div class="form-group">
                       <div class="input-group">
                         <input class="form-control" placeholder="yyyy-mm-dd"
-                               name="dp" [(ngModel)]="fromDate" ngbDatepicker #d="ngbDatepicker">
+                               name="d" [(ngModel)]="fromDate" ngbDatepicker #d="ngbDatepicker">
                         <div class="input-group-append">
                           <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button"></button>
                         </div>
                       </div>
                     </div>
                    </label>
-                    <label class="mx-2">To date:
+                    <!-- <label class="mx-2">To date:
                       <div class="form-group">
                       <div class="input-group">
                         <input class="form-control" placeholder="yyyy-mm-dd"
@@ -37,7 +37,7 @@
                         </div>
                       </div>
                     </div>
-                  </label>
+                  </label> -->
                     <button class="btn btn-warning" (click)="filterDataByDate()">Submit</button>
                     <div class="custom-datatable">
                         
@@ -56,7 +56,8 @@
                           <thead>
                             <tr>
                               <th>Primary Order Id</th>
-                              <!-- <th>Payu Trans Id</th> -->
+                              <th>Customer name</th>
+                              <th>Mobile</th>
                               <th>Prod name</th>
                               <th>asset Id</th>
                               <th>Start date</th>
@@ -65,10 +66,12 @@
                           </thead>
                           <tbody *ngFor="let o of filteredOrderItems">
                             <tr >
-                              <td>{{o.primaryOrderNo}}</td>
+                              <td [routerLink]="['../../sales/orders',o.order_id]">{{o.primaryOrderNo}}</td>
+                              <td [routerLink]="['../../users/customers',o.customer_id]">{{o.firstName}}</td>
+                              <td [routerLink]="['../../users/customers',o.customer_id]">{{o.mobile}}</td>
                               <td>{{o.prod_name}}</td> 
                               <td>{{o.assetId}}</td> 
-                              <td>₹{{o.startDate}}</td>    
+                              <td>{{o.startDate}}</td>    
                               <td>{{o.expiryDate}}</td>                      
                             </tr>                          
                           </tbody>

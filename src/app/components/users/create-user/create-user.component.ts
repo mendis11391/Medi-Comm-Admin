@@ -62,7 +62,7 @@ export class CreateUserComponent implements OnInit {
   }
 
   getAllCustomers(){
-    this.http.get('http://localhost:3000/users').subscribe((users)=>{
+    this.http.get(`${environment.apiUrl}/users`).subscribe((users)=>{
       this.customers=users
     })
   }
@@ -115,7 +115,7 @@ export class CreateUserComponent implements OnInit {
     this.inputsRequired=false;
     if(!this.customerExist){
       if(this.accountForm.valid){
-        this.http.post('http://localhost:3000/otpRegister', this.accountForm.value).subscribe((res) => {
+        this.http.post(`${environment.apiUrl}/otpRegister`, this.accountForm.value).subscribe((res) => {
         //  this.formSuccessfull=true;       
          this.accountForm.reset();
           alert('Customer added successfully')
@@ -159,7 +159,7 @@ export class CreateUserComponent implements OnInit {
             addr.default_address=true;
           }
   
-          this.http.post('http://localhost:3000/users/addresses', addr).subscribe((address)=>{
+          this.http.post(`${environment.apiUrl}/users/addresses`, addr).subscribe((address)=>{
             alert('Address added successfully');          
             this.billingAddressForm.reset();
           });

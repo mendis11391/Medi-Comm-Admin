@@ -14,6 +14,8 @@ export class OrdersService {
   orders_url = `${environment.apiUrl}/orders`;
   assets_url = `${environment.apiUrl}/assets`;
   customer_url = `${environment.apiUrl}/users`;
+
+  tillDate:Date;
   
   constructor(private http: HttpClient) { 
     

@@ -100,7 +100,7 @@ export class ReturnRequestComponent implements OnInit {
     this.http.get(`${environment.apiUrl}/admin/getCustomerRequests`).subscribe((res) => {
       let a=[];
       a.push(res);
-      this.orderitem =a[0].filter(item=>item.request_status==1)
+      this.orderitem =a[0];
     });
     this.http.get(`${environment.apiUrl}/orders/getAllPaymentStatus`).subscribe((res) => {
       this.paymentStatus=res;

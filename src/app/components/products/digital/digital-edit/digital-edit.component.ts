@@ -8,7 +8,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { BrandService } from '../../services/brand.service';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from 'src/environments/environment';
-const URL = 'http://localhost:3000/products/upload/';
+const URL = `${environment.apiUrl}/products/upload/`;
 
 @Component({
   selector: 'app-digital-edit',
@@ -508,7 +508,7 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
   onEditStockUpdate(event):void {
     if (window.confirm('Are you sure you want to save?')) {
       console.log(event.newData);
-      this.http.put('http://localhost:3000/products/productStocksAndTimeline', event.newData).subscribe();
+      this.http.put(`${environment.apiUrl}/products/productStocksAndTimeline`, event.newData).subscribe();
       event.confirm.resolve(event.newData);
     } else {
       event.confirm.reject();

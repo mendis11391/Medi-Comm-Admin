@@ -114,7 +114,7 @@ export class PricingSchemesComponent implements OnInit {
   onEditTenureDiscount(event):void {
     if (window.confirm('Are you sure you want to save?')) {
       console.log(event.newData);
-      this.http.put('http://localhost:3000/products/updateTenureDiscounts', event.newData).subscribe();
+      this.http.put(`${environment.apiUrl}/products/updateTenureDiscounts`, event.newData).subscribe();
       this.getAllSpecs(); 
       event.confirm.resolve(event.newData);
     } else {

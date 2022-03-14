@@ -23,7 +23,7 @@ export class AuthService {
    }
 
   loginCheck(formdata) {
-    return this.http.post(ConstantsURL.LOGIN, formdata);
+    return this.http.post(this.b_url, formdata);
   }
 
   authenticatedCheck() {

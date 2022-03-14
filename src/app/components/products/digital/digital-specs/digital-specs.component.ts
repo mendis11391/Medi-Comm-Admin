@@ -58,19 +58,19 @@ export class DigitalSpecsComponent implements OnInit {
   }
 
   addSpecs(){
-    this.http.post('http://localhost:3000/products/postSpecs', {spec_name:this.specName, specIMage:this.finalBlob,spec_status:1}).subscribe((res) => {
+    this.http.post(`${environment.apiUrl}/products/postSpecs`, {spec_name:this.specName, specIMage:this.finalBlob,spec_status:1}).subscribe((res) => {
       console.log(res);
     });
   }
 
   editSpecs(){
-    this.http.post('http://localhost:3000/products/putSpecs', {spec_name:this.specName, specIMage:this.finalBlob,spec_status:1}).subscribe((res) => {
+    this.http.post(`${environment.apiUrl}/products/putSpecs`, {spec_name:this.specName, specIMage:this.finalBlob,spec_status:1}).subscribe((res) => {
       console.log(res);
     });
   }
 
   // addSpecValue(){
-  //   this.http.post('http://localhost:3000/category/addSpecValue', {specId:this.getSpecName,specValue:this.specValue}).subscribe((res) => {
+  //   this.http.post(`${environment.apiUrl}/category/addSpecValue`, {specId:this.getSpecName,specValue:this.specValue}).subscribe((res) => {
   //     console.log(res);     
   //     this.specValueStatus=true;
   //     setTimeout(() => { this.specValueStatus = false; }, 2000);
@@ -78,7 +78,7 @@ export class DigitalSpecsComponent implements OnInit {
   // }
 
   addSpecValue(){
-    this.http.post('http://localhost:3000/category/addSpecValue', {specId:this.specEdit.specId,specValue:this.specEdit.specValue}).subscribe((res) => {
+    this.http.post(`${environment.apiUrl}/category/addSpecValue`, {specId:this.specEdit.specId,specValue:this.specEdit.specValue}).subscribe((res) => {
       console.log(res);     
       this.specValueStatus=true;
       this.getAllSpecs();
@@ -108,7 +108,7 @@ export class DigitalSpecsComponent implements OnInit {
   onEditSpecValue(event):void {
     if (window.confirm('Are you sure you want to save?')) {
       console.log(event.newData);
-      this.http.put('http://localhost:3000/category/updateSpecValue', event.newData).subscribe();
+      this.http.put(`${environment.apiUrl}/category/updateSpecValue`, event.newData).subscribe();
       this.getAllSpecs(); 
       event.confirm.resolve(event.newData);
     } else {
@@ -182,7 +182,7 @@ export class DigitalSpecsComponent implements OnInit {
   }
 
   updateSpecImage(id){
-    this.http.put('http://localhost:3000/category/updateSpecNameAndImage', {id:id, spec_image:this.editSpecImage}).subscribe();
+    this.http.put(`${environment.apiUrl}/category/updateSpecNameAndImage`, {id:id, spec_image:this.editSpecImage}).subscribe();
     this.getAllSpecs();
   }
 }

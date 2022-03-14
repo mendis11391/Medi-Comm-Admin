@@ -195,7 +195,7 @@ export class ManageOrdersComponent implements OnInit {
     this.http.get(`${environment.apiUrl}/products/ordDetails/${ordId}`).subscribe((res) => {
       this.fullOrderDetails=res;
       this.productDetails=res[0].checkoutItemData;
-      this.http.get('http://localhost:3000/cities').subscribe((resCity:any)=>{
+      this.http.get(`${environment.apiUrl}/cities`).subscribe((resCity:any)=>{
       if (resCity) {
         const a = resCity.filter((city) => {
           if (city.cityname === res[0].city) {

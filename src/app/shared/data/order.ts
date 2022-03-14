@@ -63,7 +63,9 @@ export interface OrderItems {
     startDate:Date,
     endDate:Date,
     delivery_status:number,
-    status:boolean
+    status:boolean,
+    firstName:string,
+    mobile:string
 }
 
 export interface Assets {

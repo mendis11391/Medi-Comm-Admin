@@ -70,7 +70,7 @@ export class ReturnOrderComponent implements OnInit {
   getOrders(){
     this.os.getAllOrders().subscribe((orders)=>{
       orders.reverse();
-      this.order=orders.filter(item => (item.paymentStatus.toLowerCase()=='Refunded' || item.paymentStatus.toLowerCase()=='Refund initiated' || item.paymentStatus.toLowerCase()=='success' || item.paymentStatus.toLowerCase()=='to be paid') && item.orderType_id==4);
+      this.order=orders.filter(item => item.orderType_id==4);
       this.filteredOrders=this.order;
     });
   }

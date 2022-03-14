@@ -59,14 +59,14 @@ export class DigitalAccessoriesComponent implements OnInit {
   }
 
   addAccs(){
-    this.http.post('http://localhost:3000/products/postAccs', {accsName:this.accsName, accsIMage:this.addAccsImage,accsStatus:1}).subscribe((res) => {
+    this.http.post(`${environment.apiUrl}/products/postAccs`, {accsName:this.accsName, accsIMage:this.addAccsImage,accsStatus:1}).subscribe((res) => {
       alert("accessory added successfully");
       this.getAllAccs();
     });
   }
 
   // addSpecValue(){
-  //   this.http.post('http://localhost:3000/category/addSpecValue', {specId:this.getSpecName,specValue:this.specValue}).subscribe((res) => {
+  //   this.http.post(`${environment.apiUrl}/category/addSpecValue`, {specId:this.getSpecName,specValue:this.specValue}).subscribe((res) => {
   //     console.log(res);     
   //     this.specValueStatus=true;
   //     setTimeout(() => { this.specValueStatus = false; }, 2000);
@@ -74,7 +74,7 @@ export class DigitalAccessoriesComponent implements OnInit {
   // }
 
   addSpecValue(){
-    this.http.post('http://localhost:3000/category/addSpecValue', {specId:this.specEdit.AccsId,specValue:this.specEdit.specValue}).subscribe((res) => {
+    this.http.post(`${environment.apiUrl}/category/addSpecValue`, {specId:this.specEdit.AccsId,specValue:this.specEdit.specValue}).subscribe((res) => {
       console.log(res);     
       this.specValueStatus=true;
       this.getAllAccs();
@@ -105,7 +105,7 @@ export class DigitalAccessoriesComponent implements OnInit {
   onEditAccsValue(event):void {
     if (window.confirm('Are you sure you want to save?')) {
       console.log(event.newData);
-      this.http.put('http://localhost:3000/category/updateAccsValue', event.newData).subscribe();
+      this.http.put(`${environment.apiUrl}/category/updateAccsValue`, event.newData).subscribe();
       this.getAllAccs(); 
       event.confirm.resolve(event.newData);
     } else {
@@ -180,7 +180,7 @@ export class DigitalAccessoriesComponent implements OnInit {
   }
 
   updateAccsImage(id){
-    this.http.put('http://localhost:3000/category/updateAccsImage', {id:id, accs_image:this.editAccsImage}).subscribe();
+    this.http.put(`${environment.apiUrl}/category/updateAccsImage`, {id:id, accs_image:this.editAccsImage}).subscribe();
     this.getAllAccs();
   }
 

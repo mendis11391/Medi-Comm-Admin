@@ -35,11 +35,13 @@ export class UpcomingRenewalsComponent implements OnInit {
   public filteredOrders=[];
   filteredOrderItems=[];
 
+  myFromDate:Date;
   hoveredDate: NgbDate | null = null;
 
   fromDate: NgbDate;
   toDate: NgbDate | null = null;
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
+  @ViewChild('d') d;
   constructor(calendar: NgbCalendar,private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: FormBuilder) {
     // this.order = orderDB.list_order;
     this.fromDate = calendar.getToday();
@@ -81,16 +83,22 @@ export class UpcomingRenewalsComponent implements OnInit {
       this.order=orderItems.filter(item => item.status==true && item.delivery_status==4 );
       for(let o=0;o<this.order.length;o++){
         let otParse = JSON.parse(this.order[o].renewals_timline);
-        console.log(this.order);
+        
         this.os.getRenewalsByCustomerId(this.order[o].customer_id).subscribe((res)=>{
           console.log(res);
         });
         for(let p=0;p<otParse.length;p++){
+          if(otParse[p].order_item_id==this.order[o].order_item_id){
+            otParse[p].firstName=this.order[o].firstName;
+            otParse[p].mobile=this.order[o].mobile;
+            otParse[p].customer_id = this.order[o].customer_id;
+            otParse[p].order_id=this.order[o].order_id;
+          }          
           this.filteredOrders.push(otParse[p]);
           this.filteredOrderItems = this.filteredOrders.filter(item=>item.renewed==0);
         }
       }
-      // this.filteredOrders=this.order;
+      this.loadFilterDataByDate();
     });
   }
 
@@ -167,13 +175,18 @@ export class UpcomingRenewalsComponent implements OnInit {
   }
 
   filterDataByDate(){ 
+    console.log(this.fromDate);
     this.filteredOrderItems = this.filteredOrders.filter(item=>item.renewed==0);
     let myFromDate = new Date(this.fromDate.year, this.fromDate.month-1, this.fromDate.day);
+    this.os.tillDate=myFromDate;
     let myEndDate = new Date(this.toDate.year, this.toDate.month-1, this.toDate.day);
-    console.log(myFromDate);
     this.filteredOrderItems = this.filteredOrderItems.filter(
-    m => this.parseDate(m.expiryDate) >= new Date(myFromDate) && this.parseDate(m.expiryDate) <= new Date(myEndDate)
+    m => this.parseDate(m.startDate) <= new Date(myFromDate)
     );
+
+    // this.filteredOrderItems = this.filteredOrderItems.filter(
+    //   m => this.parseDate(m.expiryDate) >= new Date(myFromDate) && this.parseDate(m.expiryDate) <= new Date(myEndDate)
+    //   );
     // for(var index in this.filteredOrderItems) {
     //   var obj = this.filteredOrderItems[index];
     //   var date = this.parseDate(obj.expiryDate);
@@ -189,6 +202,27 @@ export class UpcomingRenewalsComponent implements OnInit {
     //   //   this.filteredOrderItems.push(obj);
     //   // }          
     // }
+  }
+
+  loadFilterDataByDate(){ 
+    this.filteredOrderItems = this.filteredOrders.filter(item=>item.renewed==0);
+    let myFromDate = new Date(this.fromDate.year, this.fromDate.month-1, this.fromDate.day);
+    
+    if(this.os.tillDate){
+      myFromDate = this.os.tillDate;
+      this.fromDate.year = this.os.tillDate.getFullYear();
+      this.fromDate.month = this.os.tillDate.getMonth()+1;
+      this.fromDate.day = this.os.tillDate.getDate();
+      this.d.navigateTo(this.fromDate);
+      console.log(this.fromDate);
+    }else{
+      this.os.tillDate=myFromDate;
+    }
+    let myEndDate = new Date(this.toDate.year, this.toDate.month-1, this.toDate.day);
+    this.filteredOrderItems = this.filteredOrderItems.filter(
+    m => this.parseDate(m.startDate) <= new Date(myFromDate)
+    );
+
   }
 
   parseDate(dateStr) {

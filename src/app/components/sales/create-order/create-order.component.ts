@@ -174,7 +174,7 @@ export class CreateOrderComponent implements OnInit {
   }
 
   getAllCustomers(){
-    this.http.get('http://localhost:3000/users').subscribe((users)=>{
+    this.http.get(`${environment.apiUrl}/users`).subscribe((users)=>{
       this.customers=users
     })
   }

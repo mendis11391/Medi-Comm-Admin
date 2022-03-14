@@ -59,7 +59,7 @@ export class DigitalScrollersComponent implements OnInit {
   }
 
   addScroller(){
-    this.http.post('http://localhost:3000/products/postScroller', {scroller_name:this.scrollerName, scroller_status:1}).subscribe((res) => {
+    this.http.post(`${environment.apiUrl}/products/postScroller`, {scroller_name:this.scrollerName, scroller_status:1}).subscribe((res) => {
       console.log(res);
       // alert('scroller added successfully');
     });
@@ -87,7 +87,7 @@ export class DigitalScrollersComponent implements OnInit {
   onItemSelect(e){
     console.log(e);
     let promotionProduct = {promotion_id:this.currentPromotionId, product_id:e.id};
-    this.http.post('http://localhost:3000/products/postPromotionalProducts', promotionProduct).subscribe((res) => {
+    this.http.post(`${environment.apiUrl}/products/postPromotionalProducts`, promotionProduct).subscribe((res) => {
         console.log(res);
         // alert('scroller item added successfully');
       });

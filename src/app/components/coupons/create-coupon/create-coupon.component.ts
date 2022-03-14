@@ -61,7 +61,7 @@ export class CreateCouponComponent implements OnInit {
 
   onSubmit() {
 
-    this.http.post('http://localhost:3000/coupons', this.generalForm).subscribe((res) => {
+    this.http.post(`${environment.apiUrl}/coupons`, this.generalForm).subscribe((res) => {
       console.log(res);
     });
   }
