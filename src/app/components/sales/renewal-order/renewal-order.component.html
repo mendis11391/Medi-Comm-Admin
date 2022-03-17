@@ -21,23 +21,21 @@
                           <thead>
                             <tr>
                               <th>Order Id</th>
-                              <!-- <th>Payu Trans Id</th> -->
                               <th>Order date</th>
-                              <th>Customer name</th>
-                              <th>Security deposit</th>
+                              <th>Customer</th>
+                              <th>Mobile</th>
+                              <th>Amount</th>
                               <th>Payment status</th>
-                              <th>Delivery status</th>
                             </tr>
                           </thead>
                           <tbody *ngFor="let o of filteredOrders">
                             <tr [routerLink]="['../orders',o.id]">
-                              <td>{{o.primary_id}}</td>
-                              <!-- <td>{{o.payuid}}</td> -->
-                              <td>{{o.createdAt}}</td> 
-                              <td>{{o.firstName}}</td> 
-                              <td>₹{{o.totalSecurityDeposit}}</td>    
-                              <td>{{o.refundStatus}}</td> 
-                              <td>{{o.delivery_status}}</td>                       
+                              <td>{{o.order_id}}</td>
+                              <td>{{o.createdAt | date:'dd MM yyyy HH:mm'}}</td> 
+                              <td>{{o.firstName}}</td>   
+                              <td>{{o.mobile}}</td> 
+                              <td>{{o.grandTotal}}</td>
+                              <td>{{o.paymentStatus}}</td>                       
                             </tr>                          
                           </tbody>
                         </table>

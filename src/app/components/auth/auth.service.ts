@@ -12,7 +12,7 @@ import { environment } from 'src/environments/environment';
 })
 export class AuthService {
 
-  b_url = `${environment.apiUrl}`;
+  b_url = `${environment.apiUrl}/`;
   private currentUserSubject: BehaviorSubject<UserData>;
   public currentUser: Observable<UserData>;
   private user: User;
@@ -23,7 +23,7 @@ export class AuthService {
    }
 
   loginCheck(formdata) {
-    return this.http.post(this.b_url, formdata);
+    return this.http.post(`${this.b_url}login`, formdata);
   }
 
   authenticatedCheck() {

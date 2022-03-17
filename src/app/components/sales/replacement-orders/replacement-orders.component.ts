@@ -16,6 +16,7 @@ export class ReplacementOrdersComponent implements OnInit {
   public order :Orders[] = [];
   public productsList;
   public filteredProducts=[];
+  city:string;
   orderId: string;
   fullOrderDetails;
   productDetails;
@@ -90,16 +91,24 @@ export class ReplacementOrdersComponent implements OnInit {
   }
 
   transactionId() {
-    const subCity = 'Ban';
-    const rand = Math.floor((Math.random() * 9999) + 1);
+    this.city='Bangalore';
+    
+    let subCity = '';
+    if(this.city==='Bangalore'){
+      subCity = 'BLR'
+    } else if(this.city==='Hyderabad'){
+      subCity = 'HYD'
+    } if(this.city==='Mumbai'){
+      subCity = 'BOM'
+    } if(this.city==='PUNE'){
+      subCity = 'PNQ'
+    }
+    const rand = Math.floor((Math.random() * 999) + 1);
     const dte = new Date();
-    const txnid = ""+subCity + rand +
-    dte.getDay()+
-    (dte.getMonth()+1) +
-    dte.getFullYear() +
-    dte.getHours() +
-    dte.getMinutes() +
-    dte.getSeconds();
+    const txnid = ""+subCity +
+    dte.getDate().toString().padStart(2, "0")+
+    (dte.getMonth()+1).toString().padStart(2, "0") +
+    dte.getFullYear().toString().substr(2,2) + rand;
     this.txnId=txnid;
   }
 

@@ -21,7 +21,8 @@
                             <th>Asset #</th>
                             <th>Start date</th>
                             <th>Reason</th>
-                            <th>Message</th>
+                            <th>Message</th>                            
+                            <th>Approval status</th>
                             <th>Action</th>
                           </tr>
                         </thead>
@@ -31,10 +32,15 @@
                             <td [routerLink]="['../customers',o.customer_id]">{{o.mobile}}</td>
                             <td>{{o.prod_name.substring(0,50)+'...'}}</td>
                             <td>{{o.asset_id}}</td>
-                            <td>{{o.startDate | date:'dd MMM yyyy HH:mm'}}</td>
+                            <td>{{o.requested_date | date:'dd MMM yyyy HH:mm'}}</td>
                             <td>{{o.request_reason}}</td>
                             <td>{{o.request_message}}</td>
-                            <td  (click)="replaceProductOrderById(o.order_id, o.order_item_id,o.renewals_timline, o.tenure_id, o.asset_id); toggleReplaceDetails=!toggleReplaceDetails"><a><i class="fa fa-pencil"></i></a></td>                   
+                            <td>
+                              <span *ngIf="o.approval_status==0 && o.request_status==1"><i class="fa fa-circle text-warning"></i> Requested</span>
+                              <span *ngIf="o.approval_status==0 && o.request_status==0"><i class="fa fa-circle text-danger"></i> Rejected</span>
+                              <span *ngIf="o.approval_status==1 && o.request_status==0"><i class="fa fa-circle text-success"></i> Approved</span>
+                            </td>
+                            <td *ngIf="o.request_status==1" (click)="replaceProductOrderById(o.order_id, o.order_item_id,o.renewals_timline, o.tenure_id, o.asset_id); toggleReplaceDetails=!toggleReplaceDetails"><a><i class="fa fa-pencil"></i></a></td>                   
                           </tr>                          
                         </tbody>
                       </table>

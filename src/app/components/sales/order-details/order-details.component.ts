@@ -5,7 +5,7 @@ import { Orders, Assets } from "../../../shared/data/order";
 import { OrdersService } from '../../products/services/orders.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient} from '@angular/common/http';
-import { FormGroup,FormBuilder, FormControl } from '@angular/forms';
+import { FormGroup,FormBuilder, FormControl,Validators } from '@angular/forms';
 import { ExcelService } from '../services/excel.service';
 import { ActivatedRoute } from '@angular/router';
 import { environment } from 'src/environments/environment';
@@ -22,6 +22,7 @@ export class OrderDetailsComponent implements OnInit {
   public temp = [];
   @ViewChild('content') content;
   @ViewChild('orderDetails') orderDetails;
+  @ViewChild('postTransaction') postTransaction;
   orderId;
   oid;
   updateStatus: FormGroup;
@@ -29,6 +30,7 @@ export class OrderDetailsComponent implements OnInit {
   assetAssign:FormGroup;
   deliveryStatus:FormGroup;
   updateField:FormGroup;
+  addTransaction: FormGroup;
   modalReference;
   fullOrderDetails=[];
   productDetails;
@@ -45,11 +47,32 @@ export class OrderDetailsComponent implements OnInit {
   paymentStatusActive:boolean = false;
   deliveryStatusActive:boolean = false;
   editStatus:boolean=false;
+  paymentTypes;
+  paymentStatuses;
+  subTotal:number=0;
+  Taxes:number=18;
+  dp:number=0;
+  public closeResult: string;
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
   constructor(private changeDetection: ChangeDetectorRef,private route: ActivatedRoute,private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: FormBuilder) {
     // this.order = orderDB.list_order;
     this.oid = this.route.snapshot.url[1].path;
     this.getOrderById(this.route.snapshot.url[1].path);
+    this.http.get(`${environment.apiUrl}/orders/getAllPaymenttypes`).subscribe((res) => {
+      this.paymentTypes=res;
+    });
+    this.http.get(`${environment.apiUrl}/orders/getAllPaymentStatus`).subscribe((status) => {
+      this.paymentStatuses=status;
+    });
+    this.addTransaction = this.formBuilder.group({
+      transactionNo:['', Validators.required],
+      orderId:['', Validators.required],
+      orderAmount:['', Validators.required],
+      paymentStatus:['', Validators.required],
+      paymentMode:['', Validators.required],
+      txMsg:['', Validators.required],
+      tDate:[this.currDate]
+    });
   }
 
   updateFilter(event) {
@@ -101,6 +124,8 @@ export class OrderDetailsComponent implements OnInit {
     this.os.getAllOrders().subscribe((orders)=>{
       orders.reverse();
       this.order=orders.filter(item => item.paymentStatus.toLowerCase()=='success' && item.orderType_id===1);
+      console.log(this.order)
+      
     });
   }
 
@@ -108,6 +133,32 @@ export class OrderDetailsComponent implements OnInit {
     this.os.getAllassets().subscribe((assets)=>{
       this.assets=assets.filter(item => item.availability==true);
     });
+  }
+
+  openPostTransaction(){
+    this.modalService.open(this.postTransaction,{ windowClass: 'my-address'}).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed`;
+    });
+  }
+
+  postTransactionData(){
+    this.http.post(`${environment.apiUrl}/payments/postManualOrderTransaction`,this.addTransaction.value).subscribe((resp2)=>{
+      if(this.addTransaction.value.paymentStatus==1 || this.addTransaction.value.paymentStatus==4){
+        this.http.put(`${environment.apiUrl}/payments/updatePaymentStatus`, {paymentStatus: this.addTransaction.value.paymentStatus, orderId: this.oid}).subscribe(()=>{
+          this.http.post(`${environment.apiUrl}/payments/postInvoice`,{orderId:this.addTransaction.value.orderId}).subscribe();
+        });       
+      }
+      alert('Transaction posted successfully');      
+      this.modalService.dismissAll();
+    });
+  }
+
+  updatePaymentStatus(){
+    this.http.put(`${environment.apiUrl}/payments/updatePaymentStatus`, {paymentStatus: this.addTransaction.value.paymentStatus, orderId: this.oid}).subscribe(()=>{
+      this.http.post(`${environment.apiUrl}/payments/postInvoice`,{orderId:this.addTransaction.value.orderId}).subscribe();
+    }); 
   }
 
   placeReturnRequest(oid,oiid,renewals_timline){
@@ -152,6 +203,13 @@ export class OrderDetailsComponent implements OnInit {
       this.fullOrderDetails.push(res[0]);
       this.customer_id = res[0].customer_id
       this.productDetails=res[0].orderItem;
+      this.productDetails.forEach((prods)=>{
+        this.subTotal += prods.tenure_price;
+      })
+      this.addTransaction.patchValue({
+        orderId:res[0].order_id,
+        orderAmount:res[0].grandTotal
+      });
       this.http.get(`${environment.apiUrl}/users/getCustomerById/${this.customer_id}`).subscribe((customerDetails)=>{
         this.customerDetails = customerDetails;
       });
@@ -331,7 +389,7 @@ export class OrderDetailsComponent implements OnInit {
 
         orderItem=res;
         getAllProduct.push(orderItem[0].renewals_timline[0]);
-        currentAssetId=getAllProduct[0].assetId ;
+        currentAssetId=orderItem[0].asset_id ;
         let expiryDate=this.getDates(db);
         let edb=expiryDate.getDate()+'/'+(expiryDate.getMonth()+1)+'/'+expiryDate.getFullYear();
         let ndb=this.getDates(db);
@@ -410,18 +468,30 @@ export class OrderDetailsComponent implements OnInit {
 
   updateProductDeliveryStatus(OrderId){
     let getOrder;
-    let getAllProduct;
+    let getAllProduct=[];
     let forQtyProduct;
     let orderItem;
     let currentAssetId;
     let delvStatus = this.deliveryStatus.value.deliveryStatus;
-    this.http.put(`${environment.apiUrl}/orders/updateRenewTimline/${OrderId}`, {deliveryStatus:delvStatus, orderId:this.oid}).subscribe((res)=>{
-      // this.modalReference.close();
-      this.deliveryStatus.reset();
-      this.http.get(`${environment.apiUrl}/orders/${this.customer_id}`).subscribe();
-      this.getOrderById(this.oid);
-          // window.location.reload();
+    this.http.get(`${environment.apiUrl}/orders/orderItemsByorderId/${OrderId}`).subscribe((res) => {
+
+      orderItem=res;
+      getAllProduct.push(orderItem[0].renewals_timline[0]);
+      currentAssetId=orderItem[0].asset_id ;
+    
+      if(currentAssetId!='To be assigned'){
+        this.http.put(`${environment.apiUrl}/orders/updateRenewTimline/${OrderId}`, {deliveryStatus:delvStatus, orderId:this.oid}).subscribe((res)=>{
+          // this.modalReference.close();
+          this.deliveryStatus.reset();
+          this.http.get(`${environment.apiUrl}/orders/${this.customer_id}`).subscribe();
+          this.getOrderById(this.oid);
+              // window.location.reload();
+        });
+      }else{
+        this.formError=true;
+      }
     });
+    
     // console.log(forQtyProduct);
     // let od = new Promise((resolve, reject) => {
     //   Array.prototype.forEach.call(getAllProduct, res => {
