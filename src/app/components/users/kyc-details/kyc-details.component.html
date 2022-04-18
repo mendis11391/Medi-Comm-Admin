@@ -1,0 +1,117 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="custom-datatable" *ngFor="let o of customerDetails">
+                        
+                        <div class="my-2">Customer #: <span>{{o.customer_id}}</span></div>
+                        <div class="my-2">First name : <span>{{o.firstName}} </span>
+                        </div>
+                        <div class="my-2">Last name : <span>{{o.lastName}} </span> 
+                        
+                        </div>
+                        <div class="my-2">Mobile : <span>{{o.mobile}} </span></div>
+                        <div class="my-2">Email : <span>{{o.email}} </span>
+                        
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="custom-datatable">
+                        
+                        <div class="my-2">Customer type: <span>{{kycDetails.customer_type}}</span></div>
+                        <div class="my-2">Comments : <span>{{kycDetails.comments}} </span>  <span (click)="open(editStatus)"><i class="fa fa-pencil"></i></span></div>
+                        <div class="my-2">Kyc status : <span>{{kycDetails.kyc_status}} </span> <span (click)="open(editStatus)"><i class="fa fa-pencil"></i></span></div>                        
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="custom-datatable">                        
+                        <div class="my-2">Altenate mobile no.: <span>{{kycVariantDetails.alternate_mobile}}</span></div>
+                        <div class="my-2">Social link : <span>{{kycVariantDetails.social_link}} </span>  </div>
+                        <div class="my-2">Aadhar no. : <span>{{kycVariantDetails.aadhar_no}} </span> </div>             
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">References</div>
+                <div class="card-body">
+                    <div class="row custom-datatable">  
+                        <div class="col-6">
+                            <h3>Reference 1</h3>
+                            <div class="my-2">Name: <span>{{kycVariantDetails.ref1_name}}</span></div>
+                            <div class="my-2">Relation : <span>{{kycVariantDetails.ref1_relation}} </span>  </div>
+                            <div class="my-2">Mobile no. : <span>{{kycVariantDetails.ref1_ph}} </span> </div> 
+                        </div>
+                        <div class="col-6">
+                            <h3>Reference 2</h3>
+                            <div class="my-2">Name : <span>{{kycVariantDetails.ref2_name}}</span></div>
+                            <div class="my-2">Relation : <span>{{kycVariantDetails.ref2_relation}} </span>  </div>
+                            <div class="my-2">Mobile no. : <span>{{kycVariantDetails.ref2_ph}} </span> </div> 
+                        </div>                                              
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">Image Proofs</div>
+                <div class="card-body">
+                    <div class="row kycImages"> 
+                        <div class="col-3" *ngFor="let img of kycImages">
+                            <figure class="figure">
+                                <a class="border kycpdf" *ngIf="img.Image.startsWith('JVB')" (click)="goToLink('data:application/pdf;base64,'+img.Image)">View {{img.document_name}}</a>
+                                <img  width="90%" *ngIf="!img.Image.startsWith('JVB')" [src]="img.Image | BlobImage" class="figure-img img-thumbnail rounded" /> 
+                                <figcaption *ngIf="!img.Image.startsWith('JVB')" class="figure-caption">{{img.document_name}}</figcaption>
+                            </figure> 
+                        </div> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<ng-template #editStatus let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title f-w-600" id="exampleModalLabel">Edit Status</h5>
+        <button type="button" class="close" aria-label="Close"
+            (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="kycStatusForm" (ngSubmit)="updateStatus(kycId)">
+            <select class="form-control" formControlName="kyc_status">
+                <option>Awaiting KYC</option>
+                <option>KYC approved</option>
+            </select>
+            <br>
+            <textarea class="form-control" formControlName="comments"></textarea><br>
+            <button type="submit" class="btn btn-warning">Submit</button>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-primary">Save</button> -->
+        <button class="btn btn-secondary" type="button" data-dismiss="modal"
+            (click)="modal.dismiss('Cross click')">Close</button>
+    </div>
+</ng-template>

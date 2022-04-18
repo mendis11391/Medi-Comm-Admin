@@ -21,6 +21,7 @@
                           <thead>
                             <tr>
                               <th>Order Id</th>
+                              <th>Primary Id</th>
                               <th>Order date</th>
                               <th>Customer</th>
                               <th>Mobile</th>
@@ -31,6 +32,7 @@
                           <tbody *ngFor="let o of filteredOrders">
                             <tr [routerLink]="['../orders',o.id]">
                               <td>{{o.order_id}}</td>
+                              <td>{{o.primary_id}}</td>
                               <td>{{o.createdAt | date:'dd MM yyyy HH:mm'}}</td> 
                               <td>{{o.firstName}}</td>   
                               <td>{{o.mobile}}</td> 

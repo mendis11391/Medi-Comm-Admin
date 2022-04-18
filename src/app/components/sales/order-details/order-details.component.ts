@@ -41,10 +41,12 @@ export class OrderDetailsComponent implements OnInit {
   formError:boolean;
   urlParam;
   paymentStatus;
+  orderStatuses;
   orderDeliveryStatus;
   orderField = '';
   orderDeliveryField='';
   paymentStatusActive:boolean = false;
+  orderStatusActive:boolean = false;
   deliveryStatusActive:boolean = false;
   editStatus:boolean=false;
   paymentTypes;
@@ -63,6 +65,9 @@ export class OrderDetailsComponent implements OnInit {
     });
     this.http.get(`${environment.apiUrl}/orders/getAllPaymentStatus`).subscribe((status) => {
       this.paymentStatuses=status;
+    });
+    this.http.get(`${environment.apiUrl}/orders/getAllOrderStatus`).subscribe((status) => {
+      this.orderStatuses=status;
     });
     this.addTransaction = this.formBuilder.group({
       transactionNo:['', Validators.required],
@@ -222,7 +227,8 @@ export class OrderDetailsComponent implements OnInit {
 
   updateOrderField(ordId, field, value){
     this.http.put(`${environment.apiUrl}/orders/updateAnyOrderField/${ordId}`, {orderField: field, orderValue: value}).subscribe();
-    this.paymentStatusActive=!this.paymentStatusActive;
+    this.paymentStatusActive=false;
+    this.orderStatusActive=false;
     this.getOrderById(this.oid);
     // this.changeDetection.detectChanges();
     // console.log(this.orderField)

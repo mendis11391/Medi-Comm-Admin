@@ -124,7 +124,7 @@ export class CreateRenewalOrderComponent implements OnInit {
         // if(successOrders.overdue==1){
         //   this.overdue=1;
         // }
-       return successOrdersRes.paymentStatus=='1' && (successOrdersRes.orderType_id==1 || successOrdersRes.orderType_id==3);
+        return (successOrdersRes.status==1) && (successOrdersRes.paymentStatus=='1' || successOrdersRes.paymentStatus=='4') && (successOrdersRes.orderType_id==1 || successOrdersRes.orderType_id==3);
       });
       this.orders=successOrders.reverse();
 

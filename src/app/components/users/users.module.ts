@@ -13,14 +13,19 @@ import { CustomersComponent } from './customers/customers.component';
 import { ReplaceRequestComponent } from './replace-request/replace-request.component';
 import { ReturnRequestComponent } from './return-request/return-request.component';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { ReviewsComponent } from './reviews/reviews.component';
+import { KycComponent } from './kyc/kyc.component';
+import { KycDetailsComponent } from './kyc-details/kyc-details.component';
+import { ProductsModule } from '../products/products.module';
 
 @NgModule({
-  declarations: [ListUserComponent, CreateUserComponent, CustomersComponent, ReplaceRequestComponent, ReturnRequestComponent],
+  declarations: [ListUserComponent, CreateUserComponent, CustomersComponent, ReplaceRequestComponent, ReturnRequestComponent, ReviewsComponent, KycComponent, KycDetailsComponent],
   imports: [
     CommonModule,
     NgbModule,
     Ng2SmartTableModule,
     FormsModule,
+    ProductsModule,
     ReactiveFormsModule,
     UsersRoutingModule,
     NgMultiSelectDropDownModule.forRoot(),

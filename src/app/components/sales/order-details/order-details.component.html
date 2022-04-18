@@ -84,17 +84,17 @@
                     <p>Order date: {{o.createdAt | date:'dd MM yyyy HH:mm'}}</p>
                     <p>Order #: {{o.primary_id}}</p>
                     <p>Invoice #: {{fullOrderDetails[0].invoice_id}}</p>
-                    <p *ngIf="!paymentStatusActive">Payment status: {{o.paymentStatus}} <i class="fa fa-pencil" *ngIf="editStatus" (click)="paymentStatusActive=!paymentStatusActive"></i></p>
-                    <div class="card" *ngIf="paymentStatusActive">
+                    <p *ngIf="!orderStatusActive">Order status: {{o.orderStatusName}} <i class="fa fa-pencil" *ngIf="editStatus" (click)="orderStatusActive=!orderStatusActive"></i></p>
+                    <div class="card" *ngIf="orderStatusActive">
                         <div class="card-header">
-                            <p>Payment status <span class="pull-right" (click)="paymentStatusActive=!paymentStatusActive">X</span></p>
+                            <p>Order status <span class="pull-right" (click)="orderStatusActive=!orderStatusActive">X</span></p>
                         </div>
                         <div class="card-body">
                                 <select class="form-control" [(ngModel)]="orderField">
-                                    <option *ngFor="let ps of paymentStatus" value="{{ps.id}}">{{ps.status_name}}</option>
+                                    <option *ngFor="let ps of orderStatuses" value="{{ps.id}}">{{ps.order_status}}</option>
                                 </select>
                                 <br>
-                                <button class="btn btn-warning" (click)="updateOrderField(o.primary_id,'paymentStatus',orderField)">Update</button>                                                   
+                                <button class="btn btn-warning" (click)="updateOrderField(o.primary_id,'orderStatus',orderField)">Update</button>                                                   
                         </div>
                     </div>
                     <p *ngIf="!deliveryStatusActive">Delivery status: {{o.delivery_status}} <i class="fa fa-pencil" *ngIf="editStatus" (click)="deliveryStatusActive=!deliveryStatusActive"></i></p>
@@ -126,6 +126,7 @@
                     <p>Transaction type: {{o.type}}</p>
                     <p>Transaction source : {{o.transaction_source}}</p>
                     <p>Transaction amount : ₹{{o.transactionAmount}}</p>
+                    <p *ngIf="!paymentStatusActive">Payment status: {{o.paymentStatus}} <i class="fa fa-pencil" *ngIf="editStatus" (click)="paymentStatusActive=!paymentStatusActive"></i></p>
                     <div class="card" *ngIf="paymentStatusActive">
                         <div class="card-header">
                             <p>Payment status <span class="pull-right" (click)="paymentStatusActive=!paymentStatusActive">X</span></p>

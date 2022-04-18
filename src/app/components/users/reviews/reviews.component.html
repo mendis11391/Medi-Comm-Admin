@@ -1,0 +1,79 @@
+<!-- Container-fluid starts-->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card tab2-card">
+                <!-- <div class="card-header">
+                    <h5> Add Customer</h5>
+                </div> -->
+                <div class="card-body tab2-card">
+                    <ngb-tabset class="tab-coupon">
+                        <ngb-tab title="Create review">
+                            <ng-template ngbTabContent>
+                                <div class="tab-pane fade active show" id="account" role="tabpanel"
+                                    aria-labelledby="account-tab">
+                                    <form [formGroup]="reviewForm" (ngSubmit)="postReview()"
+                                        class="needs-validation user-add" novalidate="">
+                                        <!-- <h4>Account Details</h4> -->
+                                        <div class="form-group row">
+                                            <label  class="col-xl-3 col-md-4"><span>*</span>
+                                                First Name</label>
+                                            <input formControlName="displayName" class="form-control col-xl-8 col-md-7" 
+                                                type="text" required="">
+                                        </div>
+                                        <div class="form-group row">
+                                            <label  class="col-xl-3 col-md-4"><span>*</span> 
+                                                Mobile</label>
+                                            <input formControlName="displayMobile" class="form-control col-xl-8 col-md-7" 
+                                                type="text" required="">
+                                        </div>
+                                        <div class="form-group row">
+                                            <label  class="col-xl-3 col-md-4"><span>*</span>
+                                                Ratings</label>
+                                                <ng-template #t let-fill="fill">
+                                                    <span class="star" [class.full]="fill === 100">
+                                                    <span class="half" [style.width.%]="fill">&#9733;</span>&#9733;
+                                                    </span>
+                                                </ng-template>
+                                                <ngb-rating formControlName="ratings" [starTemplate]="t" [(rate)]="rate" [max]="5"></ngb-rating>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label  class="col-xl-3 col-md-4"><span>*</span>
+                                                Message</label>
+                                            <textarea formControlName="review" class="form-control col-xl-8 col-md-7"></textarea>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label  class="col-xl-3 col-md-4"><span>*</span>
+                                                Date</label>
+                                            <div class="input-group col-xl-8 col-md-7">
+                                                <input class="form-control" type="date" placeholder="yyyy-mm-dd"
+                                                formControlName="postDate">
+                                            </div>                                                
+                                        </div>
+                                        <div *ngIf="inputsRequired" class="text-center text-danger">All fields are required except message field</div>  
+                                        <div class="text-center">
+                                            <button type="submit" class="btn btn-primary">Save</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </ng-template>
+                        </ngb-tab>
+                        <ngb-tab title="Reviews">
+                            <ng-template ngbTabContent>
+                                <div class="tab-pane fade active show" id="account" role="tabpanel"
+                                    aria-labelledby="account-tab">
+                                    <ng2-smart-table [settings]="settings" [source]="reviews" (editConfirm)="editReview($event)"></ng2-smart-table>
+                                </div>
+                            </ng-template>
+                        </ngb-tab>
+                        
+                    </ngb-tabset>
+                    <!-- <div class="pull-right">
+                        <button type="button" class="btn btn-primary">Save</button>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Container-fluid Ends-->

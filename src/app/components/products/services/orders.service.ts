@@ -68,13 +68,36 @@ export class OrdersService {
   getAllCustomers(): Observable<Customers[]> {
     return this.http.get<Customers[]>(`${this.customer_url}`)
   }
+
+  getAllCustomersKYC(){
+    return this.http.get(`${this.customer_url}/getAllKYC/kycList`)
+  }
+
   getAllCustomersByid(id): Observable<Customers[]> {
     return this.http.get<Customers[]>(`${this.customer_url}/getCustomerById/${id}`)
+  }
+
+  getKYCMainTableByid(id) {
+    return this.http.get(`${this.customer_url}/getAllKYC/kycMainTable/${id}`)
+  }
+
+  getKYCIndividualByid(id) {
+    return this.http.get(`${this.customer_url}/getAllKYC/kycIndividualDetails/${id}`)
+  }
+
+  updateKYCMainTableByid(id, val) {
+    return this.http.put(`${this.customer_url}/getAllKYC/updateStatus/${id}`, val);
+  }
+
+  getKYCImage(id) {
+    return this.http.get(`${this.customer_url}/getAllKYC/kycImage/${id}`)
   }
 
   getAllAddressByCustomersByid(id): Observable<Customers[]> {
     return this.http.get<Customers[]>(`${this.customer_url}/getUserAddressInfo/${id}`)
   }
+
+  
 
   getAllOrderItems(): Observable<OrderItems[]> {
     return this.http.get<OrderItems[]>(`${this.orders_url}/getAllOrderItems`)
