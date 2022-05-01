@@ -9,6 +9,8 @@ import { FormGroup,FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ProductService } from '../../products/services/product.service';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { environment } from 'src/environments/environment';
+import { KYC } from 'src/app/shared/data/kyc';
 
 @Component({
   selector: 'app-customers',
@@ -17,6 +19,8 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
 })
 export class CustomersComponent implements OnInit {
 
+  kycDetails:KYC;
+  NoKYC:boolean;
   public customers :Customers[] = [];
   public temp = [];
   public filteredCustomers=[];
@@ -100,6 +104,21 @@ export class CustomersComponent implements OnInit {
       itemsShowLimit: 10,
       allowSearchFilter: true
     };
+    this.getKycByCustomerId(this.customerId);
+  }
+
+  async getKycByCustomerId(id){
+    var data = [];
+    this.os.getKycBycustomerId(id).subscribe(async (res:[])=>{
+      data= res;
+      if(data.length>0){
+        var mainTableResult = await this.os.getKYCMainTableByid(data[0].id).toPromise();
+        this.kycDetails = mainTableResult[0]; 
+      } else{
+        this.NoKYC=true;
+      } 
+    });
+         
   }
 
   getCustomers(id){
@@ -140,7 +159,8 @@ export class CustomersComponent implements OnInit {
     let AllProductsOf=[];
     
     this.os.getAllOrdersByCustomerId(id).subscribe((orders)=>{
-      this.orders = orders.filter(item=>item.paymentStatus=='Success');
+      console.log(orders);
+      this.orders = orders.filter(item=>item.paymentStatus=='Success' || item.orderType_id==3 || item.orderType_id==4 );
       this.orders.forEach((res)=>{
         filteredProducts = res.orderItem;
         for(let k=0;k<filteredProducts.length;k++){
@@ -235,7 +255,7 @@ export class CustomersComponent implements OnInit {
     
     const allAddedProducts = JSON.stringify(this.cartDetails);
     console.log(allAddedProducts);
-    this.http.put(`https://api.irentout.com/users/cart/${this.customerId}`, { cart: allAddedProducts }).subscribe((res) => {
+    this.http.put(`${environment.apiUrl}/users/cart/${this.customerId}`, { cart: allAddedProducts }).subscribe((res) => {
       // console.log(res);
     });
   }
@@ -246,7 +266,7 @@ export class CustomersComponent implements OnInit {
     this.cartDetails.splice(index, 1);
     const allAddedProducts = JSON.stringify(this.cartDetails);
     const uid = this.customerId;
-    this.http.put(`https://api.irentout.com/users/cart/${uid}`, { cart: allAddedProducts }).subscribe((res) => {
+    this.http.put(`${environment.apiUrl}/users/cart/${uid}`, { cart: allAddedProducts }).subscribe((res) => {
       // console.log(res);
     });
     return true;
@@ -256,7 +276,7 @@ export class CustomersComponent implements OnInit {
   public updateCartQuantity(product, quantity: number) {
     const allAddedProducts = JSON.stringify(this.cartDetails);
     const uid = this.customerId;
-    this.http.put(`https://api.irentout.com/users/cart/${uid}`, { cart: allAddedProducts }).subscribe((res) => {
+    this.http.put(`${environment.apiUrl}/users/cart/${uid}`, { cart: allAddedProducts }).subscribe((res) => {
       // console.log(res);
     });
   }
@@ -265,7 +285,7 @@ export class CustomersComponent implements OnInit {
   public updateCartTenurePrice(product) {
     const allAddedProducts = JSON.stringify(this.cartDetails);
     const uid = this.customerId;
-    this.http.put(`https://api.irentout.com/users/cart/${uid}`, { cart: allAddedProducts }).subscribe((res) => {
+    this.http.put(`${environment.apiUrl}/users/cart/${uid}`, { cart: allAddedProducts }).subscribe((res) => {
       // console.log(res);
     });
   }

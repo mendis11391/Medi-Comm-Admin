@@ -14,6 +14,23 @@
     </div> -->
     <div class="row" *ngFor="let o of fullOrderDetails; trackBy: trackByIndex">   
             
+        <div class="col-sm-6" *ngIf="kycDetails">
+            <div class="card" [routerLink]="['../../../users/kyc-list', kycDetails.id]"  [ngClass]="{'bg-dark': NoKYC,'bg-danger': kycDetails?.kyc_status=='Query raised','bg-success': kycDetails?.kyc_status=='eKYC approved', 'bg-warning': kycDetails?.kyc_status=='eKYC submitted'}" >
+                <div class="card-body">
+                    <h2 class="text-white" *ngIf="!NoKYC">{{kycDetails?.kyc_status}}</h2>
+                    <h2 class="text-white" *ngIf="NoKYC">Awaiting eKYC</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6" *ngIf="!kycDetails">
+            <div class="card bg-dark" >
+                <div class="card-body">
+                    <h2 class="text-white" *ngIf="NoKYC">Awaiting eKYC</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6"></div>
 
         <div class="col-sm-6">
             <div class="card">
@@ -75,7 +92,7 @@
             </div>
         </div>
 
-        <div class="col-sm-6">
+        <div class="col-sm-4">
             <div class="card">
                 <div class="card-header">
                     <h5>Order details</h5>
@@ -115,7 +132,7 @@
             </div>
         </div>
 
-        <div class="col-sm-6">
+        <div class="col-sm-4">
             <div class="card">
                 <div class="card-header">
                     <h5>Transaction details <button *ngIf="o.transaction_source!='Cashfree'" class="btn btn-warning pull-right" (click)="openPostTransaction()">Add</button></h5>
@@ -139,6 +156,20 @@
                                 <button class="btn btn-warning" (click)="updateOrderField(o.primary_id,'paymentStatus',orderField)">Update</button>                                                   
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Comments</h5>
+                </div>
+                <div class="card-body">
+                    <p> {{o.transaction_msg}}</p>
+                    
+                    <textarea class="form-control" *ngIf="editStatus" rows="5" [(ngModel)]="o.transaction_msg"></textarea>
+                    <button *ngIf="editStatus" class="btn btn-warning mt-2" (click)="updateTransactionField(o.transaction_id,'transaction_msg',o.transaction_msg)">Update</button>
                 </div>
             </div>
         </div>
@@ -558,7 +589,56 @@
                         <textarea class="form-control" formControlName="txMsg"></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Product name</label>
+                        <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Transaction date</label>
+                        <input type="date" class="form-control" formControlName="tDate"><br>
+                    </div>
+                    <button class="btn btn-warning">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #postReturnTransaction let-c="close" let-d="dismiss">
+    <div class="modal-header text-center">
+      <h4 class="col-12 modal-title text-center" id="modal-basic-title">Manual transaction</h4>
+      <button type="button" class="close" aria-label="Close" (click)="d()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">  
+            <div class="col-3"></div>        
+            <div class="col-6">
+                <form [formGroup]="addTransaction" (ngSubmit)="postReturnTransactionData()">
+                    <div class="form-group">
+                        <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Transaction No.</label>
+                        <input type="text" class="form-control" formControlName="transactionNo"><br>
+                    </div>
+                    <div class="form-group">
+                        <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Payment type</label>
+                        <select class="form-control" formControlName="paymentMode">
+                            <option>Select</option>
+                            <option *ngFor="let pt of paymentTypes" value="{{pt.type}}">{{pt.type}}</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Payment status</label>
+                        <select class="form-control" formControlName="paymentStatus">
+                            <option>Select</option>
+                            <option *ngFor="let ps of paymentStatuses" value="{{ps.id}}">{{ps.status_name}}</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Transaction amount.</label>
+                        <input type="text" class="form-control" formControlName="orderAmount"><br>
+                    </div>
+                    <div class="form-group">
+                        <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Message</label>
+                        <textarea class="form-control" formControlName="txMsg"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Transaction date</label>
                         <input type="date" class="form-control" formControlName="tDate"><br>
                     </div>
                     <button class="btn btn-warning">Submit</button>

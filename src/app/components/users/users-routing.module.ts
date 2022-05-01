@@ -9,6 +9,7 @@ import { AuthGuard } from '../auth/auth.guard';
 import { ReviewsComponent } from './reviews/reviews.component';
 import { KycComponent } from './kyc/kyc.component';
 import { KycDetailsComponent } from './kyc-details/kyc-details.component';
+import { CreateEditKycComponent } from './create-edit-kyc/create-edit-kyc.component';
 
 const routes: Routes = [
   {
@@ -53,6 +54,14 @@ const routes: Routes = [
         data: {
           title: "KYC details",
           breadcrumb: "KYC details"
+        }
+      },
+      {
+        path: 'create-edit-kyc/:id',
+        component: CreateEditKycComponent,
+        data: {
+          title: "Create or Edit eKYC",
+          breadcrumb: "Create or edit eKYC"
         }
       },
       {

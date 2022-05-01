@@ -6,9 +6,9 @@
                     <div class="custom-datatable" *ngFor="let o of customerDetails">
                         
                         <div class="my-2">Customer #: <span>{{o.customer_id}}</span></div>
-                        <div class="my-2">First name : <span>{{o.firstName}} </span>
+                        <div class="my-2" [routerLink]="['../../../users/customers',customerDetails[0].customer_id]">First name : <span>{{o.firstName}} </span>
                         </div>
-                        <div class="my-2">Last name : <span>{{o.lastName}} </span> 
+                        <div class="my-2" [routerLink]="['../../../users/customers',customerDetails[0].customer_id]">Last name : <span>{{o.lastName}} </span> 
                         
                         </div>
                         <div class="my-2">Mobile : <span>{{o.mobile}} </span></div>
@@ -22,13 +22,29 @@
         </div>
 
         <div class="col-sm-6">
+            <div class="card" [ngClass]="{'bg-danger': kycDetails.kyc_status=='Query raised','bg-success': kycDetails.kyc_status=='eKYC approved', 'bg-warning': kycDetails.kyc_status=='eKYC submitted'}" >
+                <div class="card-body">
+                    <h2 class="text-white" >{{kycDetails.kyc_status}}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12">
             <div class="card">
                 <div class="card-body">
                     <div class="custom-datatable">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="my-2">Comments : <span [innerHtml]="kycDetails.comments"> </span> </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="my-2">Kyc status : <span>{{kycDetails.kyc_status}} </span> </div>                        
                         
-                        <div class="my-2">Customer type: <span>{{kycDetails.customer_type}}</span></div>
-                        <div class="my-2">Comments : <span>{{kycDetails.comments}} </span>  <span (click)="open(editStatus)"><i class="fa fa-pencil"></i></span></div>
-                        <div class="my-2">Kyc status : <span>{{kycDetails.kyc_status}} </span> <span (click)="open(editStatus)"><i class="fa fa-pencil"></i></span></div>                        
+                                <button class="btn btn-warning" (click)="open(editComment)">Raise query</button>
+                                <button class="btn btn-warning ml-2" (click)="open(approveStatus)">Approve</button>
+                                <button class="btn btn-warning ml-2" [routerLink]="['../../create-edit-kyc',kycDetails.customer_id]">Edit</button>
+                            </div>
+                        </div>                      
                         
                     </div>
                 </div>
@@ -38,10 +54,13 @@
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-body">
-                    <div class="custom-datatable">                        
+                    <div class="custom-datatable"> 
+                        <div class="my-2">Customer type: <span>{{kycDetails.customer_type}}</span></div>                       
                         <div class="my-2">Altenate mobile no.: <span>{{kycVariantDetails.alternate_mobile}}</span></div>
                         <div class="my-2">Social link : <span>{{kycVariantDetails.social_link}} </span>  </div>
-                        <div class="my-2">Aadhar no. : <span>{{kycVariantDetails.aadhar_no}} </span> </div>             
+                        <div class="my-2">Aadhar no. : <span>{{kycVariantDetails.aadhar_no}} </span> </div>     
+                        <div class="my-2">Company : <span>{{kycVariantDetails.company}} </span> </div>   
+                        <div class="my-2">Occupation : <span>{{kycVariantDetails.occupation}} </span> </div>           
                     </div>
                 </div>
             </div>
@@ -73,14 +92,200 @@
             <div class="card">
                 <div class="card-header">Image Proofs</div>
                 <div class="card-body">
-                    <div class="row kycImages"> 
-                        <div class="col-3" *ngFor="let img of kycImages">
-                            <figure class="figure">
-                                <a class="border kycpdf" *ngIf="img.Image.startsWith('JVB')" (click)="goToLink('data:application/pdf;base64,'+img.Image)">View {{img.document_name}}</a>
+                    <div class="row kycImages" *ngIf="aadharImage.length>0"> 
+                        <div class="col-12">
+                            <div class="text-center">
+                                <h3>Aadhar Image</h3>
+                                <hr>
+                            </div>
+                        </div>
+                        <div class="col-3" *ngFor="let img of aadharImage">
+                            <figure class="figure" *ngIf="img.proofId==1">
+                                <a class="border kycpdf" *ngIf="img.Image.startsWith('JVB')" (click)="downloadFile('data:application/pdf;base64,'+img.Image, img.document_name+'.pdf')">View {{img.document_name}}</a>
+                                <img (click)="open(imageView); viewImage = img.Image"  width="90%" *ngIf="!img.Image.startsWith('JVB')" [src]="img.Image | BlobImage" class="figure-img img-thumbnail rounded" /> 
+                                <figcaption *ngIf="!img.Image.startsWith('JVB')" class="figure-caption">{{img.document_name}}</figcaption>
+                            </figure> 
+                        </div>                        
+                    </div>
+                    <div class="row kycImages" *ngIf="selfieImage.length>0"> 
+                        <div class="col-12">
+                            <div class="text-center">
+                                <h3>Selfie Image</h3>
+                                <hr>
+                            </div>
+                        </div>
+                        <div class="col-3" *ngFor="let img of selfieImage">
+                            <figure class="figure" *ngIf="img.proofId==2">
+                                <a class="border kycpdf" *ngIf="img.Image.startsWith('JVB')" (click)="downloadFile('data:application/pdf;base64,'+img.Image, img.document_name+'.pdf')">View {{img.document_name}}</a>
+                                <img (click)="open(imageView); viewImage = img.Image" width="90%" *ngIf="!img.Image.startsWith('JVB')" [src]="img.Image | BlobImage" class="figure-img img-thumbnail rounded" /> 
+                                <figcaption *ngIf="!img.Image.startsWith('JVB')" class="figure-caption">{{img.document_name}}</figcaption>
+                            </figure> 
+                        </div>                        
+                    </div>
+                    <div class="row kycImages" *ngIf="pgImage.length>0"> 
+                        <div class="col-12">
+                            <div class="text-center">
+                                <h3>PG/Hostel receipt</h3>
+                                <hr>
+                            </div>
+                        </div>
+                        <div class="col-3" *ngFor="let img of pgImage">
+                            <figure class="figure" *ngIf="img.proofId==3">
+                                <a class="border kycpdf" *ngIf="img.Image.startsWith('JVB')" (click)="downloadFile('data:application/pdf;base64,'+img.Image, img.document_name+'.pdf')">View {{img.document_name}}</a>
+                                <img (click)="open(imageView); viewImage = img.Image" width="90%" *ngIf="!img.Image.startsWith('JVB')" [src]="img.Image | BlobImage" class="figure-img img-thumbnail rounded" /> 
+                                <figcaption *ngIf="!img.Image.startsWith('JVB')" class="figure-caption">{{img.document_name}}</figcaption>
+                            </figure> 
+                        </div>                        
+                    </div>
+                    <div class="row kycImages" *ngIf="collageId.length>0"> 
+                        <div class="col-12">
+                            <div class="text-center">
+                                <h3>Collage/Office Id</h3>
+                                <hr>
+                            </div>
+                        </div>
+                        <div class="col-3" *ngFor="let img of collageId">
+                            <figure class="figure" *ngIf="img.proofId==4">
+                                <a class="border kycpdf" *ngIf="img.Image.startsWith('JVB')" (click)="downloadFile('data:application/pdf;base64,'+img.Image, img.document_name+'.pdf')">View {{img.document_name}}</a>
+                                <img (click)="open(imageView); viewImage = img.Image" width="90%" *ngIf="!img.Image.startsWith('JVB')" [src]="img.Image | BlobImage" class="figure-img img-thumbnail rounded" /> 
+                                <figcaption *ngIf="!img.Image.startsWith('JVB')" class="figure-caption">{{img.document_name}}</figcaption>
+                            </figure> 
+                        </div>                        
+                    </div>
+                    <div class="row kycImages" *ngIf="permanentaddress.length>0"> 
+                        <div class="col-12">
+                            <div class="text-center">
+                                <h3>Permanent address</h3>
+                                <hr>
+                            </div>
+                        </div>
+                        <div class="col-3" *ngFor="let img of permanentaddress">
+                            <figure class="figure" *ngIf="img.proofId==5">
+                                <a class="border kycpdf" *ngIf="img.Image.startsWith('JVB')" (click)="downloadFile('data:application/pdf;base64,'+img.Image, img.document_name+'.pdf')">View {{img.document_name}}</a>
+                                <img (click)="open(imageView); viewImage = img.Image" width="90%" *ngIf="!img.Image.startsWith('JVB')" [src]="img.Image | BlobImage" class="figure-img img-thumbnail rounded" /> 
+                                <figcaption *ngIf="!img.Image.startsWith('JVB')" class="figure-caption">{{img.document_name}}</figcaption>
+                            </figure> 
+                        </div>                        
+                    </div>
+                    <div class="row kycImages" *ngIf="ownEBill.length>0"> 
+                        <div class="col-12">
+                            <div class="text-center">
+                                <h3>Own house electricity bill</h3>
+                                <hr>
+                            </div>
+                        </div>
+                        <div class="col-3" *ngFor="let img of ownEBill">
+                            <figure class="figure" *ngIf="img.proofId==6">
+                                <a class="border kycpdf" *ngIf="img.Image.startsWith('JVB')" (click)="downloadFile('data:application/pdf;base64,'+img.Image, img.document_name+'.pdf')">View {{img.document_name}}</a>
+                                <img (click)="open(imageView); viewImage = img.Image" width="90%" *ngIf="!img.Image.startsWith('JVB')" [src]="img.Image | BlobImage" class="figure-img img-thumbnail rounded" /> 
+                                <figcaption *ngIf="!img.Image.startsWith('JVB')" class="figure-caption">{{img.document_name}}</figcaption>
+                            </figure> 
+                        </div>                        
+                    </div>
+                    <div class="row kycImages" *ngIf="rentedEBill.length>0"> 
+                        <div class="col-12">
+                            <div class="text-center">
+                                <h3>Rented Electricity bill</h3>
+                                <hr>
+                            </div>
+                        </div>
+                        <div class="col-3" *ngFor="let img of rentedEBill">
+                            <figure class="figure" *ngIf="img.proofId==7">
+                                <a class="border kycpdf" *ngIf="img.Image.startsWith('JVB')" (click)="downloadFile('data:application/pdf;base64,'+img.Image, img.document_name+'.pdf')">View {{img.document_name}}</a>
+                                <img (click)="open(imageView); viewImage = img.Image" width="90%" *ngIf="!img.Image.startsWith('JVB')" [src]="img.Image | BlobImage" class="figure-img img-thumbnail rounded" /> 
+                                <figcaption *ngIf="!img.Image.startsWith('JVB')" class="figure-caption">{{img.document_name}}</figcaption>
+                            </figure> 
+                        </div>                        
+                    </div>
+                    <div class="row kycImages" *ngIf="rentalAgreement.length>0"> 
+                        <div class="col-12">
+                            <div class="text-center">
+                                <h3>Rental agreement</h3>
+                                <hr>
+                            </div>
+                        </div>
+                        <div class="col-3" *ngFor="let img of rentalAgreement">
+                            <figure class="figure" *ngIf="img.proofId==8">
+                                <a class="border kycpdf" *ngIf="img.Image.startsWith('JVB')" (click)="downloadFile('data:application/pdf;base64,'+img.Image, img.document_name+'.pdf')">View {{img.document_name}}</a>
+                                <img (click)="open(imageView); viewImage = img.Image" width="90%" *ngIf="!img.Image.startsWith('JVB')" [src]="img.Image | BlobImage" class="figure-img img-thumbnail rounded" /> 
+                                <figcaption *ngIf="!img.Image.startsWith('JVB')" class="figure-caption">{{img.document_name}}</figcaption>
+                            </figure> 
+                        </div>                        
+                    </div>
+                    <div class="row kycImages" *ngIf="anyBill.length>0"> 
+                        <div class="col-12">
+                            <div class="text-center">
+                                <h3>Any other bill</h3>
+                                <hr>
+                            </div>
+                        </div>
+                        <div class="col-3" *ngFor="let img of anyBill">
+                            <figure class="figure" *ngIf="img.proofId==9">
+                                <a class="border kycpdf" *ngIf="img.Image.startsWith('JVB')" (click)="downloadFile('data:application/pdf;base64,'+img.Image, img.document_name+'.pdf')">View {{img.document_name}}</a>
+                                <img (click)="open(imageView); viewImage = img.Image" width="90%" *ngIf="!img.Image.startsWith('JVB')" [src]="img.Image | BlobImage" class="figure-img img-thumbnail rounded" /> 
+                                <figcaption *ngIf="!img.Image.startsWith('JVB')" class="figure-caption">{{img.document_name}}</figcaption>
+                            </figure> 
+                        </div>                        
+                    </div>
+                    <div class="row kycImages" *ngIf="gstCertificate.length>0"> 
+                        <div class="col-12">
+                            <div class="text-center">
+                                <h3>GST certificate</h3>
+                                <hr>
+                            </div>
+                        </div>
+                        <div class="col-3" *ngFor="let img of gstCertificate">
+                            <figure class="figure" *ngIf="img.proofId==10">
+                                <a class="border kycpdf" *ngIf="img.Image.startsWith('JVB')" (click)="downloadFile('data:application/pdf;base64,'+img.Image, img.document_name+'.pdf')">View {{img.document_name}}</a>
                                 <img  width="90%" *ngIf="!img.Image.startsWith('JVB')" [src]="img.Image | BlobImage" class="figure-img img-thumbnail rounded" /> 
                                 <figcaption *ngIf="!img.Image.startsWith('JVB')" class="figure-caption">{{img.document_name}}</figcaption>
                             </figure> 
-                        </div> 
+                        </div>                        
+                    </div>
+                    <div class="row kycImages" *ngIf="moa.length>0"> 
+                        <div class="col-12">
+                            <div class="text-center">
+                                <h3>MOA</h3>
+                                <hr>
+                            </div>
+                        </div>
+                        <div class="col-3" *ngFor="let img of moa">
+                            <figure class="figure" *ngIf="img.proofId==11">
+                                <a class="border kycpdf" *ngIf="img.Image.startsWith('JVB')" (click)="downloadFile('data:application/pdf;base64,'+img.Image, img.document_name+'.pdf')">View {{img.document_name}}</a>
+                                <img (click)="open(imageView); viewImage = img.Image" width="90%" *ngIf="!img.Image.startsWith('JVB')" [src]="img.Image | BlobImage" class="figure-img img-thumbnail rounded" /> 
+                                <figcaption *ngIf="!img.Image.startsWith('JVB')" class="figure-caption">{{img.document_name}}</figcaption>
+                            </figure> 
+                        </div>                        
+                    </div>
+                    <div class="row kycImages" *ngIf="aoa.length>0"> 
+                        <div class="col-12">
+                            <div class="text-center">
+                                <h3>AOA</h3>
+                                <hr>
+                            </div>
+                        </div>
+                        <div class="col-3" *ngFor="let img of aoa">
+                            <figure class="figure" *ngIf="img.proofId==12">
+                                <a class="border kycpdf" *ngIf="img.Image.startsWith('JVB')" (click)="downloadFile('data:application/pdf;base64,'+img.Image, img.document_name+'.pdf')">View {{img.document_name}}</a>
+                                <img (click)="open(imageView); viewImage = img.Image" width="90%" *ngIf="!img.Image.startsWith('JVB')" [src]="img.Image | BlobImage" class="figure-img img-thumbnail rounded" /> 
+                                <figcaption *ngIf="!img.Image.startsWith('JVB')" class="figure-caption">{{img.document_name}}</figcaption>
+                            </figure> 
+                        </div>                        
+                    </div>
+                    <div class="row kycImages" *ngIf="purchaseOrder.length>0"> 
+                        <div class="col-12">
+                            <div class="text-center">
+                                <h3>Purchase order</h3>
+                                <hr>
+                            </div>
+                        </div>
+                        <div class="col-3" *ngFor="let img of purchaseOrder">
+                            <figure class="figure" *ngIf="img.proofId==13">
+                                <a class="border kycpdf" *ngIf="img.Image.startsWith('JVB')" (click)="downloadFile('data:application/pdf;base64,'+img.Image, img.document_name+'.pdf')">View {{img.document_name}}</a>
+                                <img (click)="open(imageView); viewImage = img.Image" width="90%" *ngIf="!img.Image.startsWith('JVB')" [src]="img.Image | BlobImage" class="figure-img img-thumbnail rounded" /> 
+                                <figcaption *ngIf="!img.Image.startsWith('JVB')" class="figure-caption">{{img.document_name}}</figcaption>
+                            </figure> 
+                        </div>                        
                     </div>
                 </div>
             </div>
@@ -90,28 +295,73 @@
 
 
 
-<ng-template #editStatus let-modal>
+<ng-template class="kyc" #editComment let-modal>
     <div class="modal-header">
-        <h5 class="modal-title f-w-600" id="exampleModalLabel">Edit Status</h5>
+        <h5 class="modal-title f-w-600" id="exampleModalLabel">Comments</h5>
         <button type="button" class="close" aria-label="Close"
             (click)="modal.dismiss('Cross click')">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
     <div class="modal-body">
-        <form [formGroup]="kycStatusForm" (ngSubmit)="updateStatus(kycId)">
+        <!-- <form [formGroup]="kycStatusForm" (ngSubmit)="updateStatus(kycId)">
             <select class="form-control" formControlName="kyc_status">
-                <option>Awaiting KYC</option>
-                <option>KYC approved</option>
+                <option>Awaiting eKYC</option>
+                <option>eKYC submitted</option>
+                <option>eKYC approved</option>
+                <option>Query raised</option>
             </select>
             <br>
-            <textarea class="form-control" formControlName="comments"></textarea><br>
+            <textarea class="form-control" rows="10" formControlName="comments"></textarea><br>
             <button type="submit" class="btn btn-warning">Submit</button>
-        </form>
+        </form> -->
+        <ck-editor name="prodDescription" [(ngModel)]="kycDetails.comments" id="editor1" language="en" [fullPage]="false"></ck-editor>
+        <br>
+        <!-- <textarea class="form-control" rows="10" [(ngModel)]="value"></textarea><br> -->
+        <!-- <button type="submit" class="btn btn-warning" (click)="updateStatus(kycId, 'comments', value); updateStatus(kycId, 'kyc_status', 'Query raised');">Submit</button> -->
     </div>
     <div class="modal-footer">
-        <!-- <button type="button" class="btn btn-primary">Save</button> -->
-        <button class="btn btn-secondary" type="button" data-dismiss="modal"
+        <button type="button" class="btn btn-primary" (click)="updateStatus(kycId, 'comments', kycDetails.comments); updateStatus(kycId, 'kyc_status', 'Query raised'); updateStatus(kycId, 'editable', true); ">Save</button>
+        <button class="btn btn-primary" type="button" data-dismiss="modal"
+            (click)="modal.dismiss('Cross click')">Cancel</button>
+    </div>
+</ng-template>
+
+<ng-template  #approveStatus let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title f-w-600" id="exampleModalLabel">Comments</h5>
+        <button type="button" class="close" aria-label="Close"
+            (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+            Are you sure you want to approve this KYC status?
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="updateStatus(kycId, 'kyc_status', 'eKYC approved'); updateStatus(kycId, 'editable', false); updateStatus(kycId, 'approved_date', currentDate);setExpiryDate(kycId); ">Yes</button>
+        <button class="btn btn-primary" type="button" data-dismiss="modal"
+            (click)="modal.dismiss('Cross click')">No</button>
+    </div>
+</ng-template>
+
+<ng-template  #imageView let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title f-w-600" id="exampleModalLabel">Comments</h5>
+        <button type="button" class="close" aria-label="Close"
+            (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <img  [src]="viewImage | BlobImage" class="figure-img img-thumbnail rounded" />
+        
+    </div>
+    <div class="modal-footer">
+        
+        <button class="btn btn-primary" type="button" data-dismiss="modal"
             (click)="modal.dismiss('Cross click')">Close</button>
     </div>
 </ng-template>
+
+

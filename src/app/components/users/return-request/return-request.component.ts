@@ -281,7 +281,8 @@ export class ReturnRequestComponent implements OnInit {
       modifiedBy:1,
       createdAt: new Date(),
       modifiedAt:new Date(),
-      products:JSON.stringify(cInfo)
+      products:JSON.stringify(cInfo),
+      returnDate:this.returnDate,
     }; 
 
     let returnOrderItem={
@@ -295,23 +296,24 @@ export class ReturnRequestComponent implements OnInit {
     };
     console.log(returnOrder);
     this.http.post(`${environment.apiUrl}/payments/newReturn`,  returnOrder).subscribe((res) => {
-    this.http.put(`${environment.apiUrl}/orders/updateOrderItemStatus/${this.currentOrderItemId}`,returnOrderItem).subscribe();
-    this.http.put(`${environment.apiUrl}/users/updatecustomerRequests/${this.currentOrderItemId}`,customerRequest).subscribe();
-    setTimeout(() => {
-      window.location.reload();
-    }, 2000);
-      // this.http.get(`${environment.apiUrl}/products/ordDetails/${this.currentOrderId}`).subscribe((resOrd) => {
-      //   let cid = resOrd[0].checkoutItemData;
-      //   cid.forEach(element => {
-      //     if(element.assetId===this.currentAssetId){ 
-      //       element.renewed=3;
-      //       element.returnDate=this.returnDate;
-      //     }
-      //   });     
-      //   this.http.put(`${environment.apiUrl}/orders/updateCID/${this.currentOrderId}`, {checkoutProducts:JSON.stringify(cid)}).subscribe();  
-      // });
-      // this.http.put(`${environment.apiUrl}/assets/update/${this.currentAssetId}`, {availability:1, startDate:0,expiryDate:0,nextStartDate:0}).subscribe();
-      // this.modalReference.close();
+      this.http.put(`${environment.apiUrl}/orders/updateOrderItemStatus/${this.currentOrderItemId}`,returnOrderItem).subscribe();
+      this.http.put(`${environment.apiUrl}/users/updatecustomerRequests/${this.currentOrderItemId}`,customerRequest).subscribe();      
+      // this.http.post(`${environment.apiUrl}/forgotpassword/notifyMailReturnOrder`,  returnOrder).subscribe();
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+        // this.http.get(`${environment.apiUrl}/products/ordDetails/${this.currentOrderId}`).subscribe((resOrd) => {
+        //   let cid = resOrd[0].checkoutItemData;
+        //   cid.forEach(element => {
+        //     if(element.assetId===this.currentAssetId){ 
+        //       element.renewed=3;
+        //       element.returnDate=this.returnDate;
+        //     }
+        //   });     
+        //   this.http.put(`${environment.apiUrl}/orders/updateCID/${this.currentOrderId}`, {checkoutProducts:JSON.stringify(cid)}).subscribe();  
+        // });
+        // this.http.put(`${environment.apiUrl}/assets/update/${this.currentAssetId}`, {availability:1, startDate:0,expiryDate:0,nextStartDate:0}).subscribe();
+        // this.modalReference.close();
     });
   }
 

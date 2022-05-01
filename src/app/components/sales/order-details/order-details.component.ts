@@ -9,6 +9,7 @@ import { FormGroup,FormBuilder, FormControl,Validators } from '@angular/forms';
 import { ExcelService } from '../services/excel.service';
 import { ActivatedRoute } from '@angular/router';
 import { environment } from 'src/environments/environment';
+import { KYC } from 'src/app/shared/data/kyc';
 
 @Component({
   selector: 'app-order-details',
@@ -19,6 +20,8 @@ export class OrderDetailsComponent implements OnInit {
 
   public order :Orders[] = [];
   public assets: Assets[]=[];
+  public kycDetails:KYC;
+  NoKYC:boolean;
   public temp = [];
   @ViewChild('content') content;
   @ViewChild('orderDetails') orderDetails;
@@ -125,12 +128,26 @@ export class OrderDetailsComponent implements OnInit {
     });
   }
 
+  async getKycByCustomerId(id){
+    var data = [];
+    this.os.getKycBycustomerId(id).subscribe(async (res:[])=>{
+      data= res;
+      if(data.length>0){
+        var mainTableResult = await this.os.getKYCMainTableByid(data[0].id).toPromise();
+        this.kycDetails = mainTableResult[0]; 
+      } else{
+        this.NoKYC=true;
+      } 
+    });
+         
+  }
+
+  
+
   getOrders(){
     this.os.getAllOrders().subscribe((orders)=>{
       orders.reverse();
-      this.order=orders.filter(item => item.paymentStatus.toLowerCase()=='success' && item.orderType_id===1);
-      console.log(this.order)
-      
+      this.order=orders.filter(item => item.paymentStatus.toLowerCase()=='success' && item.orderType_id===1);      
     });
   }
 
@@ -155,6 +172,16 @@ export class OrderDetailsComponent implements OnInit {
           this.http.post(`${environment.apiUrl}/payments/postInvoice`,{orderId:this.addTransaction.value.orderId}).subscribe();
         });       
       }
+      alert('Transaction posted successfully');      
+      this.modalService.dismissAll();
+    });
+  }
+
+  postReturnTransactionData(){
+    this.http.post(`${environment.apiUrl}/payments/postManualOrderTransaction2`,this.addTransaction.value).subscribe((resp2)=>{
+      this.http.put(`${environment.apiUrl}/payments/updatePaymentStatus`, {paymentStatus: this.addTransaction.value.paymentStatus, orderId: this.oid}).subscribe(()=>{
+        this.http.post(`${environment.apiUrl}/payments/postInvoice`,{orderId:this.addTransaction.value.orderId}).subscribe();
+      });
       alert('Transaction posted successfully');      
       this.modalService.dismissAll();
     });
@@ -196,8 +223,7 @@ export class OrderDetailsComponent implements OnInit {
   }
 
   updateDeliveryStatus(id){
-    this.http.put(`${environment.apiUrl}/orders/update/${id}`, this.updateStatus.value).subscribe((res) => {
-      
+    this.http.put(`${environment.apiUrl}/orders/update/${id}`, this.updateStatus.value).subscribe((res) => {      
     });
   }
 
@@ -218,11 +244,18 @@ export class OrderDetailsComponent implements OnInit {
       this.http.get(`${environment.apiUrl}/users/getCustomerById/${this.customer_id}`).subscribe((customerDetails)=>{
         this.customerDetails = customerDetails;
       });
+      this.getKycByCustomerId(this.customer_id);
     });
   }
 
   addOrderField(field){
     this.updateField.addControl(field,new FormControl(''));
+  }
+
+  updateTransactionField(txnId, field,value){
+    this.http.put(`${environment.apiUrl}/orders/updateAnytransactionField/${txnId}`, {transactionField: field, transactionValue: value}).subscribe();
+    this.editStatus=false;
+    // this.getOrderById(this.oid);
   }
 
   updateOrderField(ordId, field, value){

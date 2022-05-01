@@ -18,8 +18,11 @@ import { KycComponent } from './kyc/kyc.component';
 import { KycDetailsComponent } from './kyc-details/kyc-details.component';
 import { ProductsModule } from '../products/products.module';
 
+import { CKEditorModule } from 'ngx-ckeditor';
+import { CreateEditKycComponent } from './create-edit-kyc/create-edit-kyc.component';
+
 @NgModule({
-  declarations: [ListUserComponent, CreateUserComponent, CustomersComponent, ReplaceRequestComponent, ReturnRequestComponent, ReviewsComponent, KycComponent, KycDetailsComponent],
+  declarations: [ListUserComponent, CreateUserComponent, CustomersComponent, ReplaceRequestComponent, ReturnRequestComponent, ReviewsComponent, KycComponent, KycDetailsComponent, CreateEditKycComponent],
   imports: [
     CommonModule,
     NgbModule,
@@ -28,6 +31,7 @@ import { ProductsModule } from '../products/products.module';
     ProductsModule,
     ReactiveFormsModule,
     UsersRoutingModule,
+    CKEditorModule,
     NgMultiSelectDropDownModule.forRoot(),
   ]
 })

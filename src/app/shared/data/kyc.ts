@@ -4,7 +4,7 @@ export interface KYC {
     customer_id:number,
     customer_type:string,
     comments:string,
-    kyc_status:boolean,
+    kyc_status:string,
     created_at:Date,
     modified_at:Date,
     status:boolean,
@@ -34,4 +34,9 @@ export interface KYC {
     ref2_designation:string,
     ref2_mobile:string,
     ref2_officialMailId:string,
+    editable:boolean,
+    expiry_date:Date,
+    approved_date:Date,
+    company:string,
+    occupation:string
 }

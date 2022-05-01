@@ -1,0 +1,621 @@
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                        <div class="row" *ngIf="kycStatus?.kyc_status=='Awaiting eKYC' && !kycStatus?.editable">
+                            <div class="col-12">
+                                <div class="success-text mb-3">
+                                    <h2>eKYC verification in progress...</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="kycStatus?.kyc_status=='eKYC submitted' && !updateForm">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-10 delivery-sec shadow p-3 m-0">
+                                <div class="row kyc-card">
+                                    <div class="col-md-6 text-md-left text-center pl-4">
+                                        <h3 class="mt-1 mb-3">{{kycStatus.firstName}} {{kycStatus.lastName}}</h3>
+                                        <h5>Approval date: Yet to be approved</h5>
+                                        <h5>Expiry date: 1 year</h5>
+                                    </div>
+                                    <div class="col-md-3"></div>
+                                    <div class="col-md-3 warning-text">  
+                                        <i class="fa fa-check-circle" aria-hidden="true"></i>
+                                        <h2>eKYC Submitted</h2>                   
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-8 text-left">                        
+                                        <hr>                        
+                                    </div>
+                                    <!-- <div class="col-md-6 col-xs-12 text-md-left" >
+                                        <button class="btn btn-warning ml-md-4 my-2 px-5 py-2" (click)="open(currentKycDetails)">View</button>
+                                    </div> -->
+                                    <div class="col-md-6 col-xs-12 text-md-right" >                        
+                                        <button class="btn btn-warning mr-md-5 my-2 px-4 py-2 ml-2" (click)="kycStatus.editable=true; updateForm=true">Update eKYC</button>
+                                    </div>
+                                </div>
+                
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="kycStatus?.kyc_status=='eKYC approved' && !kycStatus.editable">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-10 delivery-sec shadow p-3 m-0">
+                                <div class="row kyc-card">
+                                    <div class="col-md-6 text-md-left text-center pl-4">
+                                        <h3 class="mt-1 mb-3">{{kycStatus.firstName}} {{kycStatus.lastName}}</h3>
+                                        <h5>Approval date: {{kycStatus.approved_date | date:'dd MM yyyy'}}</h5>
+                                        <h5>Expiry date: {{kycStatus.expiry_date | date:'dd MM yyyy'}}</h5>
+                                    </div>
+                                    <div class="col-md-3"></div>
+                                    <div class="col-md-3 success-text">  
+                                        <i class="fa fa-check-circle" aria-hidden="true"></i>
+                                        <h2>eKYC Verified</h2>                   
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-8 text-left">                        
+                                        <hr>                        
+                                    </div>
+                                    <!-- <div class="col-md-6 col-xs-12 text-md-left" >
+                                        <button class="btn btn-warning ml-md-4 my-2 px-5 py-2" (click)="open(currentKycDetails)">View</button>
+                                    </div> -->
+                                    <div class="col-md-6 col-xs-12 text-md-right" >                        
+                                        <button class="btn btn-warning mr-md-5 my-2 px-4 py-2 ml-2" (click)="kycStatus.editable=true; createNewKyc=true">Create new</button>
+                                    </div>
+                                </div>
+                
+                            </div>
+                        </div>
+                        <div class="row" *ngIf="kycStatus?.kyc_status=='Query raised' && !updateForm">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-10 delivery-sec shadow p-3 m-0">
+                                <div class="row kyc-card">
+                                    <div class="col-md-6 text-md-left text-center pl-4">
+                                        <h3 class="mt-1 mb-3">{{kycStatus.firstName}} {{kycStatus.lastName}}</h3>
+                                        <h5>Approval date: Yet to be approved</h5>
+                                        <h5>Expiry date: 1 year</h5>
+                                    </div>
+                                    <div class="col-md-3"></div>
+                                    <div class="col-md-3 warning-text">  
+                                        <i class="fa fa-question" aria-hidden="true"></i>
+                                        <h2>Query raised</h2>                   
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-8 text-left">                        
+                                        <hr>                        
+                                    </div>          
+                                </div>                
+                                
+                                <div class="row mt-3 px-4"> 
+                                    <div class="col-md-8 my-comment col-xs-12 text-left" >   
+                                        <h3 class="theme-color">Queries:</h3>
+                                        <div class="my-comment" *ngIf="kycStatus?.comments" [innerHtml]="kycStatus?.comments">                            
+                                        </div>                    
+                                    </div>
+                                    <div class="col-md-4" >
+                                        <!-- <div class="row">
+                                            <div class="col text-center">
+                                                <button class="btn btn-warning my-2 px-5 py-2" (click)="open(currentKycDetails)">View</button>
+                                            </div>
+                                        </div> -->
+                                        <div class="row">
+                                            <div class="col text-center position-absolute fixed-bottom">
+                                                <button class="btn btn-warning my-2 px-3 py-2" (click)="updateForm=true">Update eKYC</button>
+                                            </div>                            
+                                        </div>                        
+                                    </div> 
+                                </div>
+                
+                            </div>
+                        </div>
+                            
+                        <div class="kyc-form mt-5" *ngIf="((!kycStatus?.kyc_status || updateForm) || (kycStatus?.kyc_status=='eKYC approved' && kycStatus.editable))">
+                              
+                            <form [formGroup]="kycForm" class="needs-validation user-add customTab " *ngIf="customerType=='Individual'">
+                
+                                <ngb-tabset type="justified" class="tab-custom" #myTabSet="ngbTabset">     
+                                    
+                                    <ngb-tab title="ID proof" id="tab-1" >
+                                        <ng-template ngbTabContent>
+                                            <div class="tab-pane fade active show pt-3" id="account" role="tabpanel"
+                                                aria-labelledby="account-tab">
+                                                <div class="row">
+                                                    <div class="col-md-7 col-xs-12">
+                                                        <div class="form-group row text-left">
+                                                            <label  class="col-4 text-right mt-2"><span>*</span>
+                                                                Aadhar no</label>
+                                                            <input formControlName="aadharNo" class="form-control col-8 m-0" 
+                                                                type="text" required="">
+                                                                <div class="col-4"></div>
+                                                            <div class="col-8 text text-danger" *ngIf="kycForm.controls.aadharNo.touched && kycForm.controls.aadharNo.errors?.required"> Aadhar no. is required</div>
+                                                        </div>
+                                                        <div class="form-group row text-left">
+                                                            <label  class="col-4 text-right mt-2"><span>*</span>
+                                                                Aadhar image</label>
+                                                            <div class="custom-file col-8 m-0">
+                                                                <input type="file" accept="application/pdf,image/*" class="form-control custom-file-input" id="aadharImage" (change)="imageChange('aadharImage')" multiple>
+                                                                <label class="custom-file-label" for="aadharImage">Choose file</label>
+                                                            </div>
+                                                            <div class="col-4"></div>
+                                                            <div class="col-8 p-0">
+                                                                <div class="row p-0 m-0">
+                                                                    <div class="col-md-5 ml-1 mt-1 p-1 kyc-image" *ngFor='let url of aadharImage;let index = index'>                                                    
+                                                                        <a (click)="goToLink(url.img)" *ngIf="url.fileType=='pdf'">{{url.file}}.pdf</a>                                                  
+                                                                        <img accept="application/pdf,image/*" *ngIf="url.fileType=='jpeg'" [src]="url.img" />
+                                                                        <label class="ml-2" *ngIf="url.fileType=='jpeg'">{{url.file.substring(0, 10)+'...'}}</label>
+                                                                        <span class="mt-1 theme-color pull-right" (click)="removeSelectedFile2(index, 'aadharImage')"><i class="fa fa-times"></i></span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-4"></div>
+                                                            <div class="col-8 text text-danger" *ngIf="kycForm.controls.aadharImage.touched && kycForm.controls.aadharImage.errors?.required"> Aadhar front and back images is required</div>
+                                                        </div>
+                                                        <div class="form-group row text-left">
+                                                            <label  class="col-4 text-right mt-2"><span>*</span>
+                                                                Selfie image</label>
+                                                            <div class="custom-file col-8 m-0">
+                                                                <input type="file" accept="image/*" class="form-control custom-file-input" id="selfieImage" (change)="imageChange('selfieImage')" capture="environment">
+                                                                <label class="custom-file-label" for="selfieImage">Choose file</label>
+                                                            </div>
+                                                            <div class="col-4"></div>
+                                                            <div class="col-8 p-0">
+                                                                <div class="row p-0 m-0">
+                                                                    <div class="col-md-5 ml-1 mt-1 p-1 kyc-image" *ngFor='let url of selfieImage;let index = index'>                                                    
+                                                                        <a (click)="goToLink(url.img)" *ngIf="url.fileType=='pdf'">{{url.file}}.pdf</a>                                                  
+                                                                        <img *ngIf="url.fileType=='jpeg'" [src]="url.img" />
+                                                                        <label class="ml-2" *ngIf="url.fileType=='jpeg'">{{url.file.substring(0, 10)+'...'}}</label>
+                                                                        <span class="mt-1 theme-color pull-right" (click)="removeSelectedFile2(index, 'selfieImage')"><i class="fa fa-times"></i></span>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                            </div>
+                                                            <div class="col-4"></div>
+                                                            <div class="col-8 text text-danger" *ngIf="kycForm.controls.selfieImage.touched && kycForm.controls.selfieImage.errors?.required"> Selfie image is required</div>
+                                                        </div>                                        
+                                                        <div class="text-right mt-5">
+                                                            <button class="btn btn-warning kyc-next px-5 py-2" *ngIf="kycData.length==0 || createNewKyc" (click)="switchNgBTab('tab-2')">Next</button>
+                                                            <button class="btn btn-warning kyc-next px-5 py-2" *ngIf="kycData.length>0 && !createNewKyc" (click)="switchNgBTab('tab-2');updateKYCIdProofTab(this.kycStatus.id)">Next</button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-1 p-0 m-0 border-right"></div>
+                                                    <div class="col-md-4 col-xs-12" *ngIf="kycStatus?.comments">
+                                                        <h3 class="theme-color">Queries: </h3>
+                                                        <div class="my-comment" [innerHtml]="kycStatus?.comments"></div>
+                                                    </div>
+                                                    <div class="col-md-4 col-xs-12" *ngIf="!kycStatus?.comments">
+                                                        <div class="my-comment ml-3">
+                                                            <h3>Instructions: </h3>
+                                                            <ul>
+                                                                <li><span class="theme-color">Aadhaar number (Mandatory):</span> Update your 12 digit Aadhaar Number</li>
+                                                                <li><span class="theme-color">Aadhaar Image (Mandatory):</span> Upload both sides of your Aadhaar Card with Clear image in jpeg or pdf format</li>
+                                                                <li><span class="theme-color">Selfie Image (Mandatory):</span> Upload your selfie image without mask or any other face covering</li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                        </ng-template>
+                                    </ngb-tab>
+                                    <ngb-tab title="Address proof" id="tab-2" >
+                                        <ng-template ngbTabContent>
+                                            <div class="tab-pane fade active show pt-3" id="kyc3" role="tabpanel"
+                                                aria-labelledby="account-tab">
+                                                <div class="row">
+                                                    <div class="col-md-7 col-xs-12">
+                                                        <div class="form-group row text-left">
+                                                            <label  class="col-4 text-right mt-2"><span>*</span>
+                                                                Address type</label>
+                                                            <select formControlName="addressType" class="form-control col-8 m-0">
+                                                                <option>---Select---</option>
+                                                                <option value="1">PG/Hostel</option>
+                                                                <option value="2">Own house</option>
+                                                                <option value="3">Rented house</option>
+                                                            </select>
+                                                            <div class="col-4"></div>
+                                                            <div class="col-8 text text-danger" *ngIf="kycForm.controls.addressType.touched && kycForm.controls.addressType.errors?.required"> Address type is required</div>
+                                                        </div>
+                                                        <div class="form-group row text-left" *ngIf="kycForm.value.addressType==1">
+                                                            <label  class="col-4 text-right mt-2"><span>*</span>
+                                                                PG/ Hostel receipt</label>
+                                                            <div class="custom-file col-8 m-0">
+                                                                <input type="file" accept="application/pdf,image/*" class="form-control custom-file-input" id="pgReceipt" (change)="imageChange('pgReceipt')" multiple>
+                                                                <label class="custom-file-label" for="pgReceipt">Choose file</label>
+                                                            </div>
+                                                            <div class="col-4"></div>
+                                                            <div class="col-8 p-0">
+                                                                <div class="row p-0 m-0">
+                                                                    <div class="col-md-5 ml-1 mt-1 p-1 kyc-image" *ngFor='let url of pgReceipt;let index = index'>                                                    
+                                                                        <a (click)="goToLink(url.img)" *ngIf="url.fileType=='pdf'">{{url.file}}.pdf</a>                                                  
+                                                                        <img *ngIf="url.fileType=='jpeg'" [src]="url.img" />
+                                                                        <label class="ml-2" *ngIf="url.fileType=='jpeg'">{{url.file.substring(0, 10)+'...'}}</label>
+                                                                        <span class="mt-1 theme-color pull-right" (click)="removeSelectedFile2(index, 'pgReceipt')"><i class="fa fa-times"></i></span>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                            </div>
+                                                            <div class="col-4"></div>
+                                                            <div class="col-8 text text-danger" *ngIf="kycForm.controls.pgReceipt.touched && kycForm.controls.pgReceipt.errors?.required"> PG / Hostel receipt is required</div>
+                                                        </div>
+                                                        <div class="form-group row text-left" *ngIf="kycForm.value.addressType==1">
+                                                            <label  class="col-4 text-right mt-2"><span>*</span>
+                                                                College/ Office Id</label>
+                                                            <div class="custom-file col-8 m-0">
+                                                                <input type="file" accept="application/pdf,image/*" class="form-control custom-file-input" id="collageId" (change)="imageChange('collageId')" multiple>
+                                                                <label class="custom-file-label" for="collageId">Choose file</label>
+                                                            </div>
+                                                            <div class="col-4"></div>
+                                                            <div class="col-8 p-0">
+                                                                <div class="row p-0 m-0">
+                                                                    <div class="col-md-5 ml-1 mt-1 p-1 kyc-image" *ngFor='let url of collageId;let index = index'>                                                    
+                                                                        <a (click)="goToLink(url.img)" *ngIf="url.fileType=='pdf'">{{url.file}}.pdf</a>                                                  
+                                                                        <img *ngIf="url.fileType=='jpeg'" [src]="url.img" />
+                                                                        <label class="ml-2" *ngIf="url.fileType=='jpeg'">{{url.file.substring(0, 10)+'...'}}</label>
+                                                                        <span class="mt-1 theme-color pull-right" (click)="removeSelectedFile2(index, 'collageId')"><i class="fa fa-times"></i></span>
+                                                                    </div>
+                                                                </div>                                                
+                                                            </div>
+                                                            <div class="col-4"></div>
+                                                            <div class="col-8 text text-danger" *ngIf="kycForm.controls.collageId.touched && kycForm.controls.collageId.errors?.required"> College / Office id is required</div>
+                                                        </div>
+                                                        <div class="form-group row text-left" *ngIf="kycForm.value.addressType==1">
+                                                            <label  class="col-4 text-right mt-2"><span>*</span>
+                                                                Permanent address proof</label>
+                                                            <div class="custom-file col-8 m-0">
+                                                                <input type="file" accept="application/pdf,image/*" class="form-control custom-file-input" id="permanentAddressProof" (change)="imageChange('permanentAddressProof')" multiple>
+                                                                <label class="custom-file-label" for="permanentAddressProof">Choose file</label>
+                                                            </div>
+                                                            <div class="col-4"></div>
+                                                            <div class="col-8 p-0">
+                                                                <div class="row p-0 m-0">
+                                                                    <div class="col-md-5 ml-1 mt-1 p-1 kyc-image" *ngFor='let url of permanentAddressProof;let index = index'>                                                    
+                                                                        <a (click)="goToLink(url.img)" *ngIf="url.fileType=='pdf'">{{url.file}}.pdf</a>                                                  
+                                                                        <img *ngIf="url.fileType=='jpeg'" [src]="url.img" />
+                                                                        <label class="ml-2" *ngIf="url.fileType=='jpeg'">{{url.file.substring(0, 10)+'...'}}</label>
+                                                                        <span class="mt-1 theme-color pull-right" (click)="removeSelectedFile2(index, 'permanentAddressProof')"><i class="fa fa-times"></i></span>
+                                                                    </div>
+                                                                </div>                                                
+                                                            </div>
+                                                            <div class="col-4"></div>
+                                                            <div class="col-8 text text-danger" *ngIf="kycForm.controls.permanentAddressProof.touched && kycForm.controls.permanentAddressProof.errors?.required"> Permanent address proof is required</div>
+                                                        </div>
+                                                        <div class="form-group row text-left" *ngIf="kycForm.value.addressType==2">
+                                                            <label  class="col-4 text-right mt-2"><span>*</span>
+                                                                Electricity bill</label>
+                                                            <div class="custom-file col-8 m-0">
+                                                                <input type="file" accept="application/pdf,image/*" class="form-control custom-file-input" id="ownElectricitybill" (change)="imageChange('ownElectricitybill')" multiple>
+                                                                <label class="custom-file-label" for="ownElectricitybill">Choose file</label>
+                                                            </div>
+                                                            <div class="col-4"></div>
+                                                            <div class="col-8 p-0">
+                                                                <div class="row p-0 m-0">
+                                                                    <div class="col-md-5 ml-1 mt-1 p-1 kyc-image" *ngFor='let url of ownElectricitybill;let index = index'>                                                    
+                                                                        <a (click)="goToLink(url.img)" *ngIf="url.fileType=='pdf'">{{url.file}}.pdf</a>                                                  
+                                                                        <img *ngIf="url.fileType=='jpeg'" [src]="url.img" />
+                                                                        <label class="ml-2" *ngIf="url.fileType=='jpeg'">{{url.file.substring(0, 10)+'...'}}</label>
+                                                                        <span class="mt-1 theme-color pull-right" (click)="removeSelectedFile2(index, 'ownElectricitybill')"><i class="fa fa-times"></i></span>
+                                                                    </div>
+                                                                </div>                                                
+                                                            </div>
+                                                            <div class="col-4"></div>
+                                                            <div class="col-8 text text-danger" *ngIf="kycForm.controls.ownElectricitybill.touched && kycForm.controls.ownElectricitybill.errors?.required"> Electricity bill is required</div>
+                                                        </div>
+                                                        <div class="form-group row text-left" *ngIf="kycForm.value.addressType==3">
+                                                            <label  class="col-4 text-right mt-2"><span>*</span>
+                                                                Electricity bill</label>
+                                                            <div class="custom-file col-8 m-0">
+                                                                <input type="file" accept="application/pdf,image/*" class="form-control custom-file-input" id="rentedEletricityBill" (change)="imageChange('rentedEletricityBill')" multiple>
+                                                                <label class="custom-file-label" for="rentedEletricityBill">Choose file</label>
+                                                            </div>
+                                                            <div class="col-4"></div>
+                                                            <div class="col-8 p-0">
+                                                                <div class="row p-0 m-0">
+                                                                    <div class="col-md-5 ml-1 mt-1 p-1 kyc-image" *ngFor='let url of rentedEletricityBill;let index = index'>                                                    
+                                                                        <a (click)="goToLink(url.img)" *ngIf="url.fileType=='pdf'">{{url.file}}.pdf</a>                                                  
+                                                                        <img *ngIf="url.fileType=='jpeg'" [src]="url.img" />
+                                                                        <label class="ml-2" *ngIf="url.fileType=='jpeg'">{{url.file.substring(0, 10)+'...'}}</label>
+                                                                        <span class="mt-1 theme-color pull-right" (click)="removeSelectedFile2(index, 'rentedEletricityBill')"><i class="fa fa-times"></i></span>
+                                                                    </div>
+                                                                </div>                                                
+                                                            </div>
+                                                            <div class="col-4"></div>
+                                                            <div class="col-8 text text-danger" *ngIf="kycForm.controls.rentedEletricityBill.touched && kycForm.controls.rentedEletricityBill.errors?.required"> Electricity bill is required</div>
+                                                        </div>
+                                                        <div class="form-group row text-left" *ngIf="kycForm.value.addressType==3">
+                                                            <label  class="col-4 text-right mt-2"><span>*</span>
+                                                                Rental agreement</label>
+                                                            <div class="custom-file col-8 m-0">
+                                                                <input type="file" accept="application/pdf,image/*" class="form-control custom-file-input" id="retalAgreement" (change)="imageChange('retalAgreement')" multiple>
+                                                                <label class="custom-file-label" for="retalAgreement">Choose file</label>
+                                                            </div>
+                                                            <div class="col-4"></div>
+                                                            <div class="col-8 p-0">
+                                                                <div class="row p-0 m-0">
+                                                                    <div class="col-md-5 ml-1 mt-1 p-1 kyc-image" *ngFor='let url of retalAgreement;let index = index'>                                                    
+                                                                        <a (click)="goToLink(url.img)" *ngIf="url.fileType=='pdf'">{{url.file}}.pdf</a>                                                  
+                                                                        <img *ngIf="url.fileType=='jpeg'" [src]="url.img" />
+                                                                        <label class="ml-2" *ngIf="url.fileType=='jpeg'">{{url.file.substring(0, 10)+'...'}}</label>
+                                                                        <span class="mt-1 theme-color pull-right" (click)="removeSelectedFile2(index, 'retalAgreement')"><i class="fa fa-times"></i></span>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                            </div>
+                                                            <div class="col-4"></div>
+                                                            <div class="col-8 text text-danger" *ngIf="kycForm.controls.retalAgreement.touched && kycForm.controls.retalAgreement.errors?.required"> Rental agreement is required</div>
+                                                        </div>
+                                                        <div class="form-group row text-left" *ngIf="kycForm.value.addressType==3">
+                                                            <label  class="col-4 text-right mt-2">
+                                                                Other bills</label>
+                                                            <div class="custom-file col-8 m-0">
+                                                                <input type="file" accept="application/pdf,image/*" class="form-control custom-file-input" id="anyBill" (change)="imageChange('anyBill')" multiple>
+                                                                <label class="custom-file-label" for="anyBill">Choose file</label>
+                                                            </div>
+                                                            <div class="col-4"></div>
+                                                            <div class="col-8 p-0">
+                                                                <div class="row p-0 m-0">
+                                                                    <div class="col-md-5 ml-1 mt-1 p-1 kyc-image" *ngFor='let url of anyBill;let index = index'>                                                    
+                                                                        <a (click)="goToLink(url.img)" *ngIf="url.fileType=='pdf'">{{url.file}}.pdf</a>                                                  
+                                                                        <img *ngIf="url.fileType=='jpeg'" [src]="url.img" />
+                                                                        <label class="ml-2" *ngIf="url.fileType=='jpeg'">{{url.file.substring(0, 10)+'...'}}</label>
+                                                                        <span class="mt-1 theme-color pull-right" (click)="removeSelectedFile2(index, 'anyBill')"><i class="fa fa-times"></i></span>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                            </div>
+                                                        </div>                                        
+                                                        <div class="text-right mt-5">
+                                                            <button class="btn btn-warning pull-left ml-5 kyc-next px-5 py-2 mr-3" (click)="switchBackNgBTab('tab-1');">Back</button>
+                                                            <button class="btn btn-warning kyc-next px-5 py-2" *ngIf="kycData.length==0 || createNewKyc" (click)="switchNgBTab('tab-3')">Next</button>
+                                                            <button class="btn btn-warning kyc-next px-5 py-2" *ngIf="kycData.length>0 && !createNewKyc" (click)="switchNgBTab('tab-3');updateKYCAddressProofTab(this.kycStatus.id)">Next</button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-1 p-0 m-0 border-right"></div>
+                                                    <div class="col-md-4 col-xs-12" *ngIf="kycStatus?.comments">
+                                                        <h3 class="theme-color">Queries: </h3>
+                                                        <div class="my-comment" [innerHtml]="kycStatus?.comments"></div>
+                                                    </div>
+                                                    <div class="col-md-4 col-xs-12" *ngIf="!kycStatus?.comments">
+                                                        <div class="my-comment ml-3">
+                                                            <h3>Instructions: </h3>
+                                                            <ul>
+                                                                <li *ngIf="kycForm.value.addressType==1"><span class="theme-color">PG/Hostel receipt (Mandatory):</span> Upload any one of the latest PG receipt, Hostel receipt, or College hostel ID card.</li>
+                                                                <li *ngIf="kycForm.value.addressType==1"><span class="theme-color">College/ Office Id (Mandatory):</span> Upload any one of your College ID or Institute ID or Company ID.</li>
+                                                                <li *ngIf="kycForm.value.addressType==1"><span class="theme-color">Permanent address proof (Mandatory):</span> Upload any one among Passport, Electricity bill, Driving licence, Voter ID or Ration card bearing your permanent address.</li>
+                                                                <li *ngIf="kycForm.value.addressType==2"><span class="theme-color">Electricity bill (Mandatory):</span> Upload latest Electricity bill printed in your name or your parents name.</li>
+                                                                <li *ngIf="kycForm.value.addressType==3"><span class="theme-color">Electricity bill (Mandatory):</span> Upload latest Electricity bill printed in the house owners name.</li>
+                                                                <li *ngIf="kycForm.value.addressType==3"><span class="theme-color">Rental agreement (Mandatory):</span> Upload all pages of your house rental agreement in jpeg or PDF format.</li>
+                                                                <li *ngIf="kycForm.value.addressType==3"><span class="theme-color">Other bills (optional):</span> In case any documents requested above are missing, upload your latest Gas connection or broadband bills.</li>
+                                                                
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                        </ng-template>
+                                    </ngb-tab>
+                                    <ngb-tab title="References" id="tab-3" >
+                                        <ng-template ngbTabContent>
+                                            <div class="tab-pane fade active show pt-3" id="kyc3" role="tabpanel"
+                                                aria-labelledby="account-tab">
+                                                <div class="row">
+                                                    <div class="col-md-7 col-xs-12">
+                                                        <h4 class="theme-grey">Reference 1</h4>
+                                                        <div class="form-group row text-left">
+                                                            <label  class="col-4 text-right mt-2"><span>*</span>
+                                                                Name</label>
+                                                            <input formControlName="ref1Name" class="form-control col-8 m-0" 
+                                                                type="text" required="">
+                                                                <div class="col-4"></div>
+                                                                <div class="col-8 text text-danger" *ngIf="kycForm.controls.ref1Name.touched && kycForm.controls.ref1Name.errors?.required"> Name is required</div>
+                                                        </div>
+                                                        <div class="form-group row text-left">
+                                                            <label  class="col-4 text-right mt-2"><span>*</span>
+                                                                Relation</label>
+                                                            <select formControlName="ref1Relation" class="form-control col-8 m-0">
+                                                                <option>---Select---</option>
+                                                                <option>Friend</option>
+                                                                <option>Family</option>
+                                                                <option>Spouse</option>
+                                                                <option>Relative</option>
+                                                                <option>Colleague</option>
+                                                            </select>
+                                                            <div class="col-4"></div>
+                                                            <div class="col-8 text text-danger" *ngIf="kycForm.controls.ref1Relation.touched && kycForm.controls.ref1Relation.errors?.required"> Type of relation is required</div>
+                                                        </div>
+                                                        <div class="form-group row text-left">
+                                                            <label  class="col-4 text-right mt-2"><span>*</span>
+                                                                Phone no.</label>
+                                                            <input formControlName="ref1Phone" class="form-control col-8 m-0" 
+                                                                type="text" required="">
+                                                                <div class="col-4"></div>
+                                                                <div class="col-8 text text-danger" *ngIf="kycForm.controls.ref1Phone.touched && kycForm.controls.ref1Phone.errors?.required"> Phone no. is required</div>
+                                                        </div>
+                                                        
+                                                        <h4 class="theme-grey pt-3">Reference 2</h4>
+                                                        <div class="form-group row text-left">
+                                                            <label  class="col-4 text-right mt-2"><span>*</span>
+                                                                Name</label>
+                                                            <input formControlName="ref2Name" class="form-control col-8 m-0" 
+                                                                type="text" required="">
+                                                                <div class="col-4"></div>
+                                                                <div class="col-8 text text-danger" *ngIf="kycForm.controls.ref2Name.touched && kycForm.controls.ref2Name.errors?.required"> Name is required</div>
+                                                        </div>
+                                                        <div class="form-group row text-left">
+                                                            <label  class="col-4 text-right mt-2"><span>*</span>
+                                                                Relation</label>
+                                                            <select formControlName="ref2Relation" class="form-control col-8 m-0">
+                                                                <option>---Select---</option>
+                                                                <option>Friend</option>
+                                                                <option>Family</option>
+                                                                <option>Spouse</option>
+                                                                <option>Relative</option>
+                                                                <option>Colleague</option>
+                                                            </select>
+                                                            <div class="col-4"></div>
+                                                            <div class="col-8 text text-danger" *ngIf="kycForm.controls.ref2Relation.touched && kycForm.controls.ref2Relation.errors?.required"> Type of relation is required</div>
+                                                        </div>
+                                                        <div class="form-group row text-left">
+                                                            <label  class="col-4 text-right mt-2"><span>*</span>
+                                                                Phone no.</label>
+                                                            <input formControlName="ref2Phone" class="form-control  col-8 m-0" 
+                                                                type="text" required="">
+                                                                <div class="col-4"></div>
+                                                                <div class="col-8 text text-danger" *ngIf="kycForm.controls.ref2Phone.touched && kycForm.controls.ref2Phone.errors?.required"> Phone no. is required</div>
+                                                        </div>
+                                                        
+                                                        <div class="text-right mt-5">
+                                                            <button class="btn btn-warning pull-left ml-5 kyc-next px-5 py-2" (click)="switchBackNgBTab('tab-2');">Back</button>
+                                                            <button class="btn btn-warning kyc-next px-5 py-2" *ngIf="kycData.length==0 || createNewKyc" (click)="switchNgBTab('tab-4')">Next</button>
+                                                            <button class="btn btn-warning kyc-next px-5 py-2" *ngIf="kycData.length>0 && !createNewKyc" (click)="switchNgBTab('tab-4');updateKYCReferencesTab(this.kycStatus.id)">Next</button>
+                                                        </div>
+                                                    </div>                                    
+                                                    <div class="col-1 p-0 m-0 border-right"></div>
+                                                    <div class="col-md-4 col-xs-12" *ngIf="kycStatus?.comments">
+                                                        <h3 class="theme-color">Queries: </h3>
+                                                        <div class="my-comment" [innerHtml]="kycStatus?.comments"></div>
+                                                    </div>
+                                                    <div class="col-md-4 col-xs-12" *ngIf="!kycStatus?.comments">
+                                                        <div class="my-comment ml-3">
+                                                            <h3>Instructions: </h3>
+                                                            <ul>
+                                                                <li><span class="theme-color">References (Mandatory):</span> Update any 2 of your friends, family members, spouse, relatives or colleagues residing in Bangalore.</li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                        </ng-template>
+                                    </ngb-tab>
+                                    <ngb-tab title="More Info" id="tab-4">
+                                        <ng-template ngbTabContent>
+                                            <div class="tab-pane fade active show pt-3" id="account" role="tabpanel"
+                                                aria-labelledby="account-tab">
+                                                <div class="row">
+                                                    <div class="col-md-7 col-xs-12">
+                                                        <div class="form-group row text-left mb-4">
+                                                            <label  class="col-4 text-right mt-2">
+                                                                Alternate mobile no</label>
+                                                            <input formControlName="alternateMobileNo" class="form-control col-8 m-0" 
+                                                                type="text" required="">
+                                                        </div>
+                                                        <div class="form-group row text-left mb-4">
+                                                            <label  class="col-4 text-right mt-2">
+                                                                Company</label>
+                                                            <input formControlName="company" class="form-control col-8 m-0" 
+                                                                type="text" required="">
+                                                        </div>
+                                                        <div class="form-group row text-left mb-4">
+                                                            <label  class="col-4 text-right mt-2">
+                                                                Occupation</label>
+                                                            <input formControlName="occupation" class="form-control col-8 m-0" 
+                                                                type="text" required="">
+                                                        </div>
+                                                        <div class="form-group row text-left">
+                                                            <label  class="col-4 text-right mt-2"><span>*</span>
+                                                                Social link</label>
+                                                            <input formControlName="socialLink" class="form-control col-8 m-0" 
+                                                                type="text" required="">
+                                                                <div class="col-4 p-0 m-0"></div>
+                                                                <small class="col-6 p-0 m-0 theme-grey"> (Your Facebook / Instagram / LinkedIn Link)</small>
+                                                                <div class="col-4"></div>
+                                                            <div class="col-8 text text-danger" *ngIf="kycForm.controls.socialLink.touched && kycForm.controls.socialLink.errors?.required"> Social link is required</div>
+                                                        </div>
+                                                        <div class="text-right mt-5">  
+                                                            <button class="btn btn-warning pull-left ml-5 kyc-next px-5 py-2 mr-3" (click)="switchBackNgBTab('tab-3');">Back</button>                                  
+                                                            <button class="btn btn-warning kyc-next px-5 py-2" *ngIf="kycData.length==0 || createNewKyc" (click)="switchNgBTab('tab-5')">Next</button>
+                                                            <button class="btn btn-warning kyc-next px-5 py-2" *ngIf="kycData.length>0 && !createNewKyc" (click)="switchNgBTab('tab-5');updateKYCDetailsTab(this.kycStatus.id)">Next</button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-1 p-0 m-0 border-right"></div>
+                                                    <!-- <div class="col-1 p-0 m-0"></div> -->
+                                                    <div class="col-md-4 col-xs-12" *ngIf="kycStatus?.comments">
+                                                        <h3 class="theme-color">Queries: </h3>
+                                                        <div class="my-comment" [innerHtml]="kycStatus?.comments"></div>
+                                                    </div>
+                                                    <div class="col-md-4 col-xs-12" *ngIf="!kycStatus?.comments">
+                                                        <div class="my-comment ml-3">
+                                                            <h3>Instructions: </h3>
+                                                            <ul>
+                                                                <li><span class="theme-color">Alternate mobile no (Optional):</span> Update any other alternate mobile number for communication through phone or WhatsApp.</li>
+                                                                <li><span class="theme-color">Company (Optional):</span> We would be happy to know the company, you're working in.</li>
+                                                                <li><span class="theme-color">Occupation (Optional):</span>Your current occupation</li>
+                                                                <li><span class="theme-color">Social link (Mandatory):</span> Update any one of your Facebook, LinkedIn or Instagram profile link.</li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                        </ng-template>
+                                    </ngb-tab>
+                                    <ngb-tab title="T&C" id="tab-5" *ngIf="kycData.length==0 || createNewKyc">
+                                        <ng-template ngbTabContent>
+                                            <div class="tab-pane fade active show pt-3" id="kyc3" role="tabpanel"
+                                                aria-labelledby="account-tab">
+                                                <div class="form-group col-md-12 col-sm-6 col-xs-12">
+                                                    <h3 >Terms and Conditions </h3>
+                                                    <div class="tc">
+                                                        <ul class="ml-3">
+                                                            <li>You agree to pay every month advance rental on the due date as agreed.</li>
+                                                            <li>In case of early return before minimum committed tenure, the list pricing for the consumer tenure will be considered</li>
+                                                            <li>The rental charges are fixed depending on the rental period. So, In case of early return, You agree to pay either the rent for the remaining term or difference price of the consumed tenure, whichever is lower?</li>
+                                                            <li>The late payment penalty of 2.5% per day is added in case of delayed payment of monthly rental after 5 days of due date.</li>
+                                                            <li>Credit for early return is not given on pro rate basis once the bill is generated.</li>
+                                                            <li>Should FCI engage agent to effect collection of rental equipment or outstanding debts, You agree to pay the cost of collection in addition to the outstanding debt.</li>                                    
+                                                        </ul>
+                                                        <p class="mt-2">CUSTODY:<span> The equipment shall remain the property of FCI and You shall not sell, exchange, pledge or part possession with the equipment.</span></p>
+                                                        <ul class="ml-4">
+                                                            <li>You shall not service or repair the equipment nor deface or remove any identification from the equipment.</li>
+                                                            <li>You shall notify FCI immediately of any loss or damage to the equipment.</li>
+                                                            <li>You are responsible for the safe custody of the equipment and accessories and shall be liable for any loss, theft or damage to the equipment however it has been caused.</li>
+                                                            <li>The amount to repair or replace the damage, is at the sole discretion of FCI.</li>
+                                                        </ul>
+                                                        <p class="mt-2">DELIVERY & RETURN OF EQUIPMENT:<span>  Delivery and return of the equipment shall be at your cost and liability. If requested FCI can deliver it at Customers expense.</span></p>
+                                                        <p class="mt-2">WARRANT:<span>  FCI warrants that the equipment functions in accordance with the manufacturers specifications. FCI is not responsible or liable for the failure of the equipment to perform the task for which it was rented by You. FCI shall, at its own expense, repair or replace faulty equipment at the earliest possible time. Work carried out for causes other than hardware failure will be charged to You.</span></p>
+                                                        <p class="mt-2">ASSIGNMENT:<span>   The agreement and the rights pertaining therein shall not be assigned by You to any other party.</span></p>
+                                                        <p class="mt-2">DEFAULT:<span>   In case, You shall be in default of the Agreement, FCI shall be entitled to enter your premises and repossess the equipment where:</span></p>
+                        
+                                                        <ul class="ml-4">
+                                                            <li>The equipment has been damaged or is in danger of being damaged</li>
+                                                            <li>You has breached the terms of the Agreement</li>
+                                                            <li>You has committed an act of insolvency or bankruptcy</li>
+                                                            <li>The rental or related charges owing on the equipment are overdue</li>
+                                                        </ul>
+                        
+                                                        <p class="mt-2">RIGHT OF INSPECTION:<span> You shall allow FCI to inspect the equipment at your reasonable time.</span></p>
+                        
+                                                        <ul class="ml-4">
+                                                            <li>Loss or losses due to any failure of the equipment or in the event of any breach of the Agreement by FCI.</li>
+                                                            <li>You agrees to fully indemnify FCI for all or any losses it may incur in respect of claims FCI shall not be liable for any consequential made against FCI arising out of matters relating to the use of the equipment by You or any other person during the term of the Agreement.</li>                                    
+                                                        </ul>
+                                                        <p class="mt-2">INTELLECTUAL PROPERTY:<span>  All rights pertaining to intellectual property including, but not restricted to, copyrights, patents and trademarks are expressly reserved. Customers shall themselves not, nor shall they authorize any breach of these rights. Any copies or articles made in breach of these rights shall be destroyed at Your expense</span></p>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group form-check ml-3 col-md-12 col-sm-6 col-xs-12 f-check">
+                                                    <input type="checkbox" formControlName="tc" class="form-check-input">
+                                                    <label class="form-check-label ml-2">I accept the Terms and Conditions.</label>
+                                                    <div class="text text-danger" *ngIf="kycForm.controls.tc.touched && kycForm.controls.tc.errors?.required"> Please accept the Terms & Conditions to Proceed</div>
+                                                </div>
+                                                <div class="text-right mt-5">
+                                                    <button class="btn btn-warning pull-left kyc-next px-5 py-2 mr-3" (click)="switchBackNgBTab('tab-4');">Back</button>
+                                                    <button type="submit" class="btn btn-warning kyc-next px-5 py-2" (click)="kycSubmit()">Submit</button>
+                                                </div>
+                                            </div>
+                                        </ng-template>
+                                    </ngb-tab>
+                                    
+                                </ngb-tabset>
+                            
+                            </form>
+                
+                            
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

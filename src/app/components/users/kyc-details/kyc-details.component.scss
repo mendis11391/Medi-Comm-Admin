@@ -4,3 +4,13 @@
         top: 100px !important;
     }
 }
+
+::ng-deep .my-modal .modal-dialog { 
+    max-width: 60%;
+    width: 60%;
+    min-height: 500px !important;
+}
+
+.bg-danger{
+    background-color: #ff4444 !important;
+}

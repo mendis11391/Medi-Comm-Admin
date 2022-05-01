@@ -69,7 +69,7 @@ export class OrdersComponent implements OnInit {
   }
 
   getOrders(){
-    this.os.getAllOrders().subscribe((orders)=>{
+    this.os.getAllNewOrders().subscribe((orders)=>{
       // orders.reverse();
       // this.order=orders.filter(item => item.paymentStatus=='Success');
       this.order=orders;

@@ -69,9 +69,9 @@ export class NavService {
 		{
 			title: 'Reviews', path: '/users/reviews', icon: 'eye', type: 'link', active: false
 		},
-		// {
-		// 	title: 'eKYC', path: '/users/kyc-list', icon: 'eye', type: 'link', active: false
-		// },
+		{
+			title: 'eKYC', path: '/users/kyc-list', icon: 'eye', type: 'link', active: false
+		},
 		{
 			title: 'Catalogue', icon: 'box', type: 'sub', active: false, children: [
 				{title: 'Accessories', path: '/products/digital/accessories',  type: 'link'},
