@@ -263,7 +263,9 @@ export class ReturnRequestComponent implements OnInit {
       subTotal: this.returnDamageCharges+this.earlyReturnCharges,
       damageProtection:0,
       total:this.returnDamageCharges+this.earlyReturnCharges,
+      actualSecurityDeposit: (this.productDetails.prod_price-0),
       securityDeposit: 0,
+      currentRefundAmount:charges,
       grandTotal: returnGrandTotal,
       discount: 0,
       firstName: this.fullOrderDetails[0].firstName,
@@ -298,7 +300,10 @@ export class ReturnRequestComponent implements OnInit {
     this.http.post(`${environment.apiUrl}/payments/newReturn`,  returnOrder).subscribe((res) => {
       this.http.put(`${environment.apiUrl}/orders/updateOrderItemStatus/${this.currentOrderItemId}`,returnOrderItem).subscribe();
       this.http.put(`${environment.apiUrl}/users/updatecustomerRequests/${this.currentOrderItemId}`,customerRequest).subscribe();      
-      // this.http.post(`${environment.apiUrl}/forgotpassword/notifyMailReturnOrder`,  returnOrder).subscribe();
+      this.http.post(`${environment.apiUrl}/forgotpassword/notifyMailReturnOrder`,  returnOrder).subscribe();
+      // if(this.refundStatus==6){
+      //   this.http.post(`${environment.apiUrl}/forgotpassword/depositRefundedMail`,  returnOrder).subscribe();
+      // }
       setTimeout(() => {
         window.location.reload();
       }, 2000);

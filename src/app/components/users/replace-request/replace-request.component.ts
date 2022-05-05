@@ -601,6 +601,7 @@ export class ReplaceRequestComponent implements OnInit {
           replacement:0,
           returnDate:'',
           billPeriod:deliverDate+'-'+this.productDetails.expiryDate,
+          actualSubscription:this.productDetails.startDate+'-'+this.productDetails.expiryDate,
           billAmount:p2RentAmount,
           p2Rent:p2RentAmount,
           p1RentBalance:p1RentBalance,
@@ -679,6 +680,8 @@ export class ReplaceRequestComponent implements OnInit {
           // this.http.put(`${environment.apiUrl}/assets/update/${p1AssetId}`, {availability:1, startDate:'',expiryDate:'',nextStartDate:''}).subscribe();
           // this.http.put(`${environment.apiUrl}/assets/update/${this.assetId}`, {availability:0, startDate:assetRes[0].startDate,expiryDate:assetRes[0].EndDate,nextStartDate:assetRes[0].nextStartDate}).subscribe();
         });
+
+        this.http.post(`${environment.apiUrl}/forgotpassword/notifyMailReplaceOrder`, {email:this.fullOrderDetails[0].email,returnedProduct:this.productDetails.prod_name, replacedProduct:filterP2[0].prod_name, p1AssetId:this.productDetails.assetId, p2assetId:this.assetId, orderNo:this.txnId, orderValue: replaceOrder.grandTotal, billPeriod: ucid.billPeriod, subscription: ucid.actualSubscription}).subscribe();
         // this.modalReference.close();
         this.toggleReplaceDetails=!this.toggleReplaceDetails;
       }

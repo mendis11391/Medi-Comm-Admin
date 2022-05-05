@@ -325,10 +325,10 @@ export class CreateEditKycComponent implements OnInit {
     var finalBlob=[];
     var resizedImage;
     for(let i=0;i<inputEl.files.length;i++){  
-      if(inputEl.files[i].size>1000000 && inputEl.files[i].type!="application/pdf"){
+      if(inputEl.files[i].size>2400000 && inputEl.files[i].type!="application/pdf"){
         const config = {
           file: inputEl.files[i],
-          maxSize: 500
+          maxSize: 1000
         };
         resizedImage = await this.resizeImage(config); 
       } 
@@ -340,33 +340,39 @@ export class CreateEditKycComponent implements OnInit {
         // this.aadharImage=[];
         fReader.onload = (event:any) => {
           let img;
-          if(inputEl.files[i].size>1000000 && inputEl.files[i].type!="application/pdf"){
-            img = resizedImage.split(",");
-            
-          } else {
-            img = event.target.result.split(",");
-          }
-          
-          if(img[1].startsWith('JVB')){
-           this.aadharImage.push({img:'data:application/pdf;base64,'+img[1],file:inputEl.files[i].name, fileType:'pdf', fileData:img[1]}); 
+          if(inputEl.files[i].size>=3000000 && inputEl.files[i].type=="application/pdf"){
+            this.kycForm.controls.aadharImage.setErrors({fileSize:true});
           } else{
-            this.aadharImage.push({img:event.target.result,file:inputEl.files[i].name, fileType:'jpeg', fileData:img[1]});            
+            this.kycForm.controls.aadharImage.setErrors({fileSize:false});
+            if(inputEl.files[i].size>2400000 && inputEl.files[i].type!="application/pdf"){
+              img = resizedImage.split(",");
+              
+            } else {
+              img = event.target.result.split(",");
+            }
+            
+            if(img[1].startsWith('JVB')){
+             this.aadharImage.push({img:'data:application/pdf;base64,'+img[1],file:inputEl.files[i].name, fileType:'pdf', fileData:img[1]}); 
+            } else{
+              this.aadharImage.push({img:event.target.result,file:inputEl.files[i].name, fileType:'jpeg', fileData:img[1]});            
+            }
+            let arrImg=[];
+            this.aadharImage.forEach((resp)=>{
+              arrImg.push(resp.fileData);
+            });
+            this.kycForm.patchValue({
+              aadharImage:arrImg
+            });
+  
           }
-          let arrImg=[];
-          this.aadharImage.forEach((resp)=>{
-            arrImg.push(resp.fileData);
-          });
-          this.kycForm.patchValue({
-            aadharImage:arrImg
-          });
-          
+                    
         }
         
       } else if(id=='selfieImage'){
         this.selfieImage=[];
         fReader.onload = (event:any) => {
           let img;
-          if(inputEl.files[i].size>1000000){
+          if(inputEl.files[i].size>2400000){
             img = resizedImage.split(",");
             
           } else{
@@ -387,163 +393,202 @@ export class CreateEditKycComponent implements OnInit {
         // this.pgReceipt=[];
         fReader.onload = (event:any) => {
           let img;
-          if(inputEl.files[i].size>1000000 && inputEl.files[i].type!="application/pdf"){
-            img = resizedImage.split(",");
-            
-          } else {
-            img = event.target.result.split(",");
-          }
-          if(img[1].startsWith('JVB')){
-           this.pgReceipt.push({img:'data:application/pdf;base64,'+img[1],file:inputEl.files[i].name, fileType:'pdf',fileData:img[1]}); 
+          if(inputEl.files[i].size>=3000000 && inputEl.files[i].type=="application/pdf"){
+            this.kycForm.controls.pgReceipt.setErrors({fileSize:true});
           } else{
-            this.pgReceipt.push({img:event.target.result,file:inputEl.files[i].name, fileType:'jpeg',fileData:img[1]});
-            
+            this.kycForm.controls.pgReceipt.setErrors({fileSize:false});
+            if(inputEl.files[i].size>2400000 && inputEl.files[i].type!="application/pdf"){
+              img = resizedImage.split(",");              
+            } else {
+              img = event.target.result.split(",");
+            }
+            if(img[1].startsWith('JVB')){
+             this.pgReceipt.push({img:'data:application/pdf;base64,'+img[1],file:inputEl.files[i].name, fileType:'pdf',fileData:img[1]}); 
+            } else{
+              this.pgReceipt.push({img:event.target.result,file:inputEl.files[i].name, fileType:'jpeg',fileData:img[1]});
+              
+            }
+            let arrImg=[];
+            this.pgReceipt.forEach((resp)=>{
+              arrImg.push(resp.fileData);
+            });
+            this.kycForm.patchValue({
+              pgReceipt:arrImg
+            });
           }
-          let arrImg=[];
-          this.pgReceipt.forEach((resp)=>{
-            arrImg.push(resp.fileData);
-          });
-          this.kycForm.patchValue({
-            pgReceipt:arrImg
-          });
+          
         }
       }else if(id=='collageId'){
         // this.collageId=[];
         fReader.onload = (event:any) => {
           let img;
-          if(inputEl.files[i].size>1000000 && inputEl.files[i].type!="application/pdf"){
-            img = resizedImage.split(",");
-            
-          } else {
-            img = event.target.result.split(",");
-          }
-          if(img[1].startsWith('JVB')){
-           this.collageId.push({img:'data:application/pdf;base64,'+img[1],file:inputEl.files[i].name, fileType:'pdf',fileData:img[1]}); 
+          if(inputEl.files[i].size>=3000000 && inputEl.files[i].type=="application/pdf"){
+            this.kycForm.controls.collageId.setErrors({fileSize:true});
           } else{
-            this.collageId.push({img:event.target.result,file:inputEl.files[i].name, fileType:'jpeg',fileData:img[1]});
+            this.kycForm.controls.collageId.setErrors({fileSize:false});
+            if(inputEl.files[i].size>2400000 && inputEl.files[i].type!="application/pdf"){
+              img = resizedImage.split(",");
+              
+            } else {
+              img = event.target.result.split(",");
+            }
+            if(img[1].startsWith('JVB')){
+             this.collageId.push({img:'data:application/pdf;base64,'+img[1],file:inputEl.files[i].name, fileType:'pdf',fileData:img[1]}); 
+            } else{
+              this.collageId.push({img:event.target.result,file:inputEl.files[i].name, fileType:'jpeg',fileData:img[1]});
+            }
+            let arrImg=[];
+            this.collageId.forEach((resp)=>{
+              arrImg.push(resp.fileData);
+            });
+            this.kycForm.patchValue({
+              collageId:arrImg
+            });
           }
-          let arrImg=[];
-          this.collageId.forEach((resp)=>{
-            arrImg.push(resp.fileData);
-          });
-          this.kycForm.patchValue({
-            collageId:arrImg
-          });
+          
         }
       }else if(id=='permanentAddressProof'){
         // this.permanentAddressProof=[];
         fReader.onload = (event:any) => {
           let img;
-          if(inputEl.files[i].size>1000000 && inputEl.files[i].type!="application/pdf"){
-            img = resizedImage.split(",");
-            
-          } else {
-            img = event.target.result.split(",");
-          }
-          if(img[1].startsWith('JVB')){
-           this.permanentAddressProof.push({img:'data:application/pdf;base64,'+img[1],file:inputEl.files[i].name, fileType:'pdf', fileData:img[1]}); 
+          if(inputEl.files[i].size>=3000000 && inputEl.files[i].type=="application/pdf"){
+            this.kycForm.controls.permanentAddressProof.setErrors({fileSize:true});
           } else{
-            this.permanentAddressProof.push({img:event.target.result,file:inputEl.files[i].name, fileType:'jpeg', fileData:img[1]});
-          } 
-          let arrImg=[];
-          this.permanentAddressProof.forEach((resp)=>{
-            arrImg.push(resp.fileData);
-          });
-          this.kycForm.patchValue({
-            permanentAddressProof:arrImg
-          });
+            this.kycForm.controls.permanentAddressProof.setErrors({fileSize:false});
+            if(inputEl.files[i].size>2400000 && inputEl.files[i].type!="application/pdf"){
+              img = resizedImage.split(",");
+              
+            } else {
+              img = event.target.result.split(",");
+            }
+            if(img[1].startsWith('JVB')){
+             this.permanentAddressProof.push({img:'data:application/pdf;base64,'+img[1],file:inputEl.files[i].name, fileType:'pdf', fileData:img[1]}); 
+            } else{
+              this.permanentAddressProof.push({img:event.target.result,file:inputEl.files[i].name, fileType:'jpeg', fileData:img[1]});
+            } 
+            let arrImg=[];
+            this.permanentAddressProof.forEach((resp)=>{
+              arrImg.push(resp.fileData);
+            });
+            this.kycForm.patchValue({
+              permanentAddressProof:arrImg
+            });
+          }
+          
         }
       }else if(id=='ownElectricitybill'){
         // this.ownElectricitybill=[];
         fReader.onload = (event:any) => {
           let img;
-          if(inputEl.files[i].size>1000000 && inputEl.files[i].type!="application/pdf"){
-            img = resizedImage.split(",");
-            
-          } else {
-            img = event.target.result.split(",");
-          }
-          if(img[1].startsWith('JVB')){
-           this.ownElectricitybill.push({img:'data:application/pdf;base64,'+img[1],file:inputEl.files[i].name, fileType:'pdf', fileData:img[1]}); 
+          if(inputEl.files[i].size>=3000000 && inputEl.files[i].type=="application/pdf"){
+            this.kycForm.controls.ownElectricitybill.setErrors({fileSize:true});
           } else{
-            this.ownElectricitybill.push({img:event.target.result,file:inputEl.files[i].name, fileType:'jpeg', fileData:img[1]});
-          }
-          let arrImg=[];
-          this.ownElectricitybill.forEach((resp)=>{
-            arrImg.push(resp.fileData);
-          });
-          this.kycForm.patchValue({
-            ownElectricitybill:arrImg
-          });
+            this.kycForm.controls.ownElectricitybill.setErrors({fileSize:false});
+            if(inputEl.files[i].size>2400000 && inputEl.files[i].type!="application/pdf"){
+              img = resizedImage.split(",");
+              
+            } else {
+              img = event.target.result.split(",");
+            }
+            if(img[1].startsWith('JVB')){
+             this.ownElectricitybill.push({img:'data:application/pdf;base64,'+img[1],file:inputEl.files[i].name, fileType:'pdf', fileData:img[1]}); 
+            } else{
+              this.ownElectricitybill.push({img:event.target.result,file:inputEl.files[i].name, fileType:'jpeg', fileData:img[1]});
+            }
+            let arrImg=[];
+            this.ownElectricitybill.forEach((resp)=>{
+              arrImg.push(resp.fileData);
+            });
+            this.kycForm.patchValue({
+              ownElectricitybill:arrImg
+            });
+          }          
         }
       }else if(id=='rentedEletricityBill'){
         // this.rentedEletricityBill=[];
         fReader.onload = (event:any) => {
           let img;
-          if(inputEl.files[i].size>1000000 && inputEl.files[i].type!="application/pdf"){
-            img = resizedImage.split(",");
-            
-          } else {
-            img = event.target.result.split(",");
-          }
-          if(img[1].startsWith('JVB')){
-           this.rentedEletricityBill.push({img:'data:application/pdf;base64,'+img[1],file:inputEl.files[i].name, fileType:'pdf',fileData:img[1]}); 
+          if(inputEl.files[i].size>=3000000 && inputEl.files[i].type=="application/pdf"){
+            this.kycForm.controls.rentedEletricityBill.setErrors({fileSize:true});
           } else{
-            this.rentedEletricityBill.push({img:event.target.result,file:inputEl.files[i].name, fileType:'jpeg',fileData:img[1]});
-          } 
-          let arrImg=[];
-          this.rentedEletricityBill.forEach((resp)=>{
-            arrImg.push(resp.fileData);
-          });
-          this.kycForm.patchValue({
-            rentedEletricityBill:arrImg
-          });
+            this.kycForm.controls.rentedEletricityBill.setErrors({fileSize:false});
+            if(inputEl.files[i].size>2400000 && inputEl.files[i].type!="application/pdf"){
+              img = resizedImage.split(",");
+              
+            } else {
+              img = event.target.result.split(",");
+            }
+            if(img[1].startsWith('JVB')){
+             this.rentedEletricityBill.push({img:'data:application/pdf;base64,'+img[1],file:inputEl.files[i].name, fileType:'pdf',fileData:img[1]}); 
+            } else{
+              this.rentedEletricityBill.push({img:event.target.result,file:inputEl.files[i].name, fileType:'jpeg',fileData:img[1]});
+            } 
+            let arrImg=[];
+            this.rentedEletricityBill.forEach((resp)=>{
+              arrImg.push(resp.fileData);
+            });
+            this.kycForm.patchValue({
+              rentedEletricityBill:arrImg
+            });
+          }
+          
         }
       }else if(id=='retalAgreement'){
         // this.retalAgreement=[];
         fReader.onload = (event:any) => {
           let img;
-          if(inputEl.files[i].size>1000000 && inputEl.files[i].type!="application/pdf"){
-            img = resizedImage.split(",");
-            
-          } else {
-            img = event.target.result.split(",");
-          }
-          if(img[1].startsWith('JVB')){
-           this.retalAgreement.push({img:'data:application/pdf;base64,'+img[1],file:inputEl.files[i].name, fileType:'pdf',fileData:img[1]}); 
+          if(inputEl.files[i].size>=3000000 && inputEl.files[i].type=="application/pdf"){
+            this.kycForm.controls.retalAgreement.setErrors({fileSize:true});
           } else{
-            this.retalAgreement.push({img:event.target.result,file:inputEl.files[i].name, fileType:'jpeg',fileData:img[1]});
+            this.kycForm.controls.retalAgreement.setErrors({fileSize:false});
+            if(inputEl.files[i].size>2400000 && inputEl.files[i].type!="application/pdf"){
+              img = resizedImage.split(",");              
+            } else {
+              img = event.target.result.split(",");
+            }
+            if(img[1].startsWith('JVB')){
+             this.retalAgreement.push({img:'data:application/pdf;base64,'+img[1],file:inputEl.files[i].name, fileType:'pdf',fileData:img[1]}); 
+            } else{
+              this.retalAgreement.push({img:event.target.result,file:inputEl.files[i].name, fileType:'jpeg',fileData:img[1]});
+            }
+            let arrImg=[];
+            this.retalAgreement.forEach((resp)=>{
+              arrImg.push(resp.fileData);
+            });
+            this.kycForm.patchValue({
+              retalAgreement:arrImg
+            });
           }
-          let arrImg=[];
-          this.retalAgreement.forEach((resp)=>{
-            arrImg.push(resp.fileData);
-          });
-          this.kycForm.patchValue({
-            retalAgreement:arrImg
-          });
+          
         }
       }else if(id=='anyBill'){
         // this.anyBill=[];
         fReader.onload = (event:any) => {
           let img;
-          if(inputEl.files[i].size>1000000 && inputEl.files[i].type!="application/pdf"){
-            img = resizedImage.split(",");
-            
-          } else {
-            img = event.target.result.split(",");
-          }
-          if(img[1].startsWith('JVB')){
-           this.anyBill.push({img:'data:application/pdf;base64,'+img[1],file:inputEl.files[i].name, fileType:'pdf',fileData:img[1]}); 
+          if(inputEl.files[i].size>=3000000 && inputEl.files[i].type=="application/pdf"){
+            this.kycForm.controls.anyBill.setErrors({fileSize:true});
           } else{
-            this.anyBill.push({img:event.target.result,file:inputEl.files[i].name, fileType:'jpeg',fileData:img[1]});
-          } 
-          let arrImg=[];
-          this.anyBill.forEach((resp)=>{
-            arrImg.push(resp.fileData);
-          });
-          this.kycForm.patchValue({
-            anyBill:arrImg
-          });
+            this.kycForm.controls.anyBill.setErrors({fileSize:false});
+            if(inputEl.files[i].size>2400000 && inputEl.files[i].type!="application/pdf"){
+              img = resizedImage.split(",");
+              
+            } else {
+              img = event.target.result.split(",");
+            }
+            if(img[1].startsWith('JVB')){
+             this.anyBill.push({img:'data:application/pdf;base64,'+img[1],file:inputEl.files[i].name, fileType:'pdf',fileData:img[1]}); 
+            } else{
+              this.anyBill.push({img:event.target.result,file:inputEl.files[i].name, fileType:'jpeg',fileData:img[1]});
+            } 
+            let arrImg=[];
+            this.anyBill.forEach((resp)=>{
+              arrImg.push(resp.fileData);
+            });
+            this.kycForm.patchValue({
+              anyBill:arrImg
+            });
+          }
+          
         }
       }
       
@@ -580,6 +625,15 @@ export class CreateEditKycComponent implements OnInit {
       this.tab5=false;  
       this.os.kycDetailsSubmit(this.kycForm.value).subscribe((resp)=>{
         // this.loadKycByCustomerId(this.uid);
+        this.aadharImage=[];
+        this.selfieImage=[];
+        this.pgReceipt=[];
+        this.collageId=[];
+        this.permanentAddressProof=[];
+        this.ownElectricitybill=[];
+        this.rentedEletricityBill=[];
+        this.retalAgreement=[];
+        this.anyBill=[];
         this.loadKycByCustomerId(this.uid);
         this.kycStatus.kyc_status='eKYC submitted';
       });

@@ -68,7 +68,7 @@ export class PrimaryOrderComponent implements OnInit {
   }
 
   getOrders(){
-    this.os.getAllOrders().subscribe((orders)=>{
+    this.os.getAllPrimaryOrders().subscribe((orders)=>{
       // orders.reverse();
       this.order=orders;
       this.filteredOrders=this.order.filter(item => (item.paymentStatus.toLowerCase()=='success' || item.paymentStatus.toLowerCase()=='to be paid') && item.orderType_id==1);

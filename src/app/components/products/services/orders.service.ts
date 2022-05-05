@@ -39,12 +39,32 @@ export class OrdersService {
     return this.http.get<Orders[]>(`${this.admin_url}/newOrders`)
   }
 
+  getAllPrimaryOrders(): Observable<Orders[]> {
+    return this.http.get<Orders[]>(`${this.admin_url}/primaryOrders`)
+  }
+
+  getAllrenewalOrders(): Observable<Orders[]> {
+    return this.http.get<Orders[]>(`${this.admin_url}/renewalOrders`)
+  }
+
+  getAllreplacementOrders(): Observable<Orders[]> {
+    return this.http.get<Orders[]>(`${this.admin_url}/replacementOrders`)
+  }
+
+  getAllreturnOrders(): Observable<Orders[]> {
+    return this.http.get<Orders[]>(`${this.admin_url}/returnOrders`)
+  }
+
   getAllOrdersByCustomerId(id): Observable<Orders[]> {
     return this.http.get<Orders[]>(`${this.orders_url}/${id}`)
   }
 
   public getCustomerRequests(id): Observable<Orders[]>{
     return this.http.get<Orders[]>(`${this.orders_url}/customerRequests/${id}`)
+  }
+
+  getAllCustomerLogs(){
+    return this.http.get(`${this.customer_url}/customerLogs/logs`)
   }
 
   public updateCustomersDetails(id, val){

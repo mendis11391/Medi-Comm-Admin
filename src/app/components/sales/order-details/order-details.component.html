@@ -111,7 +111,7 @@
                                     <option *ngFor="let ps of orderStatuses" value="{{ps.id}}">{{ps.order_status}}</option>
                                 </select>
                                 <br>
-                                <button class="btn btn-warning" (click)="updateOrderField(o.primary_id,'orderStatus',orderField)">Update</button>                                                   
+                                <button class="btn btn-warning" (click)="updateOrderField(o.order_id,'orderStatus',orderField)">Update</button>                                                   
                         </div>
                     </div>
                     <p *ngIf="!deliveryStatusActive">Delivery status: {{o.delivery_status}} <i class="fa fa-pencil" *ngIf="editStatus" (click)="deliveryStatusActive=!deliveryStatusActive"></i></p>
@@ -153,7 +153,7 @@
                                     <option *ngFor="let ps of paymentStatus" value="{{ps.id}}">{{ps.status_name}}</option>
                                 </select>
                                 <br>
-                                <button class="btn btn-warning" (click)="updateOrderField(o.primary_id,'paymentStatus',orderField)">Update</button>                                                   
+                                <button class="btn btn-warning" (click)="updateOrderField(o.order_id,'paymentStatus',orderField)">Update</button>                                                   
                         </div>
                     </div>
                 </div>

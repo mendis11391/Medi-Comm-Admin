@@ -3,5 +3,12 @@ export interface Customers {
     firstName?:String,
     lastName?:String,
     mobile?:String,
-    email?:String
+    email?:String,
+    id?:number,
+    eventTypeId?:number,
+    eventName?:String,
+    sourceIP?:String,
+    customerId?:number,
+    transactionDate?:Date,
+    transactionDescription?:string
 }

@@ -68,8 +68,7 @@ export class ReplacementOrderComponent implements OnInit {
   }
 
   getOrders(){
-    this.os.getAllOrders().subscribe((orders)=>{
-      orders.reverse();
+    this.os.getAllreplacementOrders().subscribe((orders)=>{
       this.order=orders.filter(item => item.orderType_id==3);
       this.filteredOrders=this.order;
     });

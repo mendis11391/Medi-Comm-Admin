@@ -10,12 +10,21 @@ import { ReviewsComponent } from './reviews/reviews.component';
 import { KycComponent } from './kyc/kyc.component';
 import { KycDetailsComponent } from './kyc-details/kyc-details.component';
 import { CreateEditKycComponent } from './create-edit-kyc/create-edit-kyc.component';
+import { CustomerLogsComponent } from './customer-logs/customer-logs.component';
 
 const routes: Routes = [
   {
     path: '',
     canActivate: [AuthGuard],
-    children: [
+    children: [      
+      {
+        path: 'customers/logs',
+        component: CustomerLogsComponent,
+        data: {
+          title: "Customer Logs",
+          breadcrumb: "Customer Logs"
+        }
+      },
       {
         path: 'customers/:id',
         component: CustomersComponent,

@@ -321,7 +321,7 @@
         <!-- <button type="submit" class="btn btn-warning" (click)="updateStatus(kycId, 'comments', value); updateStatus(kycId, 'kyc_status', 'Query raised');">Submit</button> -->
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="updateStatus(kycId, 'comments', kycDetails.comments); updateStatus(kycId, 'kyc_status', 'Query raised'); updateStatus(kycId, 'editable', true); ">Save</button>
+        <button type="button" class="btn btn-primary" (click)="updateStatus(kycId, 'comments', kycDetails.comments); updateStatus(kycId, 'kyc_status', 'Query raised'); updateStatus(kycId, 'editable', true); notifyMail('Query raised', 7)">Save</button>
         <button class="btn btn-primary" type="button" data-dismiss="modal"
             (click)="modal.dismiss('Cross click')">Cancel</button>
     </div>
@@ -339,7 +339,7 @@
             Are you sure you want to approve this KYC status?
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-primary" (click)="updateStatus(kycId, 'kyc_status', 'eKYC approved'); updateStatus(kycId, 'editable', false); updateStatus(kycId, 'approved_date', currentDate);setExpiryDate(kycId); ">Yes</button>
+        <button type="button" class="btn btn-primary" (click)="updateStatus(kycId, 'kyc_status', 'eKYC approved'); updateStatus(kycId, 'editable', false); updateStatus(kycId, 'approved_date', currentDate);setExpiryDate(kycId); notifyMail('eKYC approved', 8)">Yes</button>
         <button class="btn btn-primary" type="button" data-dismiss="modal"
             (click)="modal.dismiss('Cross click')">No</button>
     </div>

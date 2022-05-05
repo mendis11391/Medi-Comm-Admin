@@ -105,8 +105,7 @@ export class KycDetailsComponent implements OnInit {
   notifyMail(value, templateId){    
     console.log(this.customerDetails[0].email);
     this.os.getEmailTemplatesByid(templateId).subscribe((resp)=>{
-      console.log(resp);
-      this.os.kycNotifyMail({email:this.customerDetails[0].email,value:value, template:{template:resp[0].template }}).subscribe();
+      this.os.kycNotifyMail({email:this.customerDetails[0].email,value:value,comments:this.kycDetails.comments, template:resp[0]}).subscribe();
     });    
   }
 

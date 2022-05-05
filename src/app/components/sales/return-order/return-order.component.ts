@@ -68,8 +68,7 @@ export class ReturnOrderComponent implements OnInit {
   }
 
   getOrders(){
-    this.os.getAllOrders().subscribe((orders)=>{
-      orders.reverse();
+    this.os.getAllreturnOrders().subscribe((orders)=>{
       this.order=orders.filter(item => item.orderType_id==4);
       this.filteredOrders=this.order;
     });
