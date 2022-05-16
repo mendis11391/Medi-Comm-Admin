@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { HttpClient} from '@angular/common/http';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateStruct, NgbModal, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 import { OrdersService } from '../../products/services/orders.service';
 import { Orders,OrderItems, Assets } from "../../../shared/data/order";
 import { Router } from '@angular/router';
@@ -68,8 +68,14 @@ export class CreateRequestComponent implements OnInit {
   @ViewChild('customerModal') customerModal;
   @ViewChild('addressModal') addressModal;
   @ViewChild('billAddressModal') billAddressModal;
+  model: NgbDateStruct;
+  requestMessage:string;
+  orderNo;
+  orderItemNo;
+  renewTimelineData;
 
-  constructor(private router: Router,private os:OrdersService,private http: HttpClient,private modalService: NgbModal) {
+  constructor(private calendar: NgbCalendar,private router: Router,private os:OrdersService,private http: HttpClient,private modalService: NgbModal) {
+    this.model = this.calendar.getToday();
     this.dropdownSettings = {
       singleSelection: true,
       idField: 'customer_id',
@@ -159,6 +165,17 @@ export class CreateRequestComponent implements OnInit {
     });
    }
 
+   openReturnModal(modal, orderId, orderItemId, renewTimeline ) {
+     this.orderNo=orderId;
+     this.orderItemNo = orderItemId;
+     this.renewTimelineData=renewTimeline;
+      this.modalService.open(modal,{ windowClass: 'my-address'}).result.then((result) => {
+        this.closeResult = `Closed with: ${result}`;
+      }, (reason) => {
+        this.closeResult = `Dismissed`;
+      });
+   }
+
    getOrders(){
     let successOrders;
     let products;
@@ -220,24 +237,24 @@ export class CreateRequestComponent implements OnInit {
     });
   }
 
-  placeReturnRequest(oid,oiid,renewals_timline){
-    
-    let returnAsset = renewals_timline.filter(item=>item.renewed==1 || item.renewed==4 || item.ordered ==1);
+  placeReturnRequest(){
+    let returnAsset = this.renewTimelineData.filter(item=>item.renewed==1 || item.renewed==4 || item.ordered ==1);
     let renewalsData = returnAsset.slice(-1)[0];
     let orderItem={
-      order_item_id:oiid,
-      order_id:oid,
+      order_item_id:this.orderItemNo,
+      order_id:this.orderNo,
       renewals:JSON.stringify(renewalsData),
       request_id:2,
-      requested_date:new Date(),
+      requested_date:new Date(this.model.year, this.model.month-1, this.model.day),
       request_reason:'',
-      request_message:'',
+      request_message:this.requestMessage,
       approval_status:0,
       approval_date:0,
-      request_status:1
+      request_status:1,
+      email:this.customerDetails.email
     }
     console.log(orderItem);
-    this.http.post(`${environment.apiUrl}/users/updateorderItem`,orderItem).subscribe(()=>{
+    this.http.post(`${environment.apiUrl}/users/updateorderItem2`,orderItem).subscribe(()=>{
       this.router.navigate(['../users/return-request']);
     });
   }
@@ -251,7 +268,7 @@ export class CreateRequestComponent implements OnInit {
       order_id:oid,
       renewals:JSON.stringify(renewalsData),
       request_id:1,
-      requested_date:new Date(),
+      requested_date:new Date(this.model.year, this.model.month-1, this.model.day),
       request_reason:'',
       request_message:'',
       approval_status:0,
@@ -259,7 +276,7 @@ export class CreateRequestComponent implements OnInit {
       request_status:1
     }
     console.log(orderItem);
-    this.http.post(`${environment.apiUrl}/users/updateorderItem`,orderItem).subscribe(()=>{
+    this.http.post(`${environment.apiUrl}/users/updateorderItem2`,orderItem).subscribe(()=>{
       this.router.navigate(['../users/replacement-request']);
     });
   }

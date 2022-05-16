@@ -20,25 +20,25 @@
                           <thead>
                             <tr>
                               <th>Order Id</th>
-                              <th>Primary Id</th>
-                              <!-- <th>Payu Trans Id</th> -->
                               <th>Order date</th>
                               <th>Name</th>
+                              <th>Mobile</th>
                               <th>Security deposit</th>
                               <th>Payment status</th>
                               <th>Deductions</th>
+                              <th>Transaction amount</th>
                             </tr>
                           </thead>
                           <tbody *ngFor="let o of filteredOrders">
                             <tr [routerLink]="['../orders',o.id]">
                               <td>{{o.order_id}}</td>
-                              <td>{{o.primary_id}}</td>
-                              <!-- <td>{{o.payuid}}</td> -->
                               <td>{{o.createdAt | date: 'dd MM yyyy hh:mm'}}</td> 
                               <td>{{o.firstName}}</td> 
+                              <td>{{o.mobile}}</td>
                               <td>₹{{o.orderItem[0].security_deposit}}</td>    
                               <td>{{o.paymentStatus}}</td>  
-                              <td>₹{{o.orderItem[0].damage_charges+o.orderItem[0].earlyReturnCharges}}</td>                    
+                              <td>₹{{o.orderItem[0].damage_charges+o.orderItem[0].earlyReturnCharges}}</td> 
+                              <td>₹{{o.orderItem[0].security_deposit-(o.orderItem[0].damage_charges+o.orderItem[0].earlyReturnCharges)}}</td>                   
                             </tr>                          
                           </tbody>
                         </table>

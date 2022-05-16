@@ -7,6 +7,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { saveAs } from 'file-saver';
+import { environment } from 'src/environments/environment';
 declare const jQuery:any;
 
 @Component({
@@ -42,6 +43,8 @@ export class KycDetailsComponent implements OnInit {
 
   viewImage:any;
 
+  public orders=[];
+
   constructor(private fb: FormBuilder,private modalService: NgbModal,private sanitizer: DomSanitizer,private os:OrdersService,private route: ActivatedRoute,private http: HttpClient) { 
     this.kycStatusForm = this.fb.group({
       kyc_status:'',
@@ -54,10 +57,25 @@ export class KycDetailsComponent implements OnInit {
     this.getKYCDetailsById(this.kycId);
   }
 
+  getAllorders(id){
+    this.os.getAllOrdersByCustomerId(id).subscribe((orders)=>{
+      this.orders=orders.filter(item=>(item.paymentStatus=='Success' && item.orderType_id==1) && item.deliveryStatus!='4');
+    });
+  }
+
+
+  updateOrderDeliveryStatus(deliveryStatusValue){
+    this.orders.forEach((res)=>{
+      console.log(res);
+      this.http.put(`${environment.apiUrl}/orders/updateAnyOrderField/${res.order_id}`, {orderField: 'deliveryStatus', orderValue: deliveryStatusValue}).subscribe();
+    });
+  }
+
   async getKYCDetailsById(id){
    var mainTableResult = await this.os.getKYCMainTableByid(id).toPromise();
    this.kycDetails = mainTableResult[0];  
    if(mainTableResult){
+    this.getAllorders(this.kycDetails.customer_id);
     var customerResult= await this.os.getAllCustomersByid(this.kycDetails.customer_id).toPromise();
     this.customerDetails = customerResult;
 

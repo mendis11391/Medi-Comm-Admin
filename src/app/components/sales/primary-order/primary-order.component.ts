@@ -36,6 +36,18 @@ export class PrimaryOrderComponent implements OnInit {
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
   constructor(private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: FormBuilder) {
     // this.order = orderDB.list_order;
+    this.getOrders();
+    this.getAssets();
+    this.updateStatus = this.formBuilder.group({
+      deliveryStatus: [''],
+      refundStatus:['']
+    });
+    this.deliveryDateStatus = this.formBuilder.group({
+      deliveryDate: ['']
+    });
+    this.assetAssign = this.formBuilder.group({
+      assetId: ['']
+    });
   }
 
   updateFilter(event) {
@@ -53,18 +65,18 @@ export class PrimaryOrderComponent implements OnInit {
   }
 
   ngOnInit() {    
-    this.getOrders();
-    this.getAssets();
-    this.updateStatus = this.formBuilder.group({
-      deliveryStatus: [''],
-      refundStatus:['']
-    });
-    this.deliveryDateStatus = this.formBuilder.group({
-      deliveryDate: ['']
-    });
-    this.assetAssign = this.formBuilder.group({
-      assetId: ['']
-    });
+    // this.getOrders();
+    // this.getAssets();
+    // this.updateStatus = this.formBuilder.group({
+    //   deliveryStatus: [''],
+    //   refundStatus:['']
+    // });
+    // this.deliveryDateStatus = this.formBuilder.group({
+    //   deliveryDate: ['']
+    // });
+    // this.assetAssign = this.formBuilder.group({
+    //   assetId: ['']
+    // });
   }
 
   getOrders(){

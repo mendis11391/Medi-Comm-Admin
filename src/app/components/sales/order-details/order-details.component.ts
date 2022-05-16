@@ -34,6 +34,7 @@ export class OrderDetailsComponent implements OnInit {
   deliveryStatus:FormGroup;
   updateField:FormGroup;
   addTransaction: FormGroup;
+  updateTransactionData: FormGroup;
   modalReference;
   fullOrderDetails=[];
   productDetails;
@@ -78,8 +79,16 @@ export class OrderDetailsComponent implements OnInit {
       orderAmount:['', Validators.required],
       paymentStatus:['', Validators.required],
       paymentMode:['', Validators.required],
-      txMsg:['', Validators.required],
+      txMsg:[''],
       tDate:[this.currDate]
+    });
+    this.updateTransactionData = this.formBuilder.group({
+      transactionNo:['', Validators.required],
+      orderAmount:['', Validators.required],
+      paymentStatus:['', Validators.required],
+      paymentMode:['', Validators.required],
+      txMsg:[''],
+      // tDate:[this.currDate]
     });
   }
 
@@ -98,8 +107,8 @@ export class OrderDetailsComponent implements OnInit {
   }
 
   ngOnInit() {    
-    this.getOrders();
-    this.getAssets();
+    // this.getOrders();
+    // this.getAssets();
     // this.orderId=this.route.snapshot.url[1].path;
     this.updateStatus = this.formBuilder.group({
       deliveryStatus: [''],
@@ -157,8 +166,8 @@ export class OrderDetailsComponent implements OnInit {
     });
   }
 
-  openPostTransaction(){
-    this.modalService.open(this.postTransaction,{ windowClass: 'my-address'}).result.then((result) => {
+  openPostTransaction(modal){
+    this.modalService.open(modal,{ windowClass: 'my-address'}).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
       this.closeResult = `Dismissed`;
@@ -184,6 +193,15 @@ export class OrderDetailsComponent implements OnInit {
       });
       alert('Transaction posted successfully');      
       this.modalService.dismissAll();
+    });
+  }
+
+  updateTransactionManual(){
+    this.http.put(`${environment.apiUrl}/payments/updateTransaction/${this.fullOrderDetails[0].t_id}`,this.updateTransactionData.value).subscribe((resp)=>{
+      this.http.put(`${environment.apiUrl}/payments/updatePaymentStatus`, {paymentStatus: this.updateTransactionData.value.paymentStatus, orderId: this.oid}).subscribe((resp2)=>{
+        alert('Transaction Updated successfully');  
+        this.modalService.dismissAll();
+      });      
     });
   }
 
@@ -237,9 +255,18 @@ export class OrderDetailsComponent implements OnInit {
       this.productDetails.forEach((prods)=>{
         this.subTotal += prods.tenure_price;
       })
+      console.log(res[0]);
       this.addTransaction.patchValue({
         orderId:res[0].order_id,
         orderAmount:res[0].grandTotal
+      });
+      this.updateTransactionData.patchValue({
+        transactionNo: res[0].transaction_id,
+        orderAmount: res[0].transactionAmount,
+        paymentStatus: res[0].status_id,
+        paymentMode: res[0].type,
+        txMsg: res[0].transaction_msg,
+        // tDate: res[0].transactionDate
       });
       this.http.get(`${environment.apiUrl}/users/getCustomerById/${this.customer_id}`).subscribe((customerDetails)=>{
         this.customerDetails = customerDetails;
@@ -265,6 +292,11 @@ export class OrderDetailsComponent implements OnInit {
     this.getOrderById(this.oid);
     // this.changeDetection.detectChanges();
     // console.log(this.orderField)
+  }
+
+  updateAnyOrderItemField(itemId, field,value){
+    this.http.put(`${environment.apiUrl}/orders/updateAnyOrderItemField/${itemId}`, {field: field, fieldValue: value}).subscribe();
+    this.editStatus=false;
   }
 
   updateOrderDeliveryField(ordId, field, value){

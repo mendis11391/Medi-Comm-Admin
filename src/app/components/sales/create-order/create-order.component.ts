@@ -227,7 +227,8 @@ export class CreateOrderComponent implements OnInit {
         orderAmount:this.orderForm.value.grandTotal,
         paymentMode:this.paymentType,
         txMsg:this.Description,
-        tDate:this.transactionDate
+        tDate:this.transactionDate,
+        paymentStatus:this.paymentStatus
       };
       this.getProducts();
       this.http.post(`${environment.apiUrl}/payments/saveNewOrder`, this.orderForm.value).subscribe((resp1)=>{

@@ -84,7 +84,7 @@ export class ReplaceRequestComponent implements OnInit {
   }
 
   ngOnInit() {    
-    this.getOrders();
+    // this.getOrders();
     this.getAssets();
     // this.loadProducts();
     this.updateStatus = this.formBuilder.group({
@@ -101,7 +101,7 @@ export class ReplaceRequestComponent implements OnInit {
     this.http.get(`${environment.apiUrl}/admin/getCustomerRequests`).subscribe((res) => {
       let a=[];
       a.push(res);
-      this.orderitem =a[0].filter(item=>item.request_status==1)
+      this.orderitem =a[0];
     });
     this.http.get(`${environment.apiUrl}/orders/getAllPaymentStatus`).subscribe((res) => {
       this.paymentStatus=res;
@@ -642,8 +642,6 @@ export class ReplaceRequestComponent implements OnInit {
           modifiedAt:new Date(),
           products:JSON.stringify(cInfo)        
         };  
-        
-        console.log(replaceOrder);
         this.http.post(`${environment.apiUrl}/payments/newReplace`,  replaceOrder).subscribe((res) => {
           this.http.get(`${environment.apiUrl}/orders/orderItemsByorderId/${this.currentOrderItemId}`).subscribe((resOrd) => {
             let cid = resOrd[0].renewals_timline;

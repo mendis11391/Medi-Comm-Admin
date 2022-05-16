@@ -101,7 +101,8 @@
                             </td>
                             <td>
                                 <button *ngIf="p.request_status!=1" class="btn btn-warning" (click)="placeReplaceRequest(p.order_id,p.order_item_id,p.renewals_timline)">Replace request</button>
-                                <button *ngIf="p.request_status!=1" class="btn btn-warning ml-2" (click)="placeReturnRequest(p.order_id,p.order_item_id,p.renewals_timline)">return request</button>                            
+                                <button *ngIf="p.request_status!=1" class="btn btn-warning ml-2" (click)="openReturnModal(forReturnModal,p.order_id,p.order_item_id,p.renewals_timline);">return request</button>
+                                <!-- placeReturnRequest(p.order_id,p.order_item_id,p.renewals_timline)                             -->
                             </td>
                           </tr>
                         </tbody>
@@ -144,5 +145,38 @@
             </div>
           </div>
         </div>
+    </div>
+</ng-template>
+
+
+
+<ng-template  #forReturnModal let-c="close" let-d="dismiss">
+    <div class="modal-header text-center">
+        <h4 class="col-12 modal-title text-center" id="modal-basic-title">Choose customer</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d(); ">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">  
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <label>Return date</label><br>
+                                <ngb-datepicker #dp [(ngModel)]="model"></ngb-datepicker><br><br>    
+                                
+                                <label>Message</label>
+                                <textarea rows="8" class="form-control" [(ngModel)]="requestMessage"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-warning" (click)="placeReturnRequest();d();">Replace</button>
     </div>
 </ng-template>

@@ -668,19 +668,19 @@ export class CreateEditKycComponent implements OnInit {
     }  else if(id=='tab-5' && !this.kycForm.value.socialLink){
       controls['socialLink'].markAsTouched();
     }
-    if(id=='tab-2' && this.kycForm.value.aadharNo && this.kycForm.value.aadharImage && this.kycForm.value.selfieImage){
+    if(id=='tab-2' && this.kycForm.value.aadharNo && this.kycForm.value.aadharImage.length>0 && this.kycForm.value.selfieImage.length>0){
       this.tab1=false;
       this.tab2=true;
       this.myTabSet.select(id);   
-    } else if(id=='tab-3' && this.kycForm.value.addressType==1 && this.kycForm.value.pgReceipt && this.kycForm.value.collageId && this.kycForm.value.permanentAddressProof){
+    } else if(id=='tab-3' && this.kycForm.value.addressType==1 && this.kycForm.value.pgReceipt.length>0 && this.kycForm.value.collageId.length>0 && this.kycForm.value.permanentAddressProof.length>0){
       this.tab2=false;
       this.tab3=true;
       this.myTabSet.select(id); 
-    } else if(id=='tab-3' && this.kycForm.value.addressType==2 && this.kycForm.value.ownElectricitybill){
+    } else if(id=='tab-3' && this.kycForm.value.addressType==2 && this.kycForm.value.ownElectricitybill.length>0){
       this.tab2=false;
       this.tab3=true;
       this.myTabSet.select(id);  
-    } else if(id=='tab-3' && this.kycForm.value.addressType==3 && this.kycForm.value.rentedEletricityBill && this.kycForm.value.retalAgreement){
+    } else if(id=='tab-3' && this.kycForm.value.addressType==3 && this.kycForm.value.rentedEletricityBill.length>0 && this.kycForm.value.retalAgreement.length>0){
       this.tab2=false;
       this.tab3=true;
       this.myTabSet.select(id);  
@@ -732,6 +732,15 @@ export class CreateEditKycComponent implements OnInit {
       },100);
     } else if(id=='selfieImage'){
       this.selfieImage.splice(index, 1);
+      setTimeout(()=>{
+        let arrImg=[];
+        this.selfieImage.forEach((resp)=>{
+          arrImg.push(resp.fileData);
+        });
+        this.kycForm.patchValue({
+          selfieImage:arrImg
+        });
+      },100);
     } else if(id=='pgReceipt'){
       this.pgReceipt.splice(index, 1);
       setTimeout(()=>{

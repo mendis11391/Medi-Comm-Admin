@@ -125,7 +125,7 @@
                         <input min="0" class="form-control" type="number" [(ngModel)]="earlyReturnCharges" placeholder="Early return charges">
                     </label>              
                   
-                  <p>Damage charges: {{returnDamageCharges}}</p>
+                  <p>Damage / Delivery Charges / Extension Charges: {{returnDamageCharges}}</p>
                   <p>Early return charges: {{earlyReturnCharges}}</p>
                   <p>To be refunded: {{(productDetails.prod_price-0)-(returnDamageCharges+earlyReturnCharges)}}</p>
                   

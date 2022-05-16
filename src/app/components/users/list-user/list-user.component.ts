@@ -38,7 +38,7 @@ export class ListUserComponent implements OnInit {
   }
 
   updateFilter(event) {
-    this.temp=this.customers;
+    this.temp=this.filteredCustomers;
     const val = event.target.value.toLowerCase();
 
     // filter our data
@@ -59,8 +59,8 @@ export class ListUserComponent implements OnInit {
   getCustomers(){
     this.os.getAllCustomers().subscribe((customers)=>{
       customers.reverse();
-      this.customers=customers;
-      this.filteredCustomers=this.customers;
+      // this.customers=customers;
+      this.filteredCustomers=customers;
     });
   }
 

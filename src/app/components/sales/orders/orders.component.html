@@ -44,19 +44,19 @@
                           <thead>
                             <tr>
                               <th>Order Id</th>
-                              <th>Order type</th>
                               <th>Order date</th>
+                              <th>Mobile</th>
                               <th>Customer</th>
-                              <th>Invoice value</th>
-                              <th>Payment status</th>
+                              <th>Transaction value</th>
+                              <th>Transaction status</th>
                               <th>Delivery status</th>
                             </tr>
                           </thead>
                           <tbody *ngFor="let o of filteredOrders">
                             <tr [routerLink]="[o.id]">
                               <td>{{o.primary_id}}</td>
-                              <td>{{o.order_type}}</td>
-                              <td>{{o.createdAt | date:'dd-MMM-yyyy HH:mm' : '+5:30'}}</td> 
+                              <td>{{o.createdAt | date:'dd-MMM-yyyy HH:mm' : '+5:30'}}</td>                               
+                              <td>{{o.mobile}}</td>
                               <td>{{o.firstName}}</td> 
                               <td>₹ {{o.grandTotal}}</td>  
                               <td>{{o.paymentStatus}}</td> 

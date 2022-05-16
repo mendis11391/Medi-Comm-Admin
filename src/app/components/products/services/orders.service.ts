@@ -35,6 +35,10 @@ export class OrdersService {
     return this.http.get<Orders[]>(`${this.orders_url}`)
   }
 
+  getAllOrders2(): Observable<Orders[]> {
+    return this.http.get<Orders[]>(`${this.admin_url}/getAllOrders`)
+  }
+
   getAllNewOrders(): Observable<Orders[]> {
     return this.http.get<Orders[]>(`${this.admin_url}/newOrders`)
   }
@@ -65,6 +69,9 @@ export class OrdersService {
 
   getAllCustomerLogs(){
     return this.http.get(`${this.customer_url}/customerLogs/logs`)
+  }
+  getAllCustomerLogsById(id){
+    return this.http.get(`${this.customer_url}/customerLogs/logs/${id}`)
   }
 
   public updateCustomersDetails(id, val){

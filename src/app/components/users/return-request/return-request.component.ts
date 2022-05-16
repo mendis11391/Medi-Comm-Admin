@@ -83,8 +83,8 @@ export class ReturnRequestComponent implements OnInit {
   }
 
   ngOnInit() {    
-    this.getOrders();
-    this.getAssets();
+    // this.getOrders();
+    // this.getAssets();
     this.loadProducts();
     this.updateStatus = this.formBuilder.group({
       deliveryStatus: [''],

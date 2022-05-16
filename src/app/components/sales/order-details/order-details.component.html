@@ -99,7 +99,7 @@
                 </div>
                 <div class="card-body">
                     <p>Order date: {{o.createdAt | date:'dd MM yyyy HH:mm'}}</p>
-                    <p>Order #: {{o.primary_id}}</p>
+                    <p>Order #: {{o.order_id}}</p>
                     <p>Invoice #: {{fullOrderDetails[0].invoice_id}}</p>
                     <p *ngIf="!orderStatusActive">Order status: {{o.orderStatusName}} <i class="fa fa-pencil" *ngIf="editStatus" (click)="orderStatusActive=!orderStatusActive"></i></p>
                     <div class="card" *ngIf="orderStatusActive">
@@ -124,7 +124,7 @@
                                     <option *ngFor="let ds of orderDeliveryStatus" value="{{ds.id}}">{{ds.delivery_status}}</option>
                                 </select>
                                 <br>
-                                <button class="btn btn-warning" (click)="updateOrderDeliveryField(o.primary_id,'deliveryStatus',orderDeliveryField)">Update</button>                                                   
+                                <button class="btn btn-warning" (click)="updateOrderDeliveryField(o.order_id,'deliveryStatus',orderDeliveryField)">Update</button>                                                   
                         </div>
                     </div>
                     <p>Order type: {{o.order_type}}</p>
@@ -135,7 +135,10 @@
         <div class="col-sm-4">
             <div class="card">
                 <div class="card-header">
-                    <h5>Transaction details <button *ngIf="o.transaction_source!='Cashfree'" class="btn btn-warning pull-right" (click)="openPostTransaction()">Add</button></h5>
+                    <h5>Transaction details 
+                        <button *ngIf="o.transaction_source!='Cashfree' && o.transaction_id==null" class="btn btn-warning pull-right" (click)="openPostTransaction(postTransaction)">Add</button>
+                        <button *ngIf="o.transaction_source!='Cashfree' && o.transaction_id!=null" class="btn btn-warning pull-right" (click)="openPostTransaction(updateTransaction)">Edit</button>
+                    </h5>
                 </div>
                 <div class="card-body">
                     <p>Transaction date: {{o.transactionDate | date:'dd MM yyyy HH:mm'}}</p>
@@ -487,7 +490,7 @@
                                     <button class="btn btn-warning">Update</button>
                                 </form>
                             </td>
-                            <td>
+                            <td *ngIf="o.orderType_id==1">
                                 <form [formGroup]="deliveryDateStatus" (ngSubmit)="updateDeliveryDate(p.order_item_id)">
                                     <label>Delivery date:<input class="form-control" type="date" formControlName="deliveryDate" [value]="currDate"> </label>
                                     <!-- <div *ngIf="((deliveryDateStatus.value.deliveryStatus=='Shipped' && deliveryDateStatus.value.deliveryDate=='') || (deliveryDateStatus.value.deliveryStatus=='Delivered' && deliveryDateStatus.value.assetId==''))" class="text text-danger">
@@ -499,7 +502,7 @@
                                     <button class="btn btn-warning">Update</button>
                                   </form>
                             </td>
-                            <td>
+                            <td *ngIf="o.orderType_id==1">
                                 <form [formGroup]="deliveryStatus" (ngSubmit)="updateProductDeliveryStatus(p.order_item_id)">                                
                                     <label> Delivery status:
                                       <select formControlName="deliveryStatus" class="form-control" required>   
@@ -540,9 +543,21 @@
                         </div>
                         <div *ngIf="o.orderType_id==4">
                             <div *ngFor="let p of o.orderItem">
-                                <p>Damage / Delivery Charges: ₹{{p.damage_charges}}</p>
+                                <p>Damage / Delivery Charges / Extension Charges: ₹{{p.damage_charges}}</p>
+                                <div class="input-group mb-3 pull-right" *ngIf="editStatus">
+                                    <input type="text" class="form-control" [(ngModel)]="p.damage_charges">
+                                    <div class="input-group-append">
+                                      <button class="btn btn-warning" type="button" (click)="updateAnyOrderItemField(p.order_item_id, 'damage_charges', p.damage_charges);updateOrderField(o.order_id, 'subTotal', (p.damage_charges-0)+(p.earlyReturnCharges-0));updateOrderField(o.order_id, 'total', (p.damage_charges-0)+(p.earlyReturnCharges-0))">Update</button>
+                                    </div>
+                                </div>
                                 <p>Early return charges:  ₹{{p.earlyReturnCharges}}</p>
-                                <p *ngIf="o.grandTotal<=0">To be refunded: {{(p.security_deposit)-(p.damage_charges+p.earlyReturnCharges)}}</p>
+                                <div class="input-group mb-3 pull-right" *ngIf="editStatus">
+                                    <input type="text" class="form-control" [(ngModel)]="p.earlyReturnCharges">
+                                    <div class="input-group-append">
+                                      <button class="btn btn-warning" type="button" (click)="updateAnyOrderItemField(p.order_item_id, 'earlyReturnCharges', p.earlyReturnCharges);updateOrderField(o.order_id, 'subTotal', (p.damage_charges-0)+(p.earlyReturnCharges-0));updateOrderField(o.order_id, 'total', (p.damage_charges-0)+(p.earlyReturnCharges-0))">Update</button>
+                                    </div>
+                                </div>
+                                <p *ngIf="o.grandTotal<=0">To be refunded: {{(p.security_deposit-0)-((p.damage_charges-0)+(p.earlyReturnCharges-0))}}</p>
                                 <p *ngIf="o.grandTotal>0">To be paid: {{o.grandTotal}}</p>
                             </div>
                         </div>
@@ -579,10 +594,20 @@
                     </div>
                     <div class="form-group">
                         <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Payment status</label>
-                        <select class="form-control" formControlName="paymentStatus">
+                        <select class="form-control" formControlName="paymentStatus" *ngIf="fullOrderDetails[0].orderType_id!=4">
                             <option>Select</option>
                             <option *ngFor="let ps of paymentStatuses" value="{{ps.id}}">{{ps.status_name}}</option>
                         </select>
+                        <select class="form-control" formControlName="paymentStatus" *ngIf="fullOrderDetails[0].orderType_id==4">
+                            <option>Select</option>
+                            <option value="5">Refund initiated</option>
+                            <option value="6">Refunded</option>
+                            <option value="10">Refunded partial</option>
+                        </select>
+                    </div>
+                    <div class="form-group" *ngIf="fullOrderDetails[0].orderType_id==4">
+                        <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Transaction amount.</label>
+                        <input type="text" class="form-control" formControlName="orderAmount"><br>
                     </div>
                     <div class="form-group">
                         <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Message</label>
@@ -599,9 +624,9 @@
     </div>
 </ng-template>
 
-<ng-template #postReturnTransaction let-c="close" let-d="dismiss">
+<ng-template #updateTransaction let-c="close" let-d="dismiss">
     <div class="modal-header text-center">
-      <h4 class="col-12 modal-title text-center" id="modal-basic-title">Manual transaction</h4>
+      <h4 class="col-12 modal-title text-center" id="modal-basic-title">Update transaction</h4>
       <button type="button" class="close" aria-label="Close" (click)="d()">
         <span aria-hidden="true">&times;</span>
       </button>
@@ -610,7 +635,7 @@
         <div class="row">  
             <div class="col-3"></div>        
             <div class="col-6">
-                <form [formGroup]="addTransaction" (ngSubmit)="postReturnTransactionData()">
+                <form [formGroup]="updateTransactionData" (ngSubmit)="updateTransactionManual()">
                     <div class="form-group">
                         <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Transaction No.</label>
                         <input type="text" class="form-control" formControlName="transactionNo"><br>
@@ -637,11 +662,11 @@
                         <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Message</label>
                         <textarea class="form-control" formControlName="txMsg"></textarea>
                     </div>
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Transaction date</label>
                         <input type="date" class="form-control" formControlName="tDate"><br>
-                    </div>
-                    <button class="btn btn-warning">Submit</button>
+                    </div> -->
+                    <button class="btn btn-warning" type="submit">Submit</button>
                 </form>
             </div>
         </div>

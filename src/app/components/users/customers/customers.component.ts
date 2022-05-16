@@ -21,6 +21,7 @@ export class CustomersComponent implements OnInit {
 
   kycDetails:KYC;
   NoKYC:boolean;
+  customerLogs:Customers;
   public customers :Customers[] = [];
   public temp = [];
   public filteredCustomers=[];
@@ -105,6 +106,13 @@ export class CustomersComponent implements OnInit {
       allowSearchFilter: true
     };
     this.getKycByCustomerId(this.customerId);
+    this.getCustomerLogs(this.customerId);
+  }
+
+  getCustomerLogs(id){
+    this.os.getAllCustomerLogsById(id).subscribe((logs)=>{
+      this.customerLogs = logs;
+    });
   }
 
   async getKycByCustomerId(id){
@@ -159,7 +167,6 @@ export class CustomersComponent implements OnInit {
     let AllProductsOf=[];
     
     this.os.getAllOrdersByCustomerId(id).subscribe((orders)=>{
-      console.log(orders);
       this.orders = orders.filter(item=>item.paymentStatus=='Success' || item.orderType_id==3 || item.orderType_id==4 );
       this.orders.forEach((res)=>{
         filteredProducts = res.orderItem;
