@@ -62,6 +62,7 @@ export class ReturnRequestComponent implements OnInit {
   orderitem=[];
   model: NgbDateStruct;
   paymentStatus;
+  requestDetails={request_message:''};
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
   constructor(private calendar: NgbCalendar,private route: ActivatedRoute, private router:Router,private http: HttpClient,private ps:ProductService,private os:OrdersService, private modalService: NgbModal, private formBuilder: FormBuilder) {
     // this.order = orderDB.list_order;
@@ -177,15 +178,16 @@ export class ReturnRequestComponent implements OnInit {
     this.txnId=txnid;
   }
 
-  returnProductOrderById(ordId,oiid,requestedProduct,assetId){
+  returnProductOrderById(ordId,oiid,requestedProduct,assetId, requestDetails){
     let orderItem;
+
+    this.requestDetails = requestDetails;
     // this.modalReference=this.modalService.open(this.returnRequest, { windowClass : "return-request"});  
     this.productDetails= requestedProduct;
     console.log(this.productDetails);
     this.toBeRefunded=(this.productDetails.prod_price-0)-(this.returnDamageCharges+this.earlyReturnCharges);
     this.http.get(`${environment.apiUrl}/orders/orderId/${ordId}`).subscribe((res) => {
       this.fullOrderDetails=res;
-      console.log(this.fullOrderDetails);
       orderItem = res[0].orderItem.filter(item=>item.order_item_id == oiid);
       // this.productDetails=orderItem[0].renewals_timline.filter(item =>item.renewed==0 );
       // this.productDetails=orderItem[0].renewals_timline.slice(-1).pop();
@@ -238,7 +240,7 @@ export class ReturnRequestComponent implements OnInit {
         p1Rent:0,
         damageCharges:this.returnDamageCharges,
         earlyReturnCharges:this.earlyReturnCharges,
-        order_item_id:productToReturn.order_item_id,
+        order_item_id:this.currentOrderItemId,
         tenure_id:productToReturn.tenureBasePrice,
         tenureBasePrice:productToReturn.tenureBasePrice
     };    
@@ -296,10 +298,11 @@ export class ReturnRequestComponent implements OnInit {
       approvalStatus:1,
       requestStatus:0
     };
-    console.log(returnOrder);
+
     this.http.post(`${environment.apiUrl}/payments/newReturn`,  returnOrder).subscribe((res) => {
       this.http.put(`${environment.apiUrl}/orders/updateOrderItemStatus/${this.currentOrderItemId}`,returnOrderItem).subscribe();
-      this.http.put(`${environment.apiUrl}/users/updatecustomerRequests/${this.currentOrderItemId}`,customerRequest).subscribe();      
+      this.http.put(`${environment.apiUrl}/users/updatecustomerRequests/${this.currentOrderItemId}`,customerRequest).subscribe(); 
+      this.http.put(`${environment.apiUrl}/users/updatecustomerRequestsMessage/${this.currentOrderItemId}`,this.requestDetails).subscribe();      
       this.http.post(`${environment.apiUrl}/forgotpassword/notifyMailReturnOrder`,  returnOrder).subscribe();
       // if(this.refundStatus==6){
       //   this.http.post(`${environment.apiUrl}/forgotpassword/depositRefundedMail`,  returnOrder).subscribe();

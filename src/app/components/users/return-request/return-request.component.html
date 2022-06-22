@@ -41,7 +41,7 @@
                                 <span *ngIf="o.approval_status==0 && o.request_status==0"><i class="fa fa-circle text-danger"></i> Rejected</span>
                                 <span *ngIf="o.approval_status==1 && o.request_status==0"><i class="fa fa-circle text-success"></i> Approved</span>
                               </td>
-                              <td *ngIf="o.request_status==1" (click)="returnProductOrderById(o.order_id, o.order_item_id,o.renewals_timline,o.asset_id); toggleReplaceDetails=!toggleReplaceDetails"><a><i class="fa fa-pencil"></i></a></td>                   
+                              <td *ngIf="o.request_status==1" (click)="returnProductOrderById(o.order_id, o.order_item_id,o.renewals_timline,o.asset_id,o); toggleReplaceDetails=!toggleReplaceDetails"><a><i class="fa fa-pencil"></i></a></td>                   
                             </tr>                          
                           </tbody>
                         </table>
@@ -112,9 +112,12 @@
                       </tbody>
                     </table>
                   </div>   
-                  <div class="col-9">
+                  <div class="col-4">
                     <label>Return date</label><br>
-                      <ngb-datepicker #dp [(ngModel)]="model"></ngb-datepicker><br><br>     
+                    <ngb-datepicker #dp [(ngModel)]="model"></ngb-datepicker><br><br>     
+                  </div>
+                  <div class="col-5">
+                    <textarea class="form-control" [(ngModel)]="requestDetails.request_message"></textarea>
                   </div>
                   <hr>
                 <div class="col pull-right">
