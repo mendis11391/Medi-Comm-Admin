@@ -136,8 +136,8 @@
             <div class="card">
                 <div class="card-header">
                     <h5>Transaction details 
-                        <button *ngIf="o.transaction_source!='Cashfree' && o.transaction_id==null" class="btn btn-warning pull-right" (click)="openPostTransaction(postTransaction)">Add</button>
-                        <button *ngIf="o.transaction_source!='Cashfree' && o.transaction_id!=null" class="btn btn-warning pull-right" (click)="openPostTransaction(updateTransaction)">Edit</button>
+                        <button *ngIf="o.transaction_source!='Cashfree' && o.transaction_id==null && role=='admin'" class="btn btn-warning pull-right" (click)="openPostTransaction(postTransaction)">Add</button>
+                        <button *ngIf="o.transaction_source!='Cashfree' && o.transaction_id!=null && role=='admin'" class="btn btn-warning pull-right" (click)="openPostTransaction(updateTransaction)">Edit</button>
                     </h5>
                 </div>
                 <div class="card-body">
@@ -184,7 +184,7 @@
             <div class="card">
                 <div class="card-header">
                     <h5>Product details</h5>
-                    <button class="btn btn-warning pull-right" *ngIf="!editStatus" (click)="editStatus=!editStatus">Edit order</button>
+                    <button class="btn btn-warning pull-right" *ngIf="!editStatus && role=='admin'" (click)="editStatus=!editStatus">Edit order</button>
                     <button class="btn btn-warning pull-right" *ngIf="editStatus" (click)="editStatus=!editStatus">Cancel edit</button>
                 </div>
                 <div class="card-body">

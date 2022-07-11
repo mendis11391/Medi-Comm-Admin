@@ -78,13 +78,13 @@ export class UpcomingRenewalsComponent implements OnInit {
   }
 
   getOrders(){
-    this.os.getAllOrderItems().subscribe((orderItems)=>{
+    this.os.getAllOrderItems2().subscribe((orderItems)=>{
       orderItems.reverse();
       this.order=orderItems.filter(item => item.status==true && item.delivery_status==4 );
       for(let o=0;o<this.order.length;o++){
         let otParse = JSON.parse(this.order[o].renewals_timline);
         
-        this.os.getRenewalsByCustomerId(this.order[o].customer_id).subscribe();
+        this.os.getRenewalsByCustomerId2(this.order[o].customer_id).subscribe();
         for(let p=0;p<otParse.length;p++){
           if(otParse[p].order_item_id==this.order[o].order_item_id){
             otParse[p].firstName=this.order[o].firstName;

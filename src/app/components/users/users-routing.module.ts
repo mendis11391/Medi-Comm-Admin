@@ -11,6 +11,7 @@ import { KycComponent } from './kyc/kyc.component';
 import { KycDetailsComponent } from './kyc-details/kyc-details.component';
 import { CreateEditKycComponent } from './create-edit-kyc/create-edit-kyc.component';
 import { CustomerLogsComponent } from './customer-logs/customer-logs.component';
+import { User, Role } from '../auth/user';
 
 const routes: Routes = [
   {
@@ -43,10 +44,13 @@ const routes: Routes = [
       },
       {
         path: 'reviews',
+        canLoad: [AuthGuard],
+        canActivate: [AuthGuard],
         component: ReviewsComponent,
         data: {
           title: "Reviews",
-          breadcrumb: "reviews"
+          breadcrumb: "reviews",
+          roles: [Role.admin]
         }
       },
       {

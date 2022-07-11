@@ -267,4 +267,8 @@ export class PrimaryOrderComponent implements OnInit {
     this.excelService.exportAsExcelFile(this.order, 'Orders');
   }
 
+  runPrimaryOrderJob(){
+    this.os.RunPrimaryOrderJob().subscribe();
+  }
+
 }

@@ -21,6 +21,7 @@ import { ProductsModule } from '../products/products.module';
 import { CKEditorModule } from 'ngx-ckeditor';
 import { CreateEditKycComponent } from './create-edit-kyc/create-edit-kyc.component';
 import { CustomerLogsComponent } from './customer-logs/customer-logs.component';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
   declarations: [ListUserComponent, CreateUserComponent, CustomersComponent, ReplaceRequestComponent, ReturnRequestComponent, ReviewsComponent, KycComponent, KycDetailsComponent, CreateEditKycComponent, CustomerLogsComponent],
@@ -33,6 +34,7 @@ import { CustomerLogsComponent } from './customer-logs/customer-logs.component';
     ReactiveFormsModule,
     UsersRoutingModule,
     CKEditorModule,
+    SharedModule,
     NgMultiSelectDropDownModule.forRoot(),
   ]
 })

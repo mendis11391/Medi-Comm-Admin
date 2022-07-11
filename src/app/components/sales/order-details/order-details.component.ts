@@ -58,6 +58,7 @@ export class OrderDetailsComponent implements OnInit {
   subTotal:number=0;
   Taxes:number=18;
   dp:number=0;
+  role = localStorage.getItem('u_role');
   public closeResult: string;
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
   constructor(private changeDetection: ChangeDetectorRef,private route: ActivatedRoute,private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: FormBuilder) {

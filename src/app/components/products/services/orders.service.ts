@@ -210,4 +210,19 @@ export class OrdersService {
   //     return this.http.put(url, data);
   //   }
   // }
+
+
+
+  /////////////////JobApis section//////////////////
+  getAllOrderItems2(): Observable<OrderItems[]> {
+    return this.http.get<OrderItems[]>(`${this.b_url}jobApis/orders/getAllOrderItems`)
+  }
+
+  getRenewalsByCustomerId2(id){
+    return this.http.get<Customers[]>(`${this.b_url}jobApis/orders/renewals/${id}`)
+  }
+
+  RunPrimaryOrderJob(){
+    return this.http.get<Customers[]>(`${this.b_url}jobApis/admin/primaryJob`)
+  }
 }

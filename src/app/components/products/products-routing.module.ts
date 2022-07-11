@@ -16,6 +16,7 @@ import { DigitalSubCategoryListComponent } from './digital/digital-sub-category-
 import { PricingSchemesComponent } from './digital/pricing-schemes/pricing-schemes.component';
 import { DigitalAccessoriesComponent } from './digital/digital-accessories/digital-accessories.component';
 import { DigitalScrollersComponent } from './digital/digital-scrollers/digital-scrollers.component';
+import { User, Role } from '../auth/user';
 
 const routes: Routes = [
   {
@@ -64,84 +65,112 @@ const routes: Routes = [
       },
       {
         path: 'digital/digital-category',
+        canLoad: [AuthGuard],
+        canActivate: [AuthGuard],
         component: DigitalCategoryComponent,
         data: {
           title: "Category",
-          breadcrumb: "Category"
+          breadcrumb: "Category",
+          roles: [Role.admin]
         }
       },
       {
         path: 'digital/digital-sub-category-list',
-        // canActivate: [AuthGuard],
+        canLoad: [AuthGuard],
+        canActivate: [AuthGuard],
         component: DigitalSubCategoryListComponent,
         data: {
           title: "Product List",
-          breadcrumb: "Product List"
+          breadcrumb: "Product List",
+          roles: [Role.admin]
         }
       },
       {
         path: 'digital/digital-sub-category',
+        canLoad: [AuthGuard],
+        canActivate: [AuthGuard],
         component: DigitalSubCategoryComponent,
         data: {
           title: "Category",
-          breadcrumb: "Category"
+          breadcrumb: "Category",
+          roles: [Role.admin]
         }
       },
       {
         path: 'digital/digital-specs',
+        canLoad: [AuthGuard],
+        canActivate: [AuthGuard],
         component: DigitalSpecsComponent,
         data: {
           title: "Specifications",
-          breadcrumb: "Specifications"
+          breadcrumb: "Specifications",
+          roles: [Role.admin]
         }
       },
       {
         path: 'digital/digital-scrollers',
+        canLoad: [AuthGuard],
+        canActivate: [AuthGuard],
         component: DigitalScrollersComponent,
         data: {
           title: "Scrollers",
-          breadcrumb: "Scrollers"
+          breadcrumb: "Scrollers",
+          roles: [Role.admin]
         }
       },
       {
         path: 'digital/digital-product-list',
-        // canActivate: [AuthGuard],
+        canLoad: [AuthGuard],
+        canActivate: [AuthGuard],
         component: DigitalListComponent,
         data: {
           title: "Product List",
-          breadcrumb: "Product List"
+          breadcrumb: "Product List",
+          roles: [Role.admin]
         }
       },
       {
         path: 'digital/digital-add-product',
+        canLoad: [AuthGuard],
+        canActivate: [AuthGuard],
         component: DigitalAddComponent,
         data: {
           title: "Add Products",
-          breadcrumb: "Add Product"
+          breadcrumb: "Add Product",
+          roles: [Role.admin]
         }
       },
       {
         path: 'digital/digital-edit-product/:id',
+        canLoad: [AuthGuard],
+        canActivate: [AuthGuard],
         component: DigitalEditComponent,
         data: {
           title: "Edit Products",
-          breadcrumb: "Edit Product"
+          breadcrumb: "Edit Product",
+          roles: [Role.admin]
         }
       },
       {
         path: 'digital/pricing-schemes',
+        canLoad: [AuthGuard],
+        canActivate: [AuthGuard],
         component: PricingSchemesComponent,
         data: {
           title: "Pricing Schemes",
-          breadcrumb: "Pricing Schemes"
+          breadcrumb: "Pricing Schemes",
+          roles: [Role.admin]
         }
       },
       {
         path: 'digital/accessories',
+        canLoad: [AuthGuard],
+        canActivate: [AuthGuard],
         component: DigitalAccessoriesComponent,
         data: {
           title: "Accessories",
-          breadcrumb: "Accessories"
+          breadcrumb: "Accessories",
+          roles: [Role.admin]
         }
       }
     ]
