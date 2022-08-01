@@ -29,9 +29,10 @@ import { UiSwitchModule } from 'ngx-ui-switch';
 import { CreateRenewalOrderComponent } from './create-renewal-order/create-renewal-order.component';
 import { CreateRequestComponent } from './create-request/create-request.component';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { CancelledOrdersComponent } from './cancelled-orders/cancelled-orders.component';
 
 @NgModule({
-  declarations: [OrdersComponent, TransactionsComponent, OthersComponent, DepositsComponent, OrdersPanelComponent, ReplacementOrdersComponent, UserRequestsComponent, ManageOrdersComponent, OrderDetailsComponent, PrimaryOrderComponent, RenewalOrderComponent, ReplacementOrderComponent, ReturnOrderComponent, UpcomingRenewalsComponent, CreateOrderComponent, AllOrdersComponent, CreateRenewalOrderComponent, CreateRequestComponent],
+  declarations: [OrdersComponent, TransactionsComponent, OthersComponent, DepositsComponent, OrdersPanelComponent, ReplacementOrdersComponent, UserRequestsComponent, ManageOrdersComponent, OrderDetailsComponent, PrimaryOrderComponent, RenewalOrderComponent, ReplacementOrderComponent, ReturnOrderComponent, UpcomingRenewalsComponent, CreateOrderComponent, AllOrdersComponent, CreateRenewalOrderComponent, CreateRequestComponent, CancelledOrdersComponent],
   imports: [
     CommonModule,
     SalesRoutingModule,

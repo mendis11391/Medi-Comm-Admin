@@ -20,6 +20,7 @@ import { CreateOrderComponent } from './create-order/create-order.component';
 import { AllOrdersComponent } from './all-orders/all-orders.component';
 import { CreateRenewalOrderComponent } from './create-renewal-order/create-renewal-order.component';
 import { CreateRequestComponent } from './create-request/create-request.component';
+import { CancelledOrdersComponent } from './cancelled-orders/cancelled-orders.component';
 const routes: Routes = [
   {
     path: '',
@@ -79,6 +80,17 @@ const routes: Routes = [
           // roles: [Role.admin]
         },
         component: PrimaryOrderComponent,
+      },
+      {
+        path: 'cancelled-orders',
+        // canLoad: [AuthGuard],
+        // canActivate: [AuthGuard],
+        data: {
+          title: "cancelled orders",
+          breadcrumb: "cancelled-orders",
+          // roles: [Role.admin]
+        },
+        component: CancelledOrdersComponent,
       },
       {
         path: 'renewal-order',

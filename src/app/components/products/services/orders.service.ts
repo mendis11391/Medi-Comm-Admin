@@ -43,6 +43,10 @@ export class OrdersService {
     return this.http.get<Orders[]>(`${this.admin_url}/newOrders`)
   }
 
+  getAllCancelledOrders(): Observable<Orders[]> {
+    return this.http.get<Orders[]>(`${this.admin_url}/cancelledOrders`)
+  }
+
   getAllPrimaryOrders(): Observable<Orders[]> {
     return this.http.get<Orders[]>(`${this.admin_url}/primaryOrders`)
   }
@@ -215,14 +219,18 @@ export class OrdersService {
 
   /////////////////JobApis section//////////////////
   getAllOrderItems2(): Observable<OrderItems[]> {
-    return this.http.get<OrderItems[]>(`${this.b_url}jobApis/orders/getAllOrderItems`)
+    return this.http.get<OrderItems[]>(`${this.b_url}orders/getAllOrderItems`)
   }
 
   getRenewalsByCustomerId2(id){
-    return this.http.get<Customers[]>(`${this.b_url}jobApis/orders/renewals/${id}`)
+    return this.http.get<Customers[]>(`${this.b_url}orders/renewals/${id}`)
   }
 
   RunPrimaryOrderJob(){
     return this.http.get<Customers[]>(`${this.b_url}jobApis/admin/primaryJob`)
+  }
+
+  RunRenewalOrderJob(){
+    return this.http.get<Customers[]>(`${this.b_url}jobApis/admin/renewalJob`)
   }
 }

@@ -59,7 +59,7 @@
                           <button class="btn btn-warning" type="button">Send</button>
                         </div>
                     </div>
-                    <button class="btn btn-warning">Download Invoice</button>
+                    <button class="btn btn-warning" (click)="downloadAsPDF()">Download Invoice</button>
                 </div>
             </div>
         </div>
@@ -566,6 +566,59 @@
             </div>
         </div>
     </div>
+</div>
+
+
+ <!--For pdf invoice-->
+<div [id]="[fullOrderDetails[0].order_id]" hidden>
+    <h1>Invoice</h1>
+
+    <!-- <p>Name: {{o.fname}} {{o.lname}}</p>
+    <p>Mobile: {{o.mobile}}</p>
+    <p>Email: {{o.email}}</p>
+    <p>Address: {{o.address}} {{o.city}} {{o.pincode}}</p>
+    <p>Transaction: {{o.status}}</p> -->
+    
+  
+    <table id="order-table" class="table table-striped">
+        <tr>
+            <th>Product</th>
+            <th>Tenure</th>
+            <th>Security deposit</th>
+            <th>Rent/ mo</th>
+            <!-- <th>Total</th> -->
+        </tr>
+        <tr *ngFor="let p of popupOrder">
+            <td>
+                <p>{{p.prod_name}}</p><br>
+                <p>Bill period: {{p.renewals_timline[0].billPeriod}}</p><br>
+                <p>Asset #: {{p.asset_id}}</p><br>
+                <p *ngIf="p.renewals_timline[0].dp>0 ">Including damage protection</p>
+            </td>
+            <td>{{p.tenure_period}}</td>
+            <td>{{p.security_deposit}}</td>
+            <td>{{p.tenure_price+p.damage_protection}}</td>
+            <!-- <td>{{p.security_deposit+p.tenure_price}}</td> -->
+        </tr>
+    </table>
+    <!-- <table id="order-total">
+        <tr>
+            <td>Sub total</td>
+            <td>₹{{subTotal}}</td>
+        </tr>
+        <tr>
+            <td>Security deposit</td>
+            <td>₹{{o.securitydeposit}}</td>
+        </tr>
+        <tr>
+            <td>Security deposit</td>
+            <td>₹{{o.amount}}</td>
+        </tr>
+    </table> -->
+    <hr>
+    <!-- <p>Order Id: {{o.txnid}}</p>
+    <p>Orders date: {{o.orderdate[0]}}</p>
+    <p>Total: Rs-{{o.amount}}</p> -->
 </div>
 
 

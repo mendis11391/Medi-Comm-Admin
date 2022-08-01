@@ -48,6 +48,7 @@ export class NavService {
 				{ path: '/sales/renewal-order', title: 'Renewal order', type: 'link' },
 				{ path: '/sales/replacement-order', title: 'Replacement order', type: 'link' },
 				{ path: '/sales/return-order', title: 'Return order', type: 'link' },
+				{ path: '/sales/cancelled-orders', title: 'Cancelled orders', type: 'link' },
 				{ path: '/sales/upcoming-renewals', title: 'Upcoming renewals', type: 'link' },
 				// { path: '/sales/orders-panel', title: 'Orders panel', type: 'link' },
 				// { path: '/sales/user-requests', title: 'User requests', type: 'link' },

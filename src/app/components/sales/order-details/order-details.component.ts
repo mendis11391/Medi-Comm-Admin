@@ -11,6 +11,9 @@ import { ActivatedRoute } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { KYC } from 'src/app/shared/data/kyc';
 
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable'
+
 @Component({
   selector: 'app-order-details',
   templateUrl: './order-details.component.html',
@@ -59,6 +62,7 @@ export class OrderDetailsComponent implements OnInit {
   Taxes:number=18;
   dp:number=0;
   role = localStorage.getItem('u_role');
+  popupOrder;
   public closeResult: string;
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
   constructor(private changeDetection: ChangeDetectorRef,private route: ActivatedRoute,private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: FormBuilder) {
@@ -449,7 +453,7 @@ export class OrderDetailsComponent implements OnInit {
     // let delvStatus = this.deliveryDateStatus.value.deliveryStatus;
       let assetId;
       let getdeliveryDate:Date;
-      if(this.deliveryDateStatus.value.deliveryDate==''){
+      if(this.deliveryDateStatus.value.deliveryDate=='' || this.deliveryDateStatus.value.deliveryDate==null){
         getdeliveryDate=new Date();
       }else{
         getdeliveryDate=new Date(this.deliveryDateStatus.value.deliveryDate);
@@ -629,6 +633,149 @@ export class OrderDetailsComponent implements OnInit {
 
   exportAsXLSX():void {
     this.excelService.exportAsExcelFile(this.order, 'Orders');
+  }
+
+  public async  downloadAsPDF() {
+    // const pdfTable = document.getElementById(uid);
+    let getOrder;
+    getOrder=this.fullOrderDetails[0];
+
+    this.popupOrder=await getOrder.orderItem;
+
+    // console.log(getOrder);
+    let subTotal;
+
+  //   let sum=getOrder.renewals_timline.reduce(function(sum,elem){
+  //     return sum+parseInt(elem.price);
+  //  },0);
+   subTotal=getOrder.subTotal+getOrder.damageProtection;
+    
+   let invoiceDate = new Date(getOrder.createdAt).toJSON().slice(0,10).split('-').reverse().join('/');
+    const doc: jsPDF = new jsPDF("p", "pt", "a4", false);
+
+    var img = new Image()
+    img.src = 'https://irentout.com/assets/images/icon/logo-12.png';
+    doc.addImage(img, 'png', 40, 30, 137, 26.32);
+
+
+    doc.setFontSize(10);
+    doc.text('Invoice #              :    '+getOrder.invoice_id, 40, 100);
+    doc.text('Invoice Date        :    '+invoiceDate, 40, 112);    
+    doc.text('Payment status   :    '+getOrder.paymentStatus, 40, 124); 
+
+    doc.text('Order type         :   '+getOrder.order_type, 350, 100);
+    doc.text('Order #              :   '+getOrder.order_id, 350, 112);
+    if(getOrder.orderType_id == 1 || getOrder.orderType_id == 3){
+      doc.text('Delivery status  :   '+getOrder.delivery_status, 350, 124); 
+    }
+    
+
+
+    doc.setLineWidth(20.0); 
+    doc.setDrawColor(243, 110, 2);
+
+    doc.line(40, 155, 560, 155);
+    doc.setTextColor('white');
+    doc.text('Bill To', 50, 158);
+    if(getOrder.orderType_id == 1 || getOrder.orderType_id == 3){
+      doc.text('Ship To', 350, 158);
+    }
+    
+    doc.setTextColor('black');
+    doc.setFontSize(10);
+    doc.text(getOrder.billingAddress[0].display_name, 50, 185);
+    doc.text(getOrder.billingAddress[0].address_line1, 50, 197);
+    doc.text(getOrder.billingAddress[0].address_line2, 50, 209);
+    doc.text(getOrder.billingAddress[0].city+'-'+getOrder.billingAddress[0].pincode, 50, 221);
+    // doc.text('Bengaluru, Karnataka 560111,', 50, 236);
+
+    if(getOrder.orderType_id == 1 || getOrder.orderType_id == 3){
+      doc.text(getOrder.shippingAddress[0].display_name, 350, 185);
+      doc.text(getOrder.shippingAddress[0].address_line1, 350, 197);
+      doc.text(getOrder.shippingAddress[0].address_line2, 350, 209);
+      doc.text(getOrder.shippingAddress[0].city+'-'+getOrder.shippingAddress[0].pincode, 350, 221);
+    }
+    
+
+    // doc.setLineWidth(1.0); 
+    // doc.line(40, 100, 560, 100);
+
+    // doc.setFontSize(12);
+    // doc.text('Bill To:', 40, 130);
+    doc.setFontSize(10);
+    let splitAddress = doc.splitTextToSize(getOrder.billingAddress[0]+',', 180);
+    // doc.text(splitAddress, 40, 145);
+    // doc.text(getOrder.city+'-'+getOrder.pincode, 40, 167);
+    // doc.text(getOrder.email, 40, 179);
+
+    // doc.setFontSize(12);
+    // doc.text('Order # : '+uid, 40, 210);
+    // function convertDate(inputFormat) {
+    //   function pad(s) { return (s < 10) ? '0' + s : s; }
+    //   var d = new Date(inputFormat)
+    //   return [pad(d.getDate()), pad(d.toLocaleString('default', { month: 'short' })), d.getFullYear()].join('/')
+    // }
+    // doc.text('Order date : '+convertDate(getOrder.createdAt), 40, 225);
+    setTimeout(()=>{
+      autoTable(doc, { html: '#order-table', 
+                     margin: {top: 240},
+                     didParseCell: function (data) {
+                      var col = data.column.index;
+                      if( col==1 || col==2 || col==3 || col==4 || col==5){
+                          data.cell.styles.halign = 'center';
+                      } 
+                      var rows = data.table.body;
+                      if (data.row.index === 0) {
+                          data.cell.styles.fillColor = '#f36f02';
+                          data.cell.styles.textColor = '#ffffff';
+                      }
+                  }
+      });
+      
+
+    autoTable(doc, { margin: {top: 0, left:405},body: [
+                      ['Total', 'INR '+subTotal],                      
+                      ['GST @ 18%', 'INR '+subTotal*18/100],
+                      ['Invoice Value', 'INR '+getOrder.total],
+                      ['Security Deposit', 'INR '+getOrder.totalSecurityDeposit],
+                      ['Grand Total', 'INR '+getOrder.grandTotal],
+                    ],
+                    didParseCell: function (data) {
+                      var Totals = data.column.index;
+                      var rows = data.table.body;
+                      data.cell.styles.halign = 'right';
+                      if (data.row.index === rows.length - 1) {
+                          data.cell.styles.fillColor = '#f36f02';
+                          data.cell.styles.textColor = '#ffffff';                   
+                      } 
+                    },
+                    tableWidth: 150
+    });
+
+    autoTable(doc, { margin: {top: 15, left:40},body: [
+        ['Terms & Conditions'], 
+        ['1. The above mentioned assets are rented out by Futureol Pvt Ltd through irentout.com'],   
+        ['2. The above mentioned products are given on rent on advance rental basis'],   
+        ['3. The monthly rental should be paid in advance within 5 days of previous subscription end date'], 
+        ['4. Any returns should be informed to irentout.com through web portal or by phone call at least 2 days prior to end of subscription to avoid next billing'],
+        ['5. Non intimation of return will be considered as an extension of rental tenure by default'],
+        ['6. All products with monthly rental below INR 5000 will attract late payment charges of INR 60/ day per line item after 5 days of previous subscription expiry'],
+        ['7. All products with monthly rental above INR 5000 will attract late payment charges of INR 125/ day per line item after 5 days of previous subscription expiry'],
+        ['8. Any loss or damages caused by the customer will be charged as per market price to the customer'],                
+      ],
+      didParseCell: function (data) {
+        var Totals = data.column.index;
+        var rows = data.table.body;
+        data.cell.styles.halign = 'left';
+        data.cell.styles.fillColor = 'white';
+        data.cell.styles.cellPadding = 0;
+      },
+      tableWidth: 500
+    });
+
+    doc.save('Invoice.pdf');
+    },1000)
+    
   }
 
 }

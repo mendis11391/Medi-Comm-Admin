@@ -9,12 +9,13 @@ import { FormGroup,FormBuilder } from '@angular/forms';
 import { ExcelService } from '../services/excel.service';
 import { environment } from 'src/environments/environment';
 
+
 @Component({
-  selector: 'app-renewal-order',
-  templateUrl: './renewal-order.component.html',
-  styleUrls: ['./renewal-order.component.scss']
+  selector: 'app-cancelled-orders',
+  templateUrl: './cancelled-orders.component.html',
+  styleUrls: ['./cancelled-orders.component.scss']
 })
-export class RenewalOrderComponent implements OnInit {
+export class CancelledOrdersComponent implements OnInit {
 
   public order :Orders[] = [];
   public assets: Assets[]=[];
@@ -32,27 +33,11 @@ export class RenewalOrderComponent implements OnInit {
   diffInRent=0;
   diffInDeposit=0;
   ddCharges=0;
+  orderName:string;
   public filteredOrders=[];
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
   constructor(private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: FormBuilder) {
     // this.order = orderDB.list_order;
-  }
-
-  updateFilter(event) {
-    const val = event.target.value.toLowerCase();
-
-    // filter our data
-    const temp = this.temp.filter(function (d) {
-      return d.name.toLowerCase().indexOf(val) !== -1 || !val;
-    });
-
-    // update the rows
-    this.order = temp;
-    // Whenever the filter changes, always go back to the first page
-    this.table.offset = 0;
-  }
-
-  ngOnInit() {    
     this.getOrders();
     this.getAssets();
     this.updateStatus = this.formBuilder.group({
@@ -67,26 +52,46 @@ export class RenewalOrderComponent implements OnInit {
     });
   }
 
+  updateFilter(event) {
+    this.temp=this.order;
+    const val = event.target.value.toLowerCase();
+
+    // filter our data
+    const temp = this.temp.filter(function (d) {
+      return d.primary_id.toLowerCase().indexOf(val) !== -1 || d.delivery_status.toLowerCase().indexOf(val) !== -1 || !val;
+    });
+
+    // update the rows
+    this.filteredOrders = temp;
+    // Whenever the filter changes, always go back to the first page
+    this.table.offset = 0;
+  }
+
+  ngOnInit() {    
+    // this.getOrders();
+    // this.getAssets();
+    // this.updateStatus = this.formBuilder.group({
+    //   deliveryStatus: [''],
+    //   refundStatus:['']
+    // });
+    // this.deliveryDateStatus = this.formBuilder.group({
+    //   deliveryDate: ['']
+    // });
+    // this.assetAssign = this.formBuilder.group({
+    //   assetId: ['']
+    // });
+  }
+
   getOrders(){
-    this.os.getAllrenewalOrders().subscribe((orders)=>{
-      this.order=orders.filter(item => (item.paymentStatus.toLowerCase()=='success' || item.paymentStatus.toLowerCase()=='to be paid') && item.orderType_id==2);
+    this.os.getAllCancelledOrders().subscribe((orders)=>{
+      // orders.reverse();
+      // this.order=orders.filter(item => item.paymentStatus=='Success');
+      this.order=orders;
       this.filteredOrders=this.order;
+      this.orderName='New orders';
     });
   }
 
-  filterOrders(e){
-    if(e=='All orders'){
-      this.filteredOrders=this.order.filter(item => item.paymentStatus=='Success');
-    } else if(e=='Primary order'){
-      this.filteredOrders=this.order.filter(item => item.orderType_id==1);
-    } else if(e=='Renewal order'){
-      this.filteredOrders=this.order.filter(item => item.orderType_id==2);
-    } else if(e=='Replacement order'){
-      this.filteredOrders=this.order.filter(item => item.orderType_id==3);
-    } else if(e=='Return order'){
-      this.filteredOrders=this.order.filter(item => item.orderType_id==4);
-    }
-  }
 
   getAssets(){
     this.os.getAllassets().subscribe((assets)=>{
@@ -252,10 +257,6 @@ export class RenewalOrderComponent implements OnInit {
 
   exportAsXLSX():void {
     this.excelService.exportAsExcelFile(this.order, 'Orders');
-  }
-
-  RunRenewalOrderJob(){
-    this.os.RunRenewalOrderJob().subscribe();
   }
 
 }

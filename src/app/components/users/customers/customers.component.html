@@ -178,7 +178,7 @@
                       </thead>
                       <tbody *ngFor="let o of orders">
                         <tr [routerLink]="['../../../sales/orders',o.id]">
-                          <td>{{o.primary_id}}</td>
+                          <td>{{o.order_id}}</td>
                           <td>{{o.order_type}}</td>
                           <td>{{o.createdAt | date:'dd MM yyyy'}}</td> 
                           <td>₹ {{o.grandTotal}}</td>  
