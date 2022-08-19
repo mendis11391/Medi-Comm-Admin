@@ -40,7 +40,7 @@
                               <span *ngIf="o.approval_status==0 && o.request_status==0"><i class="fa fa-circle text-danger"></i> Rejected</span>
                               <span *ngIf="o.approval_status==1 && o.request_status==0"><i class="fa fa-circle text-success"></i> Approved</span>
                             </td>
-                            <td *ngIf="o.request_status==1" (click)="replaceProductOrderById(o.order_id, o.order_item_id,o.renewals_timline, o.tenure_id, o.asset_id); toggleReplaceDetails=!toggleReplaceDetails"><a><i class="fa fa-pencil"></i></a></td>                   
+                            <td *ngIf="o.request_status==1" (click)="replaceProductOrderById(o.order_id, o.order_item_id,o, o.tenure_id, o.asset_id); toggleReplaceDetails=!toggleReplaceDetails"><a><i class="fa fa-pencil"></i></a></td>                   
                           </tr>                          
                         </tbody>
                       </table>
@@ -63,7 +63,7 @@
                         <p>Primary order# : {{o.order_id}}</p>
                         <p>Order date: {{o.createdAt}}</p>
                         <label>Billing start date: <input class="form-control" type="date" [(ngModel)]="billStartDate"></label>
-                        <p>Bill period:{{billStartDate | date: 'dd/MM/yyyy'}}-{{productDetails.expiryDate}}</p>
+                        <p>Bill period:{{billStartDate | date: 'dd/MM/yyyy'}}-{{productDetails.end_date | date: 'dd MM yyyy'}}</p>
                         
                     </div>
                     <div class="col-6">
@@ -108,34 +108,22 @@
                       <!-- <th scope="row"><input type="checkbox"></th> -->
                       <td>{{productDetails.id}}</td>
                       <td>{{productDetails.prod_name}}</td>
-                      <td>{{productDetails.tenure}}</td>
-                      <td>{{productDetails.prod_price}}</td>
-                      <td>{{(productDetails.price-0)+(productDetails.dp-0)}}</td>
+                      <td>{{productDetails.tenure_period}}</td>
+                      <td>{{productDetails.security_deposit}}</td>
+                      <td>{{(productDetails.tenure_price-0)+(productDetails.damage_protection-0)}}</td>
                       <!-- <td>{{p.price}}</td> -->
-                      <td>{{productDetails.startDate}}</td>
-                      <td>{{productDetails.expiryDate}}</td>
-                      <td>{{productDetails.assetId}}</td>
-                      <td hidden>getBillPeriod(productDetails.expiryDate)</td>
-                      <!-- <td><a (click)="openBillingPeriod()">{{p.billPeriod}}</a></td> -->
+                      <td>{{productDetails.start_date | date: 'dd MM yyyy'}}</td>
+                      <td>{{productDetails.end_date | date: 'dd MM yyyy'}}</td>
+                      <td>{{productDetails.asset_id}}</td>
+                      <td hidden>getBillPeriod(productDetails.end_date)</td>
                       <td>
-                        <!-- <div hidden>{{filterByPrice(p.prod_price)}}</div> -->
-                          <select class="form-control" [(ngModel)]="prodId" (click)="selectProduct(prodId,productDetails.prod_price, productDetails.indexs, p1Tenure, productDetails.assetId)">
+                          <select class="form-control" [(ngModel)]="prodId" (click)="selectProduct(prodId,productDetails.security_deposit, p1Tenure, productDetails.asset_id)">
                               <option selected="selected">select</option>
                               <option [value]="fp.product_id" *ngFor="let fp of matchedProducts2">{{fp.prod_id}}</option>
                           </select><br>
-                          <!-- <input class="form-control" type="number" [(ngModel)]="damageCharges" placeholder="Damage charges"><br> -->
-                          <!-- <select class="form-control" [(ngModel)]="replacePaymentStatus">
-                            <option selected>Payment status</option>
-                            <option *ngFor="let ps of paymentStatus" value="{{ps.id}}">{{ps.status_name}}</option>
-                          </select> -->
-                          <!-- <input list="prodId" [(ngModel)]="prodId" (click)="selectProduct(prodId)">
-                          <datalist id="prodId" >
-                            <option *ngFor="let fp of filteredProducts">{{fp.prod_id}}</option>
-                          </datalist>  -->
+               
                       </td>
-                      <!-- <td><button class="btn btn-primary" (click)="replace(productDetails.order_item_id,productDetails.id,productDetails.indexs, productDetails.tenure_id, productDetails.dp,productDetails.assetId,prodId, damageCharges)">Replace</button>
-                        <button class="btn btn-primary mt-3" (click)="reject(productDetails.order_item_id)">Reject</button></td> -->
-                      <!-- <td><button class="btn btn-primary" (click)="reject(productDetails.order_item_id)">Reject</button></td> -->
+
                     </tr>
                     <tr *ngFor="let rp of replaceProduct">
                       <td>{{rp.product_id}}</td>
@@ -145,9 +133,6 @@
                       <td>{{(p2TenurePrice-0)+(p2DP-0)}}</td>
                       <td>    
                         <label>Asset #:
-                          <!-- <select [(ngModel)]="assetId">
-                            <option *ngFor="let a of assets">{{a.asset_no}}</option>
-                          </select> -->
                           <input class="form-control" type="text" [(ngModel)]="assetId">
                         </label>                
                       </td>
@@ -243,7 +228,7 @@
                     <!-- <td><a (click)="openBillingPeriod()">{{p.billPeriod}}</a></td> -->
                     <td>
                       <!-- <div hidden>{{filterByPrice(p.prod_price)}}</div> -->
-                        <select [(ngModel)]="prodId" (click)="selectProduct(prodId,productDetails.prod_price, productDetails.indexs, p1Tenure, productDetails.assetId)">
+                        <select [(ngModel)]="prodId" (click)="selectProduct(prodId,productDetails.prod_price, p1Tenure, productDetails.assetId)">
                             <option selected="selected">select</option>
                             <option [value]="fp.product_id" *ngFor="let fp of filteredProducts">{{fp.prod_name}}</option>
                         </select>

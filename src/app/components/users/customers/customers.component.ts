@@ -90,6 +90,26 @@ export class CustomersComponent implements OnInit {
   }
 
   ngOnInit() {    
+    // this.http.get(`https://api.irentout.com/admin/getActiveOrderItems`).subscribe((res:any)=>{
+    //   console.log(res);
+    //   let OIT = res;
+    //   OIT.forEach((OTRes)=>{
+    //     OTRes.renewals_timline.forEach((RT:any)=>{
+    //       let startDate = this.getDate(RT.startDate);
+    //       let endDate = this.getDate(RT.expiryDate);
+    //       if(RT.renewed==1 || RT.renewed==4){
+    //         this.http.post(`http://localhost:3000/admin/insertOrderRenewal`, {order_item_id:OTRes.order_item_id, renewal_price:OTRes.tenure_price, start_date:startDate, end_date:endDate, is_renewed:1 }).subscribe((resP)=>{
+    //           console.log(resP);
+    //         });
+    //       }else{
+    //         this.http.post(`http://localhost:3000/admin/insertOrderRenewal`, {order_item_id:OTRes.order_item_id, renewal_price:OTRes.tenure_price, start_date:startDate, end_date:endDate, is_renewed:0 }).subscribe((resP)=>{
+    //           console.log(resP);
+    //         });
+    //       }
+    //     });
+    //   });
+      
+    // });
     this.customerId=this.route.snapshot.params['id'];
     this.getCustomers(this.customerId);
     this.getAllOrders(this.customerId);
@@ -107,6 +127,14 @@ export class CustomersComponent implements OnInit {
     };
     this.getKycByCustomerId(this.customerId);
     this.getCustomerLogs(this.customerId);
+  }
+
+  getDate(date){
+    let dateParts = date.split("/");
+
+        // month is 0-based, that's why we need dataParts[1] - 1
+    let dateObject = new Date(+dateParts[2], dateParts[1]-1, +dateParts[0]);
+    return dateObject;
   }
 
   getCustomerLogs(id){

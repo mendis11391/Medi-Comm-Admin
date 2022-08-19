@@ -119,43 +119,45 @@ export class CreateRenewalOrderComponent implements OnInit {
     let productsOverdue=[];
     let allProducts=[];
     this.os.getRenewalsByCustomerId(uid).subscribe((orders)=>{
-      allOrders=orders;
-      successOrders=allOrders.filter((successOrdersRes)=>{
-        // if(successOrders.overdue==1){
-        //   this.overdue=1;
-        // }
-        return (successOrdersRes.status==1) && (successOrdersRes.paymentStatus=='1' || successOrdersRes.paymentStatus=='4') && (successOrdersRes.orderType_id==1 || successOrdersRes.orderType_id==3);
-      });
-      this.orders=successOrders.reverse();
 
-      for(let o=0;o<this.orders.length;o++){
-        for(let p=0;p<this.orders[o].renewals_timline.length;p++){
-          this.products.push(this.orders[o].renewals_timline[p]);
-          allProducts.push(this.orders[o].renewals_timline[p]);
-        }
-      }
-      // (dateDiffInMonths(p.nextStartDate, currentDate)<=2 && p.ordered!=1 && p.renewed!=4 && p.replacement!=2)&&(p.renewed==0 || p.renewed==-1 || p.renewed==2)
-      this.products = this.products.filter(item=>(this.dateDiffInDays(item.startDate)>=0 && this.dateDiffInMonths(item.nextStartDate, this.currentDate)<=2 && item.ordered!=1 && item.renewed!=4 && item.replacement!=2)&&(item.renewed==0 || item.renewed==-1 || item.renewed==2));
+      this.products=orders;
       this.loadTableData(this.products);
       this.updateStatus();
-      for(let o=0;o<allProducts.length;o++){
-        if(allProducts[o].ordered!=1){
-          productsOverdue.push(allProducts[o].overdew);
-          // productsOverdue.push(allProducts[op].overdue);
-        }          
-      }
+      // allOrders=orders;
+      // successOrders=allOrders.filter((successOrdersRes)=>{
+      //   // if(successOrders.overdue==1){
+      //   //   this.overdue=1;
+      //   // }
+      //   return (successOrdersRes.status==1) && (successOrdersRes.paymentStatus=='1' || successOrdersRes.paymentStatus=='4') && (successOrdersRes.orderType_id==1 || successOrdersRes.orderType_id==3);
+      // });
+      // this.orders=successOrders.reverse();
 
-      if(productsOverdue.includes(1)){
-        this.overdue=1;
-      } else{
-        this.overdue=0;
-      }
+      // for(let o=0;o<this.orders.length;o++){
+      //   for(let p=0;p<this.orders[o].renewals_timline.length;p++){
+      //     this.products.push(this.orders[o].renewals_timline[p]);
+      //     allProducts.push(this.orders[o].renewals_timline[p]);
+      //   }
+      // }
+      // // (dateDiffInMonths(p.nextStartDate, currentDate)<=2 && p.ordered!=1 && p.renewed!=4 && p.replacement!=2)&&(p.renewed==0 || p.renewed==-1 || p.renewed==2)
+      // this.products = this.products.filter(item=>(this.dateDiffInDays(item.startDate)>=0 && this.dateDiffInMonths(item.nextStartDate, this.currentDate)<=2 && item.ordered!=1 && item.renewed!=4 && item.replacement!=2)&&(item.renewed==0 || item.renewed==-1 || item.renewed==2));
+      // this.loadTableData(this.products);
+      // this.updateStatus();
+      // for(let o=0;o<allProducts.length;o++){
+      //   if(allProducts[o].ordered!=1){
+      //     productsOverdue.push(allProducts[o].overdew);
+      //     // productsOverdue.push(allProducts[op].overdue);
+      //   }          
+      // }
 
-      this.generateOrder();
+      // if(productsOverdue.includes(1)){
+      //   this.overdue=1;
+      // } else{
+      //   this.overdue=0;
+      // }
+
+      // this.generateOrder();
       // this.overdue();
       // this.orders=orders.reverse();
-    }, error => {
-      // console.log(error);
     });      
   }
 
@@ -214,7 +216,7 @@ export class CreateRenewalOrderComponent implements OnInit {
     
     this.updateStatus();
     this.subTotal = this.getSubTotal();
-    this.renewTotal = (this.subTotal)+((this.subTotal) * (this.gst)/100);
+    this.renewTotal = Math.round((this.subTotal)+((this.subTotal) * (this.gst)/100));
     this.allChecked = !this.isAllItemsChecked();
     let td=this.tableData.filter(d => d.isSelected === true);
     td.forEach((res)=>{
@@ -230,7 +232,7 @@ export class CreateRenewalOrderComponent implements OnInit {
     let sum = 0;
     this.tableData
       .filter(td => td.isSelected)
-      .forEach(td => (sum += parseInt(td.data.price)+parseInt(td.data.dp)));
+      .forEach(td => (sum += td.data.tenure_price+td.data.damage_protection));
     return sum;
   }
 
@@ -243,7 +245,7 @@ export class CreateRenewalOrderComponent implements OnInit {
         d.isDisabled = false;
         // this.subTotal += d.data.price;
         this.productsArr.push(d.data);
-        this.subTotal +=parseInt(d.data.price)+parseInt(d.data.dp);
+        this.subTotal +=d.data.tenure_price+d.data.damage_protection;
         this.renewTotal = (this.subTotal)+((this.subTotal) * (this.gst)/100);
       });
       this.allChecked = true;
@@ -347,10 +349,11 @@ export class CreateRenewalOrderComponent implements OnInit {
   }
 
   dueDate(d){
-    let dateParts = d.split("/");
+    // let dateParts = d.split("/");
 
 		// month is 0-based, that's why we need dataParts[1] - 1
-		let dateObject = new Date(+dateParts[2], dateParts[1]-1, +dateParts[0]);	
+		// let dateObject = new Date(+dateParts[2], dateParts[1]-1, +dateParts[0]);	
+    let dateObject = new Date(d);
 		let dd= dateObject.getDate();
 		let mm=dateObject.getMonth();
 		let yy=dateObject.getFullYear();
@@ -363,10 +366,11 @@ export class CreateRenewalOrderComponent implements OnInit {
   }
 
   returnDueDate(d){
-    let dateParts = d.split("/");
+    // let dateParts = d.split("/");
     
 		// month is 0-based, that's why we need dataParts[1] - 1
-		let dateObject = new Date(+dateParts[2], dateParts[1]-1, +dateParts[0]);	
+		// let dateObject = new Date(+dateParts[2], dateParts[1]-1, +dateParts[0]);	
+    let dateObject = new Date(d);
 		let dd= dateObject.getDate();
 		let mm=dateObject.getMonth();
 		let yy=dateObject.getFullYear();
@@ -454,9 +458,16 @@ export class CreateRenewalOrderComponent implements OnInit {
       if (orderIndex > -1) {
         this.ordersArr.splice(orderIndex, 1);
       }
+      // if (productIndex > -1) {
+      //   this.productsArr.splice(productIndex, 1);
+      // }
       if (currentOrderIndex > -1) {
         this.currentOrderId.splice(currentOrderIndex, 1);
       }
+      // this.renewTotal -= parseInt(e.target.value);     
+      // this.subTotal -=parseInt(e.target.value)+this.dp;
+
+      // this.renewTotal = this.subTotal+(this.subTotal * (this.gst)/100); 
     }
   }
 
@@ -511,89 +522,32 @@ export class CreateRenewalOrderComponent implements OnInit {
           return array.indexOf (value) == index;
         });
         
-        for(let op=0;op<this.products.length;op++){
-          // if(allProducts[op].ordered!=1){
-            productsOverdue.push(this.products[op].overdew);
-            // productsOverdue.push(allProducts[op].overdue);
-          // }
-          
-        }
-      
-
-        if(productsOverdue.includes(1)){
-          this.overdue=1;
-        } else{
-          this.overdue=0;
-        }
-      
-        for(let r=0;r<this.productsArr.length;r++){
-          checkedProducts.push(this.productsArr[r].overdew);
-        }
-        if(checkedProducts.includes(1)){
-          dew=1;      
-        }
-        if(this.overdue==1 && dew==0){
-          this.errorStatus=1;
-        }else if((this.overdue==1 && dew==1) || (this.overdue==0 && dew==0) ){
-          this.errorStatus=0;
-          const productsId=[];
+        const productsId=[];
           let toBeRenewed=[];
           this.productsArr.forEach((res)=>{
             productsId.push(res.id);
           }); 
 
           for(let i =0 ;i<this.productsArr.length;i++){
-            let productExpiryDate = this.productsArr[i].expiryDate;
-            let daysInDiff=this.dateDiffInDays(productExpiryDate);
-            if(daysInDiff<=0 && this.productsArr[i].overdew!=1){ //for multiple rows overdue of same product
-              cON=this.productsArr[i].currentOrderNo;
-              order_item_id = this.productsArr[i].order_item_id;
-              filteredProducts=this.prodAll.filter(item => item.order_item_id == order_item_id);
-              this.productsArr[i].ordered=0;   
-              this.productsArr[i].overdew=0; 
-              this.productsArr[i].renewed=4;   
-              this.productsArr[i].currentOrderNo=this.txnId;  
-              toBeRenewed.push(this.productsArr[i]);
-            } else{ //if overdue code
-              cON=this.productsArr[i].currentOrderNo;
-              order_item_id = this.productsArr[i].order_item_id;
-              // this.productsArr[i].renewed=4;
-              filteredProducts=this.prodAll.filter(item => item.order_item_id == order_item_id);
-              this.productsArr[i].overdew=0;
-              this.productsArr[i].renewed=4; 
-              this.productsArr[i].currentOrderNo=this.txnId;  
-              toBeRenewed.push(this.productsArr[i]);          
-            }
-            filteredProducts.forEach((indexFilter)=>{
-              for(let pi=0;pi<this.productsArr.length;pi++){
-                if(indexFilter.indexs===this.productsArr[pi].indexs){
-                  if(this.dateDiffInDays(indexFilter.startDate)<0){
-                    indexFilter.renewed=1;
-                  }else{
-                    indexFilter.renewed=4;
-                  }
-                  indexFilter.overdew=0;
-                  // indexFilter.ordered=1;
-                  indexFilter.currentOrderNo=cON;
-                }
-              }
-            });
-            let productsToUpdate={
-              checkoutProductsInfo:  JSON.stringify(filteredProducts),
-              txnid: order_item_id
-            }
-            this.os.updateNewRenewProducts(productsToUpdate).subscribe();
+            cON=this.productsArr[i].primary_id;
+            order_item_id = this.productsArr[i].order_item_id;
+            // this.productsArr[i].renewed=4;
+            filteredProducts=this.prodAll.filter(item => item.order_item_id == order_item_id);
+            this.productsArr[i].overdew=0;
+            this.productsArr[i].renewed=4; 
+            this.productsArr[i].currentOrderNo=this.txnId;  
+            toBeRenewed.push(this.productsArr[i]);              
           }
           
           let  products={
             uid: this.uid,
             primaryID:cON,
             orderID: this.txnId,
-            subTotal: this.renewTotal,
+            subTotal: Math.round(this.renewTotal),
             damageProtection:this.dp,
-            total:this.renewTotal,
+            total:Math.round(this.renewTotal),
             securityDeposit: 0,
-            grandTotal: this.renewTotal,
+            grandTotal: Math.round(this.renewTotal),
             discount: 0,
             firstName: dta[0].firstName,
             lastName:dta[0].lastName,
@@ -602,7 +556,7 @@ export class CreateRenewalOrderComponent implements OnInit {
             billingAddress:billAddressId,
             shippingAddress:shipAddressId,
             orderType:2,
-            orderStatus:'Initiated',
+            orderStatus:8,
             deliveryStatus:4,
             refundStatus:'Paid',
             createdBy:1,
@@ -622,12 +576,16 @@ export class CreateRenewalOrderComponent implements OnInit {
           };
           this.os.newRenewProducts(products).subscribe((resp1)=>{
             this.http.post(`${environment.apiUrl}/payments/postManualRenewalOrderTransaction`,transaction).subscribe((resp2)=>{
+              
               alert('Renewal Order created successfully');
               this.router.navigate(['/sales/renewal-order']);
             });
           });
-          
-          }
+      
+
+        
+      
+        
         }
         this.orderValidated=true;
       });      

@@ -87,7 +87,7 @@ export class OrdersService {
   }
 
   getRenewalsByCustomerId(id){
-    return this.http.get<Customers[]>(`${this.orders_url}/renewals/${id}`)
+    return this.http.get<Customers[]>(`${this.orders_url}/renewalsByCustomer/${id}`)
   }
 
   public getUserDetailsByUid(id) {

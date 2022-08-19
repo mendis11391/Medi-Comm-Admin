@@ -41,7 +41,7 @@
                                 <span *ngIf="o.approval_status==0 && o.request_status==0"><i class="fa fa-circle text-danger"></i> Rejected</span>
                                 <span *ngIf="o.approval_status==1 && o.request_status==0"><i class="fa fa-circle text-success"></i> Approved</span>
                               </td>
-                              <td *ngIf="o.request_status==1" (click)="returnProductOrderById(o.order_id, o.order_item_id,o.renewals_timline,o.asset_id,o); toggleReplaceDetails=!toggleReplaceDetails"><a><i class="fa fa-pencil"></i></a></td>                   
+                              <td *ngIf="o.request_status==1" (click)="returnProductOrderById(o.order_id, o.order_item_id,o,o.asset_id,o); toggleReplaceDetails=!toggleReplaceDetails"><a><i class="fa fa-pencil"></i></a></td>                   
                             </tr>                          
                           </tbody>
                         </table>
@@ -91,11 +91,11 @@
                         <tr >
                           <td>{{productDetails.id}}</td>
                           <td>{{productDetails.prod_name}}</td>
-                          <td>{{productDetails.tenure}}</td>
-                          <td>{{productDetails.prod_price}}</td>
-                          <td>{{(productDetails.price-0)+(productDetails.dp-0)}}</td>
-                          <td>{{productDetails.assetId}}</td>
-                          <td hidden>getBillPeriod(productDetails.expiryDate)</td>
+                          <td>{{productDetails.tenure_period}}</td>
+                          <td>{{productDetails.security_deposit}}</td>
+                          <td>{{(productDetails.tenure_price-0)+(productDetails.damage_protection-0)}}</td>
+                          <td>{{productDetails.asset_id}}</td>
+                          <td hidden>getBillPeriod(productDetails.endDate)</td>
                           <!-- <td>                          
                               <input min="0" class="form-control" type="number" [(ngModel)]="returnDamageCharges" placeholder="Damage charges"> <br>
                               <input min="0" class="form-control" type="number" [(ngModel)]="earlyReturnCharges" placeholder="Early return charges">                           
@@ -130,7 +130,7 @@
                   
                   <p>Damage / Delivery Charges / Extension Charges: {{returnDamageCharges}}</p>
                   <p>Early return charges: {{earlyReturnCharges}}</p>
-                  <p>To be refunded: {{(productDetails.prod_price-0)-(returnDamageCharges+earlyReturnCharges)}}</p>
+                  <p>To be refunded: {{(productDetails.security_deposit-0)-(returnDamageCharges+earlyReturnCharges)}}</p>
                   
                   <button class="btn btn-primary mr-1" (click)="returnProduct()">Return</button>   
                   <!-- <button class="btn btn-primary" (click)="reject(productDetails.order_item_id)">Reject</button>    -->

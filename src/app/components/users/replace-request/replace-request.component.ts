@@ -131,7 +131,7 @@ export class ReplaceRequestComponent implements OnInit {
              if(tenureMatched.length>0){
                prodsRes.matchedTenurePrice = prodsRes.tenure_base_price-(prodsRes.tenure_base_price*tenureMatched[0].discount/100);
                this.matchedProducts2.push(prodsRes);
-               
+               console.log(this.matchedProducts2);
                resolve2('success');
                resolve('success');
              }
@@ -142,7 +142,7 @@ export class ReplaceRequestComponent implements OnInit {
        });
        Promise.all([data, data2]).then(values => {
          console.log(this.matchedProducts2);
-         this.matchedProducts2 = this.matchedProducts2.filter(itemMP=>itemMP.matchedTenurePrice>=this.productDetails.price);
+         this.matchedProducts2 = this.matchedProducts2.filter(itemMP=>itemMP.matchedTenurePrice>=this.productDetails.tenure_price);
          console.log(this.matchedProducts2);
        });
     }, error => {
@@ -210,8 +210,6 @@ export class ReplaceRequestComponent implements OnInit {
     this.http.get(`${environment.apiUrl}/orders/orderId/${ordId}`).subscribe((res) => {
       this.fullOrderDetails=res;
       orderItem = res[0].orderItem.filter(item=>item.order_item_id == oiid);
-      // this.productDetails=orderItem[0].renewals_timline.filter(item =>item.renewed==0 );
-      // this.productDetails=orderItem[0].renewals_timline.slice(-1).pop();
     this.currentIndexs=this.productDetails.indexs;
     
     }); 
@@ -355,7 +353,7 @@ export class ReplaceRequestComponent implements OnInit {
     this.billPeriod=a;
   }
 
-  selectProduct(prodId,p1SecurityDeposit, p1Indexs, p1Tenure, p1AssetId){
+  selectProduct(prodId,p1SecurityDeposit,  p1Tenure, p1AssetId){
     let p2TenureArr;
     // let p2TenurePrice=0;
     // let p2DP=0;
@@ -394,14 +392,14 @@ export class ReplaceRequestComponent implements OnInit {
         //   }
         // }
 
-        if(this.productDetails.dp>0){
+        if(this.productDetails.damage_protection>0){
           this.p2DP=this.p2TenurePrice*(8/100);
           } else{
           this.p2DP=0;
         }
         console.log(this.productDetails);
-        p1RentBalance = this.calcDiffPrice(this.productDetails.startDate,this.productDetails.expiryDate, deliverDate,this.productDetails.expiryDate,this.productDetails.price, this.productDetails.dp);
-        p2RentAmount = this.calcDiffPrice(this.productDetails.startDate,this.productDetails.expiryDate, deliverDate,this.productDetails.expiryDate,this.p2TenurePrice, this.p2DP);
+        p1RentBalance = this.calcDiffPrice(this.productDetails.start_date,this.productDetails.end_date, currDate,this.productDetails.end_date,this.productDetails.tenure_price, this.productDetails.damage_protection);
+        p2RentAmount = this.calcDiffPrice(this.productDetails.start_date,this.productDetails.end_date, currDate,this.productDetails.end_date,this.p2TenurePrice, this.p2DP);
         this.rentDifference = p2RentAmount-p1RentBalance;
       });    
   }  
@@ -471,12 +469,16 @@ export class ReplaceRequestComponent implements OnInit {
   calcDiffPrice(p1startDate,p1EndDate,actualStartDate,actualEndDate,p1Rent, p1DP){
     let gst = 18;
     let currDate = new Date();
-    let p1SDate = this.dateConfig(p1startDate);
-    let p1EDate = this.dateConfig(p1EndDate);
-    let actualSDate = this.dateConfig(actualStartDate);
-    let actualEDate = this.dateConfig(actualEndDate);
-    let daysDiffForCD = this.dateDiffInDays(actualSDate,actualEDate) +1;
-    let daysDiffForED = this.dateDiffInDays(p1SDate,p1EDate) +1;
+    // let p1SDate = this.dateConfig(p1startDate);
+    // let p1EDate = this.dateConfig(p1EndDate);
+    // let actualSDate = this.dateConfig(actualStartDate);
+    // let actualEDate = this.dateConfig(actualEndDate);
+    let p1SDate = p1startDate;
+    let p1EDate = p1EndDate;
+    let actualSDate = actualStartDate;
+    let actualEDate = actualEndDate;
+    let daysDiffForCD = this.dateDiffInDays(new Date(actualSDate),new Date(actualEDate)) +1;
+    let daysDiffForED = this.dateDiffInDays(new Date(p1SDate),new Date(p1EDate)) +1;
     let rentDP = parseInt(p1Rent)+parseInt(p1DP);
     let p1Amount = (rentDP);
     let p1BillAmount = this.calcPriceInDays(p1Amount, daysDiffForED, daysDiffForCD);
@@ -493,7 +495,8 @@ export class ReplaceRequestComponent implements OnInit {
     let day = currDate.getDate();
     let month = currDate.getMonth()+1;
     let year = currDate.getFullYear();
-    let deliverDate =day + '/' + month + '/' + year;
+    // let deliverDate =day + '/' + month + '/' + year;
+    let deliverDate =currDate;
     let expiryDate;
     let totalAmount;
     let dp;
@@ -501,11 +504,9 @@ export class ReplaceRequestComponent implements OnInit {
     let p2RentAmount=0;
     let p1RentBalance=0;
     let p2DP=0;
-    let tenureBasePrice = 0;
-    let tenure_id =0;
     // filterP1=this.productDetails.filter(item => item.indexs===p1Indexs);
     filterP2 = this.productsList.filter(item => item.product_id==p2);
-    let securityDepositDiff = filterP2[0].securityDeposit-this.productDetails.prod_price;
+    let securityDepositDiff = filterP2[0].securityDeposit-this.productDetails.security_deposit;
     
     // let log={orderID:txnid, request:'Replacement', adminResponse:'Replaced', replacedProdId:filterP1[0].id, replacedWith:filterP2[0].id}
 
@@ -525,48 +526,50 @@ export class ReplaceRequestComponent implements OnInit {
               this.tenure_id = p2TenureArr[i].tenure_id;
               this.p2Tenure=p2TenureArr[i].tenure+' '+p2TenureArr[i].tenure_period;
               p2TenurePrice = this.replaceProduct[0].tenure_base_price-(this.replaceProduct[0].tenure_base_price*p2TenureArr[i].discount/100);
+              console.log(p2TenurePrice);
             }
           }          
       });
 
       if(this.p2TenurePrice){
-        if(this.productDetails.dp>0){
+        if(this.productDetails.damage_protection>0){
           p2DP=this.p2TenurePrice*(8/100);
           } else{
           p2DP=0;
         }
   
-        p1RentAmount=this.calcDiffPrice(this.productDetails.startDate,this.productDetails.expiryDate, this.productDetails.startDate, deliverDate, this.productDetails.price, this.productDetails.dp);
-        p1RentBalance = this.calcDiffPrice(this.productDetails.startDate,this.productDetails.expiryDate, deliverDate,this.productDetails.expiryDate,this.productDetails.price, this.productDetails.dp);
-        p2RentAmount = this.calcDiffPrice(this.productDetails.startDate,this.productDetails.expiryDate, deliverDate,this.productDetails.expiryDate,this.p2TenurePrice, p2DP);
+        p1RentAmount=this.calcDiffPrice(this.productDetails.start_date,this.productDetails.end_date, this.productDetails.start_date, deliverDate, this.productDetails.tenure_price, this.productDetails.damage_protection);
+        p1RentBalance = this.calcDiffPrice(this.productDetails.start_date,this.productDetails.end_date, deliverDate,this.productDetails.end_date,this.productDetails.tenure_price, this.productDetails.damage_protection);
+        p2RentAmount = this.calcDiffPrice(this.productDetails.start_date,this.productDetails.end_date, deliverDate,this.productDetails.end_date,this.p2TenurePrice, p2DP);
         totalAmount=parseInt(filterP2[0].securityDeposit)+this.p2TenurePrice+p2DP;
   
         let returnedProduct={      
-          indexs:this.productDetails.indexs,
+          // indexs:this.productDetails.indexs,
+          order_item_id:oiid,
           id: this.productDetails.id,
           prod_name:this.productDetails.prod_name,
-          prod_price:this.productDetails.prod_price,
-          prod_img:this.productDetails.prod_img,
-          delvdate: this.productDetails.delvdate,
-          actualStartDate:this.productDetails.actualStartDate,
+          prod_price:this.productDetails.security_deposit,
+          // prod_img:this.productDetails.prod_img,
+          // delvdate: this.productDetails.delvdate,
+          // actualStartDate:this.productDetails.actualStartDate,
           qty: 1, 
-          price: this.productDetails.price, 
-          tenure: this.productDetails.tenure,
+          price: this.productDetails.tenure_price, 
+          tenure: this.productDetails.tenure_period,
           primaryOrderNo:this.productDetails.primaryOrderNo, 
           currentOrderNo: this.txnId,
-          renewed:this.productDetails.renewed,
-          startDate:this.productDetails.startDate,
-          expiryDate:this.productDetails.expiryDate,
-          nextStartDate:this.productDetails.nextStartDate,
-          overdew:this.productDetails.overdew,
-          ordered:1,
-          assetId:this.productDetails.assetId,
-          deliveryStatus:this.productDetails.deliveryStatus,
-          deliveryAssigned:this.productDetails.deliveryAssigned,
-          dp:this.productDetails.dp,
-          replacement:this.productDetails.replacement,
-          returnDate:deliverDate,
-          billPeriod:this.productDetails.startDate+'-'+deliverDate,
+          // renewed:this.productDetails.renewed,
+          startDate:this.oldDateFormat(this.productDetails.start_date),
+          expiryDate:this.oldDateFormat(this.productDetails.end_date),
+          // nextStartDate:this.productDetails.nextStartDate,
+          // overdew:this.productDetails.overdew,
+          // ordered:1,
+          assetId:this.productDetails.asset_id,
+          // deliveryStatus:this.productDetails.deliveryStatus,
+          // deliveryAssigned:this.productDetails.deliveryAssigned,
+          dp:this.productDetails.damage_protection,
+          // replacement:this.productDetails.replacement,
+          returnDate:this.oldDateFormat(deliverDate),
+          billPeriod:this.oldDateFormat(this.productDetails.start_date)+'-'+this.oldDateFormat(deliverDate),
           billAmount:p1RentAmount,
           p1Rent:p1RentBalance,
           damageCharges:damageCharges,
@@ -580,28 +583,28 @@ export class ReplaceRequestComponent implements OnInit {
           prod_name:filterP2[0].prod_name,
           prod_price:filterP2[0].securityDeposit,
           prod_img:filterP2[0].prod_img,
-          tenureBasePrice:this.productsList[0].tenure_base_price,
+          tenureBasePrice:filterP2[0].tenure_base_price,
           tenure_id:p1Tenure,
           delvdate: deliverDate,
           qty: 1, 
           price: this.p2TenurePrice, 
-          tenure: this.productDetails.tenure,
+          tenure: this.productDetails.tenure_period,
           primaryOrderNo:this.productDetails.primaryOrderNo, 
           currentOrderNo: this.txnId,
           renewed:1,
-          startDate:this.productDetails.startDate,
-          expiryDate:this.productDetails.expiryDate,
-          nextStartDate:this.productDetails.nextStartDate,
+          startDate:this.oldDateFormat(this.productDetails.start_date),
+          expiryDate:this.oldDateFormat(this.productDetails.end_date),
+          // nextStartDate:this.productDetails.nextStartDate,
           overdew:0,
           ordered:1,
           assetId:this.assetId,
-          deliveryStatus:this.productDetails.deliveryStatus,
-          deliveryAssigned:this.productDetails.deliveryAssigned,
+          // deliveryStatus:this.productDetails.deliveryStatus,
+          // deliveryAssigned:this.productDetails.deliveryAssigned,
           dp:p2DP,
           replacement:0,
           returnDate:'',
-          billPeriod:deliverDate+'-'+this.productDetails.expiryDate,
-          actualSubscription:this.productDetails.startDate+'-'+this.productDetails.expiryDate,
+          billPeriod:this.oldDateFormat(deliverDate)+'-'+this.oldDateFormat(this.productDetails.end_date),
+          actualSubscription:this.oldDateFormat(this.productDetails.start_date)+'-'+this.oldDateFormat(this.productDetails.end_date),
           billAmount:p2RentAmount,
           p2Rent:p2RentAmount,
           p1RentBalance:p1RentBalance,
@@ -643,27 +646,34 @@ export class ReplaceRequestComponent implements OnInit {
           products:JSON.stringify(cInfo)        
         };  
         this.http.post(`${environment.apiUrl}/payments/newReplace`,  replaceOrder).subscribe((res) => {
-          this.http.get(`${environment.apiUrl}/orders/orderItemsByorderId/${this.currentOrderItemId}`).subscribe((resOrd) => {
-            let cid = resOrd[0].renewals_timline;
-            cid.forEach(element => {
-              if(element.assetId===this.productDetails.assetId){              
-                element.replacement=2;
-              }
-              if(element.indexs===this.productDetails.indexs){              
-                element.replacement=2;
-                element.billPeriod=this.productDetails.startDate+'-'+deliverDate;
-                element.renewed=3;
-                element.returnDate=deliverDate;
-                this.http.put(`${environment.apiUrl}/orders/updateRenewalTimeline/${parseInt(this.productDetails.order_item_id)}`, {assetId:this.productDetails.assetId,renewalTimeline:JSON.stringify(cid), status:0}).subscribe();
-                let customerRequest={
-                  approvalStatus:1,
-                  requestStatus:0
-                };
-                this.http.put(`${environment.apiUrl}/users/updatecustomerRequests/${this.currentOrderItemId}`,customerRequest).subscribe();
-              }
-            });     
+          let customerRequest={
+            approvalStatus:1,
+            requestStatus:0
+          };
+          this.http.put(`${environment.apiUrl}/users/updatecustomerRequests/${this.currentOrderItemId}`,customerRequest).subscribe();
+          // this.http.get(`${environment.apiUrl}/orders/orderItemsByorderId/${this.currentOrderItemId}`).subscribe((resOrd) => {
+          //   let cid = resOrd[0].renewals_timline;
+          //   cid.forEach(element => {
+          //     if(element.assetId===this.productDetails.assetId){              
+          //       element.replacement=2;
+          //     }
+          //     if(element.indexs===this.productDetails.indexs){              
+          //       element.replacement=2;
+          //       element.billPeriod=this.productDetails.startDate+'-'+deliverDate;
+          //       element.renewed=3;
+          //       element.returnDate=deliverDate;
+          //       this.http.put(`${environment.apiUrl}/orders/updateRenewalTimeline/${parseInt(this.productDetails.order_item_id)}`, {assetId:this.productDetails.assetId,renewalTimeline:JSON.stringify(cid), status:0}).subscribe();
+          //       let customerRequest={
+          //         approvalStatus:1,
+          //         requestStatus:0
+          //       };
+          //       this.http.put(`${environment.apiUrl}/users/updatecustomerRequests/${this.currentOrderItemId}`,customerRequest).subscribe();
+          //     }
+
+          //   });     
+            
               
-          });
+          // });
           // const userId = localStorage.getItem('user_id');
           // const uname = localStorage.getItem('uname');
           // const uid = uname.substring(0, 3);
@@ -688,6 +698,16 @@ export class ReplaceRequestComponent implements OnInit {
 
     
     
+  }
+
+
+  oldDateFormat(myDate){
+    let currDate = new Date(myDate);
+    let day = currDate.getDate();
+    let month = currDate.getMonth()+1;
+    let year = currDate.getFullYear();
+    let convertedDate =day + '/' + month + '/' + year;
+    return convertedDate;
   }
 
   reject(order_item_id){

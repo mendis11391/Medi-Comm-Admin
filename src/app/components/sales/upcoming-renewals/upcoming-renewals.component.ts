@@ -8,6 +8,7 @@ import { HttpClient} from '@angular/common/http';
 import { FormGroup,FormBuilder } from '@angular/forms';
 import { ExcelService } from '../services/excel.service';
 import {NgbDate, NgbCalendar} from '@ng-bootstrap/ng-bootstrap';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-upcoming-renewals',
@@ -63,8 +64,11 @@ export class UpcomingRenewalsComponent implements OnInit {
     this.table.offset = 0;
   }
 
-  ngOnInit() {    
-    this.getOrders();
+  ngOnInit() {
+    this.http.get(`${environment.apiUrl}/admin/getAllActiveRenewals`).subscribe((resp:[])=>{
+      this.filteredOrderItems=resp;
+    })    
+    // this.getOrders();
     this.updateStatus = this.formBuilder.group({
       deliveryStatus: [''],
       refundStatus:['']

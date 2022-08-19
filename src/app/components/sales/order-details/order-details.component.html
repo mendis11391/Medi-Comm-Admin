@@ -236,7 +236,7 @@
                                 </form>
                             </td>
                             <td>
-                                <form [formGroup]="deliveryDateStatus" (ngSubmit)="updateDeliveryDate(p.order_item_id)">
+                                <form [formGroup]="deliveryDateStatus" (ngSubmit)="updateDeliveryDate(p.order_item_id,p)">
                                     <label>Delivery date:<input class="form-control" type="date" formControlName="deliveryDate" [value]="currDate"> </label>
                                     <!-- <div *ngIf="((deliveryDateStatus.value.deliveryStatus=='Shipped' && deliveryDateStatus.value.deliveryDate=='') || (deliveryDateStatus.value.deliveryStatus=='Delivered' && deliveryDateStatus.value.assetId==''))" class="text text-danger">
                                         Delivery date is required.
@@ -312,7 +312,7 @@
                                 </form>
                             </td>
                             <td>
-                                <form [formGroup]="deliveryDateStatus" (ngSubmit)="updateDeliveryDate(p.order_item_id)">
+                                <form [formGroup]="deliveryDateStatus" (ngSubmit)="updateDeliveryDate(p.order_item_id,p)">
                                     <label>Delivery date:<input class="form-control" type="date" formControlName="deliveryDate" [value]="currDate"> </label>
                                     <!-- <div *ngIf="((deliveryDateStatus.value.deliveryStatus=='Shipped' && deliveryDateStatus.value.deliveryDate=='') || (deliveryDateStatus.value.deliveryStatus=='Delivered' && deliveryDateStatus.value.assetId==''))" class="text text-danger">
                                         Delivery date is required.
@@ -416,7 +416,7 @@
                                 </form>
                             </td>
                             <td>
-                                <form [formGroup]="deliveryDateStatus" (ngSubmit)="updateDeliveryDate(p.order_item_id)">
+                                <form [formGroup]="deliveryDateStatus" (ngSubmit)="updateDeliveryDate(p.order_item_id,p)">
                                     <label>Delivery date:<input class="form-control" type="date" formControlName="deliveryDate" [value]="currDate"> </label>
                                     <!-- <div *ngIf="((deliveryDateStatus.value.deliveryStatus=='Shipped' && deliveryDateStatus.value.deliveryDate=='') || (deliveryDateStatus.value.deliveryStatus=='Delivered' && deliveryDateStatus.value.assetId==''))" class="text text-danger">
                                         Delivery date is required.
@@ -491,7 +491,7 @@
                                 </form>
                             </td>
                             <td *ngIf="o.orderType_id==1">
-                                <form [formGroup]="deliveryDateStatus" (ngSubmit)="updateDeliveryDate(p.order_item_id)">
+                                <form [formGroup]="deliveryDateStatus" (ngSubmit)="updateDeliveryDate(p.order_item_id, p)">
                                     <label>Delivery date:<input class="form-control" type="date" formControlName="deliveryDate" [value]="currDate"> </label>
                                     <!-- <div *ngIf="((deliveryDateStatus.value.deliveryStatus=='Shipped' && deliveryDateStatus.value.deliveryDate=='') || (deliveryDateStatus.value.deliveryStatus=='Delivered' && deliveryDateStatus.value.assetId==''))" class="text text-danger">
                                         Delivery date is required.

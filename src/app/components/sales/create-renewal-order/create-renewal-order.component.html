@@ -108,10 +108,10 @@
                 <tbody>
                     <tr *ngFor="let p of tableData" class="shadow-lg p-3 mt-3 bg-white rounded">
                         <td>
-                            <input class="checkbox" type="checkbox"  (click)="checkItem($event, p);renewalsTotal($event, p.data, p.data.currentOrderNo, p.data.dp)" 
-                                [name]="p.data.indexs"
-                                [id]="p.data.indexs"    
-                                [value]="[p.data.price*p.data.qty]"
+                            <input class="checkbox" type="checkbox"  (click)="checkItem($event, p);renewalsTotal($event, p.data, p.data.primary_id, p.data.damage_protection)" 
+                                [name]="p.data.id"
+                                [id]="p.data.id"    
+                                [value]="[p.data.tenure_price]"
                                 [disabled]="p.isDisabled"
                                 [(ngModel)]="p.isSelected">
                         </td>  <!-- && dateDiffInDays(p.data.startDate)>=-2 -->
@@ -122,7 +122,8 @@
                         </td> -->
                         
                         <td  [class.fade]="p.data.renewed==2">
-                            <label for="{{p.data.id}}" class="pt-4"><a class="tdAnchor" data-toggle="modal" data-target="#orderDetailsModal1">{{p.data.primaryOrderNo}} </a></label>
+                            <label for="{{p.data.id}}" class="pt-4"><a class="tdAnchor" data-toggle="modal" data-target="#orderDetailsModal1" >{{p.data.primary_id}} </a></label>
+                            <!-- <label for="{{p.data.id}}" class="pt-4"><a class="tdAnchor" data-toggle="modal" data-target="#orderDetailsModal1">{{p.data.primaryOrderNo}} </a></label> -->
                             <!-- <a class="renew-status theme-color">Asset # : {{p.data.assetId}}</a> -->
                         </td>
                         <td  [class.fade]="p.data.renewed==2">
@@ -132,15 +133,6 @@
                                 </a>
                                 <!-- <a class="ml-5 mav-h pull-right" *ngIf="p.data.overdew==1">Overdue</a> -->
                             </label>
-                            <!-- <a class="renew-status mv-h" *ngIf="p.data.dp>0">Damage Protection: Included</a>
-                            <a class="renew-status mv-h" *ngIf="p.data.dp==0">Damage Protection: No</a> -->
-                            <!-- <a class="renew-status light-red mv-h" *ngIf="p.data.overdew==1">Overdue</a> -->
-                            <!-- <a class="renew-status light-red mv-h" *ngIf="returnDueDate(p.data.startDate)">Overdue</a>
-                            <a class="renew-status theme-color mv-h" *ngIf="!returnDueDate(p.data.startDate)">Due</a> -->
-                            <!-- <a class="renew-status light-green" *ngIf="p.data.overdew==0">Upcoming renewal</a> -->
-                            <!-- <div class="renew-prodName">
-                                sdjfhsdkjfdhskfjsdhkjfsdhkjfhsdkjfhuehfdjksfdjfdsjkfhlksdjfhsdjkfhsdfhsdkjf
-                            </div> -->
                             <div class="renewals-mv mav-h mb-2">
                                 <div class="row">
                                     <!-- <div class="col-12">
@@ -153,16 +145,16 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-6">
-                                        <a class="renew-status">Asset #: {{p.data.assetId}}</a>
+                                        <a class="renew-status">Asset #: {{p.data.asset_id}}</a>
                                     </div>
                                     <div class="col-6 text-right">
-                                        <a class="renew-status">Rent: ₹{{((p.data.price-0)+(p.data.dp-0))*p.data.qty}}</a>
+                                        <a class="renew-status">Rent: ₹{{((p.data.tenure_price)+(p.data.damage_protection))}}</a>
                                     </div>
                                 </div>
                                 <div class="row">
                                     
                                     <div class="col-8">
-                                        <a>Due date: {{dueDate(p.data.startDate)}}</a>
+                                        <a>Due date: {{dueDate(p.data.start_date)}}</a>
                                         <!-- <a class="renew-status">Primary order #: </a> -->
                                     </div>
                                     <!-- <div class="col-6 text-center">
@@ -171,17 +163,17 @@
                                     
                                     <div class="col-4">
                                         <!-- <a *ngIf="p.data.overdew==1">Overdue</a> -->
-                                        <a class="renew-status light-red text-left" *ngIf="returnDueDate(p.data.startDate)">Overdue</a>
-                                        <a class="renew-status theme-color text-left" *ngIf="!returnDueDate(p.data.startDate)">Due</a>
+                                        <a class="renew-status light-red text-right" *ngIf="returnDueDate(p.data.start_date)">Overdue</a>
+                                        <a class="renew-status theme-color text-right" *ngIf="!returnDueDate(p.data.start_date)">Due</a>
                                     </div>
                                 </div>
                                 
                                 <div class="row mt-2 mb-2">                                    
                                     <div class="col-12">
-                                        <a class="renew-status" >Subscription: {{p.data.startDate}} - {{p.data.expiryDate}}</a>
+                                        <a class="renew-status" >Subscription: {{p.data.start_date}} - {{p.data.end_date}}</a>
                                     </div>
                                     <div class="col-12">
-                                        <a>Primary order #: {{p.data.primaryOrderNo}}</a>
+                                        <a>Primary order #: {{p.data.primary_id}}</a>
                                     </div>
                                 </div>
                                 
@@ -191,7 +183,7 @@
                         
                         <td  [class.fade]="p.data.renewed==2">    
                             <label for="{{p.data.id}}"  class="pt-4">
-                                <a class="renew-status">{{p.data.assetId}}</a>
+                                <a class="renew-status">{{p.data.asset_id}}</a>
                             </label> 
                         </td>
                         <td  [class.fade]="p.data.renewed==2">
@@ -200,7 +192,7 @@
                             </a> -->
                             <label for="{{p.data.id}}"  class="pt-4">
                                 <a>
-                                    {{p.data.startDate}}
+                                    {{p.data.start_date | date: 'dd/MM/yyyy'}}
                                 </a>
                             </label>
                         </td>
@@ -210,28 +202,26 @@
                             </a> -->
                             <label for="{{p.data.id}}"  class="pt-4">
                                 <a>
-                                    {{p.data.expiryDate}}
+                                    {{p.data.end_date | date: 'dd/MM/yyyy'}}
                                 </a>
                             </label>
                         </td>
                         <td  [class.fade]="p.data.renewed==2">
                             <label for="{{p.data.id}}"  class="pt-4">
                                 <a>
-                                    {{dueDate(p.data.startDate)}}
+                                    {{dueDate(p.data.start_date)}}
                                 </a>
                             </label>
                         </td>
                         <td  [class.fade]="p.data.renewed==2">
                             <label for="{{p.data.id}}"  class="pt-4">
-                                <a class="renew-status light-red mv-h" *ngIf="returnDueDate(p.data.startDate)">Overdue</a>
-                            <a class="renew-status theme-color mv-h" *ngIf="!returnDueDate(p.data.startDate)">Due</a>
+                                <a class="renew-status light-red mv-h" *ngIf="returnDueDate(p.data.start_date)">Overdue</a>
+                            <a class="renew-status theme-color mv-h" *ngIf="!returnDueDate(p.data.start_date)">Due</a>
                             </label>
                         </td>
                         <td  [class.fade]="p.data.renewed==2">
                             <label for="{{p.data.id}}"  class="pt-4">
-                                <a>₹{{((p.data.price-0)+(p.data.dp-0))*p.data.qty}}</a>    
-                                <input type="number" [(ngModel)]="p.data.price" >
-                                <button (click)="updateTenurePrice(p.data.order_item_id, p.data.price)">Update price</button>
+                                <a>₹{{((p.data.tenure_price-0)+(p.data.damage_protection-0)) | number: '1.0-0'}}</a>     
                             </label>                      
                         </td>
                     </tr>
@@ -241,7 +231,6 @@
                 <!-- //*ngIf="productsArr.length" -->
                 <div *ngIf="productsArr.length"> 
                     <h4>Sub total : <span>₹{{subTotal}}</span></h4>
-                    <!-- <h4>Damage protection <i placement="top" ngbTooltip="{{taxInfo}}" class="fa fa-info-circle"></i> : <span>₹{{dp}}</span></h4> -->
                     <h4>Taxes <i placement="top" ngbTooltip="{{taxInfo}}" class="fa fa-info-circle"></i> : <span>₹{{(subTotal) * (this.gst)/100 | number: '1.0-0'}}</span></h4>                    
                     <h4>Total : <span>₹{{renewTotal | number: '1.0-0'}}</span></h4>
                 </div>

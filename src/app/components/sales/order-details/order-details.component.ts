@@ -431,26 +431,14 @@ export class OrderDetailsComponent implements OnInit {
     
   }
 
-  updateDeliveryDate(OrderId){
+  updateDeliveryDate(OrderId, OIT){
+    console.log(OIT);
     let getOrder;
     let getAllProduct=[];
     let forQtyProduct;
     this.formError=false;
     let orderItem;
     let currentAssetId;
-    // let log={orderID:OrderId,  adminResponse:`Updated delivery date to: ${this.deliveryDateStatus.value.deliveryDate}`, Product_id:prodId }
-
-    // const controls = this.deliveryDateStatus.controls;
-
-    // Object.keys(controls).forEach(key => {
-    //   controls[key].markAsTouched();
-    // });
-
-    // if(this.deliveryDateStatus.valid){
-         
-    // }
-
-    // let delvStatus = this.deliveryDateStatus.value.deliveryStatus;
       let assetId;
       let getdeliveryDate:Date;
       if(this.deliveryDateStatus.value.deliveryDate=='' || this.deliveryDateStatus.value.deliveryDate==null){
@@ -483,31 +471,6 @@ export class OrderDetailsComponent implements OnInit {
         getAllProduct[0].billPeriod = db+'-'+edb; 
         getAllProduct[0].deliveryDateAssigned=1;
         console.log(getAllProduct);
-        // let cid = new Promise((resolve, reject) => {
-        //   Array.prototype.forEach.call(forQtyProduct, res => {
-        //     if(res.id===prodId){          
-        //       assetId=res.assetId;   
-        //       if(res.indexs===indexId){
-        //         // res.deliveryAssigned=1;
-        //         res.actualStartDate=db;
-        //         res.startDate=db;
-        //         res.expiryDate=edb;
-        //         res.nextStartDate=nextStartDate;
-        //         res.billPeriod = db+'-'+edb;  
-        //         res.deliveryDateAssigned=1;
-        //         // res.deliveryStatus=delvStatus;
-        //         // const index = res.assetId.indexOf(res.assetId[0]);
-        //         //   if (index > -1) {
-        //         //     res.assetId.splice(index, 1);
-        //         //   }
-        //         // if(assetId!==''){              
-        //         //   res.assetId=assetId;
-        //         // }
-        //       }
-        //       resolve('cid success')
-        //     }
-        //   });
-        // });
       
         if(currentAssetId!='To be assigned'){
           this.formError=false;
@@ -516,17 +479,14 @@ export class OrderDetailsComponent implements OnInit {
           this.http.put(`${environment.apiUrl}/orders/updateOrderItemDeliveryDate/${OrderId}`, {deliveryDate:getdeliveryDate, expiryDate:exp,renewalTimeline:JSON.stringify(getAllProduct)}).subscribe((res) => {
               console.log(res);
               this.http.put(`${environment.apiUrl}/assets/update/${currentAssetId}`, {availability:0, startDate:db, expiryDate:edb, nextStartDate:nextStartDate}).subscribe();
-              // const userId = localStorage.getItem('user_id');
-              // const uname = localStorage.getItem('uname');
-              // const uid = uname.substring(0, 3);
-              // const rand = Math.floor((Math.random() * 9999) + 1);
-              // const activityId = ""+uid + rand;
-              // let activity={
-              //   activityId:activityId,
-              //   userId:userId,
-              //   activityLog:JSON.stringify(log),
-              // }
-              // this.http.post(`${environment.apiUrl}/backendActivity/createActivity`, activity).subscribe();
+              this.http.get(`${environment.apiUrl}/admin/getOrderRenewalById/${OrderId}`).subscribe((orderRenewals:[])=>{
+                
+                if(orderRenewals.length>0){
+                  this.http.put(`${environment.apiUrl}/admin/updateOrderRenewal/${OrderId}`, {start_date:getdeliveryDate, end_date:exp}).subscribe();
+                }else{
+                  this.http.post(`${environment.apiUrl}/admin/insertOrderRenewal`, {order_item_id:OrderId, renewal_price:OIT.tenure_price, start_date:getdeliveryDate, end_date:exp, is_renewed:1}).subscribe();
+                }
+              });
               this.deliveryDateStatus.reset();
               this.getAssets();
               this.getOrderById(this.oid);

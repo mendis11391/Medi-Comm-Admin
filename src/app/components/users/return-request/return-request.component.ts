@@ -98,7 +98,7 @@ export class ReturnRequestComponent implements OnInit {
       assetId: ['']
     });
     this.transactionId();
-    this.http.get(`${environment.apiUrl}/admin/getCustomerRequests`).subscribe((res) => {
+    this.http.get(`${environment.apiUrl}/admin/getReturnCustomerRequests`).subscribe((res) => {
       let a=[];
       a.push(res);
       this.orderitem =a[0];
@@ -185,7 +185,7 @@ export class ReturnRequestComponent implements OnInit {
     // this.modalReference=this.modalService.open(this.returnRequest, { windowClass : "return-request"});  
     this.productDetails= requestedProduct;
     console.log(this.productDetails);
-    this.toBeRefunded=(this.productDetails.prod_price-0)-(this.returnDamageCharges+this.earlyReturnCharges);
+    this.toBeRefunded=(this.productDetails.security_deposit-0)-(this.returnDamageCharges+this.earlyReturnCharges);
     this.http.get(`${environment.apiUrl}/orders/orderId/${ordId}`).subscribe((res) => {
       this.fullOrderDetails=res;
       orderItem = res[0].orderItem.filter(item=>item.order_item_id == oiid);
@@ -212,28 +212,27 @@ export class ReturnRequestComponent implements OnInit {
     let productToReturn = this.productDetails;
 
     let ucid={      
-        indexs:productToReturn.indexs,
-        id: productToReturn.id,
+        id: productToReturn.product_id,
         prod_name:productToReturn.prod_name,
-        prod_price:productToReturn.prod_price,
-        prod_img:productToReturn.prod_img,
-        delvdate: productToReturn.delvDate,
+        prod_price:productToReturn.security_deposit,
+        prod_img:productToReturn.prod_image,
+        delvdate: productToReturn.startDate,
         qty: 1, 
-        price: productToReturn.price, 
-        tenure: productToReturn.tenure,
+        price: productToReturn.tenure_price, 
+        tenure: productToReturn.tenure_period,
         primaryOrderNo:productToReturn.primaryOrderNo, 
         currentOrderNo: this.currentOrderId,
         renewed:3,
-        startDate:productToReturn.startDate,
-        expiryDate:productToReturn.expiryDate,
-        nextStartDate:productToReturn.nextStartDate,
-        overdew:productToReturn.overdew,
+        startDate:this.oldDateFormat(productToReturn.startDate),
+        expiryDate:this.oldDateFormat(productToReturn.endDate),
+        // nextStartDate:productToReturn.nextStartDate,
+        // overdew:productToReturn.overdew,
         ordered:1,
-        assetId:productToReturn.assetId,
-        deliveryStatus:productToReturn.deliveryStatus,
-        deliveryAssigned:productToReturn.deliveryAssigned,
-        dp:productToReturn.dp,
-        replacement:productToReturn.replacement,
+        assetId:productToReturn.asset_id,
+        // deliveryStatus:productToReturn.deliveryStatus,
+        // deliveryAssigned:productToReturn.deliveryAssigned,
+        dp:productToReturn.damage_protection,
+        // replacement:productToReturn.replacement,
         returnDate:this.returnDate,
         billPeriod:productToReturn.startDate+'-'+this.returnDate,
         billAmount:0,
@@ -241,8 +240,8 @@ export class ReturnRequestComponent implements OnInit {
         damageCharges:this.returnDamageCharges,
         earlyReturnCharges:this.earlyReturnCharges,
         order_item_id:this.currentOrderItemId,
-        tenure_id:productToReturn.tenureBasePrice,
-        tenureBasePrice:productToReturn.tenureBasePrice
+        tenure_id:productToReturn.tenure_id,
+        tenureBasePrice:productToReturn.tenure_base_price
     };    
     
     let cInfo=[];
@@ -250,7 +249,7 @@ export class ReturnRequestComponent implements OnInit {
     cInfo.push(ucid);
     let charges=0;
     let returnGrandTotal=0;
-    charges = (this.productDetails.prod_price-0)-(this.returnDamageCharges+this.earlyReturnCharges);
+    charges = (this.productDetails.security_deposit-0)-(this.returnDamageCharges+this.earlyReturnCharges);
     // pInfo.push(productToReturn.prod_id);
     if(charges>=0){
       returnGrandTotal=0;
@@ -265,7 +264,7 @@ export class ReturnRequestComponent implements OnInit {
       subTotal: this.returnDamageCharges+this.earlyReturnCharges,
       damageProtection:0,
       total:this.returnDamageCharges+this.earlyReturnCharges,
-      actualSecurityDeposit: (this.productDetails.prod_price-0),
+      actualSecurityDeposit: (this.productDetails.security_deposit-0),
       securityDeposit: 0,
       currentRefundAmount:charges,
       grandTotal: returnGrandTotal,
@@ -456,6 +455,15 @@ export class ReturnRequestComponent implements OnInit {
       
     }
     return ned;
+  }
+
+  oldDateFormat(myDate){
+    let currDate = new Date(myDate);
+    let day = currDate.getDate();
+    let month = currDate.getMonth()+1;
+    let year = currDate.getFullYear();
+    let convertedDate =day + '/' + month + '/' + year;
+    return convertedDate;
   }
 
 }

@@ -17,7 +17,7 @@
                         {{ date.day }}
                       </span>
                     </ng-template> -->
-                    <label class="mx-2">As on date:<div class="form-group">
+                    <!-- <label class="mx-2">As on date:<div class="form-group">
                       <div class="input-group">
                         <input class="form-control" placeholder="yyyy-mm-dd"
                                name="d" [(ngModel)]="fromDate" ngbDatepicker #d="ngbDatepicker">
@@ -26,7 +26,7 @@
                         </div>
                       </div>
                     </div>
-                   </label>
+                   </label> -->
                     <!-- <label class="mx-2">To date:
                       <div class="form-group">
                       <div class="input-group">
@@ -67,14 +67,14 @@
                           </thead>
                           <tbody *ngFor="let o of filteredOrderItems">
                             <tr >
-                              <td [routerLink]="['../../sales/orders',o.order_id]">{{o.primaryOrderNo}}</td>
+                              <td [routerLink]="['../../sales/orders',o.order_id]">{{o.order_id}}</td>
                               <td [routerLink]="['../../users/customers',o.customer_id]">{{o.firstName}}</td>
                               <td [routerLink]="['../../users/customers',o.customer_id]">{{o.mobile}}</td>
                               <td>{{o.prod_name}}</td> 
-                              <td>{{o.assetId}}</td> 
-                              <td>{{o.price}}</td>
-                              <td>{{o.startDate}}</td>    
-                              <td>{{o.expiryDate}}</td>                      
+                              <td>{{o.asset_id}}</td> 
+                              <td>{{o.renewal_price}}</td>
+                              <td>{{o.start_date | date: 'dd MM yyyy'}}</td>    
+                              <td>{{o.end_date | date: 'dd MM yyyy'}}</td>                      
                             </tr>                          
                           </tbody>
                         </table>
