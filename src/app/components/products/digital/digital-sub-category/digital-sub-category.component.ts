@@ -26,6 +26,7 @@ export class DigitalSubCategoryComponent implements OnInit {
     this.addcategory = this.formBuilder.group({
       mainCatName:['', Validators.required],
       subCatName:['', Validators.required],
+      catHeading:['', Validators.required],
       specNames:['', Validators.required],
       subCatSlug:['', Validators.required],
       subCatMetaTitle:['', Validators.required],
@@ -137,7 +138,12 @@ export class DigitalSubCategoryComponent implements OnInit {
 
   addCategoryandSpecs(){
     if(this.addcategory.valid){
-      this.category.addCategory(this.addcategory.value).subscribe();
+      this.category.addCategory(this.addcategory.value).subscribe((res)=>{
+        this.getAllCategoryGroup();
+        this.getAllCategories();
+        this.getAllSpecs();
+        alert('Success');
+      });
     }
   }
 

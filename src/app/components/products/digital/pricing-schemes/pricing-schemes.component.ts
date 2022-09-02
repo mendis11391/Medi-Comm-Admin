@@ -32,6 +32,7 @@ export class PricingSchemesComponent implements OnInit {
   tenureByPriority;
   b_url = `${environment.apiUrl}/products`;
   public closeResult: string;
+  schemeName:any;
   constructor(private modalService: NgbModal,private category: ProductService,private http: HttpClient) { }
 
   ngOnInit(): void {
@@ -150,4 +151,11 @@ export class PricingSchemesComponent implements OnInit {
       }
     },
   };
+
+  addPricing(){
+    this.http.post(`${environment.apiUrl}/products/postPricingScheme`, {scheme_name:this.schemeName}).subscribe((res) => {
+      console.log(res);
+      alert('scroller added successfully');
+    });
+  }
 }

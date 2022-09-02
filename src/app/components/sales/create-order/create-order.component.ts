@@ -377,13 +377,18 @@ export class CreateOrderComponent implements OnInit {
   }
 
   public tenureTotalAmount() {
-    this.tenureTotalPrice=0;
-    this.totalDepositPrice=0;
-    this.ProductDetails.forEach((product) => {
-      this.tenureTotalPrice+=product.tenure_price * product.quantity;
-      this.totalDepositPrice+=product.securityDeposit * product.quantity;
-    });    
-    this.calculateTotal();
+    if(this.dp>0){
+      alert('Please disable damage protection before changing the price');
+    }else{
+      this.tenureTotalPrice=0;
+      this.totalDepositPrice=0;
+      this.ProductDetails.forEach((product) => {
+        this.tenureTotalPrice+=product.tenure_price * product.quantity;
+        this.totalDepositPrice+=product.securityDeposit * product.quantity;
+      });    
+      this.calculateTotal();
+    }
+    
   }
 
   transactionId() {

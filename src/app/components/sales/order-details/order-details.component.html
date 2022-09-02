@@ -166,13 +166,26 @@
         <div class="col-sm-4">
             <div class="card">
                 <div class="card-header">
-                    <h5>Comments</h5>
+                    <h5>Transaction message</h5>
                 </div>
                 <div class="card-body">
                     <p> {{o.transaction_msg}}</p>
                     
                     <textarea class="form-control" *ngIf="editStatus" rows="5" [(ngModel)]="o.transaction_msg"></textarea>
                     <button *ngIf="editStatus" class="btn btn-warning mt-2" (click)="updateTransactionField(o.transaction_id,'transaction_msg',o.transaction_msg)">Update</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Comments</h5>
+                </div>
+                <div class="card-body">
+                    
+                    <textarea class="form-control" rows="5" [(ngModel)]="comment"></textarea>
+                    <button class="btn btn-warning mt-2" (click)="postNotes()">Submit</button>
                 </div>
             </div>
         </div>

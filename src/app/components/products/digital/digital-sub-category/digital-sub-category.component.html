@@ -1,7 +1,7 @@
 <!-- Container-fluid starts-->
 <div class="container-fluid">
     <div class="row">
-        <!-- <div class="col-sm-5">
+        <div class="col-sm-5">
             <div class="card">
                 <div class="card-header">
                     <h5>Category</h5>
@@ -24,6 +24,14 @@
                             <label class="col-form-label"><span>*</span> Category name</label>
                             <input class="form-control" formControlName="subCatName" type="text" placeholder="Category name"/>
                             <div *ngIf="addcategory.controls.subCatName.touched && addcategory.controls.subCatName.errors?.required" class="text text-danger">
+                                This field is required.
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="col-form-label"><span>*</span> Category Heading</label>
+                            <input class="form-control" formControlName="catHeading" type="text" placeholder="Category name"/>
+                            <div *ngIf="addcategory.controls.catHeading.touched && addcategory.controls.catHeading.errors?.required" class="text text-danger">
                                 This field is required.
                             </div>
                         </div>
@@ -66,7 +74,7 @@
                     </form>
                 </div>
             </div>
-        </div> -->
+        </div>
 
         <div class="col-sm-12">
             <div class="card specifications">

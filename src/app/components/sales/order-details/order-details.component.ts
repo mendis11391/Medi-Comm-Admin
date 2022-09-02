@@ -64,6 +64,8 @@ export class OrderDetailsComponent implements OnInit {
   role = localStorage.getItem('u_role');
   popupOrder;
   public closeResult: string;
+
+  comment:string='';
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
   constructor(private changeDetection: ChangeDetectorRef,private route: ActivatedRoute,private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: FormBuilder) {
     // this.order = orderDB.list_order;
@@ -177,6 +179,15 @@ export class OrderDetailsComponent implements OnInit {
     }, (reason) => {
       this.closeResult = `Dismissed`;
     });
+  }
+
+  postNotes(){
+      let sendObj = {
+        comment:this.comment,
+        uid: this.customerDetails[0].customer_id,
+        orderId:this.fullOrderDetails[0].order_id,
+        orderType:this.fullOrderDetails[0].order_type,
+      };
   }
 
   postTransactionData(){
