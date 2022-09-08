@@ -77,13 +77,12 @@ export class LoginComponent implements OnInit {
         
         if (res.authenticated) {
           this.login.getUserDetails(res.token).subscribe(resp => {
-            console.log(resp);
-            localStorage.setItem('user_id', resp.data[0].customer_id);
-            localStorage.setItem('u_role', resp.data[0].login_type);
-            localStorage.setItem('adminName', resp.data[0].firstName);
+            sessionStorage.setItem('user_id', resp.data[0].customer_id);
+            sessionStorage.setItem('u_role', resp.data[0].login_type);
+            sessionStorage.setItem('adminName', resp.data[0].firstName);
             this.login.login(resp.data[0].firstName);
           });
-          localStorage.setItem('token', res.token);
+          sessionStorage.setItem('token', res.token);
           this.router.navigate(['/dashboard/default']);
           setTimeout(()=>{
             window.location.reload();

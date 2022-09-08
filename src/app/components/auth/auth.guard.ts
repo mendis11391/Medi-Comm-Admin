@@ -58,10 +58,10 @@ export class AuthGuard implements CanActivate, CanLoad {
     }
 
     const roles = route.data.roles as Role[];
-    if (roles && !roles.some(r => this.authService.hasRole(r))) {
-        this.router.navigate(['error', 'not-found']);
-        return false;
-    }
+    // if (roles && !roles.some(r => this.authService.hasRole(r))) {
+    //     this.router.navigate(['error', 'not-found']);
+    //     return false;
+    // }
 
     return true;
   }

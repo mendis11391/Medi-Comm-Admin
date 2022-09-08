@@ -61,11 +61,12 @@ export class OrderDetailsComponent implements OnInit {
   subTotal:number=0;
   Taxes:number=18;
   dp:number=0;
-  role = localStorage.getItem('u_role');
+  role = sessionStorage.getItem('u_role');
   popupOrder;
   public closeResult: string;
 
   comment:string='';
+  notes:any = [];
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
   constructor(private changeDetection: ChangeDetectorRef,private route: ActivatedRoute,private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: FormBuilder) {
     // this.order = orderDB.list_order;
@@ -142,6 +143,8 @@ export class OrderDetailsComponent implements OnInit {
     this.http.get(`${environment.apiUrl}/orders/getAllDeliveryStatus`).subscribe((DSres) => {
       this.orderDeliveryStatus=DSres;
     });
+
+    this.getNotesByOrderId(this.oid);
   }
 
   async getKycByCustomerId(id){
@@ -181,13 +184,25 @@ export class OrderDetailsComponent implements OnInit {
     });
   }
 
+  getNotesByOrderId(orderId){
+    this.http.get(`${environment.apiUrl}/admin/getNotesByOrderId/${orderId}`).subscribe((notesRes)=>{
+      this.notes = notesRes;
+    })
+  }
+
   postNotes(){
       let sendObj = {
         comment:this.comment,
-        uid: this.customerDetails[0].customer_id,
-        orderId:this.fullOrderDetails[0].order_id,
-        orderType:this.fullOrderDetails[0].order_type,
+        uid: sessionStorage.getItem('user_id'),
+        orderId:this.fullOrderDetails[0].id,
+        orderType:this.fullOrderDetails[0].orderType_id,
       };
+      this.http.post(`${environment.apiUrl}/admin/insertNotes`,sendObj).subscribe((res)=>{
+        console.log(res);
+        this.getNotesByOrderId(this.fullOrderDetails[0].id);
+        alert('Added note successfully');
+      });
+
   }
 
   postTransactionData(){

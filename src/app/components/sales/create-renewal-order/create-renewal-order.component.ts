@@ -76,7 +76,7 @@ export class CreateRenewalOrderComponent implements OnInit {
   transactionDate:Date;
   currDate=new Date();
   orderValidated:boolean=true;
-
+  disableRenew:boolean =  true;
   constructor(private router: Router,private http: HttpClient,private os:OrdersService,private modalService: NgbModal) {
     this.dropdownSettings = {
       singleSelection: true,
@@ -495,6 +495,7 @@ export class CreateRenewalOrderComponent implements OnInit {
   }
 
   renew(){
+    this.disableRenew = false;
     let allOrders = this.orders;
     let allProducts = [];
     let productsOverdue = [];

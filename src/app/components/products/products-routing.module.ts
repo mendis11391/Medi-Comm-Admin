@@ -21,7 +21,6 @@ import { User, Role } from '../auth/user';
 const routes: Routes = [
   {
     path: '',
-    canActivate: [AuthGuard],
     children: [
       {
         path: 'physical/category',

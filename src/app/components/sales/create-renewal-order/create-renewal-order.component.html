@@ -238,7 +238,7 @@
                 <!-- <button class="btn btn-solid ml-3 mv-h" (click)="placeOrderTest()">Renew</button>              -->
             </div>
             <div class="renew-button">
-                <button class="btn btn-warning ml-3 mv-h" (click)="renew()">Renew</button>  
+                <button class="btn btn-warning ml-3 mv-h" (click)="renew()" *ngIf="disableRenew">Renew</button>  
             </div>
             <!-- <div class="pull-right text-right calcRenew">
                 <button class="btn btn-solid ml-3" (click)="renew()">Renew</button> 

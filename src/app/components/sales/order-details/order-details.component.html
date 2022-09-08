@@ -177,18 +177,7 @@
             </div>
         </div>
 
-        <div class="col-sm-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5>Comments</h5>
-                </div>
-                <div class="card-body">
-                    
-                    <textarea class="form-control" rows="5" [(ngModel)]="comment"></textarea>
-                    <button class="btn btn-warning mt-2" (click)="postNotes()">Submit</button>
-                </div>
-            </div>
-        </div>
+        
     </div>
 
 
@@ -575,6 +564,39 @@
                             </div>
                         </div>
                     </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Comments</h5>
+                </div>
+                <div class="card-body">                    
+                    <div class="card text-white bg-info mb-3" *ngFor="let n of notes">
+                        <div class="card-body">
+                            {{n.notes}}
+                        </div>
+                        <div class="card-footer text-white bg-info p-1 m-0">
+                            Posted by {{n.firstName}} on {{n.created_at | date:'dd MM yyyy hh:mm'}}
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Add Comment</h5>
+                </div>
+                <div class="card-body">
+                    
+                    <textarea class="form-control" rows="5" [(ngModel)]="comment"></textarea>
+                    <button class="btn btn-warning mt-2" (click)="postNotes()">Submit</button>
                 </div>
             </div>
         </div>

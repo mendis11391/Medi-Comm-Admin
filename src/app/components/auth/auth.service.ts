@@ -18,7 +18,7 @@ export class AuthService {
   private user: User;
 
   constructor(private http: HttpClient) {
-    this.currentUserSubject = new BehaviorSubject<UserData>(JSON.parse(localStorage.getItem('currentUser')));
+    this.currentUserSubject = new BehaviorSubject<UserData>(JSON.parse(sessionStorage.getItem('currentUser')));
         this.currentUser = this.currentUserSubject.asObservable();
    }
 
@@ -27,7 +27,7 @@ export class AuthService {
   }
 
   authenticatedCheck() {
-    return !!localStorage.getItem('token');
+    return !!sessionStorage.getItem('token');
   }
 
   //auth codes
@@ -45,7 +45,7 @@ export class AuthService {
   }
 
   public getAdminDetails() {
-    let token= localStorage.getItem('token');
+    let token= sessionStorage.getItem('token');
     return this.http.post(`${this.b_url}admindetails`,{token:token});
   }
 
