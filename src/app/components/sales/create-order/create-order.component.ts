@@ -233,6 +233,34 @@ export class CreateOrderComponent implements OnInit {
       this.getProducts();
       this.http.post(`${environment.apiUrl}/payments/saveNewOrder`, this.orderForm.value).subscribe((resp1)=>{
         this.http.post(`${environment.apiUrl}/payments/postManualOrderTransaction`,transaction).subscribe((resp2)=>{
+          let mobileNos = [];
+          environment.mobiles.forEach((envMobile)=>{
+            mobileNos.push(envMobile);
+          });
+
+          mobileNos.push(this.orderForm.value.mobile);
+          mobileNos.forEach((mobileNumber)=>{
+            let template = {
+              "apiKey": environment.whatsappAPIKey,
+              "campaignName": "Order Successful",
+              "destination": mobileNumber,
+              "userName": "IRENTOUT",
+              "source": "Primary order",
+              "media": {
+                 "url": "https://irentout.com/assets/images/slider/5.png",
+                 "filename": "IROHOME"
+              },
+              "templateParams": [
+                this.orderForm.value.firstName+' '+this.orderForm.value.lastName, JSON.stringify(this.orderForm.value.grandTotal),this.orderForm.value.orderID
+              ],
+              "attributes": {
+                "InvoiceNo": "1234"
+              }
+            }
+    
+            this.http.post(`https://backend.aisensy.com/campaign/t1/api`, template).subscribe();
+          });
+          
           alert('Order created successfully');
           this.router.navigate(['/sales/primary-order']);
         });
