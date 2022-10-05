@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { Component, OnInit, Directive  } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-create-vendors',
@@ -7,10 +7,10 @@ import { FormBuilder, FormGroup } from '@angular/forms';
   styleUrls: ['./create-vendors.component.scss']
 })
 export class CreateVendorsComponent implements OnInit {
-  public accountForm: FormGroup;
-  public permissionForm: FormGroup;
+  public accountForm: UntypedFormGroup;
+  public permissionForm: UntypedFormGroup;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: UntypedFormBuilder) {
     this.createAccountForm();
     this.createPermissionForm();
   }

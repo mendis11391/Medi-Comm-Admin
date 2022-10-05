@@ -18,11 +18,11 @@
   }
 }
 
-@mixin flag-icon($country) {
-  .flag-icon-#{$country} {
-    background-image: url(../fonts/flag-icon/#{$country}.svg);
-    &.flag-icon-squared {
-      background-image: url(../fonts/flag-icon/#{$country}.svg);
-    }
-  }
-}
+// @mixin flag-icon($country) {
+//   .flag-icon-#{$country} {
+//     background-image: url(../fonts/flag-icon/#{$country}.svg);
+//     &.flag-icon-squared {
+//       background-image: url(../fonts/flag-icon/#{$country}.svg);
+//     }
+//   }
+// }

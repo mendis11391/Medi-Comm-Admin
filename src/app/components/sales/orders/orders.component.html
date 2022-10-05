@@ -5,9 +5,9 @@
             <div class="card">
                 <div class="card-body">
                     <div class="custom-datatable">
-                        <input type='text' class="filter-ngx form-control" placeholder='Search...'
+                        <!-- <input type='text' class="filter-ngx form-control" placeholder='Search...'
                             (keyup)='updateFilter($event)' />
-                            <button class="pull-right btn btn-warning" (click)="exportAsXLSX()">Download</button><br><br>
+                            <button class="pull-right btn btn-warning" (click)="exportAsXLSX()">Download</button><br><br> -->
                         
                         <!-- <select name="ordersFilter" (change)="filterOrders($event.target.value)">                            
                             <option>New orders</option>
@@ -40,7 +40,7 @@
                             <h3>{{orderName}}</h3>
                           </div>
                         </div>
-                        <table class="table table-striped table-bordered" >
+                        <!-- <table class="table table-striped table-bordered" >
                           <thead>
                             <tr>
                               <th>Order Id</th>
@@ -63,7 +63,47 @@
                               <td>{{o.delivery_status}}</td>                       
                             </tr>                          
                           </tbody>
-                        </table>
+                        </table> -->
+
+                        <p-table #dt1 styleClass="p-datatable-gridlines" selectionMode="multiple" [(selection)]="selectedOrders" [exportHeader]="'customExportHeader'" [value]="filteredOrders" [lazy]="false" (onLazyLoad)="loadOrders($event)" responsiveLayout="scroll" dataKey="id"                            
+                            [paginator]="true" [rows]="30" [totalRecords]="totalRecords" [loading]="loading" [globalFilterFields]="['order_id', 'firstName', 'mobile', 'totalSecurityDeposit', 'grandTotal', 'paymentStatus', 'delivery_status']">
+                            <ng-template pTemplate="caption">
+                              <div class="p-d-flex">
+                                <span class="p-input-icon-left p-ml-auto">
+                                          <!-- <i class="pi pi-search"></i> -->
+                                          <input class="w-100" pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Search keyword" />
+                                      </span>
+                              </div>
+                              <div class="flex">
+                                <button type="button" pButton pRipple icon="pi pi-file" (click)="dt1.exportCSV()" class="mr-2" pTooltip="CSV" tooltipPosition="bottom">CSV</button>
+                                <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportAsXLSX()" class="p-button-success mr-2"  pTooltip="XLS" tooltipPosition="bottom">XL</button>
+                                <!-- <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()" class="p-button-warning mr-2" pTooltip="PDF" tooltipPosition="bottom"></button> -->
+                                <button type="button" pButton pRipple icon="pi pi-filter" (click)="dt1.exportCSV({selectionOnly:true})" class="p-button-info ml-auto" pTooltip="Selection Only" tooltipPosition="bottom">CSV</button>
+                              </div>
+                            </ng-template>
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th pSortableColumn="order_id">Order Id <p-sortIcon field="order_id"></p-sortIcon></th>
+                                    <th pSortableColumn="createdAt">Order date <p-sortIcon field="createdAt"></p-sortIcon></th>
+                                    <th pSortableColumn="firstName">Customer name <p-sortIcon field="firstName"></p-sortIcon></th>
+                                    <th pSortableColumn="mobile">Mobile <p-sortIcon field="mobile"></p-sortIcon></th>
+                                    <th pSortableColumn="grandTotal">Transaction value <p-sortIcon field="grandTotal"></p-sortIcon></th>
+                                    <th pSortableColumn="paymentStatus">Transaction status <p-sortIcon field="paymentStatus"></p-sortIcon></th>
+                                    <th pSortableColumn="delivery_status">Delivery status <p-sortIcon field="delivery_status"></p-sortIcon></th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-o>
+                                <tr [routerLink]="['../orders',o.id]">
+                                  <td>{{o.order_id}}</td>
+                                  <td>{{o.createdAt | date:'dd MM yyyy'}}</td> 
+                                  <td>{{o.firstName}}</td> 
+                                  <td>{{o.mobile}}</td>
+                                  <td>₹ {{o.grandTotal}}</td>  
+                                  <td>{{o.paymentStatus}}</td> 
+                                  <td>{{o.delivery_status}}</td> 
+                                </tr>
+                            </ng-template>
+                        </p-table>
                     </div>
                 </div>
             </div>

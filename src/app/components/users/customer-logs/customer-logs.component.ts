@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Directive  } from '@angular/core';
 import { Customers } from 'src/app/shared/data/customer';
 import { OrdersService } from '../../products/services/orders.service';
 

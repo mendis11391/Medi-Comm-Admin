@@ -1,10 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Directive  } from '@angular/core';
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { Orders } from "../../../shared/data/order";
 import { OrdersService } from '../../products/services/orders.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient} from '@angular/common/http';
-import { FormGroup,FormBuilder } from '@angular/forms';
+import { UntypedFormGroup,UntypedFormBuilder } from '@angular/forms';
 import { ExcelService } from '../services/excel.service';
 
 @Component({
@@ -18,14 +18,14 @@ export class DepositsComponent implements OnInit {
   @ViewChild('content') content;
   @ViewChild('orderDetails') orderDetails;
   orderId;
-  updateStatus: FormGroup;
+  updateStatus: UntypedFormGroup;
   modalReference;
   fullOrderDetails;
   productDetails;
   public filteredOrders=[];
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
 
-  constructor(private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: FormBuilder) { }
+  constructor(private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: UntypedFormBuilder) { }
 
   ngOnInit(): void {
     this.getOrders();

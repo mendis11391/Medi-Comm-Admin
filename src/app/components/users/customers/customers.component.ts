@@ -1,16 +1,17 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Directive  } from '@angular/core';
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { Orders, Assets } from "../../../shared/data/order";
 import { Customers } from "../../../shared/data/customer";
 import { OrdersService } from '../../products/services/orders.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient} from '@angular/common/http';
-import { FormGroup,FormBuilder } from '@angular/forms';
+import { FormGroup,UntypedFormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ProductService } from '../../products/services/product.service';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { environment } from 'src/environments/environment';
 import { KYC } from 'src/app/shared/data/kyc';
+import { ExcelService } from '../../sales/services/excel.service';
 
 @Component({
   selector: 'app-customers',
@@ -68,9 +69,18 @@ export class CustomersComponent implements OnInit {
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
   @ViewChild('addressModal') addressModal;
   @ViewChild('prodModal') prodModal;
+  @ViewChild('commentModal') commentModal;
   @ViewChild('tenure') tenure;
+  Notes:any;
+  datasource: Orders[];
+  loading: boolean;
+  totalRecords: number;
+  selectedOrders: Orders[];
+  cols: any[];
+  exportColumns: any[];
+  comment:string='';
   
-  constructor(private ps:ProductService,private route: ActivatedRoute,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: FormBuilder) {
+  constructor(private excelService:ExcelService,private ps:ProductService,private route: ActivatedRoute,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: UntypedFormBuilder) {
     // this.order = orderDB.list_order;
   }
 
@@ -115,6 +125,7 @@ export class CustomersComponent implements OnInit {
     this.getAllOrders(this.customerId);
     this.getAllAddresses(this.customerId);
     this.getCustomerCartDetails(this.customerId);
+    this.getAllNotesByCustomerId(this.customerId);
     this.getProductBycityId(1);
     this.dropdownSettings = {
       singleSelection: false,
@@ -197,12 +208,18 @@ export class CustomersComponent implements OnInit {
     this.os.getAllOrdersByCustomerId(id).subscribe((orders)=>{
       this.orders = orders.filter(item=>item.paymentStatus=='Success' || item.orderType_id==3 || item.orderType_id==4 );
       this.orders.forEach((res)=>{
-        filteredProducts = res.orderItem;
-        for(let k=0;k<filteredProducts.length;k++){
-          AllProductsOf.push(filteredProducts[k]);
+        if(res.orderType_id==1 || res.orderType_id==3 ){
+          filteredProducts = res.orderItem;
+          for(let k=0;k<filteredProducts.length;k++){
+            AllProductsOf.push(filteredProducts[k]);
+          }
+          this.products =AllProductsOf;
+          this.orderItems = this.products.filter(item=>item.status==1);
+          this.orderItems.forEach(
+            item => (item.startDate = new Date(item.startDate))
+          );
         }
-        this.products =AllProductsOf;
-        this.orderItems = this.products.filter(item=>item.status==1);
+        
       });
     });
   }
@@ -213,6 +230,50 @@ export class CustomersComponent implements OnInit {
       this.cartDetails = cartRes[0].products;
     })
   }
+
+  getAllNotesByCustomerId(id){
+    this.http.get(`${environment.apiUrl}/admin/getNotesByCustomerId/${id}`).subscribe((res)=>{
+      this.Notes = res;
+      this.Notes.forEach(
+        item => (item.createdAt = new Date(item.createdAt))
+      );
+      this.cols = [
+        { field: "order_id", header: "Order Id" },
+        { field: "firstName", header: "First name" },
+        { field: "notes", header: "Notes" },
+        { field: "created_at", header: "Created at" },
+      ];
+
+      
+      this.exportColumns = this.cols.map(col => ({
+        title: col.header,
+        dataKey: col.field
+      }));
+
+      this.datasource = this.Notes;
+      this.totalRecords = this.Notes.length;
+    })
+  }
+
+  postNotes(){
+    let sendObj = {
+      comment:this.comment,
+      uid: sessionStorage.getItem('user_id'),
+      frontUid:this.customerId,
+      orderId:0,
+      orderType:0,
+    };
+    if(this.comment.replace(/ /g,'')){
+      this.http.post(`${environment.apiUrl}/admin/insertNotes`,sendObj).subscribe((res)=>{
+        this.getAllNotesByCustomerId(this.customerId);
+        this.comment='';
+        alert('Added note successfully');
+      });
+    }
+    
+  }
+
+
 
   getProductBycityId(id){
     this.ps.getAllProductsByCityId(id).subscribe((productRes)=>{
@@ -342,6 +403,10 @@ export class CustomersComponent implements OnInit {
     this.modalReference=this.modalService.open(this.prodModal,{ windowClass: 'my-prod'});
   }
 
+  openCommentModal() {
+    this.modalReference=this.modalService.open(this.commentModal,{ windowClass: 'my-prod'});
+  }
+
 
   async calcPrice(price,deposit, month,tenureId, tenure_base_price, product:any, quantity){
     this.tenuresOfProduct.forEach((res)=>{
@@ -395,6 +460,10 @@ export class CustomersComponent implements OnInit {
     let discountPrice = tenurePrice*discount/100;
     let tenureDiscountPrice=tenurePrice-discountPrice;
     return Math.round(tenureDiscountPrice);
+  }
+
+  exportAsXLSX():void {
+    this.excelService.exportAsExcelFile(this.Notes, 'Orders');
   }
 
   

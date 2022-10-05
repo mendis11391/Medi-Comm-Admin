@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync as  } from '@angular/core/testing';
 
 import { ReplaceRequestComponent } from './replace-request.component';
 
@@ -6,7 +6,7 @@ describe('ReplaceRequestComponent', () => {
   let component: ReplaceRequestComponent;
   let fixture: ComponentFixture<ReplaceRequestComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ReplaceRequestComponent ]
     })

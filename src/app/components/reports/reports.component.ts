@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Directive  } from '@angular/core';
 import * as chartData from '../../shared/data/chart';
 import { reportDB } from 'src/app/shared/tables/report';
 

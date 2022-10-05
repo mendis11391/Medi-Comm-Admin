@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Directive  } from '@angular/core';
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { orderDB } from "../../../shared/tables/order-list";
 import { Orders,OrderItems, Assets } from "../../../shared/data/order";
 import { OrdersService } from '../../products/services/orders.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient} from '@angular/common/http';
-import { FormGroup,FormBuilder } from '@angular/forms';
+import { UntypedFormGroup,UntypedFormBuilder } from '@angular/forms';
 import {NgbDate, NgbCalendar} from '@ng-bootstrap/ng-bootstrap';
 import { environment } from 'src/environments/environment';
 
@@ -15,12 +15,12 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./create-assets.component.scss']
 })
 export class CreateAssetsComponent implements OnInit {
-  asset:FormGroup;
+  asset:UntypedFormGroup;
   public order :OrderItems[] = [];
   public filteredOrders=[];
   filteredOrderItems=[];
 
-  constructor( private formBuilder: FormBuilder,private http: HttpClient,private os:OrdersService, private modalService: NgbModal,) { }
+  constructor( private formBuilder: UntypedFormBuilder,private http: HttpClient,private os:OrdersService, private modalService: NgbModal,) { }
 
   ngOnInit(): void {
     this.getOrders();

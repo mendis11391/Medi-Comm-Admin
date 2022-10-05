@@ -7,7 +7,7 @@ import { CreateVendorsComponent } from './create-vendors/create-vendors.componen
 
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { Ng2SmartTableModule } from 'ng2-smart-table';
+// import { Ng2SmartTableModule } from 'ng2-smart-table';
 
 @NgModule({
   declarations: [ListVendorsComponent, CreateVendorsComponent],
@@ -16,7 +16,7 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
     VendorsRoutingModule,
     ReactiveFormsModule,
     NgbModule,
-    Ng2SmartTableModule
+    // Ng2SmartTableModule
   ]
 })
 export class VendorsModule { }

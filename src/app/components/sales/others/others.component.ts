@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from  '@angular/forms';
+import { Component, OnInit, Directive  } from '@angular/core';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from  '@angular/forms';
 import { DeliverydateService } from '../services/deliverydate.service';
 
 @Component({
@@ -9,14 +9,14 @@ import { DeliverydateService } from '../services/deliverydate.service';
 })
 export class OthersComponent implements OnInit {
 
-  days: FormGroup;
-  taxes:FormGroup;
-  padding:FormGroup;
+  days: UntypedFormGroup;
+  taxes:UntypedFormGroup;
+  padding:UntypedFormGroup;
   successMsg = false;
   successMsg1 = false;
   successMsg2 = false;
 
-  constructor(private formBuilder: FormBuilder, private delvdate: DeliverydateService) { }
+  constructor(private formBuilder: UntypedFormBuilder, private delvdate: DeliverydateService) { }
 
   ngOnInit() {
     this.days = this.formBuilder.group({

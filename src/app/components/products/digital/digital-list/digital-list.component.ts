@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Directive  } from '@angular/core';
 import { Router} from '@angular/router';
 import { digitalListDB } from 'src/app/shared/tables/digital-list';
 import { BehaviorSubject, Observable, of, Subscriber} from 'rxjs';

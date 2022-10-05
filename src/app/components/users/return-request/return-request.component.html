@@ -112,12 +112,14 @@
                       </tbody>
                     </table>
                   </div>   
-                  <div class="col-4">
+                  <div class="col-3">
                     <label>Return date</label><br>
                     <ngb-datepicker #dp [(ngModel)]="model"></ngb-datepicker><br><br>     
                   </div>
                   <div class="col-5">
-                    <textarea class="form-control" [(ngModel)]="requestDetails.request_message"></textarea>
+                    <label>Request message</label><br>
+                    <p class="border p-1">{{requestDetails.request_message}}</p>
+                    <!-- <textarea class="form-control" [(ngModel)]="requestDetails.request_message"></textarea> -->
                   </div>
                   <hr>
                 <div class="col pull-right">
@@ -134,6 +136,11 @@
                   
                   <button class="btn btn-primary mr-1" (click)="returnProduct()">Return</button>   
                   <!-- <button class="btn btn-primary" (click)="reject(productDetails.order_item_id)">Reject</button>    -->
+                </div>
+
+                <div class="col-6">
+                  <label>Comments</label><br>
+                  <textarea class="form-control" [(ngModel)]="comment"></textarea>
                 </div>
               </div>
               </div>

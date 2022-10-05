@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Directive  } from '@angular/core';
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { orderDB } from "../../../shared/tables/order-list";
 import { Orders, Assets } from "../../../shared/data/order";
 import { OrdersService } from '../../products/services/orders.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient} from '@angular/common/http';
-import { FormGroup,FormBuilder } from '@angular/forms';
+import { UntypedFormGroup,UntypedFormBuilder } from '@angular/forms';
 import { ExcelService } from '../services/excel.service';
 import { environment } from 'src/environments/environment';
 
@@ -22,9 +22,9 @@ export class AllOrdersComponent implements OnInit {
   @ViewChild('content') content;
   @ViewChild('orderDetails') orderDetails;
   orderId;
-  updateStatus: FormGroup;
-  deliveryDateStatus: FormGroup;
-  assetAssign:FormGroup;
+  updateStatus: UntypedFormGroup;
+  deliveryDateStatus: UntypedFormGroup;
+  assetAssign:UntypedFormGroup;
   modalReference;
   fullOrderDetails;
   productDetails;
@@ -33,9 +33,16 @@ export class AllOrdersComponent implements OnInit {
   diffInDeposit=0;
   ddCharges=0;
   orderName:string;
-  public filteredOrders=[];
+  filteredOrders:Orders[]=[];
+  datasource: Orders[];
+  loading: boolean;
+  totalRecords: number;
+  selectedOrders: Orders[];
+  cols: any[];
+  exportColumns: any[];
+
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
-  constructor(private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: FormBuilder) {
+  constructor(private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: UntypedFormBuilder) {
     this.getOrders();
     this.getAssets();
     this.updateStatus = this.formBuilder.group({
@@ -86,6 +93,28 @@ export class AllOrdersComponent implements OnInit {
       // this.order=orders.filter(item => item.paymentStatus=='Success');
       this.order=orders;
       this.filteredOrders=this.order;
+      this.filteredOrders.forEach(
+        item => (item.createdAt = new Date(item.createdAt))
+      );
+      this.cols = [
+        { field: "order_id", header: "Order Id" },
+        { field: "createdAt", header: "Order date" },
+        { field: "firstName", header: "First name" },
+        { field: "mobile", header: "mobile" },
+        { field: "totalSecurityDeposit", header: "Security deposit" },
+        { field: "grandTotal", header: "Transaction value" },
+        { field: "paymentStatus", header: "Payment status" },
+        { field: "delivery_status", header: "Delivery status" }
+      ];
+
+      
+      this.exportColumns = this.cols.map(col => ({
+        title: col.header,
+        dataKey: col.field
+      }));
+
+      this.datasource = this.filteredOrders;
+      this.totalRecords = this.filteredOrders.length;
       this.orderName='All orders';
     });
   }

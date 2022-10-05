@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync as  } from '@angular/core/testing';
 
 import { ReturnRequestComponent } from './return-request.component';
 
@@ -6,7 +6,7 @@ describe('ReturnRequestComponent', () => {
   let component: ReturnRequestComponent;
   let fixture: ComponentFixture<ReturnRequestComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ ReturnRequestComponent ]
     })

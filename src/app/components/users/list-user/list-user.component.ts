@@ -1,11 +1,12 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Directive  } from '@angular/core';
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { Orders, Assets } from "../../../shared/data/order";
 import { Customers } from "../../../shared/data/customer";
 import { OrdersService } from '../../products/services/orders.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient} from '@angular/common/http';
-import { FormGroup,FormBuilder } from '@angular/forms';
+import { UntypedFormGroup,UntypedFormBuilder } from '@angular/forms';
+import { ExcelService } from '../../sales/services/excel.service';
 
 @Component({
   selector: 'app-list-user',
@@ -21,9 +22,9 @@ export class ListUserComponent implements OnInit {
   @ViewChild('content') content;
   @ViewChild('orderDetails') orderDetails;
   orderId;
-  updateStatus: FormGroup;
-  deliveryDateStatus: FormGroup;
-  assetAssign:FormGroup;
+  updateStatus: UntypedFormGroup;
+  deliveryDateStatus: UntypedFormGroup;
+  assetAssign:UntypedFormGroup;
   modalReference;
   fullOrderDetails;
   productDetails;
@@ -31,9 +32,16 @@ export class ListUserComponent implements OnInit {
   diffInRent=0;
   diffInDeposit=0;
   ddCharges=0;
-  public filteredCustomers=[];
+  public filteredCustomers:Customers[]=[];
+  datasource:Customers[];
+  loading: boolean;
+  totalRecords: number;
+  selectedOrders:Customers[];
+  cols: any[];
+  exportColumns: any[];
+
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
-  constructor(private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: FormBuilder) {
+  constructor(private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: UntypedFormBuilder) {
     // this.order = orderDB.list_order;
   }
 
@@ -61,7 +69,34 @@ export class ListUserComponent implements OnInit {
       customers.reverse();
       // this.customers=customers;
       this.filteredCustomers=customers;
+
+      this.filteredCustomers.forEach(
+        item => (item.registeredAt = new Date(item.registeredAt), item.lastLogin = new Date(item.lastLogin))
+      );
+      this.cols = [
+        { field: "order_id", header: "Order Id" },
+        { field: "createdAt", header: "Order date" },
+        { field: "firstName", header: "First name" },
+        { field: "mobile", header: "mobile" },
+        { field: "totalSecurityDeposit", header: "Security deposit" },
+        { field: "grandTotal", header: "Transaction value" },
+        { field: "paymentStatus", header: "Payment status" },
+        { field: "delivery_status", header: "Delivery status" }
+      ];
+
+      
+      this.exportColumns = this.cols.map(col => ({
+        title: col.header,
+        dataKey: col.field
+      }));
+
+      this.datasource = this.filteredCustomers;
+      this.totalRecords = this.filteredCustomers.length;
     });
+  }
+
+  exportAsXLSX():void {
+    this.excelService.exportAsExcelFile(this.filteredCustomers, 'Primary orders');
   }
 
 }

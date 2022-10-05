@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Directive  } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, FormBuilder, Validators } from '@angular/forms';
 import { OrdersService } from '../../products/services/orders.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
@@ -37,7 +37,7 @@ export class CreateRenewalOrderComponent implements OnInit {
   public closeResult: string;
   public products=[];
   public orders = [];
-  public renewForm: FormGroup;
+  public renewForm: UntypedFormGroup;
   uid;
   city=1;
   expiryDate:Date;
@@ -232,7 +232,7 @@ export class CreateRenewalOrderComponent implements OnInit {
     let sum = 0;
     this.tableData
       .filter(td => td.isSelected)
-      .forEach(td => (sum += td.data.tenure_price+td.data.damage_protection));
+      .forEach(td => (sum += (td.data.renewal_price-0)+(td.data.damage_protection-0)));
     return sum;
   }
 
@@ -245,7 +245,7 @@ export class CreateRenewalOrderComponent implements OnInit {
         d.isDisabled = false;
         // this.subTotal += d.data.price;
         this.productsArr.push(d.data);
-        this.subTotal +=d.data.tenure_price+d.data.damage_protection;
+        this.subTotal +=(d.data.renewal_price-0)+(d.data.damage_protection-0);
         this.renewTotal = (this.subTotal)+((this.subTotal) * (this.gst)/100);
       });
       this.allChecked = true;
@@ -320,11 +320,7 @@ export class CreateRenewalOrderComponent implements OnInit {
     }
   }
 
-
-
-  
-
-  expiryDates(d){
+ expiryDates(d){
     let dateParts = d.split("/");
 
 		// month is 0-based, that's why we need dataParts[1] - 1
@@ -615,6 +611,14 @@ export class CreateRenewalOrderComponent implements OnInit {
       });
     });
     
+  }
+
+  updateRenewalPrice(id,renewalPrice){
+    this.http.put(`${environment.apiUrl}/admin/updateOrderRenewalPrice/${id}`,{renewal_price:renewalPrice}).subscribe((res:any)=>{
+      if(res.message=="Success"){
+        alert("renewal price updated successfully");
+      }
+    });
   }
   
 

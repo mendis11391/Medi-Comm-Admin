@@ -50,6 +50,7 @@ export class NavService {
 				{ path: '/sales/return-order', title: 'Return order', type: 'link' },
 				{ path: '/sales/cancelled-orders', title: 'Cancelled orders', type: 'link' },
 				{ path: '/sales/upcoming-renewals', title: 'Upcoming renewals', type: 'link' },
+				{ path: '/sales/notes', title: 'Notes', type: 'link' },
 				// { path: '/sales/orders-panel', title: 'Orders panel', type: 'link' },
 				// { path: '/sales/user-requests', title: 'User requests', type: 'link' },
 				// { path: '/sales/manage-orders', title: 'Manage orders', type: 'link' },
@@ -82,6 +83,7 @@ export class NavService {
 				{title: 'Category', type: 'link', path: '/products/digital/digital-sub-category'},
 				{title: 'Products', path: '/products/digital/digital-product-list',  type: 'link'},
 				{title: 'Scrollers', path: '/products/digital/digital-scrollers',  type: 'link'},
+				{title: 'Pincodes', path: '/products/digital/pincodes',  type: 'link'},
 				// {
 				// 	title: 'Physical', type: 'sub', children: [
 				// 		{ path: '/products/physical/category', title: 'Category', type: 'link' },

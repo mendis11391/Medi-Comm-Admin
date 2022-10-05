@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Directive  } from '@angular/core';
 import { translationsDB } from '../../../shared/tables/translations';
 
 @Component({

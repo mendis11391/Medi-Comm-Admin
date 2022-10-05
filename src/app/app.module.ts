@@ -25,6 +25,8 @@ import { AuthGuard } from './components/auth/auth.guard';
 import { TokenInterceptorService } from './components/auth/token-interceptor.service';
 
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
 
 @NgModule({
   declarations: [
@@ -50,6 +52,8 @@ import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
     MenusModule,
     UsersModule,
     HttpClientModule,
+    TableModule,
+    ButtonModule,
     NgMultiSelectDropDownModule.forRoot()
   ],
   providers: [AuthGuard, {

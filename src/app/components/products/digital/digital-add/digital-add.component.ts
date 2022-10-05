@@ -1,12 +1,12 @@
-import { Component, OnInit, ElementRef, Input } from '@angular/core';
-import { FormGroup, FormBuilder, FormArray, Validators } from  '@angular/forms';
+import { Component, OnInit, ElementRef, Input, Directive  } from '@angular/core';
+import { UntypedFormGroup, UntypedFormBuilder, FormArray, Validators } from  '@angular/forms';
 import { HttpClient} from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { ProductService } from '../../services/product.service';
 import { BrandService } from '../../services/brand.service';
 import { Router } from '@angular/router';
 import * as XLSX from 'xlsx';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+// import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { environment } from 'src/environments/environment';
 
 const URL = `${environment.apiUrl}/products/upload/`;
@@ -18,12 +18,12 @@ const URL = `${environment.apiUrl}/products/upload/`;
 })
 export class DigitalAddComponent implements OnInit {
 
-  addProduct: FormGroup;
+  addProduct: UntypedFormGroup;
   constructor(
     private router: Router,
     private http: HttpClient,
     private el: ElementRef,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private category:ProductService,
     private brand: BrandService) {
       this.productFields();
@@ -72,7 +72,7 @@ export class DigitalAddComponent implements OnInit {
       prodQty:[0],
       securityDeposit:['', Validators.required],
       tenureBasePrice:['', Validators.required],
-      specs:new FormGroup({}),
+      specs:new UntypedFormGroup({}),
       highlightType:['', Validators.required],
       prodStatus:[true],
       publishedAt:[new Date()],
@@ -119,7 +119,7 @@ export class DigitalAddComponent implements OnInit {
   }
 
   getSpecsByCatId(){
-    let sf:FormGroup = this.addProduct.get('specs') as FormGroup;
+    let sf:UntypedFormGroup = this.addProduct.get('specs') as UntypedFormGroup;
     sf.controls={};
     let id = this.addProduct.value.subCatId;
     this.category.getSpecsByCatId(id).subscribe((resp)=>{

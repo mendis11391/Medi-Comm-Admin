@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Directive  } from '@angular/core';
 import { listCouponsDB } from 'src/app/shared/tables/list-coupon';
 
 @Component({

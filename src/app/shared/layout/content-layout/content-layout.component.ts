@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, Directive  } from '@angular/core';
 import { NavService } from '../../service/nav.service';
 import { trigger, transition, useAnimation } from '@angular/animations';
 import { bounce, zoomOut, zoomIn, fadeIn, bounceIn } from 'ng-animate';

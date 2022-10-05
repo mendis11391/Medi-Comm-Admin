@@ -41,7 +41,7 @@
                                 <td>{{s.acceesory_name}}</td>
                                 
                                 <td>                                    
-                                    <a (click)="open(editAccs, s.spec_id, s.acceesory_name)"><i class="fa fa-pencil"></i></a>
+                                    <a (click)="open(editAccs, s.id, s.acceesory_name)"><i class="fa fa-pencil"></i></a>
                                     <label>
                                         <input class="form-control" (change)="accsImageUpdate($event,s.id)" type="file" style="display: none;">
                                         <a><i class="fa fa-upload"></i></a>
@@ -64,7 +64,7 @@
 
 <ng-template #addSpec let-modal>
     <div class="modal-header">
-        <h5 class="modal-title f-w-600" id="exampleModalLabel">{{specEdit.specName}}</h5>
+        <h5 class="modal-title f-w-600" id="exampleModalLabel">{{specEdit.AccsName}}</h5>
         <button type="button" class="close" aria-label="Close"
             (click)="modal.dismiss('Cross click')">
             <span aria-hidden="true">&times;</span>
@@ -88,24 +88,16 @@
 
 <ng-template #editAccs let-modal>
     <div class="modal-header">
-        <h5 class="modal-title f-w-600" id="exampleModalLabel">Edit {{specEdit.specName}}</h5>
+        <h5 class="modal-title f-w-600" id="exampleModalLabel">Edit {{specEdit.AccsName}}</h5>
         <button type="button" class="close" aria-label="Close"
             (click)="modal.dismiss('Cross click')">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
     <div class="modal-body">
-        <ng2-smart-table [settings]="settings" [source]="editAccsValues" (editConfirm)="onEditAccsValue($event)"></ng2-smart-table>
-        <!-- <div class="editSpecValues" *ngFor="let sv of specEdit.specId | specValues">            
-            <div class="row">
-                <div class="col-8">
-                    {{sv.spec_value}} 
-                </div>
-                <div class="col">
-                    <a (click)="open(editSpec, s.spec_id, s.spec_name)"><i class="fa fa-pencil"></i></a>
-                </div>
-            </div>
-        </div>         -->
+        <!-- <ng2-smart-table [settings]="settings" [source]="editAccsValues" (editConfirm)="onEditAccsValue($event)"></ng2-smart-table> -->
+        <input type="text" class="form-control" [(ngModel)]="specEdit.AccsName">
+        <button class="btn btn-secondary mt-2" (click)="onEditAccsValue(specEdit)">Update</button>
     </div>
     <div class="modal-footer">
         <!-- <button type="button" class="btn btn-primary">Save</button> -->

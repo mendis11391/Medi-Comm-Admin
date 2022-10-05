@@ -17,6 +17,7 @@ import { PricingSchemesComponent } from './digital/pricing-schemes/pricing-schem
 import { DigitalAccessoriesComponent } from './digital/digital-accessories/digital-accessories.component';
 import { DigitalScrollersComponent } from './digital/digital-scrollers/digital-scrollers.component';
 import { User, Role } from '../auth/user';
+import { PincodesComponent } from './digital/pincodes/pincodes.component';
 
 const routes: Routes = [
   {
@@ -158,6 +159,17 @@ const routes: Routes = [
         data: {
           title: "Pricing Schemes",
           breadcrumb: "Pricing Schemes",
+          roles: [Role.admin]
+        }
+      },
+      {
+        path: 'digital/pincodes',
+        canLoad: [AuthGuard],
+        canActivate: [AuthGuard],
+        component: PincodesComponent,
+        data: {
+          title: "Pincodes",
+          breadcrumb: "Pincodes",
           roles: [Role.admin]
         }
       },

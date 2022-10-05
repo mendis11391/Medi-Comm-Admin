@@ -21,6 +21,7 @@ import { AllOrdersComponent } from './all-orders/all-orders.component';
 import { CreateRenewalOrderComponent } from './create-renewal-order/create-renewal-order.component';
 import { CreateRequestComponent } from './create-request/create-request.component';
 import { CancelledOrdersComponent } from './cancelled-orders/cancelled-orders.component';
+import { NotesComponent } from './notes/notes.component';
 const routes: Routes = [
   {
     path: '',
@@ -69,6 +70,14 @@ const routes: Routes = [
           // roles: [Role.admin]
         },
         component: UpcomingRenewalsComponent,
+      },
+      {
+        path: 'notes',
+        data: {
+          title: "Notes",
+          breadcrumb: "Notes",
+        },
+        component: NotesComponent,
       },
       {
         path: 'primary-order',

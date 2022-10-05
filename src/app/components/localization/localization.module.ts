@@ -5,7 +5,7 @@ import { LocalizationRoutingModule } from './localization-routing.module';
 import { TranslationsComponent } from './translations/translations.component';
 import { RatesComponent } from './rates/rates.component';
 import { TaxesComponent } from './taxes/taxes.component';
-import { Ng2SmartTableModule } from 'ng2-smart-table';
+// import { Ng2SmartTableModule } from 'ng2-smart-table';
 
 
 @NgModule({
@@ -13,7 +13,7 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
   imports: [
     CommonModule,
     LocalizationRoutingModule,
-    Ng2SmartTableModule
+    // Ng2SmartTableModule
   ]
 })
 export class LocalizationModule { }

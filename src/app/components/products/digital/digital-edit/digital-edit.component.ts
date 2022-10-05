@@ -1,7 +1,7 @@
-import { Component, OnInit, ElementRef, Input, AfterViewInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from  '@angular/forms';
+import { Component, OnInit, ElementRef, Input, AfterViewInit, Directive  } from '@angular/core';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from  '@angular/forms';
 import { ProductService } from '../../services/product.service';
-import { fileURLToPath } from 'url';
+// import { fileURLToPath } from 'url';
 import { HttpClient} from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -16,7 +16,7 @@ const URL = `${environment.apiUrl}/products/upload/`;
 })
 export class DigitalEditComponent implements OnInit, AfterViewInit {
 
-  addProduct: FormGroup;
+  addProduct: UntypedFormGroup;
   id:string = '';
   prodId: string;
   prodById:string;
@@ -36,11 +36,16 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
  finalBlob;
  ckEdit:boolean=false;
  
+ stock = {
+  id:0,
+  quantity:0,
+  delivery_timeline:0
+ }
   constructor(
     private modalService: NgbModal,
     private http: HttpClient,
     private el: ElementRef,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private productsService: ProductService,
     private brand: BrandService,
     private category: ProductService,
@@ -77,7 +82,7 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
       // prodQty:['', Validators.required],
       securityDeposit:['', Validators.required],
       tenureBasePrice:['', Validators.required],
-      specs:new FormGroup({}),
+      specs:new UntypedFormGroup({}),
       highlightType:['', Validators.required],
       prodStatus:[true],
       priority:['', Validators.required],
@@ -154,7 +159,7 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
         // prodQty:data.prod_qty,
         securityDeposit:data.securityDeposit,
         tenureBasePrice:data.tenure_base_price,
-        specs:new FormGroup({}),
+        specs:new UntypedFormGroup({}),
         // highlightType:['', Validators.required],
         prodStatus:data.prod_status,
         priority:data.priority,
@@ -343,7 +348,7 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
     let prevSpecId=[];
     this.category.getSpecsByCatId(this.subCatId).subscribe((resp)=>{
       var cSpecs:any = resp;
-      let sf:FormGroup = this.addProduct.get('specs') as FormGroup;
+      let sf:UntypedFormGroup = this.addProduct.get('specs') as UntypedFormGroup;
       this.catSpecs=resp;
       console.log(this.specsCheck);
       // if(Object.keys(this.specsCheck).length>0){        
@@ -493,6 +498,18 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
     });
   }
 
+  open2(addSpec, ep) {
+    this.stock.quantity = ep.quantity;
+    this.stock.id = ep.id;
+    this.stock.delivery_timeline = ep.delivery_timeline;
+    
+    this.modalService.open(addSpec, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed`;
+    });
+  }
+
   mainCatNameActions(e,mainCatId){
     this.addProduct.patchValue({
       mainCatName:mainCatId
@@ -507,9 +524,11 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
 
   onEditStockUpdate(event):void {
     if (window.confirm('Are you sure you want to save?')) {
-      console.log(event.newData);
-      this.http.put(`${environment.apiUrl}/products/productStocksAndTimeline`, event.newData).subscribe();
-      event.confirm.resolve(event.newData);
+      console.log(event);
+      this.http.put(`${environment.apiUrl}/products/productStocksAndTimeline`, event).subscribe();
+      this.modalService.dismissAll();
+      this.getCityTimelineProductById(this.prodId);
+      event.confirm.resolve(event);
     } else {
       event.confirm.reject();
     }

@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Directive, ViewChild  } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { OrdersService } from '../../products/services/orders.service';
 import { KYC } from "../../../shared/data/kyc";
 import { DomSanitizer } from '@angular/platform-browser';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { saveAs } from 'file-saver';
 import { environment } from 'src/environments/environment';
 declare const jQuery:any;
@@ -16,7 +16,7 @@ declare const jQuery:any;
   styleUrls: ['./kyc-details.component.scss']
 })
 export class KycDetailsComponent implements OnInit {
-
+  @ViewChild('addressModal') addressModal;
   currentDate = new Date();
   kycId;
   customerDetails;
@@ -24,7 +24,7 @@ export class KycDetailsComponent implements OnInit {
   kycImages:any;
   public closeResult: string;
   kycVariantDetails:KYC;
-  kycStatusForm:FormGroup;
+  kycStatusForm:UntypedFormGroup;
   value:string;
   
   aadharImage=[];
@@ -45,7 +45,23 @@ export class KycDetailsComponent implements OnInit {
 
   public orders=[];
 
-  constructor(private fb: FormBuilder,private modalService: NgbModal,private sanitizer: DomSanitizer,private os:OrdersService,private route: ActivatedRoute,private http: HttpClient) { 
+  public address=[];
+  public defaultAddress=[];
+
+  modalReference;
+
+  displayName:boolean;
+  nickName:boolean;
+  firstNameAddress:boolean;
+  address1:boolean;
+  address2:boolean;
+  landmark:boolean;
+  city:boolean;
+  pincode:boolean;
+  mobile:boolean;
+  eemail2:boolean;
+
+  constructor(private fb: UntypedFormBuilder,private modalService: NgbModal,private sanitizer: DomSanitizer,private os:OrdersService,private route: ActivatedRoute,private http: HttpClient) { 
     this.kycStatusForm = this.fb.group({
       kyc_status:'',
       comments:''
@@ -55,12 +71,34 @@ export class KycDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.kycId=this.route.snapshot.params['id'];
     this.getKYCDetailsById(this.kycId);
+    
   }
 
   getAllorders(id){
     this.os.getAllOrdersByCustomerId(id).subscribe((orders)=>{
       this.orders=orders.filter(item=>(item.paymentStatus=='Success' && item.orderType_id==1) && item.deliveryStatus!='4');
     });
+  }
+
+  getAllAddresses(id){
+    this.os.getAllAddressByCustomersByid(id).subscribe((address)=>{
+      this.address = address;
+      this.defaultAddress = this.address.filter(item => item.default_address==1)
+    })
+  }
+
+  updateCustomerAddressFeild(addresssId, value, fieldName){
+    let AddressObj={
+      value:value,
+      fieldName:fieldName
+    };
+    this.os.updateCustomerAddressFeild(addresssId,AddressObj).subscribe((resp)=>{
+      alert('Address feild updated successfully');      
+    });
+  }
+
+  openAddressModal() {
+    this.modalReference=this.modalService.open(this.addressModal,{ windowClass: 'my-address'});
   }
 
 
@@ -78,6 +116,7 @@ export class KycDetailsComponent implements OnInit {
     this.getAllorders(this.kycDetails.customer_id);
     var customerResult= await this.os.getAllCustomersByid(this.kycDetails.customer_id).toPromise();
     this.customerDetails = customerResult;
+    this.getAllAddresses(this.customerDetails[0].customer_id);
 
     if(this.kycDetails.customer_type=='Individual'){
       var individualDetails = await this.os.getKYCIndividualByid(id).toPromise();

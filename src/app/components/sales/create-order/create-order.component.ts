@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild,ViewEncapsulation } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Component, OnInit, ViewChild, ViewEncapsulation, Directive  } from '@angular/core';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { HttpClient} from '@angular/common/http';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { OrdersService } from '../../products/services/orders.service';
@@ -17,7 +17,7 @@ import { environment } from 'src/environments/environment';
 })
 export class CreateOrderComponent implements OnInit {
 
-  public orderForm: FormGroup;
+  public orderForm: UntypedFormGroup;
   city:string;
   taxInfo = '';
   gst: number=18;
@@ -107,7 +107,9 @@ export class CreateOrderComponent implements OnInit {
   @ViewChild('productModal') productModal;
   quantity:number=1;
 
-  constructor(private router: Router,private ps:ProductService,private modalService: NgbModal,private os:OrdersService,private http: HttpClient,private fb: FormBuilder) { 
+  fullyPaidOrder:boolean;
+
+  constructor(private router: Router,private ps:ProductService,private modalService: NgbModal,private os:OrdersService,private http: HttpClient,private fb: UntypedFormBuilder) { 
     this.orderForm = this.fb.group({
       uid: '',
       orderID: this.txnId,
@@ -141,7 +143,9 @@ export class CreateOrderComponent implements OnInit {
       notifyUrl:'',
       returnUrl:'',
       signature:'',
-      orderName:'Primary'
+      orderName:'Primary',
+      fullyPaidTenure:false,
+      totalDeliveryCharges:0
     });
 
                 this.dropdownSettings = {
@@ -216,7 +220,7 @@ export class CreateOrderComponent implements OnInit {
     })
   }
 
-  test(){
+  createOrder(){
     if(this.ProductDetails.length>0 && this.transactionNo && this.paymentType && this.paymentStatus && this.Description && this.transactionDate){
       this.orderForm.patchValue({
         orderStatus:this.paymentStatus
@@ -338,6 +342,7 @@ export class CreateOrderComponent implements OnInit {
         products.tenures = defaultTenure[0].tenure+' '+ defaultTenure[0].tenure_period;
         products.tenure_price = this.calcTenures(defaultTenure[0].discount, products.tenure_base_price);
         products.tenure_id = defaultTenure[0].tenure_id;
+        products.tenure = defaultTenure[0].tenure;
         this.tenureTotalAmount();
       });
     });
@@ -376,7 +381,7 @@ export class CreateOrderComponent implements OnInit {
     });
    }
 
-  async calcPrice(price,deposit, month,tenureId, tenure_base_price, product:any, quantity){
+  async calcPrice(price,deposit, month,tenureId, tenure_base_price, product:any, quantity, tenure){
     this.tenuresOfProduct.forEach((res)=>{
       res.isSelected=0;
       if(tenureId==res.tenure_id){
@@ -394,6 +399,7 @@ export class CreateOrderComponent implements OnInit {
     product.tenures=this.tenures;
     product.tenure_price=this.tenure_price;
     product.tenure_period = this.tenure_period;
+    product.tenure = tenure;
     this.tenureTotalAmount();
   }
 
@@ -408,13 +414,23 @@ export class CreateOrderComponent implements OnInit {
     if(this.dp>0){
       alert('Please disable damage protection before changing the price');
     }else{
-      this.tenureTotalPrice=0;
-      this.totalDepositPrice=0;
-      this.ProductDetails.forEach((product) => {
-        this.tenureTotalPrice+=product.tenure_price * product.quantity;
-        this.totalDepositPrice+=product.securityDeposit * product.quantity;
-      });    
-      this.calculateTotal();
+      if (this.fullyPaidOrder==true) {        
+        this.tenureTotalPrice=0;
+        this.totalDepositPrice=0;
+        this.ProductDetails.forEach((product) => {
+          this.tenureTotalPrice+=(product.tenure_price * product.quantity)*product.tenure;
+          this.totalDepositPrice+=product.securityDeposit * product.quantity;
+        });    
+        this.calculateTotal();
+      } else {
+        this.tenureTotalPrice=0;
+        this.totalDepositPrice=0;
+        this.ProductDetails.forEach((product) => {
+          this.tenureTotalPrice+=product.tenure_price * product.quantity;
+          this.totalDepositPrice+=product.securityDeposit * product.quantity;
+        });    
+        this.calculateTotal();
+      }
     }
     
   }
@@ -473,6 +489,18 @@ export class CreateOrderComponent implements OnInit {
       total:this.total,
       grandTotal: Math.round(this.grandTotal),
       damageProtection:this.dp
+    });
+  }
+
+  updateOrder(evt) {
+    if (evt==true) {
+      this.fullyPaidOrder=true;
+    } else {
+      this.fullyPaidOrder=false;
+    }
+    this.tenureTotalAmount();
+    this.orderForm.patchValue({
+      fullyPaidTenure :this.fullyPaidOrder
     });
   }
 

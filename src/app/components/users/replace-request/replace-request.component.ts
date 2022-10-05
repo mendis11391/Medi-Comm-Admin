@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Directive  } from '@angular/core';
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { orderDB } from "../../../shared/tables/order-list";
 import { Orders, Assets } from "../../../shared/data/order";
 import { OrdersService } from '../../products/services/orders.service';
 import { NgbDateStruct, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient} from '@angular/common/http';
-import { FormGroup,FormBuilder } from '@angular/forms';
+import { UntypedFormGroup,UntypedFormBuilder } from '@angular/forms';
 import { ProductService } from '../../products/services/product.service';
 import { ActivatedRoute, Router} from '@angular/router';
 import { ExcelService } from '../../sales/services/excel.service';
@@ -27,9 +27,9 @@ export class ReplaceRequestComponent implements OnInit {
   @ViewChild('returnRequest') returnRequest;
   @ViewChild('replacementRequest') replacementRequest;
   orderId;
-  updateStatus: FormGroup;
-  deliveryDateStatus: FormGroup;
-  assetAssign:FormGroup;
+  updateStatus: UntypedFormGroup;
+  deliveryDateStatus: UntypedFormGroup;
+  assetAssign:UntypedFormGroup;
   modalReference;
   fullOrderDetails;
   productDetails;
@@ -65,7 +65,7 @@ export class ReplaceRequestComponent implements OnInit {
   paymentStatus;
   matchedProducts2=[];
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
-  constructor(private route: ActivatedRoute, private router:Router,private excelService:ExcelService,private http: HttpClient,private ps:ProductService,private os:OrdersService, private modalService: NgbModal, private formBuilder: FormBuilder) {
+  constructor(private route: ActivatedRoute, private router:Router,private excelService:ExcelService,private http: HttpClient,private ps:ProductService,private os:OrdersService, private modalService: NgbModal, private formBuilder: UntypedFormBuilder) {
     // this.order = orderDB.list_order;
   }
 

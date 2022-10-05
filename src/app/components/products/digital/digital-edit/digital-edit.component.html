@@ -184,7 +184,27 @@
                         <h5>Stocks</h5>
                     </div>
                     <div class="card-body">
-                        <ng2-smart-table [settings]="settings" [source]="editProducts" (editConfirm)="onEditStockUpdate($event)"></ng2-smart-table>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                  <tr>
+                                    <th>City</th>
+                                    <th>Quantity</th>
+                                    <th>Delivery Timeline</th>
+                                    <th>Action</th>
+                                  </tr>
+                                </thead>
+                                <tbody *ngFor="let ep of editProducts">
+                                  <tr>
+                                    <td>{{ep.city_name}}</td>
+                                    <td>{{ep.quantity}}</td>
+                                    <td>{{ep.delivery_timeline}}</td>
+                                    <td><a (click)="open2(editStock, ep)"><i class="fa fa-pencil"></i></a></td>
+                                  </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- <ng2-smart-table [settings]="settings" [source]="editProducts" (editConfirm)="onEditStockUpdate($event)"></ng2-smart-table> -->
                     </div>
                 </div>
 
@@ -393,6 +413,28 @@
     </div>
     <div class="modal-footer">
         <!-- <button type="button" class="btn btn-primary"  (click)="reload()">Save</button> -->
+        <button class="btn btn-secondary" type="button" data-dismiss="modal"
+            (click)="modal.dismiss('Cross click')">Close</button>
+    </div>
+</ng-template>
+
+
+<ng-template #editStock let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title f-w-600" id="exampleModalLabel">Edit stock and delivery timeline</h5>
+        <button type="button" class="close" aria-label="Close"
+            (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <label>Quantity</label>
+        <input class="form-control" [(ngModel)]="stock.quantity">
+        <label class=" mt-2">Delivery timeline (In days)</label>
+        <input class="form-control" [(ngModel)]="stock.delivery_timeline">
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary"  (click)="onEditStockUpdate(stock)">Save</button>
         <button class="btn btn-secondary" type="button" data-dismiss="modal"
             (click)="modal.dismiss('Cross click')">Close</button>
     </div>

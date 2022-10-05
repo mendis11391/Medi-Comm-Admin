@@ -1,6 +1,7 @@
 import { Directive, OnInit, TemplateRef, ViewContainerRef, Input } from '@angular/core';
 import { AuthService } from '../../components/auth/auth.service';
 import { User, Role } from 'src/app/components/auth/user';
+
 @Directive({ selector: '[appUserRole]'})
 export class UserRoleDirective implements OnInit {
     constructor(

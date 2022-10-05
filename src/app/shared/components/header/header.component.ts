@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Directive  } from '@angular/core';
 import { NavService } from '../../service/nav.service';
 import { Router } from '@angular/router';
 

@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef  } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, Directive  } from '@angular/core';
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { orderDB } from "../../../shared/tables/order-list";
 import { Orders, Assets } from "../../../shared/data/order";
 import { OrdersService } from '../../products/services/orders.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient} from '@angular/common/http';
-import { FormGroup,FormBuilder, FormControl,Validators } from '@angular/forms';
+import { UntypedFormGroup,UntypedFormBuilder, UntypedFormControl,Validators } from '@angular/forms';
 import { ExcelService } from '../services/excel.service';
 import { ActivatedRoute } from '@angular/router';
 import { environment } from 'src/environments/environment';
@@ -31,13 +31,13 @@ export class OrderDetailsComponent implements OnInit {
   @ViewChild('postTransaction') postTransaction;
   orderId;
   oid;
-  updateStatus: FormGroup;
-  deliveryDateStatus: FormGroup;
-  assetAssign:FormGroup;
-  deliveryStatus:FormGroup;
-  updateField:FormGroup;
-  addTransaction: FormGroup;
-  updateTransactionData: FormGroup;
+  updateStatus: UntypedFormGroup;
+  deliveryDateStatus: UntypedFormGroup;
+  assetAssign:UntypedFormGroup;
+  deliveryStatus:UntypedFormGroup;
+  updateField:UntypedFormGroup;
+  addTransaction: UntypedFormGroup;
+  updateTransactionData: UntypedFormGroup;
   modalReference;
   fullOrderDetails=[];
   productDetails;
@@ -68,7 +68,7 @@ export class OrderDetailsComponent implements OnInit {
   comment:string='';
   notes:any = [];
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
-  constructor(private changeDetection: ChangeDetectorRef,private route: ActivatedRoute,private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: FormBuilder) {
+  constructor(private changeDetection: ChangeDetectorRef,private route: ActivatedRoute,private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: UntypedFormBuilder) {
     // this.order = orderDB.list_order;
     this.oid = this.route.snapshot.url[1].path;
     this.getOrderById(this.route.snapshot.url[1].path);
@@ -191,18 +191,21 @@ export class OrderDetailsComponent implements OnInit {
   }
 
   postNotes(){
-      let sendObj = {
-        comment:this.comment,
-        uid: sessionStorage.getItem('user_id'),
-        orderId:this.fullOrderDetails[0].id,
-        orderType:this.fullOrderDetails[0].orderType_id,
-      };
+    let sendObj = {
+      comment:this.comment,
+      uid: sessionStorage.getItem('user_id'),
+      frontUid:this.fullOrderDetails[0].customer_id,
+      orderId:this.fullOrderDetails[0].id,
+      orderType:this.fullOrderDetails[0].orderType_id,
+    };
+    if(this.comment.replace(/ /g,'')){
       this.http.post(`${environment.apiUrl}/admin/insertNotes`,sendObj).subscribe((res)=>{
-        console.log(res);
         this.getNotesByOrderId(this.fullOrderDetails[0].id);
+        this.comment='';
         alert('Added note successfully');
       });
-
+    }
+    
   }
 
   postTransactionData(){
@@ -307,7 +310,7 @@ export class OrderDetailsComponent implements OnInit {
   }
 
   addOrderField(field){
-    this.updateField.addControl(field,new FormControl(''));
+    this.updateField.addControl(field,new UntypedFormControl(''));
   }
 
   updateTransactionField(txnId, field,value){
@@ -472,11 +475,13 @@ export class OrderDetailsComponent implements OnInit {
       }else{
         getdeliveryDate=new Date(this.deliveryDateStatus.value.deliveryDate);
       }
+
+
       
       let db= getdeliveryDate.getDate()+'/'+(getdeliveryDate.getMonth()+1)+'/'+getdeliveryDate.getFullYear();
 
       this.http.get(`${environment.apiUrl}/orders/orderItemsByorderId/${OrderId}`).subscribe((res) => {
-
+        
         orderItem=res;
         getAllProduct.push(orderItem[0].renewals_timline[0]);
         currentAssetId=orderItem[0].asset_id ;
@@ -486,7 +491,18 @@ export class OrderDetailsComponent implements OnInit {
         ndb.setDate(ndb.getDate() + 1);
         let nextStartDate = ndb.getDate()+'/'+(ndb.getMonth()+1)+'/'+ndb.getFullYear();
         let exp=this.getDates(db);
-        exp.setDate(exp.getDate() + 1);
+        exp.setDate(exp.getDate() );
+
+        if(orderItem[0].fully_paid_tenure==1){
+          expiryDate=this.getTenureEndDates(db, orderItem[0].tenure);
+          edb=expiryDate.getDate()+'/'+(expiryDate.getMonth()+1)+'/'+expiryDate.getFullYear();
+          ndb=this.getTenureEndDates(db, orderItem[0].tenure);
+          ndb.setDate(ndb.getDate() + 1);
+          nextStartDate = ndb.getDate()+'/'+(ndb.getMonth()+1)+'/'+ndb.getFullYear();
+          exp=this.getTenureEndDates(db, orderItem[0].tenure);
+          exp.setDate(exp.getDate() );
+        }
+        
 
         getAllProduct[0].renewed=0;
         getAllProduct[0].overdew=0;
@@ -528,7 +544,7 @@ export class OrderDetailsComponent implements OnInit {
       
   }
 
-  updateProductDeliveryStatus(OrderId){
+  updateProductDeliveryStatus(OrderId,OIT){
     let getOrder;
     let getAllProduct=[];
     let forQtyProduct;
@@ -546,6 +562,21 @@ export class OrderDetailsComponent implements OnInit {
           // this.modalReference.close();
           this.deliveryStatus.reset();
           this.http.get(`${environment.apiUrl}/orders/${this.customer_id}`).subscribe();
+          this.http.put(`${environment.apiUrl}/orders/updateOrderItemDeliveryDate/${OrderId}`, {deliveryDate:OIT.startDate, expiryDate:OIT.endDate,renewalTimeline:JSON.stringify(getAllProduct)}).subscribe((res) => {
+            
+            
+            this.http.get(`${environment.apiUrl}/admin/getOrderRenewalById/${OrderId}`).subscribe((orderRenewals:[])=>{
+              
+              if(orderRenewals.length>0){
+                this.http.put(`${environment.apiUrl}/admin/updateOrderRenewal/${OrderId}`, {start_date:OIT.startDate, end_date:OIT.endDate}).subscribe();
+              }else{
+                this.http.post(`${environment.apiUrl}/admin/insertOrderRenewal`, {order_item_id:OrderId, renewal_price:OIT.tenure_price, start_date:OIT.startDate, end_date:OIT.endDate, is_renewed:1}).subscribe();
+              }
+            });
+            this.deliveryDateStatus.reset();
+            // this.modalReference.close();
+            // window.location.reload();
+          });
           this.getOrderById(this.oid);
               // window.location.reload();
         });
@@ -607,6 +638,26 @@ export class OrderDetailsComponent implements OnInit {
       ned  = new Date(yy, mm+1, Days);
     }else{					
       ned = new Date(yy, mm+1, dd-1);
+      
+    }
+    return ned;
+  }
+
+  getTenureEndDates(date, tenure){
+    let dateParts = date.split("/");
+    let ned
+    // month is 0-based, that's why we need dataParts[1] - 1
+    let dateObject = new Date(+dateParts[2], dateParts[1]-1, +dateParts[0]);	
+    let dd= dateObject.getDate();
+    let mm=dateObject.getMonth();
+    let yy=dateObject.getFullYear();
+
+    let Days=new Date(yy, mm+1+tenure, 0).getDate();
+
+    if(Days<dd){             
+      ned  = new Date(yy, mm+tenure, Days);
+    }else{					
+      ned = new Date(yy, mm+tenure, dd-1);
       
     }
     return ned;

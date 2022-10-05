@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { Component, OnInit, Directive  } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-create-page',
@@ -7,10 +7,10 @@ import { FormBuilder, FormGroup } from '@angular/forms';
   styleUrls: ['./create-page.component.scss']
 })
 export class CreatePageComponent implements OnInit {
-  public generalForm: FormGroup;
-  public seoForm: FormGroup;
+  public generalForm: UntypedFormGroup;
+  public seoForm: UntypedFormGroup;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(private formBuilder: UntypedFormBuilder) {
     this.createGeneralForm();
     this.createSeoForm();
   }

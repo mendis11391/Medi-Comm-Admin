@@ -1,13 +1,15 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Directive  } from '@angular/core';
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { orderDB } from "../../../shared/tables/order-list";
 import { Orders, Assets } from "../../../shared/data/order";
 import { OrdersService } from '../../products/services/orders.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient} from '@angular/common/http';
-import { FormGroup,FormBuilder } from '@angular/forms';
+import { UntypedFormGroup,UntypedFormBuilder } from '@angular/forms';
 import { ExcelService } from '../services/excel.service';
 import { environment } from 'src/environments/environment';
+import { LazyLoadEvent } from 'primeng/api';
+import { PrimeNGConfig } from 'primeng/api';
 
 @Component({
   selector: 'app-renewal-order',
@@ -22,9 +24,9 @@ export class RenewalOrderComponent implements OnInit {
   @ViewChild('content') content;
   @ViewChild('orderDetails') orderDetails;
   orderId;
-  updateStatus: FormGroup;
-  deliveryDateStatus: FormGroup;
-  assetAssign:FormGroup;
+  updateStatus: UntypedFormGroup;
+  deliveryDateStatus: UntypedFormGroup;
+  assetAssign:UntypedFormGroup;
   modalReference;
   fullOrderDetails;
   productDetails;
@@ -32,9 +34,16 @@ export class RenewalOrderComponent implements OnInit {
   diffInRent=0;
   diffInDeposit=0;
   ddCharges=0;
-  public filteredOrders=[];
+  filteredOrders:Orders[]=[];
+  datasource: Orders[];
+  loading: boolean;
+  totalRecords: number;
+  selectedOrders: Orders[];
+  cols: any[];
+  exportColumns: any[];
+
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
-  constructor(private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: FormBuilder) {
+  constructor(private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: UntypedFormBuilder) {
     // this.order = orderDB.list_order;
   }
 
@@ -71,7 +80,41 @@ export class RenewalOrderComponent implements OnInit {
     this.os.getAllrenewalOrders().subscribe((orders)=>{
       this.order=orders.filter(item => (item.paymentStatus.toLowerCase()=='success' || item.paymentStatus.toLowerCase()=='to be paid') && item.orderType_id==2);
       this.filteredOrders=this.order;
+      this.filteredOrders.forEach(
+        item => (item.createdAt = new Date(item.createdAt))
+      );
+
+      this.cols = [
+        { field: "order_id", header: "Order Id" },
+        { field: "primary_id", header: "Primary Id" },
+        { field: "createdAt", header: "Order date" },
+        { field: "firstName", header: "First name" },
+        { field: "mobile", header: "mobile" },
+        { field: "grandTotal", header: "Transaction value" },
+        { field: "paymentStatus", header: "Payment status" },
+      ];
+
+      
+      this.exportColumns = this.cols.map(col => ({
+        title: col.header,
+        dataKey: col.field
+      }));
+
+      this.datasource = this.filteredOrders;
+      this.totalRecords = this.filteredOrders.length;
     });
+  }
+
+  loadOrders(event: LazyLoadEvent) {  
+    this.loading = true;
+
+    
+    setTimeout(() => {
+        if (this.datasource) {
+            this.filteredOrders = this.datasource.slice(event.first, (event.first + event.rows));
+            this.loading = false;
+        }
+    }, 1000);
   }
 
   filterOrders(e){
@@ -251,7 +294,7 @@ export class RenewalOrderComponent implements OnInit {
   }
 
   exportAsXLSX():void {
-    this.excelService.exportAsExcelFile(this.order, 'Orders');
+    this.excelService.exportAsExcelFile(this.filteredOrders, 'Renewal orders');
   }
 
   RunRenewalOrderJob(){

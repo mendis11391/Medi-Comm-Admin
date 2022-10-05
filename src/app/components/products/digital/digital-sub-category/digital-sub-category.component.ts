@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Directive  } from '@angular/core';
 import { digitalSubCategoryDB } from 'src/app/shared/tables/digital-sub-category';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { ProductService } from '../../services/product.service';
 import { HttpClient} from '@angular/common/http';
-import { FormGroup, FormBuilder, Validators } from  '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from  '@angular/forms';
 
 @Component({
   selector: 'app-digital-sub-category',
@@ -16,12 +16,12 @@ export class DigitalSubCategoryComponent implements OnInit {
   public categorygroup;
   public categories;
   public specs;
-  addcategory: FormGroup;
+  addcategory: UntypedFormGroup;
   currentCatId;
   AllSpecs;
   catSpecs;
 
-  constructor(private formBuilder: FormBuilder,private modalService: NgbModal,private category: ProductService,private http: HttpClient) {
+  constructor(private formBuilder: UntypedFormBuilder,private modalService: NgbModal,private category: ProductService,private http: HttpClient) {
     // this.digital_sub_categories = digitalSubCategoryDB.digital_sub_category;
     this.addcategory = this.formBuilder.group({
       mainCatName:['', Validators.required],

@@ -40,7 +40,7 @@
                             <h3>{{orderName}}</h3>
                           </div>
                         </div>
-                        <table class="table table-striped table-bordered" >
+                        <!-- <table class="table table-striped table-bordered" >
                           <thead>
                             <tr>
                               
@@ -66,7 +66,101 @@
                               <td>{{o.transaction_source}}</td>                       
                             </tr>                          
                           </tbody>
-                        </table>
+                        </table> -->
+
+                        <p-table #dt1 [columns]="cols" styleClass="p-datatable-gridlines" selectionMode="multiple" [(selection)]="selectedOrders" [exportHeader]="'customExportHeader'" [value]="filteredOrders" [lazy]="false" responsiveLayout="scroll" dataKey="id"                            
+                            [paginator]="true" [showCurrentPageReport]="true" [rowsPerPageOptions]="[30,50,100]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="30" [totalRecords]="totalRecords" [loading]="loading" [globalFilterFields]="['order_id', 'firstName', 'mobile', 'totalSecurityDeposit', 'grandTotal', 'paymentStatus', 'delivery_status']">
+                            <ng-template pTemplate="caption">
+                              <div class="p-d-flex">
+                                <span class="p-input-icon-left p-ml-auto">
+                                          <!-- <i class="pi pi-search"></i> -->
+                                          <input class="w-100" pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Search keyword" />
+                                      </span>
+                              </div>
+                              <div class="flex">
+                                <button type="button" pButton pRipple icon="pi pi-file" (click)="dt1.exportCSV()" class="mr-2" pTooltip="CSV" tooltipPosition="bottom">CSV</button>
+                                <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportAsXLSX()" class="p-button-success mr-2"  pTooltip="XLS" tooltipPosition="bottom">XL</button>
+                                <!-- <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()" class="p-button-warning mr-2" pTooltip="PDF" tooltipPosition="bottom"></button> -->
+                                <button type="button" pButton pRipple icon="pi pi-filter" (click)="dt1.exportCSV({selectionOnly:true})" class="p-button-info ml-auto" pTooltip="Selection Only" tooltipPosition="bottom">CSV</button>
+                              </div>
+                            </ng-template>
+                            <ng-template pTemplate="header">
+                              <tr>
+                                <th>
+                                  <div class="flex justify-content-center align-items-center">
+                                    Order type
+                                      <p-columnFilter type="text" field="order_type" display="menu"></p-columnFilter>
+                                      <th pSortableColumn="order_type"><p-sortIcon field="order_type"></p-sortIcon></th>
+                                  </div>
+                                </th>
+                                <th>
+                                  <div class="flex justify-content-center align-items-center">
+                                    Order Id
+                                      <p-columnFilter type="text" field="primary_id" display="menu"></p-columnFilter>
+                                      <th pSortableColumn="primary_id"><p-sortIcon field="order_id"></p-sortIcon></th>
+                                  </div>
+                                </th>
+                                <th>
+                                  <div class="flex justify-content-center align-items-center">
+                                    Order date
+                                      <p-columnFilter type="date" field="createdAt" display="menu"></p-columnFilter>
+                                      <th pSortableColumn="createdAt"><p-sortIcon field="createdAt"></p-sortIcon></th>
+                                  </div>
+                                </th>
+                                <th>
+                                  <div class="flex justify-content-center align-items-center">
+                                    mobile
+                                      <p-columnFilter type="text" field="mobile" display="menu"></p-columnFilter>
+                                  </div>
+                                </th>
+                                <th>
+                                  <div class="flex justify-content-center align-items-center">
+                                    Customer name
+                                      <p-columnFilter type="text" field="firstName" display="menu"></p-columnFilter>
+                                  </div>
+                                </th>
+                                <th>
+                                  <div class="flex justify-content-center align-items-center">
+                                    Transaction value
+                                      <p-columnFilter type="numeric" field="transaction_amount" display="menu" currency="INR"></p-columnFilter>
+                                  </div>
+                                </th>
+                                <th>
+                                  <div class="flex justify-content-center align-items-center">
+                                    Transaction status
+                                      <p-columnFilter type="text" field="paymentStatus" display="menu"></p-columnFilter>
+                                  </div>
+                                </th>
+                                <th>
+                                  <div class="flex justify-content-center align-items-center">
+                                    Transaction source
+                                      <p-columnFilter type="text" field="transaction_source" display="menu"></p-columnFilter>
+                                  </div>
+                                </th>
+                              </tr>
+                                <!-- <tr>
+                                    <th pSortableColumn="order_id">Order Id <p-sortIcon field="order_id"></p-sortIcon></th>
+                                    <th pSortableColumn="primary_id">Primary Id <p-sortIcon field="primary_id"></p-sortIcon></th>
+                                    <th pSortableColumn="createdAt">Order date <p-sortIcon field="createdAt"></p-sortIcon></th>
+                                    <th pSortableColumn="firstName">Customer name <p-sortIcon field="firstName"></p-sortIcon></th>
+                                    <th pSortableColumn="mobile">Mobile <p-sortIcon field="mobile"></p-sortIcon></th>                                    
+                                    <th pSortableColumn="grandTotal">Transaction value <p-sortIcon field="grandTotal"></p-sortIcon></th>
+                                    <th pSortableColumn="paymentStatus">Transaction status <p-sortIcon field="paymentStatus"></p-sortIcon></th>
+                                </tr> -->
+                            </ng-template>
+                            <ng-template pTemplate="body" let-o>
+                                <tr [routerLink]="['../orders',o.id]">
+                                  <td>{{o.order_type}}</td>
+                                  <td>{{o.order_id}}</td>
+                                  <td>{{o.createdAt | date:'dd-MMM-yyyy HH:mm' : '+5:30'}}</td> 
+                                  <td>{{o.mobile}}</td>
+                                  <td>{{o.firstName}}</td> 
+                                  <td>{{o.grandTotal | currency:'INR':'symbol'}}</td>  
+                                  <td>{{o.paymentStatus}}</td> 
+                                  <td>{{o.transaction_source}}</td>   
+                                </tr>
+                            </ng-template>
+                        </p-table>
                     </div>
                 </div>
             </div>

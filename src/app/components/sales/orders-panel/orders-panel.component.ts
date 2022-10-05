@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Directive  } from '@angular/core';
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { orderDB } from "../../../shared/tables/order-list";
 import { Orders, Assets } from "../../../shared/data/order";
 import { OrdersService } from '../../products/services/orders.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient} from '@angular/common/http';
-import { FormGroup,FormBuilder,Validators } from '@angular/forms';
+import { UntypedFormGroup,UntypedFormBuilder,Validators } from '@angular/forms';
 import { ExcelService } from '../services/excel.service';
 import { environment } from 'src/environments/environment';
 
@@ -22,10 +22,10 @@ export class OrdersPanelComponent implements OnInit {
   @ViewChild('content') content;
   @ViewChild('orderDetails') orderDetails;
   orderId;
-  updateStatus: FormGroup;
-  deliveryDateStatus: FormGroup;
-  assetAssign:FormGroup;
-  deliveryStatus:FormGroup;
+  updateStatus: UntypedFormGroup;
+  deliveryDateStatus: UntypedFormGroup;
+  assetAssign:UntypedFormGroup;
+  deliveryStatus:UntypedFormGroup;
   modalReference;
   fullOrderDetails;
   productDetails;
@@ -34,7 +34,7 @@ export class OrdersPanelComponent implements OnInit {
   assetId;
   formError:boolean;
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
-  constructor(private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: FormBuilder) {
+  constructor(private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: UntypedFormBuilder) {
     // this.order = orderDB.list_order;
   }
 

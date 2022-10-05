@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { ReportsRoutingModule } from './reports-routing.module';
 import { ReportsComponent } from './reports.component';
-import { Ng2SmartTableModule } from 'ng2-smart-table';
+// import { Ng2SmartTableModule } from 'ng2-smart-table';
 
 import { ChartsModule } from 'ng2-charts';
 import { Ng2GoogleChartsModule } from 'ng2-google-charts';
@@ -19,7 +19,7 @@ import { ChartistModule } from 'ng-chartist'
     NgxChartsModule,
     ChartistModule,
     ReportsRoutingModule,
-    Ng2SmartTableModule
+    // Ng2SmartTableModule
   ]
 })
 export class ReportsModule { }

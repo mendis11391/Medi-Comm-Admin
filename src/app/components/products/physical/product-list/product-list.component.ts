@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Directive  } from '@angular/core';
 import { productDB } from 'src/app/shared/tables/product-list';
 import { ProductService } from '../../services/product.service';
 import { Router } from '@angular/router';

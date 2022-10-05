@@ -123,10 +123,10 @@
                                         </tr>
                                         </thead>
                                         <tbody *ngFor="let tenure of tenuresOfProduct; let i=index">
-                                        <tr [ngClass]="tenure.isSelected==1 ? 'row-bg' : '' " (click)="calcPrice(tenure.discount, security_deposit, tenure.tenure +' '+tenure.tenure_period, tenure.tenure_id,p.tenure_base_price,p, p.quantity); d('Cross click')">
+                                        <tr [ngClass]="tenure.isSelected==1 ? 'row-bg' : '' " (click)="calcPrice(tenure.discount, security_deposit, tenure.tenure +' '+tenure.tenure_period, tenure.tenure_id,p.tenure_base_price,p, p.quantity, tenure.tenure); d('Cross click')">
                                             <td class="pl-4">
                                             <div class="radio-item">
-                                                <input type="radio" [checked]="tenure.isSelected==1" id="tenure{{tenure.tenure}}" name="tenure" (change)="calcPrice(tenure.discount, security_deposit, tenure.tenure +' '+tenure.tenure_period, tenure.tenure_id,p.tenure_base_price,p, p.quantity); d('Cross click')" value="{{tenure.tenure}}">
+                                                <input type="radio" [checked]="tenure.isSelected==1" id="tenure{{tenure.tenure}}" name="tenure" (change)="calcPrice(tenure.discount, security_deposit, tenure.tenure +' '+tenure.tenure_period, tenure.tenure_id,p.tenure_base_price,p, p.quantity, tenure.tenure); d('Cross click')" value="{{tenure.tenure}}">
                                                 <label for="tenure{{tenure.tenure}}" [ngClass]="tenure.isSelected==1 ? 'theme-color' : '' "><span class="ml-3" >{{tenure.tenure}} {{tenure.tenure_period}}</span></label>
                                             </div>
                                             </td>
@@ -161,6 +161,10 @@
                             <h4>Taxes: ₹ {{((tenureTotalPrice)+dp)*(gst)/100  | number: '1.0-0'}}</h4>
                             <h4>Total deposit price: {{totalDepositPrice}}</h4>
                             <h4>Grand total: {{grandTotal}}</h4>
+
+                            <label>Fully paid Tenure: <ui-switch size="small" uncheckedLabel=" NO" checkedLabel="YES " (change)="updateOrder($event)"></ui-switch> 
+                                
+                            </label>
                         </div>
                         <div class="col-6 pull-right">
                             <h4>Transaction Source: Manual</h4>  
@@ -198,7 +202,7 @@
                             <div class="text-danger" *ngIf="!transactionDate && !orderValidated">Transaction date is required</div>
                         </div>
                     </div>
-                    <br><button class="btn btn-warning" (click)="test()">Create order</button>
+                    <br><button class="btn btn-warning" (click)="createOrder()">Create order</button>
                 </div>
             </div>
         </div>

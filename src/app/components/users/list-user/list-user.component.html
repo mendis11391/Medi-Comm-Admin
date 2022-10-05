@@ -11,7 +11,7 @@
                             <button class="pull-right btn btn-warning" >Download</button><br><br>
 
                         
-                        <table class="table table-striped table-bordered" >
+                        <!-- <table class="table table-striped table-bordered" >
                           <thead>
                             <tr>
                               <th>Customer #</th>
@@ -34,7 +34,97 @@
                               <td>{{o.lastLogin | date:'dd-MMM-yyyy HH:mm'}}</td>                 
                             </tr>                          
                           </tbody>
-                        </table>
+                        </table> -->
+
+                        <p-table #dt1 [columns]="cols" styleClass="p-datatable-gridlines" selectionMode="multiple" [(selection)]="selectedOrders" [exportHeader]="'customExportHeader'" [value]="filteredCustomers" [lazy]="false" responsiveLayout="scroll" dataKey="id"                            
+                            [paginator]="true" [showCurrentPageReport]="true" [rowsPerPageOptions]="[30,50,100]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="30" [totalRecords]="totalRecords" [loading]="loading" [globalFilterFields]="['order_id', 'firstName', 'mobile', 'totalSecurityDeposit', 'grandTotal', 'paymentStatus', 'delivery_status']">
+                            <ng-template pTemplate="caption">
+                              <div class="p-d-flex">
+                                <span class="p-input-icon-left p-ml-auto">
+                                          <!-- <i class="pi pi-search"></i> -->
+                                          <input class="w-100" pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Search keyword" />
+                                      </span>
+                              </div>
+                              <div class="flex">
+   
+                                <button type="button" pButton pRipple icon="pi pi-file" (click)="dt1.exportCSV()" class="mr-2" pTooltip="CSV" tooltipPosition="bottom">CSV</button>
+                                <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportAsXLSX()" class="p-button-success mr-2"  pTooltip="XLS" tooltipPosition="bottom">XL</button>
+                                <!-- <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()" class="p-button-warning mr-2" pTooltip="PDF" tooltipPosition="bottom"></button> -->
+                                <button type="button" pButton pRipple icon="pi pi-filter" (click)="dt1.exportCSV({selectionOnly:true})" class="p-button-info ml-auto" pTooltip="Selection Only" tooltipPosition="bottom">XL</button>
+                              </div>
+                            </ng-template>
+                            <ng-template pTemplate="header">
+                                <tr>
+                                  <th>
+                                    <div class="flex justify-content-center align-items-center">
+                                      Customer Id
+                                        <p-columnFilter type="numeric" field="customer_id" display="menu"></p-columnFilter>
+                                        <th pSortableColumn="customer_id"><p-sortIcon field="customer_id"></p-sortIcon></th>
+                                    </div>
+                                  </th>
+                                  <th>
+                                    <div class="flex justify-content-center align-items-center">
+                                      First name
+                                        <p-columnFilter type="text" field="firstName" display="menu"></p-columnFilter>
+                                    </div>
+                                  </th>
+                                  <th>
+                                    <div class="flex justify-content-center align-items-center">
+                                      Last name
+                                        <p-columnFilter type="text" field="lastName" display="menu"></p-columnFilter>
+                                    </div>
+                                  </th>
+                                  <th>
+                                    <div class="flex justify-content-center align-items-center">
+                                      mobile
+                                        <p-columnFilter type="text" field="mobile" display="menu"></p-columnFilter>
+                                    </div>
+                                  </th>
+                                  <th>
+                                    <div class="flex justify-content-center align-items-center">
+                                      Email
+                                        <p-columnFilter type="text" field="email" display="menu"></p-columnFilter>
+                                    </div>
+                                  </th>
+                                  
+                                  <th>
+                                    <div class="flex justify-content-center align-items-center">
+                                      Registered date
+                                        <p-columnFilter type="date" field="registeredAt" display="menu"></p-columnFilter>
+                                        <th pSortableColumn="registeredAt"><p-sortIcon field="registeredAt"></p-sortIcon></th>
+                                    </div>
+                                  </th>
+
+                                  
+                                  <th>
+                                    <div class="flex justify-content-center align-items-center">
+                                      Last activity
+                                        <p-columnFilter type="date" field="lastLogin" display="menu"></p-columnFilter>
+                                        <th pSortableColumn="lastLogin"><p-sortIcon field="lastLogin"></p-sortIcon></th>
+                                    </div>
+                                  </th>
+                                    <!-- <th pSortableColumn="order_id">Order Id <p-sortIcon field="order_id"></p-sortIcon></th>
+                                    <th pSortableColumn="createdAt">Order date <p-sortIcon field="createdAt"></p-sortIcon></th>
+                                    <th pSortableColumn="firstName">Customer name <p-sortIcon field="firstName"></p-sortIcon></th>
+                                    <th pSortableColumn="mobile">Mobile <p-sortIcon field="mobile"></p-sortIcon></th>
+                                    <th pSortableColumn="totalSecurityDeposit">Security deposit <p-sortIcon field="totalSecurityDeposit"></p-sortIcon></th>
+                                    <th pSortableColumn="grandTotal">Transaction value <p-sortIcon field="grandTotal"></p-sortIcon></th>
+                                    <th pSortableColumn="paymentStatus">Transaction status <p-sortIcon field="paymentStatus"></p-sortIcon></th>
+                                    <th pSortableColumn="delivery_status">Delivery status <p-sortIcon field="delivery_status"></p-sortIcon></th> -->
+                                </tr>
+                            </ng-template>
+                            <ng-template  pTemplate="body" let-rowData let-o>
+                                <tr [routerLink]="[o.customer_id]">
+                                  <td>{{o.customer_id}}</td>
+                                  <td>{{o.firstName}}</td>
+                                  <td>{{o.lastName}}</td>
+                                  <td>{{o.mobile}}</td>
+                                  <td>{{o.email}}</td>   
+                                  <td>{{o.registeredAt | date:'dd-MMM-yyyy HH:mm'}}</td>  
+                                  <td>{{o.lastLogin | date:'dd-MMM-yyyy HH:mm'}}</td> 
+                                </tr>
+                            </ng-template>
+                        </p-table>
                     </div>
                 </div>
             </div>

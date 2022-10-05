@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, Directive  } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { HttpClient} from '@angular/common/http';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { environment } from 'src/environments/environment';
@@ -10,9 +10,9 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./create-user.component.scss']
 })
 export class CreateUserComponent implements OnInit {
-  public accountForm: FormGroup;
-  public billingAddressForm: FormGroup;
-  public permissionForm: FormGroup;
+  public accountForm: UntypedFormGroup;
+  public billingAddressForm: UntypedFormGroup;
+  public permissionForm: UntypedFormGroup;
   inputsRequired:boolean=false;
   formSuccessfull:boolean=false;
   otherAddress;
@@ -26,7 +26,7 @@ export class CreateUserComponent implements OnInit {
   public temp = [];
   customerExist:boolean;
 
-  constructor(private http: HttpClient,private formBuilder: FormBuilder) {
+  constructor(private http: HttpClient,private formBuilder: UntypedFormBuilder) {
     this.getAllCustomers();
     this.dropdownSettings = {
       singleSelection: true,

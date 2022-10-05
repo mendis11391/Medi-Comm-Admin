@@ -20,8 +20,24 @@
                 </div>
             </div>
         </div>
-
         <div class="col-sm-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="custom-datatable" *ngFor="let a of defaultAddress">
+                        
+                        <p>Name : <span>{{a.display_name}} ({{a.nickName}})</span></p>
+                        <p>First name : <span>{{a.firstName}}</span></p>
+                        <p>Address : <span>{{a.address_line1}} {{a.address_line2}}, {{a.landmark}}, {{a.city}}-{{a.pincode}}</span></p>
+                        <p>Landmark : <span></span></p>
+                        <p>Mobile : <span>{{a.addressMobile}}</span></p>
+                        <p>Email : <span>{{a.email}}</span></p>
+                        <a class="text-primary" (click)="openAddressModal()">click here to view all address</a>
+                    </div>
+                </div>
+            </div>
+          </div>
+
+        <div class="col-sm-12">
             <div class="card" [ngClass]="{'bg-danger': kycDetails.kyc_status=='Query raised','bg-success': kycDetails.kyc_status=='eKYC approved', 'bg-warning': kycDetails.kyc_status=='eKYC submitted'}" >
                 <div class="card-body">
                     <h2 class="text-white" >{{kycDetails.kyc_status}}</h2>
@@ -361,6 +377,97 @@
         
         <button class="btn btn-primary" type="button" data-dismiss="modal"
             (click)="modal.dismiss('Cross click')">Close</button>
+    </div>
+</ng-template>
+
+
+<!-- Replacement request modal -->
+<ng-template  #addressModal let-c="close" let-d="dismiss">
+    <div class="modal-header text-center">
+      <h4 class="col-12 modal-title text-center" id="modal-basic-title">Order details</h4>
+      <button type="button" class="close" aria-label="Close" (click)="d(); ">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+        <div class="row">  
+          <div class="col-sm-6" *ngFor="let a of address">
+            <div class="card">
+                <div class="card-body">
+                    <div class="custom-datatable" >
+                        
+                        <div class="p-0 m-0">Display name : <span>{{a.display_name}} </span><span class="text-primary" (click)="displayName=!displayName"> <i class="fa fa-pencil"></i></span>
+                          <div class="input-group mb-3" *ngIf="displayName">
+                            <input type="text" class="form-control" [(ngModel)]="a.display_name" aria-describedby="basic-addon1">
+                            <div class="input-group-append">
+                              <span class="input-group-text" id="basic-addon1" (click)="updateCustomerAddressFeild(a.address_id,a.display_name, 'display_name')">Update</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="p-0 m-0">Nick Name: ({{a.nickName}}) <span class="text-primary" (click)="nickName=!nickName"> <i class="fa fa-pencil"></i></span>
+                          <div class="input-group mb-3" *ngIf="nickName">
+                            <input type="text" class="form-control" [(ngModel)]="a.nickName" aria-describedby="basic-addon1">
+                            <div class="input-group-append">
+                              <span class="input-group-text" id="basic-addon1" (click)="updateCustomerAddressFeild(a.address_id,a.nickName, 'nickName')">Update</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="p-0 m-0">First name : <span>{{a.firstName}}</span></div>
+                        <div class="p-0 m-0">Address line 1 : <span>{{a.address_line1}}</span><span class="text-primary" (click)="address1=!address1"> <i class="fa fa-pencil"></i></span>
+                          <div class="input-group mb-3" *ngIf="address1">
+                            <input type="text" class="form-control" [(ngModel)]="a.address_line1" aria-describedby="basic-addon1">
+                            <div class="input-group-append">
+                              <span class="input-group-text" id="basic-addon1" (click)="updateCustomerAddressFeild(a.address_id,a.address_line1, 'address_line1')">Update</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="p-0 m-0">Addresss line 2: <span>{{a.address_line2}} </span><span class="text-primary" (click)="address2=!address2"> <i class="fa fa-pencil"></i></span>
+                          <div class="input-group mb-3" *ngIf="address2">
+                            <input type="text" class="form-control" [(ngModel)]="a.address_line2" aria-describedby="basic-addon1">
+                            <div class="input-group-append">
+                              <span class="input-group-text" id="basic-addon1" (click)="updateCustomerAddressFeild(a.address_id,a.address_line2, 'address_line2')">Update</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="p-0 m-0">city <span>{{a.city}} </span><span class="text-primary" (click)="city=!city"> <i class="fa fa-pencil"></i></span>
+                          <div class="input-group mb-3" *ngIf="city">
+                            <input type="text" class="form-control" [(ngModel)]="a.city" aria-describedby="basic-addon1">
+                            <div class="input-group-append">
+                              <span class="input-group-text" id="basic-addon1" (click)="updateCustomerAddressFeild(a.address_id,a.city, 'city')">Update</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="p-0 m-0">pincode: <span>{{a.pincode}} </span><span class="text-primary" (click)="pincode=!pincode"> <i class="fa fa-pencil"></i></span>
+                          <div class="input-group mb-3" *ngIf="pincode">
+                            <input type="text" class="form-control" [(ngModel)]="a.pincode" aria-describedby="basic-addon1">
+                            <div class="input-group-append">
+                              <span class="input-group-text" id="basic-addon1" (click)="updateCustomerAddressFeild(a.address_id,a.pincode, 'pincode')">Update</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="p-0 m-0">Landmark : <span>{{a.landmark}} </span><span class="text-primary" (click)="landmark=!landmark"> <i class="fa fa-pencil"></i></span>
+                          <div class="input-group mb-3" *ngIf="landmark">
+                            <input type="text" class="form-control" [(ngModel)]="a.landmark" aria-describedby="basic-addon1">
+                            <div class="input-group-append">
+                              <span class="input-group-text" id="basic-addon1" (click)="updateCustomerAddressFeild(a.address_id,a.landmark, 'landmark')">Update</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="p-0 m-0">Mobile : <span>{{a.addressMobile}} </span><span class="text-primary" (click)="mobile=!mobile"> <i class="fa fa-pencil"></i></span>
+                          <div class="input-group mb-3" *ngIf="mobile">
+                            <input type="text" class="form-control" [(ngModel)]="a.addressMobile" aria-describedby="basic-addon1">
+                            <div class="input-group-append">
+                              <span class="input-group-text" id="basic-addon1" (click)="updateCustomerAddressFeild(a.address_id,a.addressMobile, 'addressMobile')">Update</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="p-0 m-0">Email : <span>{{a.email}}</span></div>
+                  
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
     </div>
 </ng-template>
 

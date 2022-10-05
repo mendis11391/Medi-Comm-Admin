@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 
-import { Ng2SmartTableModule } from 'ng2-smart-table';
+// import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { UsersRoutingModule } from './users-routing.module';
 import { ListUserComponent } from './list-user/list-user.component';
 import { CreateUserComponent } from './create-user/create-user.component';
@@ -22,19 +22,23 @@ import { CKEditorModule } from 'ngx-ckeditor';
 import { CreateEditKycComponent } from './create-edit-kyc/create-edit-kyc.component';
 import { CustomerLogsComponent } from './customer-logs/customer-logs.component';
 import { SharedModule } from 'src/app/shared/shared.module';
+import {TableModule} from 'primeng/table';
+import { ButtonModule } from "primeng/button";
 
 @NgModule({
   declarations: [ListUserComponent, CreateUserComponent, CustomersComponent, ReplaceRequestComponent, ReturnRequestComponent, ReviewsComponent, KycComponent, KycDetailsComponent, CreateEditKycComponent, CustomerLogsComponent],
   imports: [
     CommonModule,
     NgbModule,
-    Ng2SmartTableModule,
+    // Ng2SmartTableModule,
     FormsModule,
     ProductsModule,
     ReactiveFormsModule,
     UsersRoutingModule,
     CKEditorModule,
     SharedModule,
+    TableModule,
+    ButtonModule,
     NgMultiSelectDropDownModule.forRoot(),
   ]
 })

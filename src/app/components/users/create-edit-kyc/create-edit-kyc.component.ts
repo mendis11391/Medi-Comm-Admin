@@ -1,7 +1,7 @@
-import { Component, OnInit, ElementRef, ViewChild, ViewEncapsulation  } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, ViewEncapsulation, Directive  } from '@angular/core';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { DomSanitizer } from '@angular/platform-browser';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms';
 import { KYC } from 'src/app/shared/data/kyc';
 import { OrdersService } from '../../products/services/orders.service';
 import { Address } from "../../../shared/data/address";
@@ -70,8 +70,8 @@ export class CreateEditKycComponent implements OnInit {
   };
 
   public closeResult: string;
-  public kycForm: FormGroup;
-  public kycCompanyForm: FormGroup;
+  public kycForm: UntypedFormGroup;
+  public kycCompanyForm: UntypedFormGroup;
   imageSrc;
   aadharImage=[];
   selfieImage=[];
@@ -117,7 +117,7 @@ export class CreateEditKycComponent implements OnInit {
   tab4:boolean;
   tab5:boolean;
 
-  constructor( private router: Router,private route: ActivatedRoute,private os: OrdersService,private modalService: NgbModal,private sanitizer: DomSanitizer,private fb: FormBuilder,private el: ElementRef) {
+  constructor( private router: Router,private route: ActivatedRoute,private os: OrdersService,private modalService: NgbModal,private sanitizer: DomSanitizer,private fb: UntypedFormBuilder,private el: ElementRef) {
     this.uid = this.route.snapshot.url[1].path;
       this.kycForm = this.fb.group({
         customer_id:this.uid,

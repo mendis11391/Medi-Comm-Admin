@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Directive  } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import { HttpClient} from '@angular/common/http';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
@@ -102,14 +102,19 @@ export class DigitalAccessoriesComponent implements OnInit {
     });
   }
 
-  onEditAccsValue(event):void {
+  onEditAccsValue(accData):void {
     if (window.confirm('Are you sure you want to save?')) {
-      console.log(event.newData);
-      this.http.put(`${environment.apiUrl}/category/updateAccsValue`, event.newData).subscribe();
+      let accObj = {
+        id : accData.AccsId,
+        acceesory_name: accData.AccsName
+      }
+      this.http.put(`${environment.apiUrl}/category/updateAccsValue`, accObj).subscribe();
+      this.modalService.dismissAll();
       this.getAllAccs(); 
-      event.confirm.resolve(event.newData);
+      accData.confirm.resolve(accObj);
+      
     } else {
-      event.confirm.reject();
+      accData.confirm.reject();
     }
   }
 

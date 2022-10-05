@@ -103,6 +103,7 @@
                         <th scope="col">Due date</th>
                         <th scope="col">Status</th>
                         <th scope="col">Rent/Mo</th>
+                        <th scope="col">Change renewal price</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -111,7 +112,7 @@
                             <input class="checkbox" type="checkbox"  (click)="checkItem($event, p);renewalsTotal($event, p.data, p.data.primary_id, p.data.damage_protection)" 
                                 [name]="p.data.id"
                                 [id]="p.data.id"    
-                                [value]="[p.data.tenure_price]"
+                                [value]="[p.data.renewal_price]"
                                 [disabled]="p.isDisabled"
                                 [(ngModel)]="p.isSelected">
                         </td>  <!-- && dateDiffInDays(p.data.startDate)>=-2 -->
@@ -148,7 +149,7 @@
                                         <a class="renew-status">Asset #: {{p.data.asset_id}}</a>
                                     </div>
                                     <div class="col-6 text-right">
-                                        <a class="renew-status">Rent: ₹{{((p.data.tenure_price)+(p.data.damage_protection))}}</a>
+                                        <a class="renew-status">Rent: ₹{{((p.data.renewal_price-0)+(p.data.damage_protection-0))}}</a>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -221,9 +222,10 @@
                         </td>
                         <td  [class.fade]="p.data.renewed==2">
                             <label for="{{p.data.id}}"  class="pt-4">
-                                <a>₹{{((p.data.tenure_price-0)+(p.data.damage_protection-0)) | number: '1.0-0'}}</a>     
+                                <a>₹{{((p.data.renewal_price-0)+(p.data.damage_protection-0)) | number: '1.0-0'}}</a>     
                             </label>                      
                         </td>
+                        <td><input type="number" [(ngModel)]="p.data.renewal_price" class="form-control m-1"><button (click)="updateRenewalPrice(p.data.id,p.data.renewal_price)" class="btn btn-secondary">Update</button></td>
                     </tr>
                 </tbody>
             </table>

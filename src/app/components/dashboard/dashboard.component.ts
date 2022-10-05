@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Directive  } from '@angular/core';
 import * as chartData from '../../shared/data/chart';
 import { doughnutData, pieData } from '../../shared/data/chart';
 import { ActivatedRoute, Params } from '@angular/router';

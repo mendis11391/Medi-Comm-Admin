@@ -1,0 +1,94 @@
+<!-- Container-fluid starts-->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="custom-datatable">                        
+
+                        <p-table #dt1 [columns]="cols" styleClass="p-datatable-gridlines" selectionMode="multiple" [(selection)]="selectedOrders" [exportHeader]="'customExportHeader'" [value]="notes" [lazy]="false" responsiveLayout="scroll" dataKey="id"                            
+                            [paginator]="true" [showCurrentPageReport]="true" [rowsPerPageOptions]="[30,50,100]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="30" [totalRecords]="totalRecords" [loading]="loading" [globalFilterFields]="['order_id', 'firstName', 'mobile', 'totalSecurityDeposit', 'grandTotal', 'paymentStatus', 'delivery_status']">
+                            <ng-template pTemplate="caption">
+                              <div class="p-d-flex">
+                                <span class="p-input-icon-left p-ml-auto">
+                                          
+                                          <input class="w-100" pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Search keyword" />
+                                      </span>
+                              </div>
+                              <div class="flex">
+   
+                                <button type="button" pButton pRipple icon="pi pi-file" (click)="dt1.exportCSV()" class="mr-2" pTooltip="CSV" tooltipPosition="bottom">CSV</button>
+                                <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportAsXLSX()" class="p-button-success mr-2"  pTooltip="XLS" tooltipPosition="bottom">XL</button>
+                                
+                                <button type="button" pButton pRipple icon="pi pi-filter" (click)="dt1.exportCSV({selectionOnly:true})" class="p-button-info ml-auto" pTooltip="Selection Only" tooltipPosition="bottom">XL</button>
+                              </div>
+                            </ng-template>
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    
+                                  <th>
+                                    <div class="flex justify-content-center align-items-center">
+                                      Created date
+                                        <p-columnFilter type="date" field="created_at" display="menu"></p-columnFilter>
+                                        <th pSortableColumn="created_at"><p-sortIcon field="created_at"></p-sortIcon></th>
+                                    </div>
+                                  </th>
+                                  <th>
+                                    <div class="flex justify-content-center align-items-center">
+                                      User
+                                        <p-columnFilter type="text" field="AdminName" display="menu"></p-columnFilter>
+                                        <th pSortableColumn="AdminName"><p-sortIcon field="AdminName"></p-sortIcon></th>
+                                    </div>
+                                  </th>
+                                  <th>
+                                    <div class="flex justify-content-center align-items-center">
+                                      Customer name
+                                        <p-columnFilter type="text" field="firstName" display="menu"></p-columnFilter>
+                                        <th pSortableColumn="firstName"><p-sortIcon field="firstName"></p-sortIcon></th>
+                                    </div>
+                                  </th>
+                                  <th>
+                                    <div class="flex justify-content-center align-items-center">
+                                      mobile
+                                        <p-columnFilter type="text" field="mobile" display="menu"></p-columnFilter>
+                                        <th pSortableColumn="mobile"><p-sortIcon field="mobile"></p-sortIcon></th>
+                                    </div>
+                                  </th>
+                                  <!-- <th>
+                                    <div class="flex justify-content-center align-items-center">
+                                        Order#
+                                        <p-columnFilter type="text" field="order_id" display="menu"></p-columnFilter>
+                                        <th pSortableColumn="order_id"><p-sortIcon field="order_id"></p-sortIcon></th>
+                                    </div>
+                                  </th> -->
+                                  <th>
+                                    <div class="flex justify-content-center align-items-center">
+                                        notes
+                                        <p-columnFilter type="text" field="notes" display="menu"></p-columnFilter>
+                                        <th pSortableColumn="notes"><p-sortIcon field="notes"></p-sortIcon></th>
+                                    </div>
+                                  </th>
+
+                                  
+
+                                </tr>
+                            </ng-template>
+                            <ng-template  pTemplate="body"  let-o>
+                                <tr>
+                                  <td [routerLink]="['../../users/customers/',o.frontCustomer_id]">{{o.created_at | date:'dd-MMM-yyyy HH:mm'}}</td>  
+                                  <td [routerLink]="['../../users/customers/',o.frontCustomer_id]">{{o.AdminName}}</td>
+                                  <td [routerLink]="['../../users/customers/',o.frontCustomer_id]">{{o.firstName}} {{o.lastName}}</td>
+                                  <td [routerLink]="['../../users/customers/',o.frontCustomer_id]">{{o.mobile}}</td> 
+                                  <!-- <td *ngIf="o.order_id" [routerLink]="['../orders/',o.OID]">{{o.order_id}}</td> -->
+                                  <!-- <td *ngIf="!o.order_id">{{o.order_id}}</td> -->
+                                  <td [routerLink]="['../../users/customers/',o.frontCustomer_id]">{{o.notes}}</td>
+
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->

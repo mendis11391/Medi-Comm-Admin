@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, Directive  } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { HttpClient} from '@angular/common/http';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { environment } from 'src/environments/environment';
@@ -12,7 +12,7 @@ import {NgbDate, NgbCalendar} from '@ng-bootstrap/ng-bootstrap';
 })
 export class ReviewsComponent implements OnInit {
 
-  public reviewForm: FormGroup;
+  public reviewForm: UntypedFormGroup;
   fromDate: NgbDate;
   rate:number=0;
   inputsRequired:boolean=false;
@@ -47,7 +47,7 @@ export class ReviewsComponent implements OnInit {
     },
   };
 
-  constructor(private http: HttpClient,private formBuilder: FormBuilder) { 
+  constructor(private http: HttpClient,private formBuilder: UntypedFormBuilder) { 
     this.reviewForm = this.formBuilder.group({
       displayName: ['',Validators.required],
       displayMobile: ['',Validators.required],

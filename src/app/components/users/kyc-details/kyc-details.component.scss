@@ -14,3 +14,22 @@
 .bg-danger{
     background-color: #ff4444 !important;
 }
+
+
+::ng-deep .my-address .modal-dialog { 
+    max-width: 90%;
+    width: 90%;
+}
+
+::ng-deep .my-prod .modal-dialog { 
+    max-width: 90%;
+    width: 90%;
+}
+
+.bg-danger{
+    background-color: #ff4444 !important;
+}
+
+.bg-dark{
+    background-color: #292b2c ;
+}

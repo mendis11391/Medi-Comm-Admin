@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { MediaRoutingModule } from './media-routing.module';
 import { MediaComponent } from './media/media.component';
-import { Ng2SmartTableModule } from 'ng2-smart-table';
+// import { Ng2SmartTableModule } from 'ng2-smart-table';
 
 import { DropzoneModule } from 'ngx-dropzone-wrapper';
 import { DROPZONE_CONFIG } from 'ngx-dropzone-wrapper';
@@ -21,7 +21,7 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     CommonModule,
     MediaRoutingModule,
     DropzoneModule,
-    Ng2SmartTableModule
+    // Ng2SmartTableModule
   ],
   providers: [
     {

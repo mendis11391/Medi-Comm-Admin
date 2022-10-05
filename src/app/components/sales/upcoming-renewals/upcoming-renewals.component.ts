@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Directive  } from '@angular/core';
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { orderDB } from "../../../shared/tables/order-list";
 import { Orders,OrderItems, Assets } from "../../../shared/data/order";
 import { OrdersService } from '../../products/services/orders.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient} from '@angular/common/http';
-import { FormGroup,FormBuilder } from '@angular/forms';
+import { UntypedFormGroup,UntypedFormBuilder } from '@angular/forms';
 import { ExcelService } from '../services/excel.service';
 import {NgbDate, NgbCalendar} from '@ng-bootstrap/ng-bootstrap';
 import { environment } from 'src/environments/environment';
@@ -23,9 +23,9 @@ export class UpcomingRenewalsComponent implements OnInit {
   @ViewChild('content') content;
   @ViewChild('orderDetails') orderDetails;
   orderId;
-  updateStatus: FormGroup;
-  deliveryDateStatus: FormGroup;
-  assetAssign:FormGroup;
+  updateStatus: UntypedFormGroup;
+  deliveryDateStatus: UntypedFormGroup;
+  assetAssign:UntypedFormGroup;
   modalReference;
   fullOrderDetails;
   productDetails;
@@ -43,7 +43,14 @@ export class UpcomingRenewalsComponent implements OnInit {
   toDate: NgbDate | null = null;
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
   @ViewChild('d') d;
-  constructor(calendar: NgbCalendar,private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: FormBuilder) {
+
+  datasource: Orders[];
+  loading: boolean;
+  totalRecords: number;
+  selectedOrders: Orders[];
+  cols: any[];
+  exportColumns: any[];
+  constructor(calendar: NgbCalendar,private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: UntypedFormBuilder) {
     // this.order = orderDB.list_order;
     this.fromDate = calendar.getToday();
     this.toDate = calendar.getNext(calendar.getToday(), 'd', 10);
@@ -67,6 +74,29 @@ export class UpcomingRenewalsComponent implements OnInit {
   ngOnInit() {
     this.http.get(`${environment.apiUrl}/admin/getAllActiveRenewals`).subscribe((resp:[])=>{
       this.filteredOrderItems=resp;
+
+      this.filteredOrderItems.forEach(
+        item => (item.start_date = new Date(item.start_date), item.end_date = new Date(item.end_date))  
+      );
+      this.cols = [
+        { field: "order_id", header: "Order Id" },
+        { field: "start_date", header: "Start date" },
+        { field: "end_date", header: "End date" },
+        { field: "firstName", header: "First name" },
+        { field: "mobile", header: "mobile" },
+        { field: "prod_name", header: "Product" },
+        { field: "renewal_price", header: "Renewal price" },
+        { field: "asset_id", header: "Asset id" }
+      ];
+
+      
+      this.exportColumns = this.cols.map(col => ({
+        title: col.header,
+        dataKey: col.field
+      }));
+
+      this.datasource = this.filteredOrders;
+      this.totalRecords = this.filteredOrders.length;
     })    
     // this.getOrders();
     this.updateStatus = this.formBuilder.group({
@@ -149,7 +179,7 @@ export class UpcomingRenewalsComponent implements OnInit {
   }
 
   exportAsXLSX():void {
-    this.excelService.exportAsExcelFile(this.order, 'Orders');
+    this.excelService.exportAsExcelFile(this.filteredOrderItems, 'Orders');
   }
 
   //dates

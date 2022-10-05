@@ -250,7 +250,7 @@
                                   </form>
                             </td>
                             <td>
-                                <form [formGroup]="deliveryStatus" (ngSubmit)="updateProductDeliveryStatus(p.order_item_id)">                                
+                                <form [formGroup]="deliveryStatus" (ngSubmit)="updateProductDeliveryStatus(p.order_item_id,p)">                                
                                     <label> Delivery status:
                                       <select formControlName="deliveryStatus" class="form-control" required>   
                                           <option [value]="p.delivery_status">Select</option>                
@@ -326,7 +326,7 @@
                                   </form>
                             </td>
                             <td>
-                                <form [formGroup]="deliveryStatus" (ngSubmit)="updateProductDeliveryStatus(p.order_item_id)">                                
+                                <form [formGroup]="deliveryStatus" (ngSubmit)="updateProductDeliveryStatus(p.order_item_id,p)">                                
                                     <label> Delivery status:
                                       <select formControlName="deliveryStatus" class="form-control" required>   
                                           <option [value]="p.delivery_status">Select</option>                
@@ -430,7 +430,7 @@
                                   </form>
                             </td>
                             <td>
-                                <form [formGroup]="deliveryStatus" (ngSubmit)="updateProductDeliveryStatus(p.order_item_id)">                                
+                                <form [formGroup]="deliveryStatus" (ngSubmit)="updateProductDeliveryStatus(p.order_item_id,p)">                                
                                     <label> Delivery status:
                                       <select formControlName="deliveryStatus" class="form-control" required>   
                                           <option [value]="p.delivery_status">Select</option>                
@@ -505,7 +505,7 @@
                                   </form>
                             </td>
                             <td *ngIf="o.orderType_id==1">
-                                <form [formGroup]="deliveryStatus" (ngSubmit)="updateProductDeliveryStatus(p.order_item_id)">                                
+                                <form [formGroup]="deliveryStatus" (ngSubmit)="updateProductDeliveryStatus(p.order_item_id,p)">                                
                                     <label> Delivery status:
                                       <select formControlName="deliveryStatus" class="form-control" required>   
                                           <option [value]="p.delivery_status">Select</option>                

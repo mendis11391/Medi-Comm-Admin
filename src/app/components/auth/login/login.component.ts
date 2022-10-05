@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnInit, Directive  } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../auth.service';
@@ -21,14 +21,14 @@ interface Response {
 
 export class LoginComponent implements OnInit {
 
-  public loginForm: FormGroup;
-  public registerForm: FormGroup;
+  public loginForm: UntypedFormGroup;
+  public registerForm: UntypedFormGroup;
   loginError = false;
   public user;
   Role = Role;
   
 
-  constructor(private formBuilder: FormBuilder, private login: AuthService, private router: Router) {
+  constructor(private formBuilder: UntypedFormBuilder, private login: AuthService, private router: Router) {
     this.createLoginForm();
     this.createRegisterForm();
   }

@@ -1,13 +1,18 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Directive  } from '@angular/core';
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { orderDB } from "../../../shared/tables/order-list";
 import { Orders, Assets } from "../../../shared/data/order";
 import { OrdersService } from '../../products/services/orders.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient} from '@angular/common/http';
-import { FormGroup,FormBuilder } from '@angular/forms';
+import { UntypedFormGroup,UntypedFormBuilder } from '@angular/forms';
 import { ExcelService } from '../services/excel.service';
 import { environment } from 'src/environments/environment';
+import { LazyLoadEvent } from 'primeng/api';
+import { PrimeNGConfig } from 'primeng/api';
+import * as FileSaver from 'file-saver';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable'
 
 @Component({
   selector: 'app-primary-order',
@@ -22,9 +27,9 @@ export class PrimaryOrderComponent implements OnInit {
   @ViewChild('content') content;
   @ViewChild('orderDetails') orderDetails;
   orderId;
-  updateStatus: FormGroup;
-  deliveryDateStatus: FormGroup;
-  assetAssign:FormGroup;
+  updateStatus: UntypedFormGroup;
+  deliveryDateStatus: UntypedFormGroup;
+  assetAssign:UntypedFormGroup;
   modalReference;
   fullOrderDetails;
   productDetails;
@@ -32,9 +37,16 @@ export class PrimaryOrderComponent implements OnInit {
   diffInRent=0;
   diffInDeposit=0;
   ddCharges=0;
-  public filteredOrders=[];
+  filteredOrders:Orders[]=[];
+  datasource: Orders[];
+  loading: boolean;
+  totalRecords: number;
+  selectedOrders: Orders[];
+  cols: any[];
+  exportColumns: any[];
+
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
-  constructor(private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: FormBuilder) {
+  constructor(private primengConfig: PrimeNGConfig,private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: UntypedFormBuilder) {
     // this.order = orderDB.list_order;
     this.getOrders();
     this.getAssets();
@@ -65,6 +77,7 @@ export class PrimaryOrderComponent implements OnInit {
   }
 
   ngOnInit() {    
+    this.primengConfig.ripple = true;
     // this.getOrders();
     // this.getAssets();
     // this.updateStatus = this.formBuilder.group({
@@ -80,26 +93,48 @@ export class PrimaryOrderComponent implements OnInit {
   }
 
   getOrders(){
-    this.os.getAllPrimaryOrders().subscribe((orders)=>{
+    this.os.getAllPrimaryOrders().subscribe((orders:Orders[])=>{
       // orders.reverse();
       this.order=orders;
       this.filteredOrders=this.order.filter(item => (item.paymentStatus.toLowerCase()=='success' || item.paymentStatus.toLowerCase()=='to be paid') && item.orderType_id==1);
+      this.filteredOrders.forEach(
+        item => (item.createdAt = new Date(item.createdAt))
+      );
+      this.cols = [
+        { field: "order_id", header: "Order Id" },
+        { field: "createdAt", header: "Order date" },
+        { field: "firstName", header: "First name" },
+        { field: "mobile", header: "mobile" },
+        { field: "totalSecurityDeposit", header: "Security deposit" },
+        { field: "grandTotal", header: "Transaction value" },
+        { field: "paymentStatus", header: "Payment status" },
+        { field: "delivery_status", header: "Delivery status" }
+      ];
+
+      
+      this.exportColumns = this.cols.map(col => ({
+        title: col.header,
+        dataKey: col.field
+      }));
+
+      this.datasource = this.filteredOrders;
+      this.totalRecords = this.filteredOrders.length;
     });
   }
 
-  // filterOrders(e){
-  //   if(e=='All orders'){
-  //     this.filteredOrders=this.order.filter(item => item.paymentStatus=='Success');
-  //   } else if(e=='Primary order'){
-  //     this.filteredOrders=this.order.filter(item => item.orderType_id==1);
-  //   } else if(e=='Renewal order'){
-  //     this.filteredOrders=this.order.filter(item => item.orderType_id==2);
-  //   } else if(e=='Replacement order'){
-  //     this.filteredOrders=this.order.filter(item => item.orderType_id==3);
-  //   } else if(e=='Return order'){
-  //     this.filteredOrders=this.order.filter(item => item.orderType_id==4);
-  //   }
-  // }
+  loadOrders(event: LazyLoadEvent) {  
+    this.loading = true;
+
+    
+    setTimeout(() => {
+        if (this.datasource) {
+            this.filteredOrders = this.datasource.slice(event.first, (event.first + event.rows));
+            this.loading = false;
+        }
+    }, 1000);
+  }
+
+
 
   getAssets(){
     this.os.getAllassets().subscribe((assets)=>{
@@ -264,11 +299,36 @@ export class PrimaryOrderComponent implements OnInit {
   }
 
   exportAsXLSX():void {
-    this.excelService.exportAsExcelFile(this.order, 'Orders');
+    this.excelService.exportAsExcelFile(this.filteredOrders, 'Primary orders');
   }
+
+  exportAsXL(orders:any) {
+    this.excelService.exportAsExcelFile(orders, 'Primary orders');
+  }
+
+  test():void {
+    console.log(this.filteredOrders);
+    console.log(this.cols);
+    console.log(this.datasource);
+    console.log(this.exportColumns);
+    console.log(this.selectedOrders);
+    console.log(this.order);
+  }
+
+  // exportPdf() {
+  //   import("jspdf").then(jsPDF => {
+  //       import("jspdf-autotable").then(x => {
+  //           const doc = new jsPDF.default(0,0);
+  //           doc.autoTable(this.filteredOrders, this.filteredOrders);
+  //           doc.save('Primary-orders.pdf');
+  //       })
+  //   })
+  // }
 
   runPrimaryOrderJob(){
     this.os.RunPrimaryOrderJob().subscribe();
   }
+
+
 
 }

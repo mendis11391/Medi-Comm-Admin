@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { Ng2SmartTableModule } from 'ng2-smart-table';
+// import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 
 import { SalesRoutingModule } from './sales-routing.module';
@@ -30,19 +30,24 @@ import { CreateRenewalOrderComponent } from './create-renewal-order/create-renew
 import { CreateRequestComponent } from './create-request/create-request.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { CancelledOrdersComponent } from './cancelled-orders/cancelled-orders.component';
+import {TableModule} from 'primeng/table';
+import { ButtonModule } from "primeng/button";
+import { NotesComponent } from './notes/notes.component';
 
 @NgModule({
-  declarations: [OrdersComponent, TransactionsComponent, OthersComponent, DepositsComponent, OrdersPanelComponent, ReplacementOrdersComponent, UserRequestsComponent, ManageOrdersComponent, OrderDetailsComponent, PrimaryOrderComponent, RenewalOrderComponent, ReplacementOrderComponent, ReturnOrderComponent, UpcomingRenewalsComponent, CreateOrderComponent, AllOrdersComponent, CreateRenewalOrderComponent, CreateRequestComponent, CancelledOrdersComponent],
+  declarations: [OrdersComponent, TransactionsComponent, OthersComponent, DepositsComponent, OrdersPanelComponent, ReplacementOrdersComponent, UserRequestsComponent, ManageOrdersComponent, OrderDetailsComponent, PrimaryOrderComponent, RenewalOrderComponent, ReplacementOrderComponent, ReturnOrderComponent, UpcomingRenewalsComponent, CreateOrderComponent, AllOrdersComponent, CreateRenewalOrderComponent, CreateRequestComponent, CancelledOrdersComponent, NotesComponent],
   imports: [
     CommonModule,
     SalesRoutingModule,
-    Ng2SmartTableModule,
+    // Ng2SmartTableModule,
     NgxDatatableModule,
     FormsModule,
     ReactiveFormsModule,
     NgbModule,
     UiSwitchModule,
     SharedModule,
+    TableModule,
+    ButtonModule,
     NgMultiSelectDropDownModule.forRoot(),
   ]
 })

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Directive  } from '@angular/core';
 import { ActivatedRoute, Router} from '@angular/router';
 import { ProductService } from '../../products/services/product.service';
 import { Orders, Assets } from "../../../shared/data/order";

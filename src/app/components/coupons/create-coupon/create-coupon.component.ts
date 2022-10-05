@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { Component, OnInit, Directive  } from '@angular/core';
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { NgbDateStruct, NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -10,14 +10,14 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./create-coupon.component.scss']
 })
 export class CreateCouponComponent implements OnInit {
-  public generalForm: FormGroup;
-  public restrictionForm: FormGroup;
-  public usageForm: FormGroup;
+  public generalForm: UntypedFormGroup;
+  public restrictionForm: UntypedFormGroup;
+  public usageForm: UntypedFormGroup;
   public model: NgbDateStruct;
   public date: { year: number, month: number };
   public modelFooter: NgbDateStruct;
 
-  constructor(private formBuilder: FormBuilder, private calendar: NgbCalendar, private http:HttpClient) {
+  constructor(private formBuilder: UntypedFormBuilder, private calendar: NgbCalendar, private http:HttpClient) {
     this.createGeneralForm();
     this.createRestrictionForm();
     this.createUsageForm();

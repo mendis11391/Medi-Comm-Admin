@@ -10,5 +10,7 @@ export interface Customers {
     sourceIP?:String,
     customerId?:number,
     transactionDate?:Date,
-    transactionDescription?:string
+    transactionDescription?:string,
+    registeredAt?:Date,
+    lastLogin?:Date
 }

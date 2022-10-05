@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Directive  } from '@angular/core';
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { orderDB } from "../../../shared/tables/order-list";
 import { Orders, Assets } from "../../../shared/data/order";
 import { OrdersService } from '../../products/services/orders.service';
 import { NgbDateStruct, NgbModal, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient} from '@angular/common/http';
-import { FormGroup,FormBuilder } from '@angular/forms';
+import { UntypedFormGroup,UntypedFormBuilder } from '@angular/forms';
 import { ProductService } from '../../products/services/product.service';
 import { ActivatedRoute, Router} from '@angular/router';
 import { environment } from 'src/environments/environment';
@@ -26,9 +26,9 @@ export class ReturnRequestComponent implements OnInit {
   @ViewChild('returnRequest') returnRequest;
   @ViewChild('replacementRequest') replacementRequest;
   orderId;
-  updateStatus: FormGroup;
-  deliveryDateStatus: FormGroup;
-  assetAssign:FormGroup;
+  updateStatus: UntypedFormGroup;
+  deliveryDateStatus: UntypedFormGroup;
+  assetAssign:UntypedFormGroup;
   modalReference;
   fullOrderDetails;
   productDetails;
@@ -63,8 +63,9 @@ export class ReturnRequestComponent implements OnInit {
   model: NgbDateStruct;
   paymentStatus;
   requestDetails={request_message:''};
+  comment:string;
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
-  constructor(private calendar: NgbCalendar,private route: ActivatedRoute, private router:Router,private http: HttpClient,private ps:ProductService,private os:OrdersService, private modalService: NgbModal, private formBuilder: FormBuilder) {
+  constructor(private calendar: NgbCalendar,private route: ActivatedRoute, private router:Router,private http: HttpClient,private ps:ProductService,private os:OrdersService, private modalService: NgbModal, private formBuilder: UntypedFormBuilder) {
     // this.order = orderDB.list_order;
     this.model = this.calendar.getToday();
   }
@@ -135,6 +136,22 @@ export class ReturnRequestComponent implements OnInit {
     return (parseInt(rentPrice) * (gst)/100);
   }
 
+  postNotes(orderDBId){
+    let sendObj = {
+      comment:this.comment,
+      uid: sessionStorage.getItem('user_id'),
+      frontUid:this.fullOrderDetails[0].customer_id,
+      orderId:orderDBId,
+      orderType:4,
+    };
+    if(this.comment.replace(/ /g,'')){
+      this.http.post(`${environment.apiUrl}/admin/insertNotes`,sendObj).subscribe((res)=>{
+        this.comment='';
+        alert('Added note successfully');
+      });
+    }
+    
+  }
 
 
   getAssets(){
@@ -298,11 +315,12 @@ export class ReturnRequestComponent implements OnInit {
       requestStatus:0
     };
 
-    this.http.post(`${environment.apiUrl}/payments/newReturn`,  returnOrder).subscribe((res) => {
+    this.http.post(`${environment.apiUrl}/payments/newReturn`,  returnOrder).subscribe((res:any) => {
       this.http.put(`${environment.apiUrl}/orders/updateOrderItemStatus/${this.currentOrderItemId}`,returnOrderItem).subscribe();
       this.http.put(`${environment.apiUrl}/users/updatecustomerRequests/${this.currentOrderItemId}`,customerRequest).subscribe(); 
       this.http.put(`${environment.apiUrl}/users/updatecustomerRequestsMessage/${this.currentOrderItemId}`,this.requestDetails).subscribe();      
       this.http.post(`${environment.apiUrl}/forgotpassword/notifyMailReturnOrder`,  returnOrder).subscribe();
+      this.postNotes(res.orderDBId);
       // if(this.refundStatus==6){
       //   this.http.post(`${environment.apiUrl}/forgotpassword/depositRefundedMail`,  returnOrder).subscribe();
       // }

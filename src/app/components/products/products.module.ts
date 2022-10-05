@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { Ng2SmartTableModule } from 'ng2-smart-table';
+// import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { CKEditorModule } from 'ngx-ckeditor';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbActiveModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -43,6 +43,7 @@ import { ScrollerPipe } from './pipes/scoller.pipe';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 import { UiSwitchModule } from 'ngx-ui-switch';
+import { PincodesComponent } from './digital/pincodes/pincodes.component';
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
   maxFilesize: 50,
@@ -52,14 +53,14 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
 
 
 @NgModule({
-  declarations: [ScrollerPipe,BlobPipe,CategorySpecsPipe,EditSpecPipe,CheckTenurePipe,TenurePipe,SpecPipe,CategoryComponent, SubCategoryComponent, DigitalEditComponent,ProductListComponent, AddProductComponent, DigitalCategoryComponent, DigitalSubCategoryComponent, DigitalListComponent, DigitalAddComponent, ProductDetailComponent, DigitalSpecsComponent, DigitalCategoryListComponent, DigitalSubCategoryListComponent, DigitalProductDetailsComponent, PricingSchemesComponent, DigitalAccessoriesComponent, DigitalScrollersComponent],
+  declarations: [ScrollerPipe,BlobPipe,CategorySpecsPipe,EditSpecPipe,CheckTenurePipe,TenurePipe,SpecPipe,CategoryComponent, SubCategoryComponent, DigitalEditComponent,ProductListComponent, AddProductComponent, DigitalCategoryComponent, DigitalSubCategoryComponent, DigitalListComponent, DigitalAddComponent, ProductDetailComponent, DigitalSpecsComponent, DigitalCategoryListComponent, DigitalSubCategoryListComponent, DigitalProductDetailsComponent, PricingSchemesComponent, DigitalAccessoriesComponent, DigitalScrollersComponent, PincodesComponent],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     CKEditorModule,
     ProductsRoutingModule,
-    Ng2SmartTableModule,
+    // Ng2SmartTableModule,
     NgbModule,
     DropzoneModule,
     GalleryModule.forRoot(),

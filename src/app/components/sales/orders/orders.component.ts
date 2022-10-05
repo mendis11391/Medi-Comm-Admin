@@ -1,13 +1,15 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, Directive  } from '@angular/core';
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { orderDB } from "../../../shared/tables/order-list";
 import { Orders, Assets } from "../../../shared/data/order";
 import { OrdersService } from '../../products/services/orders.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClient} from '@angular/common/http';
-import { FormGroup,FormBuilder } from '@angular/forms';
+import { UntypedFormGroup,UntypedFormBuilder } from '@angular/forms';
 import { ExcelService } from '../services/excel.service';
 import { environment } from 'src/environments/environment';
+import { LazyLoadEvent } from 'primeng/api';
+import { PrimeNGConfig } from 'primeng/api';
 
 @Component({
   selector: 'app-orders',
@@ -21,9 +23,9 @@ export class OrdersComponent implements OnInit {
   @ViewChild('content') content;
   @ViewChild('orderDetails') orderDetails;
   orderId;
-  updateStatus: FormGroup;
-  deliveryDateStatus: FormGroup;
-  assetAssign:FormGroup;
+  updateStatus: UntypedFormGroup;
+  deliveryDateStatus: UntypedFormGroup;
+  assetAssign:UntypedFormGroup;
   modalReference;
   fullOrderDetails;
   productDetails;
@@ -32,9 +34,14 @@ export class OrdersComponent implements OnInit {
   diffInDeposit=0;
   ddCharges=0;
   orderName:string;
-  public filteredOrders=[];
+  filteredOrders:Orders[]=[];
+  datasource: Orders[];
+  loading: boolean;
+  totalRecords: number;
+  selectedOrders: Orders[];
+
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
-  constructor(private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: FormBuilder) {
+  constructor(private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: UntypedFormBuilder) {
     // this.order = orderDB.list_order;
     this.getOrders();
     this.getAssets();
@@ -87,7 +94,21 @@ export class OrdersComponent implements OnInit {
       this.order=orders;
       this.filteredOrders=this.order.filter(item => item.orderType_id==1 && item.deliveryStatus!='4' && item.paymentStatus=='Success');
       this.orderName='New orders';
+      this.datasource = this.filteredOrders;
+      this.totalRecords = this.filteredOrders.length;
     });
+  }
+
+  loadOrders(event: LazyLoadEvent) {  
+    this.loading = true;
+
+    
+    setTimeout(() => {
+        if (this.datasource) {
+            this.filteredOrders = this.datasource.slice(event.first, (event.first + event.rows));
+            this.loading = false;
+        }
+    }, 1000);
   }
 
   filterOrders(e){    
