@@ -3,7 +3,7 @@ import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { UntypedFormGroup, FormBuilder, Validators } from '@angular/forms';
 import { OrdersService } from '../../products/services/orders.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbDateStruct, NgbCalendar,NgbDatepickerConfig, NgbModalConfig, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
@@ -29,11 +29,14 @@ export class CreateRenewalOrderComponent implements OnInit {
   tableData: TableData[] = [];
   allChecked:boolean = false;
   checked:boolean = false;
+  model: Date=new Date();
+  date: {year: number, month: number};
   customerDetails={
     firstName:'',
     mobile:'',
     email:''
   };
+  currentRenewalId:number=0;
   public closeResult: string;
   public products=[];
   public orders = [];
@@ -77,7 +80,9 @@ export class CreateRenewalOrderComponent implements OnInit {
   currDate=new Date();
   orderValidated:boolean=true;
   disableRenew:boolean =  true;
-  constructor(private router: Router,private http: HttpClient,private os:OrdersService,private modalService: NgbModal) {
+  role = sessionStorage.getItem('u_role');
+
+  constructor(private config: NgbDatepickerConfig,private router: Router,private http: HttpClient,private os:OrdersService,private modalService: NgbModal) {
     this.dropdownSettings = {
       singleSelection: true,
       idField: 'customer_id',
@@ -477,10 +482,10 @@ export class CreateRenewalOrderComponent implements OnInit {
 
 
   transactionId() {
-    const subCity = 'BLR';
+    const subCity = 'BLRN';
     const rand = Math.floor((Math.random() * 9999) + 1);
     const dte = new Date();
-    const txnid = ""+subCity + rand +
+    const txnid = ""+subCity  +
     dte.getDay()+
     (dte.getMonth()+1) +
     dte.getFullYear();
@@ -571,7 +576,8 @@ export class CreateRenewalOrderComponent implements OnInit {
             tDate:this.transactionDate,
             paymentStatus:this.paymentStatus
           };
-          this.os.newRenewProducts(products).subscribe((resp1)=>{
+          this.os.newRenewProducts(products).subscribe((resp1:any)=>{
+            transaction.orderId = resp1.txnid;
             this.http.post(`${environment.apiUrl}/payments/postManualRenewalOrderTransaction`,transaction).subscribe((resp2)=>{
               
               alert('Renewal Order created successfully');
@@ -599,6 +605,17 @@ export class CreateRenewalOrderComponent implements OnInit {
     });
   }
 
+  openRenewalEndDateModal(modal, currentEndDate:Date, id:number) {
+    
+    this.model = currentEndDate;
+    this.currentRenewalId = id;
+    this.modalService.open(modal,{ windowClass: 'my-address'}).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed`;
+    });
+  }
+
   updateTenurePrice(orderItemId, updatedPrice){
     let renewals_timline;
     this.http.get(`${environment.apiUrl}/orders/orderItemsByorderId/${orderItemId}`).subscribe((res) => {
@@ -619,6 +636,28 @@ export class CreateRenewalOrderComponent implements OnInit {
         alert("renewal price updated successfully");
       }
     });
+  }
+
+  updateRentPrice(id,rentPrice){
+    this.http.put(`${environment.apiUrl}/admin/updateOrderRentPrice/${id}`,{rent:rentPrice}).subscribe((res:any)=>{
+      if(res.message=="Success"){
+        alert("renewal price updated successfully");
+      }
+    });
+  }
+
+  updateRenewalEndDate(){
+    let selectedDate = this.model;
+    this.http.put(`${environment.apiUrl}/admin/updateOrderRenewalEndDate/${this.currentRenewalId}`,{end_date:selectedDate}).subscribe((res:any)=>{
+      if(res.message=="Success"){
+        alert("renewal End date updated successfully");
+      }else{
+        alert(res)
+      }
+    });
+    this.modalService.dismissAll();
+    this.tableData=[];
+    this.getOrders(this.uid);
   }
   
 

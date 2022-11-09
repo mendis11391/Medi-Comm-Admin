@@ -103,6 +103,22 @@
         </button>
     </div>
     <div class="modal-body">
+        <table>
+            <thead>
+                <th>Tenure</th>
+                <th>Tenure period</th>
+                <th>Tenure discount</th>
+                <th>Default tenure</th>
+                <th>Action</th>
+            </thead>
+            <tbody  *ngFor="let d of editTenureValues">
+                <td>{{d.tenure}}</td>
+                <td>{{d.tenure_period}}</td>
+                <td><input type="number" class="form-control" [(ngModel)]="d.discount"></td>
+                <td><input type="number" class="form-control" [(ngModel)]="d.default_tenure"></td>
+                <td><button class="btn btn-secondary" (click)="onEditTenureDiscount({discount:d.discount, default_tenure:d.default_tenure, id:d.id})">Update</button></td>
+            </tbody>
+        </table>
         <!-- <ng2-smart-table [settings]="settings" [source]="editTenureValues"  (editConfirm)="onEditTenureDiscount($event)"></ng2-smart-table>   -->
     </div>
     <div class="modal-footer">

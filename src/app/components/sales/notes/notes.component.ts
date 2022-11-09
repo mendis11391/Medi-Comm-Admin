@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ExcelService } from '../services/excel.service';
 import { HttpClient} from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-notes',
@@ -28,7 +29,7 @@ export class NotesComponent implements OnInit {
   }
 
   getAllNotes(){
-    this.http.get(`http://localhost:3000/admin/getAllNotes`).subscribe((notes)=>{
+    this.http.get(`${environment.apiUrl}/admin/getAllNotes`).subscribe((notes)=>{
       this.notes = notes;
       this.notes.forEach(
         item => (item.created_at = new Date(item.created_at))

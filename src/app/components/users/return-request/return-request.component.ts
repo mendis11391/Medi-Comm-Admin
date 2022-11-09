@@ -65,6 +65,8 @@ export class ReturnRequestComponent implements OnInit {
   requestDetails={request_message:''};
   comment:string;
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
+  checkedProducts=[];
+  totalSecurityDeposit:number=0;
   constructor(private calendar: NgbCalendar,private route: ActivatedRoute, private router:Router,private http: HttpClient,private ps:ProductService,private os:OrdersService, private modalService: NgbModal, private formBuilder: UntypedFormBuilder) {
     // this.order = orderDB.list_order;
     this.model = this.calendar.getToday();
@@ -225,10 +227,13 @@ export class ReturnRequestComponent implements OnInit {
     var month = this.model.month;
     var year = this.model.year;
     this.returnDate= day + '/' + month + '/' + year;
-
-    let productToReturn = this.productDetails;
-
-    let ucid={      
+    
+    let cInfo=[];
+    let pInfo=[];
+    let productToReturn;
+    this.checkedProducts.forEach((item)=>{
+      productToReturn=item;
+      let ucid={      
         id: productToReturn.product_id,
         prod_name:productToReturn.prod_name,
         prod_price:productToReturn.security_deposit,
@@ -251,22 +256,26 @@ export class ReturnRequestComponent implements OnInit {
         dp:productToReturn.damage_protection,
         // replacement:productToReturn.replacement,
         returnDate:this.returnDate,
-        billPeriod:productToReturn.startDate+'-'+this.returnDate,
+        billPeriod:this.oldDateFormat(productToReturn.startDate)+'-'+this.returnDate,
         billAmount:0,
         p1Rent:0,
         damageCharges:this.returnDamageCharges,
         earlyReturnCharges:this.earlyReturnCharges,
-        order_item_id:this.currentOrderItemId,
+        order_item_id:item.order_item_id,
         tenure_id:productToReturn.tenure_id,
         tenureBasePrice:productToReturn.tenure_base_price
-    };    
+      };    
     
-    let cInfo=[];
-    let pInfo=[];
-    cInfo.push(ucid);
+      cInfo.push(ucid);
+
+    });
+
+    // let productToReturn = this.productDetails;
+
+    
     let charges=0;
     let returnGrandTotal=0;
-    charges = (this.productDetails.security_deposit-0)-(this.returnDamageCharges+this.earlyReturnCharges);
+    charges = (this.totalSecurityDeposit-0)-(this.returnDamageCharges+this.earlyReturnCharges);
     // pInfo.push(productToReturn.prod_id);
     if(charges>=0){
       returnGrandTotal=0;
@@ -281,7 +290,7 @@ export class ReturnRequestComponent implements OnInit {
       subTotal: this.returnDamageCharges+this.earlyReturnCharges,
       damageProtection:0,
       total:this.returnDamageCharges+this.earlyReturnCharges,
-      actualSecurityDeposit: (this.productDetails.security_deposit-0),
+      actualSecurityDeposit: (this.totalSecurityDeposit-0),
       securityDeposit: 0,
       currentRefundAmount:charges,
       grandTotal: returnGrandTotal,
@@ -316,9 +325,12 @@ export class ReturnRequestComponent implements OnInit {
     };
 
     this.http.post(`${environment.apiUrl}/payments/newReturn`,  returnOrder).subscribe((res:any) => {
-      this.http.put(`${environment.apiUrl}/orders/updateOrderItemStatus/${this.currentOrderItemId}`,returnOrderItem).subscribe();
-      this.http.put(`${environment.apiUrl}/users/updatecustomerRequests/${this.currentOrderItemId}`,customerRequest).subscribe(); 
-      this.http.put(`${environment.apiUrl}/users/updatecustomerRequestsMessage/${this.currentOrderItemId}`,this.requestDetails).subscribe();      
+      
+      this.checkedProducts.forEach((item)=>{
+        this.http.put(`${environment.apiUrl}/orders/updateOrderItemStatus/${item.order_item_id}`,returnOrderItem).subscribe();
+        this.http.put(`${environment.apiUrl}/users/updatecustomerRequests/${item.order_item_id}`,customerRequest).subscribe(); 
+        this.http.put(`${environment.apiUrl}/users/updatecustomerRequestsMessage/${item.order_item_id}`,this.requestDetails).subscribe();
+      });
       this.http.post(`${environment.apiUrl}/forgotpassword/notifyMailReturnOrder`,  returnOrder).subscribe();
       this.postNotes(res.orderDBId);
       // if(this.refundStatus==6){
@@ -366,6 +378,8 @@ export class ReturnRequestComponent implements OnInit {
  
 
   resetFormData(){
+    this.checkedProducts=[];
+    this.totalSecurityDeposit=0;
     this.prodId='';
     this.assetId='';
   }
@@ -413,12 +427,16 @@ export class ReturnRequestComponent implements OnInit {
   }
 
 
-  reject(order_item_id){
-    let orderItem={approvalStatus:0, requestStatus:'0'}
-    this.http.put(`${environment.apiUrl}/users/updatecustomerRequests/${this.currentOrderItemId}`,orderItem).subscribe((resOrd) => {
-      // this.modalReference.close();
-      
+  reject(){
+    this.checkedProducts.forEach((cpRes)=>{
+      let orderItem={approvalStatus:0, requestStatus:'0'}
+      this.http.put(`${environment.apiUrl}/users/updatecustomerRequests/${cpRes.order_item_id}`,orderItem).subscribe((resOrd) => {
+        // this.modalReference.close();
+        
+      });
     });
+    
+    this.checkedProducts=[];
     setTimeout(() => {
       window.location.reload();
     }, 1000);
@@ -482,6 +500,31 @@ export class ReturnRequestComponent implements OnInit {
     let year = currDate.getFullYear();
     let convertedDate =day + '/' + month + '/' + year;
     return convertedDate;
+  }
+
+  productsToReturn(e, productData:any){
+    let orderItem;
+    if(e.target.checked){
+      this.checkedProducts.push(productData);
+    }else{
+      const productIndex = this.checkedProducts.indexOf(productData);
+      if (productIndex > -1) {
+        this.checkedProducts.splice(productIndex, 1);
+      }
+    }
+    console.log(this.checkedProducts);
+    this.http.get(`${environment.apiUrl}/orders/orderId/${this.checkedProducts[0].order_id}`).subscribe((res) => {
+      this.fullOrderDetails=res;
+      orderItem = res[0].orderItem.filter(item=>item.order_item_id == this.checkedProducts[0].order_item_id);
+
+    
+    }); 
+  }
+
+  createOrderPlatform(){    
+    this.checkedProducts.forEach((item)=>{
+      this.totalSecurityDeposit +=item.security_deposit;
+    });
   }
 
 }

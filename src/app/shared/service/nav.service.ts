@@ -79,7 +79,7 @@ export class NavService {
 				{title: 'Accessories', path: '/products/digital/accessories',  type: 'link'},
 				{title: 'Pricing Schemes', path: '/products/digital/pricing-schemes',  type: 'link'},
 				{title: 'Specification', type: 'link', path: '/products/digital/digital-specs'},
-				{title: 'Category group', type: 'sub', path: '/products/physical/digital-specs'},
+				{title: 'Category group', type: 'link', path: '/products/digital/digital-category'},
 				{title: 'Category', type: 'link', path: '/products/digital/digital-sub-category'},
 				{title: 'Products', path: '/products/digital/digital-product-list',  type: 'link'},
 				{title: 'Scrollers', path: '/products/digital/digital-scrollers',  type: 'link'},

@@ -179,8 +179,21 @@ export class ProductService {
     return this.http.put(url, id);
   }
 
+  addMainCategory(categoryName) {
+    return this.http.post(`${this.c_url}/insertCategoryGroup`,  categoryName);
+  }
+
+  editMainCategory(categoryName) {
+    return this.http.put(`${this.c_url}/updateMainCategory`,  categoryName);
+  }
+
+
   addCategory(categoryName) {
     return this.http.post(this.c_url,  categoryName);
+  }
+
+  editCategory(categoryData) {
+    return this.http.put(`${this.c_url}/updateCategory`,  categoryData);
   }
 
   deleteCategory(id) {

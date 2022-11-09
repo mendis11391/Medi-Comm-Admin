@@ -4,7 +4,7 @@
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-header">
-                    <h5>Digital Products</h5>
+                    <h5>Category group</h5>
                 </div>
                 <div class="card-body">
                     <div class="btn-popup pull-right">
@@ -19,21 +19,31 @@
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form class="needs-validation">
                                     <div class="form">
                                         <div class="form-group">
-                                            <label for="validationCustom01" class="mb-1">Category Name :</label>
-                                            <input class="form-control" #catname id="validationCustom01" type="text">
+                                            <label for="main_cat_name" class="mb-1">Main Category Name :</label>
+                                            <input class="form-control" [(ngModel)]="main_cat_name" id="main_cat_name" type="text">
                                         </div>
-                                        <!-- <div class="form-group mb-0">
-                                            <label for="validationCustom02" class="mb-1">Category Image :</label>
-                                            <input class="form-control" id="validationCustom02" type="file">
-                                        </div> -->
+                                        <div class="form-group">
+                                            <label for="main_cat_heading" class="mb-1">Category Heading :</label>
+                                            <input class="form-control" [(ngModel)]="main_cat_heading" id="main_cat_heading" type="text">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="main_slug" class="mb-1">Category Slug :</label>
+                                            <input class="form-control" [(ngModel)]="main_slug" id="main_slug" type="text">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="main_meta_title" class="mb-1">Category Meta title:</label>
+                                            <input class="form-control" [(ngModel)]="main_meta_title" id="main_meta_title" type="text">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="main_meta_description" class="mb-1">Category Meta description :</label>
+                                            <input class="form-control" [(ngModel)]="main_meta_description" id="main_meta_description" type="text">
+                                        </div>
                                     </div>
-                                </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" (click)="addCategory(catname.value)">Save</button>
+                                <button type="button" class="btn btn-primary" (click)="addCategory()">Save</button>
                                 <button class="btn btn-secondary" type="button" data-dismiss="modal"
                                     (click)="modal.dismiss('Cross click')" id="closemodal">Close</button>
                             </div>
@@ -45,12 +55,25 @@
                             <table class="table table-striped table-bordered">
                                 <thead>
                                   <tr>
-                                    <th>Category Name</th>
+                                    <th>Main Category Name</th>
+                                    <th>Main cat heading</th>
+                                    <th>Main cat slug</th>
+                                    <th>Meta title</th>
+                                    <th>Meta description</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
                                   </tr>
                                 </thead>
                                 <tbody>
                                   <tr *ngFor="let row of categories">
-                                    <td>{{row.cat_name}}</td>
+                                    <td>{{row.main_cat_name}}</td>
+                                    <td>{{row.main_cat_heading}}</td>
+                                    <td>{{row.main_slug}}</td>
+                                    <td>{{row.main_meta_title}}</td>
+                                    <td>{{row.main_meta_description}}</td>
+                                    <td *ngIf="row.status==1">Active</td>
+                                    <td *ngIf="row.status==0">Inactive</td>
+                                    <td (click)="edit(editcontent, row.id)"><i class="fa fa-pencil"></i></td>
                                   </tr>
                                 </tbody>
                               </table>
@@ -62,3 +85,45 @@
     </div>
 </div>
 <!-- Container-fluid Ends-->
+
+
+
+
+<ng-template #editcontent let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title f-w-600" id="exampleModalLabel">Add Digital Product</h5>
+        <button type="button" class="close" aria-label="Close"
+            (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+            <div class="form">
+                <div class="form-group">
+                    <label for="main_cat_name" class="mb-1">Main Category Name :</label>
+                    <input class="form-control" [(ngModel)]="edit_main_cat_name" id="main_cat_name" type="text">
+                </div>
+                <div class="form-group">
+                    <label for="main_cat_heading" class="mb-1">Category Heading :</label>
+                    <input class="form-control" [(ngModel)]="edit_main_cat_heading" id="main_cat_heading" type="text">
+                </div>
+                <div class="form-group">
+                    <label for="main_slug" class="mb-1">Category Slug :</label>
+                    <input class="form-control" [(ngModel)]="edit_main_slug" id="main_slug" type="text">
+                </div>
+                <div class="form-group">
+                    <label for="main_meta_title" class="mb-1">Category Meta title:</label>
+                    <input class="form-control" [(ngModel)]="edit_main_meta_title" id="main_meta_title" type="text">
+                </div>
+                <div class="form-group">
+                    <label for="main_meta_description" class="mb-1">Category Meta description :</label>
+                    <input class="form-control" [(ngModel)]="edit_main_meta_description" id="main_meta_description" type="text">
+                </div>
+            </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="editCategory()">Save</button>
+        <button class="btn btn-secondary" type="button" data-dismiss="modal"
+            (click)="modal.dismiss('Cross click')" id="closemodal">Close</button>
+    </div>
+</ng-template>

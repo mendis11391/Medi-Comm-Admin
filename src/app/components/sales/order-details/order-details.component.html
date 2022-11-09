@@ -465,6 +465,7 @@
                           <tr>
                             <td><p>{{p.prod_name}}</p>
                                 <p>Product #: {{p.prod_id}}</p>
+                                <p>Total Period: {{p.renewals_timline[0].startDate}} - {{p.renewals_timline[0].returnDate}}</p>
                             </td>                            
                             <td>{{p.startDate | date:'dd MM yyyy'}}</td>   
                             <td>{{p.tenure_period}}</td> 
@@ -527,12 +528,13 @@
         
                     <div *ngFor="let o of fullOrderDetails" class="pull-right text-right">
                         <div *ngIf="o.orderType_id!=3 && o.orderType_id!=4">
-                            <h4>Sub total: <span>₹{{o.subTotal+o.damageProtection}}</span></h4>
+                            <h4 *ngIf="o.orderType_id==1">Sub total: <span>₹{{o.subTotal+o.damageProtection}}</span></h4>
                             <h4 *ngIf="o.orderType_id==2">Sub total: <span>₹{{subTotal+(o.damageProtection-0)}}</span></h4>
-                            <h4>Taxes: <span>₹{{o.total-(o.subTotal+o.damageProtection)}}</span></h4>
+                            <h4 *ngIf="o.orderType_id==1">Delivery charges: <span>₹{{o.deliveryCharges}}</span></h4>
+                            <h4>Taxes: <span>₹{{o.total-(o.subTotal+o.damageProtection+o.deliveryCharges)}}</span></h4>
                             <h4 *ngIf="o.orderType_id==2">Taxes: <span>₹{{((subTotal+o.damageProtection)*(Taxes)/100)}}</span></h4>
                             <h4>Total: <span>₹{{o.total}}</span></h4>
-                            <h4>Total security deposit: <span>₹{{o.totalSecurityDeposit}}</span></h4>
+                            <h4 *ngIf="o.orderType_id==1">Total security deposit: <span>₹{{o.totalSecurityDeposit}}</span></h4>
                             <h4>Grand Total: <span>₹{{o.grandTotal}}</span></h4>
                         </div>
                         <div *ngIf="o.orderType_id==3">
@@ -544,22 +546,22 @@
                             <h4>Total: ₹{{(o.orderItem[0].renewals_timline[0].p2Rent - o.orderItem[0].renewals_timline[0].returnedProduct.p1Rent)+o.orderItem[0].renewals_timline[0].damageCharges+totalTaxAmount((o.orderItem[0].renewals_timline[0].p2Rent - o.orderItem[0].renewals_timline[0].returnedProduct.p1Rent)+o.orderItem[0].renewals_timline[0].damageCharges)+o.orderItem[0].renewals_timline[0].securityDepositDiff}}</h4>
                         </div>
                         <div *ngIf="o.orderType_id==4">
-                            <div *ngFor="let p of o.orderItem">
-                                <p>Damage / Delivery Charges / Extension Charges: ₹{{p.damage_charges}}</p>
+                            <div>
+                                <p>Damage / Delivery Charges / Extension Charges: ₹{{productDetails[0].damage_charges}}</p>
                                 <div class="input-group mb-3 pull-right" *ngIf="editStatus">
-                                    <input type="text" class="form-control" [(ngModel)]="p.damage_charges">
+                                    <input type="text" class="form-control" [(ngModel)]="productDetails[0].damage_charges">
                                     <div class="input-group-append">
-                                      <button class="btn btn-warning" type="button" (click)="updateAnyOrderItemField(p.order_item_id, 'damage_charges', p.damage_charges);updateOrderField(o.order_id, 'subTotal', (p.damage_charges-0)+(p.earlyReturnCharges-0));updateOrderField(o.order_id, 'total', (p.damage_charges-0)+(p.earlyReturnCharges-0))">Update</button>
+                                      <button class="btn btn-warning" type="button" (click)="updateAnyOrderItemField(productDetails[0].order_item_id, 'damage_charges', productDetails[0].damage_charges);updateOrderField(o.order_id, 'subTotal', (productDetails[0].damage_charges-0)+(productDetails[0].earlyReturnCharges-0));updateOrderField(o.order_id, 'total', (productDetails[0].damage_charges-0)+(productDetails[0].earlyReturnCharges-0))">Update</button>
                                     </div>
                                 </div>
-                                <p>Early return charges:  ₹{{p.earlyReturnCharges}}</p>
+                                <p>Early return charges:  ₹{{productDetails[0].earlyReturnCharges}}</p>
                                 <div class="input-group mb-3 pull-right" *ngIf="editStatus">
-                                    <input type="text" class="form-control" [(ngModel)]="p.earlyReturnCharges">
+                                    <input type="text" class="form-control" [(ngModel)]="productDetails[0].earlyReturnCharges">
                                     <div class="input-group-append">
-                                      <button class="btn btn-warning" type="button" (click)="updateAnyOrderItemField(p.order_item_id, 'earlyReturnCharges', p.earlyReturnCharges);updateOrderField(o.order_id, 'subTotal', (p.damage_charges-0)+(p.earlyReturnCharges-0));updateOrderField(o.order_id, 'total', (p.damage_charges-0)+(p.earlyReturnCharges-0))">Update</button>
+                                      <button class="btn btn-warning" type="button" (click)="updateAnyOrderItemField(productDetails[0].order_item_id, 'earlyReturnCharges', productDetails[0].earlyReturnCharges);updateOrderField(o.order_id, 'subTotal', (productDetails[0].damage_charges-0)+(productDetails[0].earlyReturnCharges-0));updateOrderField(o.order_id, 'total', (productDetails[0].damage_charges-0)+(productDetails[0].earlyReturnCharges-0))">Update</button>
                                     </div>
                                 </div>
-                                <p *ngIf="o.grandTotal<=0">To be refunded: {{(p.security_deposit-0)-((p.damage_charges-0)+(p.earlyReturnCharges-0))}}</p>
+                                <p *ngIf="o.grandTotal<=0">To be refunded: {{( this.totalSecurityDeposit)-((productDetails[0].damage_charges-0)+(productDetails[0].earlyReturnCharges-0))}}</p>
                                 <p *ngIf="o.grandTotal>0">To be paid: {{o.grandTotal}}</p>
                             </div>
                         </div>

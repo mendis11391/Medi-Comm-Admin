@@ -18,7 +18,16 @@
         </div>
       </div>
 
-      <div class="col-sm-6"></div>
+      <div class="col-sm-6">
+        <div class="card">
+          <div class="card-header">
+              <h5 class="theme-color">Notification</h5>
+              <div class="pull-right">
+                  <ui-switch uncheckedLabel="Disabled" checkedLabel="Enabled" [(ngModel)]="filteredCustomers[0].is_notification_enabled" (change)="toggleNotification($event)"></ui-switch>
+              </div>
+          </div>
+      </div>
+      </div>
         
       <div class="col-sm-6">
           <div class="card">

@@ -101,6 +101,7 @@
                                     <a class="mr-2" data-toggle="modal" data-original-title="test"
                                     data-target="#exampleModal" (click)="open(addCatSpecs); getAllSpecsForCat(c.cat_id)"><i class="fa fa-plus-circle"></i></a>
                                     <!-- <a (click)="open(editTenure)"><i class="fa fa-percent"></i></a> -->
+                                    <a (click)="editCategory(editCategoryModal, c)"><i class="fa fa-pencil"></i></a>
                                 </td>
                               </tr>
                             </tbody>
@@ -145,6 +146,49 @@
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-primary"  (click)="reload()">Save</button>
+        <button class="btn btn-secondary" type="button" data-dismiss="modal"
+            (click)="modal.dismiss('Cross click')">Close</button>
+    </div>
+</ng-template>
+
+<ng-template #editCategoryModal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title f-w-600" id="exampleModalLabel">Edit</h5>
+        <button type="button" class="close" aria-label="Close"
+            (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label for="editMainCatId" class="mb-1">Category group :</label>
+            <select  class="form-control" [(ngModel)]="editMainCatId">
+                <option *ngFor="let cg of categorygroup" value="{{cg.id}}">{{cg.main_cat_name}}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="editSubCatName" class="mb-1">Category name :</label>
+            <input class="form-control" [(ngModel)]="editSubCatName" id="editSubCatName" type="text">
+        </div>
+        <div class="form-group">
+            <label for="editCatHeading" class="mb-1">Category heading :</label>
+            <input class="form-control" [(ngModel)]="editCatHeading" id="editCatHeading" type="text">
+        </div>
+        <div class="form-group">
+            <label for="editSubCatSlug" class="mb-1">Category slug :</label>
+            <input class="form-control" [(ngModel)]="editSubCatSlug" id="editSubCatSlug" type="text">
+        </div>
+        <div class="form-group">
+            <label for="editSubCatMetaTitle" class="mb-1">Meta title :</label>
+            <input class="form-control" [(ngModel)]="editSubCatMetaTitle" id="editSubCatMetaTitle" type="text">
+        </div>
+        <div class="form-group">
+            <label for="editSubCatMetaDescription" class="mb-1">Meta description :</label>
+            <input class="form-control" [(ngModel)]="editSubCatMetaDescription" id="editSubCatMetaDescription" type="text">
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary"  (click)="updateCategory()">Save</button>
         <button class="btn btn-secondary" type="button" data-dismiss="modal"
             (click)="modal.dismiss('Cross click')">Close</button>
     </div>

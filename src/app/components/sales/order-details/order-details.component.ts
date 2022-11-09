@@ -64,7 +64,7 @@ export class OrderDetailsComponent implements OnInit {
   role = sessionStorage.getItem('u_role');
   popupOrder;
   public closeResult: string;
-
+  totalSecurityDeposit:number=0;
   comment:string='';
   notes:any = [];
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
@@ -288,6 +288,7 @@ export class OrderDetailsComponent implements OnInit {
       this.productDetails=res[0].orderItem;
       this.productDetails.forEach((prods)=>{
         this.subTotal += prods.tenure_price;
+        this.totalSecurityDeposit +=prods.security_deposit;
       })
       console.log(res[0]);
       this.addTransaction.patchValue({
@@ -685,7 +686,7 @@ export class OrderDetailsComponent implements OnInit {
   //   let sum=getOrder.renewals_timline.reduce(function(sum,elem){
   //     return sum+parseInt(elem.price);
   //  },0);
-   subTotal=getOrder.subTotal+getOrder.damageProtection;
+  subTotal=getOrder.subTotal+getOrder.damageProtection+getOrder.deliveryCharges;
     
    let invoiceDate = new Date(getOrder.createdAt).toJSON().slice(0,10).split('-').reverse().join('/');
     const doc: jsPDF = new jsPDF("p", "pt", "a4", false);
@@ -770,24 +771,87 @@ export class OrderDetailsComponent implements OnInit {
       });
       
 
-    autoTable(doc, { margin: {top: 0, left:405},body: [
-                      ['Total', 'INR '+subTotal],                      
-                      ['GST @ 18%', 'INR '+subTotal*18/100],
-                      ['Invoice Value', 'INR '+getOrder.total],
-                      ['Security Deposit', 'INR '+getOrder.totalSecurityDeposit],
-                      ['Grand Total', 'INR '+getOrder.grandTotal],
-                    ],
-                    didParseCell: function (data) {
-                      var Totals = data.column.index;
-                      var rows = data.table.body;
-                      data.cell.styles.halign = 'right';
-                      if (data.row.index === rows.length - 1) {
-                          data.cell.styles.fillColor = '#f36f02';
-                          data.cell.styles.textColor = '#ffffff';                   
-                      } 
-                    },
-                    tableWidth: 150
-    });
+      if(getOrder.damageProtection>0 && getOrder.deliveryCharges>0){
+        autoTable(doc, { margin: {top: 0, left:405},body: [
+            ['Sub total', 'INR '+getOrder.subTotal], 
+            ['Damage protection', 'INR '+getOrder.damageProtection], 
+            ['Delivery charges', 'INR '+getOrder.deliveryCharges],               
+            ['GST @ 18%', 'INR '+subTotal*18/100],
+            ['Invoice Value', 'INR '+getOrder.total],
+            ['Security Deposit', 'INR '+getOrder.totalSecurityDeposit],
+            ['Grand Total', 'INR '+getOrder.grandTotal],
+          ],
+          didParseCell: function (data) {
+            var Totals = data.column.index;
+            var rows = data.table.body;
+            data.cell.styles.halign = 'right';
+            if (data.row.index === rows.length - 1) {
+                data.cell.styles.fillColor = '#f36f02';
+                data.cell.styles.textColor = '#ffffff';                   
+            } 
+          },
+          tableWidth: 150
+        });
+    }else if(getOrder.damageProtection>0 && getOrder.deliveryCharges==0){
+      autoTable(doc, { margin: {top: 0, left:405},body: [
+            ['Sub total', 'INR '+getOrder.subTotal], 
+            ['Damage protection', 'INR '+getOrder.damageProtection],             
+            ['GST @ 18%', 'INR '+subTotal*18/100],
+            ['Invoice Value', 'INR '+getOrder.total],
+            ['Security Deposit', 'INR '+getOrder.totalSecurityDeposit],
+            ['Grand Total', 'INR '+getOrder.grandTotal],
+          ],
+          didParseCell: function (data) {
+            var Totals = data.column.index;
+            var rows = data.table.body;
+            data.cell.styles.halign = 'right';
+            if (data.row.index === rows.length - 1) {
+                data.cell.styles.fillColor = '#f36f02';
+                data.cell.styles.textColor = '#ffffff';                   
+            } 
+          },
+          tableWidth: 150
+      });
+    }else if(getOrder.damageProtection==0 && getOrder.deliveryCharges>0){
+      autoTable(doc, { margin: {top: 0, left:405},body: [
+            ['Sub total', 'INR '+getOrder.subTotal], 
+            ['Delivery charges', 'INR '+getOrder.deliveryCharges],               
+            ['GST @ 18%', 'INR '+subTotal*18/100],
+            ['Invoice Value', 'INR '+getOrder.total],
+            ['Security Deposit', 'INR '+getOrder.totalSecurityDeposit],
+            ['Grand Total', 'INR '+getOrder.grandTotal],
+          ],
+          didParseCell: function (data) {
+            var Totals = data.column.index;
+            var rows = data.table.body;
+            data.cell.styles.halign = 'right';
+            if (data.row.index === rows.length - 1) {
+                data.cell.styles.fillColor = '#f36f02';
+                data.cell.styles.textColor = '#ffffff';                   
+            } 
+          },
+          tableWidth: 150
+      });
+    } else {
+      autoTable(doc, { margin: {top: 0, left:405},body: [
+            ['Sub total', 'INR '+getOrder.subTotal],              
+            ['GST @ 18%', 'INR '+subTotal*18/100],
+            ['Invoice Value', 'INR '+getOrder.total],
+            ['Security Deposit', 'INR '+getOrder.totalSecurityDeposit],
+            ['Grand Total', 'INR '+getOrder.grandTotal],
+          ],
+          didParseCell: function (data) {
+            var Totals = data.column.index;
+            var rows = data.table.body;
+            data.cell.styles.halign = 'right';
+            if (data.row.index === rows.length - 1) {
+                data.cell.styles.fillColor = '#f36f02';
+                data.cell.styles.textColor = '#ffffff';                   
+            } 
+          },
+          tableWidth: 150
+      });
+    } 
 
     autoTable(doc, { margin: {top: 15, left:40},body: [
         ['Terms & Conditions'], 

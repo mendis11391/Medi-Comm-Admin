@@ -21,6 +21,14 @@ export class DigitalSubCategoryComponent implements OnInit {
   AllSpecs;
   catSpecs;
 
+  catId:number=0;
+  editMainCatId:number=0;
+  editSubCatName:string;
+  editCatHeading:string;
+  editSubCatSlug:string;
+  editSubCatMetaTitle:string;
+  editSubCatMetaDescription:string;
+
   constructor(private formBuilder: UntypedFormBuilder,private modalService: NgbModal,private category: ProductService,private http: HttpClient) {
     // this.digital_sub_categories = digitalSubCategoryDB.digital_sub_category;
     this.addcategory = this.formBuilder.group({
@@ -42,6 +50,9 @@ export class DigitalSubCategoryComponent implements OnInit {
       this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
+
+
+  
 
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
@@ -145,6 +156,42 @@ export class DigitalSubCategoryComponent implements OnInit {
         alert('Success');
       });
     }
+  }
+
+  editCategory(content, catRes) {
+    this.catId = catRes.cat_id;
+    this.editMainCatId = catRes.cat_group;
+    this.editSubCatName = catRes.cat_name;
+    this.editCatHeading = catRes.cat_heading;
+    this.editSubCatSlug = catRes.slug;
+    this.editSubCatMetaTitle = catRes.metaTitle;
+    this.editSubCatMetaDescription = catRes.metaDescription;
+    
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
+      this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
+  }
+
+  updateCategory(){
+    let obj = {
+      catId:  this.catId,
+      mainCatId: this.editMainCatId,
+      subCatName: this.editSubCatName,
+      catHeading: this.editCatHeading,
+      subCatSlug: this.editSubCatSlug,
+      subCatMetaTitle: this.editSubCatMetaTitle,
+      subCatMetaDescription: this.editSubCatMetaDescription,
+    }
+    this.category.editCategory(obj).subscribe((res) => {
+      if(res) {
+        this.getAllCategoryGroup();
+        this.getAllCategories();
+        this.getAllSpecs();
+        this.modalService.dismissAll();
+      }
+    });
   }
 
 }

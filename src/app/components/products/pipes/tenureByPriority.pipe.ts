@@ -15,7 +15,7 @@ export interface tenurePriority {
 
 @Pipe({
   name: 'tenurePriority',
-  pure: true
+  pure: false
 })
 export class TenurePipe implements PipeTransform {
 

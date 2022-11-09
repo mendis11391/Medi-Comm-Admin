@@ -6,6 +6,7 @@
                 <div class="card-header">
                     <h5>Return requests</h5>
                     <button class="btn btn-warning" [routerLink]="['../../sales/create-request']">Create request</button>
+                    <button class="btn btn-warning pull-right" (click)="createOrderPlatform();toggleReplaceDetails=!toggleReplaceDetails">Create Order</button>
                 </div>
                 <div class="card-body">
                     <div class="custom-datatable">
@@ -16,6 +17,7 @@
                         <table class="table table-striped table-bordered" >
                           <thead>
                             <tr>
+                              <th>Select</th>
                               <th>Customer name</th>
                               <th>Mobile</th>
                               <th>Product name</th>
@@ -24,11 +26,11 @@
                               <th>Start date</th>
                               <th>Pickup date</th>
                               <th>Approval status</th>
-                              <th>Action</th>
                             </tr>
                           </thead>
                           <tbody *ngFor="let o of orderitem">
                             <tr *ngIf="o.request_id==2">
+                              <td><input type="checkbox" *ngIf="o.request_status==1" (click)="productsToReturn($event, o)"></td>
                               <td [routerLink]="['../customers',o.customer_id]">{{o.firstName}}</td>
                               <td [routerLink]="['../customers',o.customer_id]">{{o.mobile}}</td>
                               <td>{{o.prod_name.substring(0,50)+'...'}}</td>
@@ -41,7 +43,7 @@
                                 <span *ngIf="o.approval_status==0 && o.request_status==0"><i class="fa fa-circle text-danger"></i> Rejected</span>
                                 <span *ngIf="o.approval_status==1 && o.request_status==0"><i class="fa fa-circle text-success"></i> Approved</span>
                               </td>
-                              <td *ngIf="o.request_status==1" (click)="returnProductOrderById(o.order_id, o.order_item_id,o,o.asset_id,o); toggleReplaceDetails=!toggleReplaceDetails"><a><i class="fa fa-pencil"></i></a></td>                   
+                              <!-- <td *ngIf="o.request_status==1" (click)="returnProductOrderById(o.order_id, o.order_item_id,o,o.asset_id,o); toggleReplaceDetails=!toggleReplaceDetails"><a><i class="fa fa-pencil"></i></a></td>                    -->
                             </tr>                          
                           </tbody>
                         </table>
@@ -53,7 +55,7 @@
         <div class="col-sm-12" *ngIf="toggleReplaceDetails">
             <div class="card">
               <div class="card-header">
-                <h4><a (click)="resetFormData(); toggleReplaceDetails=!toggleReplaceDetails"><i class="fa fa-arrow-left"></i></a> <button class="btn btn-primary pull-right" (click)="reject(productDetails.order_item_id); toggleReplaceDetails=!toggleReplaceDetails">Reject</button> </h4>
+                <h4><a (click)="resetFormData(); toggleReplaceDetails=!toggleReplaceDetails"><i class="fa fa-arrow-left"></i></a> <button class="btn btn-primary pull-right" (click)="reject(); toggleReplaceDetails=!toggleReplaceDetails">Reject</button> </h4>
               </div>
               <div class="card-body">
                 <div class="row" *ngFor="let o of fullOrderDetails">   
@@ -88,14 +90,14 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr >
-                          <td>{{productDetails.id}}</td>
-                          <td>{{productDetails.prod_name}}</td>
-                          <td>{{productDetails.tenure_period}}</td>
-                          <td>{{productDetails.security_deposit}}</td>
-                          <td>{{(productDetails.tenure_price-0)+(productDetails.damage_protection-0)}}</td>
-                          <td>{{productDetails.asset_id}}</td>
-                          <td hidden>getBillPeriod(productDetails.endDate)</td>
+                        <tr *ngFor="let p of checkedProducts">
+                          <td>{{p.id}}</td>
+                          <td>{{p.prod_name}}</td>
+                          <td>{{p.tenure_period}}</td>
+                          <td>{{p.security_deposit}}</td>
+                          <td>{{(p.tenure_price-0)+(p.damage_protection-0)}}</td>
+                          <td>{{p.asset_id}}</td>
+                          <td hidden>getBillPeriod(p.endDate)</td>
                           <!-- <td>                          
                               <input min="0" class="form-control" type="number" [(ngModel)]="returnDamageCharges" placeholder="Damage charges"> <br>
                               <input min="0" class="form-control" type="number" [(ngModel)]="earlyReturnCharges" placeholder="Early return charges">                           
@@ -132,7 +134,7 @@
                   
                   <p>Damage / Delivery Charges / Extension Charges: {{returnDamageCharges}}</p>
                   <p>Early return charges: {{earlyReturnCharges}}</p>
-                  <p>To be refunded: {{(productDetails.security_deposit-0)-(returnDamageCharges+earlyReturnCharges)}}</p>
+                  <p>To be refunded: {{(totalSecurityDeposit-0)-(returnDamageCharges+earlyReturnCharges)}}</p>
                   
                   <button class="btn btn-primary mr-1" (click)="returnProduct()">Return</button>   
                   <!-- <button class="btn btn-primary" (click)="reject(productDetails.order_item_id)">Reject</button>    -->
@@ -223,7 +225,7 @@
                 <p>To be refunded: {{(productDetails.prod_price-0)-(returnDamageCharges+earlyReturnCharges)}}</p>
                 
                 <button class="btn btn-primary mr-1" (click)="returnProduct()">Return</button>   
-                <button class="btn btn-primary" (click)="reject(productDetails.order_item_id)">Reject</button>   
+                <button class="btn btn-primary" (click)="reject()">Reject</button>   
               </div>
             </div>
         </div>

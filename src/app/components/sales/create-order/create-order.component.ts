@@ -235,7 +235,8 @@ export class CreateOrderComponent implements OnInit {
         paymentStatus:this.paymentStatus
       };
       this.getProducts();
-      this.http.post(`${environment.apiUrl}/payments/saveNewOrder`, this.orderForm.value).subscribe((resp1)=>{
+      this.http.post(`${environment.apiUrl}/payments/saveNewOrder`, this.orderForm.value).subscribe((resp1:any)=>{
+        transaction.orderId = resp1.txnid;
         this.http.post(`${environment.apiUrl}/payments/postManualOrderTransaction`,transaction).subscribe((resp2)=>{
           let mobileNos = [];
           environment.mobiles.forEach((envMobile)=>{
@@ -255,7 +256,7 @@ export class CreateOrderComponent implements OnInit {
                  "filename": "IROHOME"
               },
               "templateParams": [
-                this.orderForm.value.firstName+' '+this.orderForm.value.lastName, JSON.stringify(this.orderForm.value.grandTotal),this.orderForm.value.orderID
+                this.orderForm.value.firstName+' '+this.orderForm.value.lastName, JSON.stringify(this.orderForm.value.grandTotal),transaction.orderId
               ],
               "attributes": {
                 "InvoiceNo": "1234"
@@ -440,20 +441,20 @@ export class CreateOrderComponent implements OnInit {
     
     let subCity = '';
     if(this.city==='Bangalore'){
-      subCity = 'BLR'
+      subCity = 'BLRN'
     } else if(this.city==='Hyderabad'){
-      subCity = 'HYD'
+      subCity = 'HYDN'
     } if(this.city==='Mumbai'){
-      subCity = 'BOM'
+      subCity = 'BOMN'
     } if(this.city==='PUNE'){
-      subCity = 'PNQ'
+      subCity = 'PNQN'
     }
     const rand = Math.floor((Math.random() * 999) + 1);
     const dte = new Date();
     const txnid = ""+subCity +
     dte.getDate().toString().padStart(2, "0")+
     (dte.getMonth()+1).toString().padStart(2, "0") +
-    dte.getFullYear().toString().substr(2,2) + rand;
+    dte.getFullYear().toString().substr(2,2) ;
     this.txnId=txnid;
     // console.log(this.txnId);
     this.orderForm.patchValue({

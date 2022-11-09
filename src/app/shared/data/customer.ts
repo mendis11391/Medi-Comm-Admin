@@ -12,5 +12,6 @@ export interface Customers {
     transactionDate?:Date,
     transactionDescription?:string,
     registeredAt?:Date,
-    lastLogin?:Date
+    lastLogin?:Date,
+    is_notification_enabled?:boolean
 }
