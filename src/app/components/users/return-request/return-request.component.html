@@ -136,7 +136,7 @@
                   <p>Early return charges: {{earlyReturnCharges}}</p>
                   <p>To be refunded: {{(totalSecurityDeposit-0)-(returnDamageCharges+earlyReturnCharges)}}</p>
                   
-                  <button class="btn btn-primary mr-1" (click)="returnProduct()">Return</button>   
+                  <button *ngIf="!disableReturn" class="btn btn-primary mr-1" (click)="returnProduct()">Return</button>   
                   <!-- <button class="btn btn-primary" (click)="reject(productDetails.order_item_id)">Reject</button>    -->
                 </div>
 

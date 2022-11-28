@@ -214,6 +214,7 @@ export class CustomersComponent implements OnInit {
   getAllNotesByCustomerId(id){
     this.http.get(`${environment.apiUrl}/admin/getNotesByCustomerId/${id}`).subscribe((res)=>{
       this.Notes = res;
+      this.Notes.resverse();
       this.Notes.forEach(
         item => (item.createdAt = new Date(item.createdAt))
       );

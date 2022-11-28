@@ -158,6 +158,7 @@
                             <label>Damage protection: <ui-switch size="small" uncheckedLabel=" NO" checkedLabel="YES " (change)="updateDamageProtection($event)"></ui-switch> 
                                 ₹ {{dp}}
                             </label>
+                            <h4>Delivery charges: {{totalDeliveryCharges}}</h4>
                             <h4>Taxes: ₹ {{((tenureTotalPrice)+dp)*(gst)/100  | number: '1.0-0'}}</h4>
                             <h4>Total deposit price: {{totalDepositPrice}}</h4>
                             <h4>Grand total: {{grandTotal}}</h4>
@@ -202,7 +203,7 @@
                             <div class="text-danger" *ngIf="!transactionDate && !orderValidated">Transaction date is required</div>
                         </div>
                     </div>
-                    <br><button class="btn btn-warning" (click)="createOrder()">Create order</button>
+                    <br><button class="btn btn-warning" *ngIf="showButton" (click)="createOrder()">Create order</button>
                 </div>
             </div>
         </div>

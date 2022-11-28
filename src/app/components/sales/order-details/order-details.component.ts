@@ -184,6 +184,28 @@ export class OrderDetailsComponent implements OnInit {
     });
   }
 
+  refundInitiated(){
+    let template = {
+      "apiKey": environment.whatsappAPIKey,
+      "campaignName": "Refunded",
+      "destination": this.customerDetails[0].mobile,
+      "userName": "IRENTOUT",
+      "source": "Refunded",
+      "media": {
+         "url": "https://irentout.com/assets/images/slider/5.png",
+         "filename": "IROHOME"
+      },
+      "templateParams": [
+        this.customerDetails[0].firstName+' '+this.customerDetails[0].lastName, JSON.stringify(( this.totalSecurityDeposit)-((this.productDetails[0].damage_charges-0)+(this.productDetails[0].earlyReturnCharges-0)))
+      ],
+      "attributes": {
+        "InvoiceNo": "1234"
+      }
+    }
+
+    this.http.post(`https://backend.aisensy.com/campaign/t1/api`, template).subscribe();
+  }
+
   getNotesByOrderId(orderId){
     this.http.get(`${environment.apiUrl}/admin/getNotesByOrderId/${orderId}`).subscribe((notesRes)=>{
       this.notes = notesRes;
@@ -321,7 +343,11 @@ export class OrderDetailsComponent implements OnInit {
   }
 
   updateOrderField(ordId, field, value){
-    this.http.put(`${environment.apiUrl}/orders/updateAnyOrderField/${ordId}`, {orderField: field, orderValue: value}).subscribe();
+    this.http.put(`${environment.apiUrl}/orders/updateAnyOrderField/${ordId}`, {orderField: field, orderValue: value}).subscribe((result)=>{
+      if(field=='paymentStatus' && value==6){
+        this.refundInitiated();
+      }
+    });
     this.paymentStatusActive=false;
     this.orderStatusActive=false;
     this.getOrderById(this.oid);
@@ -559,7 +585,7 @@ export class OrderDetailsComponent implements OnInit {
       currentAssetId=orderItem[0].asset_id ;
     
       if(currentAssetId!='To be assigned'){
-        this.http.put(`${environment.apiUrl}/orders/updateRenewTimline/${OrderId}`, {deliveryStatus:delvStatus, orderId:this.oid}).subscribe((res)=>{
+        this.http.put(`${environment.apiUrl}/orders/updateRenewTimline/${OrderId}`, {deliveryStatus:delvStatus, orderId:this.oid,fullName:this.customerDetails[0].firstName+' '+this.customerDetails[0].lastName, mobile:this.customerDetails[0].mobile, orderNo:this.fullOrderDetails[0].order_id}).subscribe((res)=>{
           // this.modalReference.close();
           this.deliveryStatus.reset();
           this.http.get(`${environment.apiUrl}/orders/${this.customer_id}`).subscribe();

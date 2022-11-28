@@ -61,8 +61,8 @@
                                   <th>
                                     <div class="flex justify-content-center align-items-center">
                                       Security deposit
-                                        <p-columnFilter type="numeric" field="orderItem[0].security_deposit" display="menu" currency="INR"></p-columnFilter>
-                                        <th pSortableColumn="orderItem[0].security_deposit"><p-sortIcon field="orderItem[0].security_deposit"></p-sortIcon></th>
+                                        <p-columnFilter type="numeric" field="o.totalSecurityDeposit" display="menu" currency="INR"></p-columnFilter>
+                                        <th pSortableColumn="o.totalSecurityDeposit"><p-sortIcon field="o.totalSecurityDeposit"></p-sortIcon></th>
                                     </div>
                                   </th>
                                   <th>
@@ -83,7 +83,7 @@
                                   <th>
                                     <div class="flex justify-content-center align-items-center">
                                       Transaction amount
-                                        <p-columnFilter type="numeric" field="o.orderItem[0].security_deposit-(o.orderItem[0].damage_charges+o.orderItem[0].earlyReturnCharges)" display="menu" currency="INR"></p-columnFilter>
+                                        <p-columnFilter type="numeric" field="o.totalSecurityDeposit-(o.orderItem[0].damage_charges+o.orderItem[0].earlyReturnCharges)" display="menu" currency="INR"></p-columnFilter>
                                     </div>
                                   </th>
 
@@ -95,10 +95,10 @@
                                   <td>{{o.createdAt | date: 'dd MM yyyy'}}</td> 
                                   <td>{{o.firstName}}</td> 
                                   <td>{{o.mobile}}</td>
-                                  <td>₹{{o.orderItem[0].security_deposit}}</td>    
+                                  <td>₹{{o.totalSecurityDeposit}}</td>    
                                   <td>{{o.paymentStatus}}</td>  
                                   <td>₹{{o.orderItem[0].damage_charges+o.orderItem[0].earlyReturnCharges}}</td> 
-                                  <td>₹{{o.orderItem[0].security_deposit-(o.orderItem[0].damage_charges+o.orderItem[0].earlyReturnCharges)}}</td>   
+                                  <td>₹{{o.totalSecurityDeposit-(o.orderItem[0].damage_charges+o.orderItem[0].earlyReturnCharges)}}</td>   
                                 </tr>
                             </ng-template>
                         </p-table>

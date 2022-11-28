@@ -109,6 +109,13 @@ export class CreateOrderComponent implements OnInit {
 
   fullyPaidOrder:boolean;
 
+  allDBPincodes:any;
+  freeDelivery:boolean=true;
+  twoWheelerCharges:number=0;
+  fourWheelerCharges:number=0;
+  totalDeliveryCharges:number=0;
+  showButton:boolean=true;
+
   constructor(private router: Router,private ps:ProductService,private modalService: NgbModal,private os:OrdersService,private http: HttpClient,private fb: UntypedFormBuilder) { 
     this.orderForm = this.fb.group({
       uid: '',
@@ -221,6 +228,7 @@ export class CreateOrderComponent implements OnInit {
   }
 
   createOrder(){
+    this.showButton=false;
     if(this.ProductDetails.length>0 && this.transactionNo && this.paymentType && this.paymentStatus && this.Description && this.transactionDate){
       this.orderForm.patchValue({
         orderStatus:this.paymentStatus
@@ -281,6 +289,7 @@ export class CreateOrderComponent implements OnInit {
     this.orderForm.patchValue({shippingAddress:id});
     const addrFields = this.address.filter(res => res.address_id === id);
     this.patchFormValues(addrFields[0]);
+    this.deliveryCharges();
     this.modalService.dismissAll();
   }
 
@@ -345,6 +354,7 @@ export class CreateOrderComponent implements OnInit {
         products.tenure_id = defaultTenure[0].tenure_id;
         products.tenure = defaultTenure[0].tenure;
         this.tenureTotalAmount();
+        this.deliveryCharges();
       });
     });
     
@@ -463,9 +473,11 @@ export class CreateOrderComponent implements OnInit {
   }
 
   calculateTotal() {
+    let deliveryTax = 0;
+    deliveryTax=((this.totalDeliveryCharges* (this.gst)/100));
     this.damageProtection=(this.tenureTotalPrice)*(8)/100;
-    this.total = this.tenureTotalPrice + (this.tenureTotalPrice * (this.gst)/100);
-    this.grandTotal = this.tenureTotalPrice + (this.tenureTotalPrice * (this.gst)/100) + this.totalDepositPrice;
+    this.total = this.tenureTotalPrice + (this.tenureTotalPrice * (this.gst)/100)+this.totalDeliveryCharges+deliveryTax;
+    this.grandTotal = this.tenureTotalPrice + (this.tenureTotalPrice * (this.gst)/100) + this.totalDepositPrice+this.totalDeliveryCharges+deliveryTax;
     
     this.orderForm.patchValue({
       subTotal:this.tenureTotalPrice,
@@ -543,6 +555,50 @@ export class CreateOrderComponent implements OnInit {
     });
     this.orderForm.patchValue({
       products:JSON.stringify(delvDta)
+    });
+  }
+
+  deliveryCharges(){    
+    this.http.get(`${environment.apiUrl}/cities/getAllDeliveryPincodes/1`).subscribe((pincodeRes)=>{
+      this.allDBPincodes=pincodeRes;
+      let shippingPincode = this.defaultAddressFields.pincode;
+      let pincodes;
+      pincodes=pincodeRes;
+      let selectedPincode;
+      let twoWheelerLength=0;
+      let fourWheelerLength=0;
+      let deliveryTax=0;
+      selectedPincode = pincodes.filter(item=> item.pincode==shippingPincode);
+      if(selectedPincode.length>0){
+        if(selectedPincode[0].free==1){
+          this.freeDelivery=true;
+          this.twoWheelerCharges = 0;
+          this.fourWheelerCharges = 0;
+          this.totalDeliveryCharges = 0;
+        } else{
+          this.freeDelivery=false;
+          this.twoWheelerCharges = selectedPincode[0].delivery_2wheeler;
+          this.fourWheelerCharges = selectedPincode[0].delivery_4wheeler;
+          
+          fourWheelerLength = this.ProductDetails.filter(item => item.main_cat_name!='Electronics').length;
+          twoWheelerLength = this.ProductDetails.filter(item => item.main_cat_name=='Electronics').length;
+          if(fourWheelerLength>0 && twoWheelerLength>0){
+            this.totalDeliveryCharges = this.fourWheelerCharges + this.twoWheelerCharges;
+          } else if(fourWheelerLength>0){
+            this.totalDeliveryCharges = this.fourWheelerCharges;
+          }else{
+            this.totalDeliveryCharges = this.twoWheelerCharges;
+          }
+          deliveryTax = (this.totalDeliveryCharges+(this.totalDeliveryCharges* (this.gst)/100));
+          this.grandTotal = Math.round(this.grandTotal + this.totalDeliveryCharges);
+          this.total = Math.round(this.total + this.totalDeliveryCharges);
+          
+        }
+      }
+      this.orderForm.patchValue({
+        totalDeliveryCharges:this.totalDeliveryCharges
+      });
+      this.calculateTotal();
     });
   }
   

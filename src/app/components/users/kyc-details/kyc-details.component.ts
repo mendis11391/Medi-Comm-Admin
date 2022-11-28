@@ -152,7 +152,11 @@ export class KycDetailsComponent implements OnInit {
   }
 
   updateStatus(id, field, value){
-    this.os.updateKYCMainTableByid(id, {field:field, value:value}).subscribe((res)=>{   
+    var html = this.kycDetails.comments;
+    html=html.replace(/<li>/g, '👉 ').replace(/<\/?[^>]+(>|$)/g, "").replace("/\n/g", "").replace("/\t/g", "").replace(/\s\s+/g, '');
+    var div = document.createElement("div");
+    div.innerHTML = html;
+    this.os.updateKYCMainTableByid(id, {field:field, value:value,comments:div.innerText, mobile:this.customerDetails[0].mobile, fullName:this.customerDetails[0].firstName+' '+this.customerDetails[0].lastName}).subscribe((res)=>{   
       this.getKYCDetailsById(this.kycId);   
       this.modalService.dismissAll();
       this.value='';

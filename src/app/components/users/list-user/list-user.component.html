@@ -114,7 +114,7 @@
                                 </tr>
                             </ng-template>
                             <ng-template  pTemplate="body" let-rowData let-o>
-                                <tr [routerLink]="[o.customer_id]">
+                                <tr [ngClass]="o.status==false ? 'bg-danger text-white':''" [routerLink]="[o.customer_id]">
                                   <td>{{o.customer_id}}</td>
                                   <td>{{o.firstName}}</td>
                                   <td>{{o.lastName}}</td>

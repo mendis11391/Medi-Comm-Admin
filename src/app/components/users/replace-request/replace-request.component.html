@@ -117,7 +117,7 @@
                       <td>{{productDetails.asset_id}}</td>
                       <td hidden>getBillPeriod(productDetails.end_date)</td>
                       <td>
-                          <select class="form-control" [(ngModel)]="prodId" (click)="selectProduct(prodId,productDetails.security_deposit, p1Tenure, productDetails.asset_id)">
+                          <select class="form-control" [(ngModel)]="prodId" (change)="selectProduct(prodId,productDetails.security_deposit, p1Tenure, productDetails.asset_id)">
                               <option selected="selected">select</option>
                               <option [value]="fp.product_id" *ngFor="let fp of matchedProducts2">{{fp.prod_id}}</option>
                           </select><br>

@@ -28,6 +28,7 @@ export class DigitalSubCategoryComponent implements OnInit {
   editSubCatSlug:string;
   editSubCatMetaTitle:string;
   editSubCatMetaDescription:string;
+  editSubCatSeoContent:string;
 
   constructor(private formBuilder: UntypedFormBuilder,private modalService: NgbModal,private category: ProductService,private http: HttpClient) {
     // this.digital_sub_categories = digitalSubCategoryDB.digital_sub_category;
@@ -166,6 +167,7 @@ export class DigitalSubCategoryComponent implements OnInit {
     this.editSubCatSlug = catRes.slug;
     this.editSubCatMetaTitle = catRes.metaTitle;
     this.editSubCatMetaDescription = catRes.metaDescription;
+    this.editSubCatSeoContent = catRes.cat_schema;
     
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result.then((result) => {
       this.closeResult = `Closed with: ${result}`;
@@ -183,7 +185,8 @@ export class DigitalSubCategoryComponent implements OnInit {
       subCatSlug: this.editSubCatSlug,
       subCatMetaTitle: this.editSubCatMetaTitle,
       subCatMetaDescription: this.editSubCatMetaDescription,
-    }
+      subCatMetaSeoContent: this.editSubCatSeoContent
+    };
     this.category.editCategory(obj).subscribe((res) => {
       if(res) {
         this.getAllCategoryGroup();

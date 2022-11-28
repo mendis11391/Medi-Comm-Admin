@@ -141,9 +141,8 @@ export class ReplaceRequestComponent implements OnInit {
         });
        });
        Promise.all([data, data2]).then(values => {
-         console.log(this.matchedProducts2);
          this.matchedProducts2 = this.matchedProducts2.filter(itemMP=>itemMP.matchedTenurePrice>=this.productDetails.tenure_price);
-         console.log(this.matchedProducts2);
+         
        });
     }, error => {
       if (error.status === 401) {
@@ -165,7 +164,6 @@ export class ReplaceRequestComponent implements OnInit {
     this.os.getAllassets().subscribe((assets)=>{
       this.assets=assets.filter(item => item.availability==true);
     });
-    console.log(this.assets);
   }
 
   open(ordId) {
@@ -192,7 +190,7 @@ export class ReplaceRequestComponent implements OnInit {
   }
 
   transactionId() {
-    const subCity = 'BLR';
+    const subCity = 'BLRR';
     const rand = Math.floor((Math.random() * 999) + 1);
     const dte = new Date();
     const txnid = ""+subCity +
@@ -383,6 +381,14 @@ export class ReplaceRequestComponent implements OnInit {
               this.p2TenurePrice = this.replaceProduct[0].tenure_base_price-(this.replaceProduct[0].tenure_base_price*p2TenureArr[i].discount/100);
             }
           }
+          if(this.productDetails.damage_protection>0){
+            this.p2DP=this.p2TenurePrice*(8/100);
+            } else{
+            this.p2DP=0;
+          }
+          p1RentBalance = this.calcDiffPrice(this.productDetails.start_date,this.productDetails.end_date, currDate,this.productDetails.end_date,this.productDetails.tenure_price, this.productDetails.damage_protection);
+          p2RentAmount = this.calcDiffPrice(this.productDetails.start_date,this.productDetails.end_date, currDate,this.productDetails.end_date,this.p2TenurePrice, this.p2DP);
+          this.rentDifference = p2RentAmount-p1RentBalance;
         });
 
         // for(let i=0;i<p2TenureArr.length;i++){//this loop is for rent/mo of that specific month from p1
@@ -392,15 +398,7 @@ export class ReplaceRequestComponent implements OnInit {
         //   }
         // }
 
-        if(this.productDetails.damage_protection>0){
-          this.p2DP=this.p2TenurePrice*(8/100);
-          } else{
-          this.p2DP=0;
-        }
-        console.log(this.productDetails);
-        p1RentBalance = this.calcDiffPrice(this.productDetails.start_date,this.productDetails.end_date, currDate,this.productDetails.end_date,this.productDetails.tenure_price, this.productDetails.damage_protection);
-        p2RentAmount = this.calcDiffPrice(this.productDetails.start_date,this.productDetails.end_date, currDate,this.productDetails.end_date,this.p2TenurePrice, this.p2DP);
-        this.rentDifference = p2RentAmount-p1RentBalance;
+        
       });    
   }  
   
@@ -424,11 +422,9 @@ export class ReplaceRequestComponent implements OnInit {
     let orderItem;
     requestedProduct.tenure_id=tenure_id;
     this.productDetails=requestedProduct;
-    console.log(this.productDetails);
     // this.modalReference=this.modalService.open(this.returnRequest, { windowClass : "return-request"});   
     this.http.get(`${environment.apiUrl}/orders/orderId/${ordId}`).subscribe((res) => {
       this.fullOrderDetails=res;
-      console.log(this.fullOrderDetails);
       orderItem = res[0].orderItem.filter(item=>item.order_item_id == oiid);
       
       // this.productDetails=orderItem[0].renewals_timline.slice(-1).pop();

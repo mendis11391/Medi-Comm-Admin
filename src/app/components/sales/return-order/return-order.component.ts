@@ -98,6 +98,11 @@ export class ReturnOrderComponent implements OnInit {
         dataKey: col.field
       }));
 
+      this.filteredOrders.forEach((resp)=>{
+        
+        resp.totalSecurityDeposit = resp.orderItem.reduce((n, {security_deposit}) => n + security_deposit, 0);
+      });
+
       this.datasource = this.filteredOrders;
       this.totalRecords = this.filteredOrders.length;
     });

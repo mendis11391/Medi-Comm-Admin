@@ -18,6 +18,7 @@ import { DigitalAccessoriesComponent } from './digital/digital-accessories/digit
 import { DigitalScrollersComponent } from './digital/digital-scrollers/digital-scrollers.component';
 import { User, Role } from '../auth/user';
 import { PincodesComponent } from './digital/pincodes/pincodes.component';
+import { UploadFilesComponent } from './digital/upload-files/upload-files.component';
 
 const routes: Routes = [
   {
@@ -71,6 +72,17 @@ const routes: Routes = [
         data: {
           title: "Category",
           breadcrumb: "Category",
+          roles: [Role.admin]
+        }
+      },
+      {
+        path: 'digital/upload-files',
+        canLoad: [AuthGuard],
+        canActivate: [AuthGuard],
+        component: UploadFilesComponent,
+        data: {
+          title: "Upload files",
+          breadcrumb: "upload files",
           roles: [Role.admin]
         }
       },

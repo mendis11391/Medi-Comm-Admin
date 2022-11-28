@@ -1,0 +1,21 @@
+<!-- Container-fluid starts-->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Pincodes</h5>
+                </div>
+                <div class="card-body">
+                    <select>
+                        <option *ngFor="let c of categories">{{c.cat_name}}</option>
+                    </select>
+                    <input type="file" accept='image/*' multiple id="product_image" name="product_image" class="form-control"/>
+                    <button (click)="upload()" class="btn btn-primary">Upload</button>                     
+                    
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

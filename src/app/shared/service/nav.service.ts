@@ -84,6 +84,7 @@ export class NavService {
 				{title: 'Products', path: '/products/digital/digital-product-list',  type: 'link'},
 				{title: 'Scrollers', path: '/products/digital/digital-scrollers',  type: 'link'},
 				{title: 'Pincodes', path: '/products/digital/pincodes',  type: 'link'},
+				{title: 'Upload files', path: '/products/digital/upload-files',  type: 'link'},
 				// {
 				// 	title: 'Physical', type: 'sub', children: [
 				// 		{ path: '/products/physical/category', title: 'Category', type: 'link' },

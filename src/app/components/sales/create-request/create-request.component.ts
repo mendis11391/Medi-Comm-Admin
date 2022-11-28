@@ -20,6 +20,7 @@ export class CreateRequestComponent implements OnInit {
   customers;
   customerDetails={
     firstName:'',
+    lastName:'',
     mobile:'',
     email:''
   };
@@ -251,7 +252,10 @@ export class CreateRequestComponent implements OnInit {
       approval_status:0,
       approval_date:0,
       request_status:1,
-      email:this.customerDetails.email
+      email:this.customerDetails.email,
+      firstName:this.customerDetails.firstName,
+      lastName:this.customerDetails.lastName,
+      mobile: this.customerDetails.mobile
     }
     console.log(orderItem);
     this.http.post(`${environment.apiUrl}/users/updateorderItem2`,orderItem).subscribe(()=>{

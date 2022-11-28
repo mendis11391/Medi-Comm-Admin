@@ -67,6 +67,8 @@ export class ReturnRequestComponent implements OnInit {
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
   checkedProducts=[];
   totalSecurityDeposit:number=0;
+  disableReturn:boolean=false;
+
   constructor(private calendar: NgbCalendar,private route: ActivatedRoute, private router:Router,private http: HttpClient,private ps:ProductService,private os:OrdersService, private modalService: NgbModal, private formBuilder: UntypedFormBuilder) {
     // this.order = orderDB.list_order;
     this.model = this.calendar.getToday();
@@ -223,6 +225,7 @@ export class ReturnRequestComponent implements OnInit {
   // }
 
   returnProduct(){
+    this.disableReturn=true;
     var day = this.model.day;
     var month = this.model.month;
     var year = this.model.year;
@@ -273,7 +276,7 @@ export class ReturnRequestComponent implements OnInit {
     // let productToReturn = this.productDetails;
 
     
-    let charges=0;
+    var charges=0;
     let returnGrandTotal=0;
     charges = (this.totalSecurityDeposit-0)-(this.returnDamageCharges+this.earlyReturnCharges);
     // pInfo.push(productToReturn.prod_id);
@@ -335,7 +338,7 @@ export class ReturnRequestComponent implements OnInit {
       this.postNotes(res.orderDBId);
       // if(this.refundStatus==6){
       //   this.http.post(`${environment.apiUrl}/forgotpassword/depositRefundedMail`,  returnOrder).subscribe();
-      // }
+      // }      
       setTimeout(() => {
         window.location.reload();
       }, 2000);
