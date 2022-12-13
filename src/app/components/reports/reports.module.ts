@@ -8,10 +8,13 @@ import { ReportsComponent } from './reports.component';
 import { ChartsModule } from 'ng2-charts';
 import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
-import { ChartistModule } from 'ng-chartist'
+import { ChartistModule } from 'ng-chartist';
+import { UrlLogsReportComponent } from './url-logs-report/url-logs-report.component'
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
+import { TableModule } from 'primeng/table';
 
 @NgModule({
-  declarations: [ReportsComponent],
+  declarations: [ReportsComponent, UrlLogsReportComponent],
   imports: [
     CommonModule,
     ChartsModule,
@@ -20,6 +23,8 @@ import { ChartistModule } from 'ng-chartist'
     ChartistModule,
     ReportsRoutingModule,
     // Ng2SmartTableModule
+    NgxDatatableModule,
+    TableModule
   ]
 })
 export class ReportsModule { }

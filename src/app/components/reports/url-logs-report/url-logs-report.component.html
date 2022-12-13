@@ -1,0 +1,100 @@
+<!-- Container-fluid starts-->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="custom-datatable">
+                        <input type='text' class="filter-ngx form-control" placeholder='Search...'
+                            (keyup)='updateFilter($event)' />
+                            <button class="pull-right btn btn-warning" (click)="exportAsXLSX()">Download</button><br><br>
+                       
+                        <div class="row mb-3 filter-buttons">
+                          
+                          <div class="col-4 mt-4">
+                            <h3>Url Logs</h3>
+                          </div>
+                        </div>
+                        
+
+                        <p-table #dt1 [columns]="cols" styleClass="p-datatable-gridlines" selectionMode="multiple" [(selection)]="selectedOrders" [exportHeader]="'customExportHeader'" [value]="filteredOrders" [lazy]="false" responsiveLayout="scroll" dataKey="id"                            
+                            [paginator]="true" [showCurrentPageReport]="true" [rowsPerPageOptions]="[30,50,100]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="30" [totalRecords]="totalRecords" [loading]="loading" [globalFilterFields]="['order_id', 'firstName', 'mobile', 'totalSecurityDeposit', 'grandTotal', 'paymentStatus', 'delivery_status']">
+                            <ng-template pTemplate="caption">
+                              <div class="p-d-flex">
+                                <span class="p-input-icon-left p-ml-auto">
+                                          <!-- <i class="pi pi-search"></i> -->
+                                          <input class="w-100" pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Search keyword" />
+                                      </span>
+                              </div>
+                              <div class="flex">
+                                <button type="button" pButton pRipple icon="pi pi-file" (click)="dt1.exportCSV()" class="mr-2" pTooltip="CSV" tooltipPosition="bottom">CSV</button>
+                                <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportAsXLSX()" class="p-button-success mr-2"  pTooltip="XLS" tooltipPosition="bottom">XL</button>
+                              </div>
+                            </ng-template>
+                            <ng-template pTemplate="header">
+                              <tr>
+                                <th>
+                                  <div class="flex justify-content-center align-items-center">
+                                   Session id
+                                      <p-columnFilter type="text" field="session_id" display="menu"></p-columnFilter>
+                                  </div>
+                                </th>
+                                <th>
+                                  <div class="flex justify-content-center align-items-center">
+                                    Customer Id
+                                      <p-columnFilter type="number" field="customer_id" display="menu"></p-columnFilter>
+                                  </div>
+                                </th>
+                                <th>
+                                  <div class="flex justify-content-center align-items-center">
+                                    mobile
+                                      <p-columnFilter type="text" field="mobile" display="menu"></p-columnFilter>
+                                  </div>
+                                </th>
+                                <th>
+                                  <div class="flex justify-content-center align-items-center">
+                                    Customer name
+                                      <p-columnFilter type="text" field="firstName" display="menu"></p-columnFilter>
+                                  </div>
+                                </th>
+                                <th>
+                                  <div class="flex justify-content-center align-items-center">
+                                    URL
+                                      <p-columnFilter type="text" field="url" display="menu"></p-columnFilter>
+                                  </div>
+                                </th>
+                                <th>
+                                  <div class="flex justify-content-center align-items-center">
+                                    Source
+                                      <p-columnFilter type="text" field="source" display="menu"></p-columnFilter>
+                                  </div>
+                                </th>                              
+                                <th>
+                                    <div class="flex justify-content-center align-items-center">
+                                      Created date
+                                        <p-columnFilter type="date" field="created_at" display="menu"></p-columnFilter>
+                                        <th pSortableColumn="created_at"><p-sortIcon field="created_at"></p-sortIcon></th>
+                                    </div>
+                                  </th>
+                              </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-o>
+                                <tr>
+                                  <td>{{o.session_id.substring(0, 10)+'...'}} <i class="fa fa-clone " (click)="copyMessage(o.session_id)"></i></td>
+                                  <td [routerLink]="['../../users/customers',o.customer_id]">{{o.customer_id}}</td>
+                                  <td [routerLink]="['../../users/customers',o.customer_id]">{{o.mobile}}</td> 
+                                  <td [routerLink]="['../../users/customers',o.customer_id]">{{o.firstName}}</td>
+                                  <td>{{o.url}}</td> 
+                                  <td>{{o.source}}</td>  
+                                  <td>{{o.created_at | date:'dd-MMM-yyyy HH:mm' : '+5:30'}}</td>   
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+   

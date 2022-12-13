@@ -8,7 +8,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { BrandService } from '../../services/brand.service';
 import { NgbModal, ModalDismissReasons } from '@ng-bootstrap/ng-bootstrap';
 import { environment } from 'src/environments/environment';
-const URL = `${environment.apiUrl}/products/upload/`;
+const URL = `${environment.apiUrl}/products/upload`;
 
 @Component({
   selector: 'app-digital-edit',
@@ -21,6 +21,7 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
   prodId: string;
   prodById:string;
   categories;
+  subCategories;
   brands;
   prodImgs;
   
@@ -41,6 +42,8 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
   quantity:0,
   delivery_timeline:0
  }
+
+ imageUrl:string='';
   constructor(
     private modalService: NgbModal,
     private http: HttpClient,
@@ -64,6 +67,9 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
   accessories;
   highlights;
   editProducts;
+  productCategories=[];
+
+  ImageFormData = new FormData();
   productFields(){
     this.addProduct = this.formBuilder.group({
       mainCatName:['', Validators.required],
@@ -104,7 +110,9 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
       this.getAllPricingSchemes();
       // this.getAllBrands();
       this.getAllCities();
+      this.getAllSubCategories();
       // this.getAllspecValuesBySpecId(1);
+      
     });
     
     
@@ -134,10 +142,8 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
   getProducts(id) {
     this.productsService.getProduct(id).subscribe((res: any) => {
       let data = res[0];
-      console.log(data);
       this.prodById = data.prod_id;
       this.specsCheck = data.specs;
-      console.log(this.specsCheck);
       // this.id = data.prod_id;
       // let specs= JSON.parse(JSON.parse(data.specs));
       // this.fileData=data.prod_img;
@@ -198,6 +204,12 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
   getCityTimelineProductById(id){
     this.productsService.getCityTimelineByProductId(id).subscribe((acc)=>{ 
       this.editProducts=acc;
+      for(let i=0;i<this.editProducts.length;i++){
+        var index = this.productCategories.findIndex(x=>x.cat_name==this.editProducts[i].cat_name); 
+        if(index===-1){
+          this.productCategories.push(this.editProducts[i]);
+        }
+      }
     });
   }
 
@@ -212,6 +224,27 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
       this.getSubCategory();
       this.getSpecsByCatId();
     });
+  }
+
+  getAllSubCategories(){
+    this.productsService.getAllCategories().subscribe((res)=>{
+      this.subCategories = res[0];      
+    });
+  }
+
+  postProductCategory(e, cat_id){
+    let obj = {
+      product_id:this.prodId,
+      prodQty:0,
+      subCatId:cat_id,
+      brandId:1,
+      deliveryTimeline:0
+    };
+    if(e.target.checked){
+      this.productsService.postProductCategory(obj).subscribe();
+    }else{
+      this.productsService.deleteProductCategory(this.prodId,cat_id).subscribe();
+    }
   }
 
   getAllAccessories(id) {
@@ -328,6 +361,8 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
   getSubCategory(){
     this.subCat = this.categories.filter(item=>item.id==this.mainCatId);
     this.subCat = this.subCat[0].subItems;
+    let currentsubcat = this.subCat.filter(item=>item.cat_id==this.subCatId)
+    this.imageUrl=environment.imageUrl+'/'+currentsubcat[0].slug+'/'+this.addProduct.value.slug+'.jpg';
   }
 
   getAllaccessories() {
@@ -427,9 +462,9 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
         prodImage:this.finalBlob
       });
     }
-    console.log(this.addProduct.value);
 
     this.http.put(`${environment.apiUrl}/products/${this.prodId}`, this.addProduct.value).subscribe((res) => {
+      this.http.post(URL, this.ImageFormData).pipe(map((res:Response) => res.json())).subscribe();
       alert('Product modified successfully');
       this.router.navigate(['/products/digital/digital-product-list']);
     });
@@ -460,26 +495,29 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
     setTimeout(()=>{
       this.finalBlob=finalBlob;
     }, 100);
-    
+    this.upload(inputEl);
   }
 
-  upload() {
+  upload(inputEl) {
     //locate the file element meant for the file upload.
-        let inputEl: HTMLInputElement = this.el.nativeElement.querySelector('#product_image');
     //get the total amount of files attached to the file input.
         let fileCount: number = inputEl.files.length;
     //create a new fromdata instance
-        let formData = new FormData();
     //check if the filecount is greater than zero, to be sure a file was selected.
         if (fileCount > 0) { // a file was selected
             //append the key name 'photo' with the first file in the element
-                formData.append('product_image', inputEl.files.item(0));
+                let slug = this.subCat.filter(item=>item.cat_id==this.subCatId);
+                this.ImageFormData.append('file_name', this.addProduct.value.slug);
+                this.ImageFormData.append('directory', slug[0].slug);
+                this.ImageFormData.append('product_image', inputEl.files.item(0));
+
+                
             //call the angular http method
-            this.http.post(URL, formData).pipe(map((res:Response) => res.json())).subscribe(
-                 (success) => {
-                         alert('success');
-                },
-                (error) => alert(error))
+            // this.http.post(URL, this.ImageFormData).pipe(map((res:Response) => res.json())).subscribe(
+            //      (success) => {
+            //              alert('success');
+            //     },
+            //     (error) => alert(error))
           }
   }
 
@@ -508,6 +546,16 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
     }, (reason) => {
       this.closeResult = `Dismissed`;
     });
+  }
+
+  getMatchedCatList(){
+    for(let i=0; i<this.subCategories.length;i++){
+      for(let j=0;j<this.productCategories.length;j++){
+        if(this.subCategories[i].cat_id==this.productCategories[j].cat_id){
+          this.subCategories[i].checked=true;
+        }
+      }
+    }
   }
 
   mainCatNameActions(e,mainCatId){

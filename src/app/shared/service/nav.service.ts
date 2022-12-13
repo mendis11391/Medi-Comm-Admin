@@ -105,7 +105,9 @@ export class NavService {
 			]
 		},		
 		{
-			title: 'Reports', icon: 'bar-chart', type: 'sub', active: false
+			title: 'Reports', icon: 'bar-chart', type: 'sub', active: false,children: [
+				{title: 'Url logs', path: '/reports/url-logs-report',  type: 'link'},
+			]
 		},
 		{
 			title: 'Users', path: '/sales/orders', icon: 'user', type: 'link', active: false

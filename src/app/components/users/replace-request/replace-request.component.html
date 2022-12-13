@@ -117,10 +117,23 @@
                       <td>{{productDetails.asset_id}}</td>
                       <td hidden>getBillPeriod(productDetails.end_date)</td>
                       <td>
-                          <select class="form-control" [(ngModel)]="prodId" (change)="selectProduct(prodId,productDetails.security_deposit, p1Tenure, productDetails.asset_id)">
+                          <!-- <select class="form-control" [(ngModel)]="prodId" (change)="selectProduct(prodId,productDetails.security_deposit, p1Tenure, productDetails.asset_id)">
                               <option selected="selected">select</option>
                               <option [value]="fp.product_id" *ngFor="let fp of matchedProducts2">{{fp.prod_id}}</option>
-                          </select><br>
+                          </select><br> -->
+                          <p-dropdown [options]="matchedProducts2" [(ngModel)]="prodId" optionLabel="prod_id" [filter]="true" filterBy="prod_id"
+                          (onChange)="selectProduct(prodId.product_id,productDetails.security_deposit, p1Tenure, productDetails.asset_id)" [showClear]="true" placeholder="Select a product#">
+                            <ng-template pTemplate="selectedItem">
+                              <div class="country-item country-item-value" *ngIf="prodId">
+                                <div>{{prodId.prod_id}}</div>
+                              </div>
+                            </ng-template>
+                            <ng-template let-productId pTemplate="item">
+                              <div class="country-item">
+                                <div>{{productId.prod_id}}</div>
+                              </div>
+                            </ng-template>
+                          </p-dropdown>
                
                       </td>
 
@@ -129,8 +142,9 @@
                       <td>{{rp.product_id}}</td>
                       <td>{{rp.prod_name}}</td>
                       <td>{{p2Tenure}}</td>
-                      <td>{{rp.securityDeposit}}</td>
-                      <td>{{(p2TenurePrice-0)+(p2DP-0)}}</td>
+                      <td><input type="number" (keyup)="calcModifiedPrice(p1Tenure,productDetails.security_deposit, p2TenurePrice, rp.securityDeposit)" [(ngModel)]="rp.securityDeposit"></td>
+                      <td><input type="number" (keyup)="calcModifiedPrice(p1Tenure,productDetails.security_deposit, p2TenurePrice, rp.securityDeposit)" [(ngModel)]="p2TenurePrice">
+                        {{(p2TenurePrice-0)+(p2DP-0)}}</td>
                       <td>    
                         <label>Asset #:
                           <input class="form-control" type="text" [(ngModel)]="assetId">
@@ -150,7 +164,7 @@
                   <p>GST: {{totalTaxAmount((rentDifference)+damageCharges)}}</p>
                   <p>Sub total: ₹{{(rentDifference)+damageCharges+totalTaxAmount((rentDifference)+damageCharges)}}</p>
                   <p>Difference in security deposit: {{securityDepositDiff}}</p>
-                  <p>Total: ₹{{(rentDifference)+damageCharges+totalTaxAmount((rentDifference)+damageCharges)+securityDepositDiff}}</p>
+                  <p>Total: ₹{{(rentDifference)+damageCharges+totalTaxAmount((rentDifference)+damageCharges)+securityDepositDiff | number: '1.0-0'}}</p>
                   <button *ngIf="assetId" class="btn btn-primary" (click)="replace(productDetails.order_item_id,productDetails.id,productDetails.indexs, productDetails.tenure_id, productDetails.dp,productDetails.assetId,prodId, damageCharges)">Replace</button>
                 </div>
                 </div>

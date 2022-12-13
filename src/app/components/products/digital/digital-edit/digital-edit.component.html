@@ -21,12 +21,22 @@
                             <!-- <div class="form-group"  *ngFor="let c of categories">
                                 <label class="col-form-label" *ngIf="c.id==mainCatId"><span>*</span> Category group : {{c.main_cat_name}} <a (click)="open(editMainCatId);"><i class="fa fa-pencil"></i></a></label>                                
                             </div> -->
+                            <div class="pull-right">
+                                <a (click)="open(editSubCatId2);getMatchedCatList()" class="btn btn-secondary"><i class="fa fa-plus"></i> / <i class="fa fa-trash"></i></a>
+                            </div>
 
-                            <div class="form-group" *ngFor="let sc of subCat">
-                                <label class="col-form-label" *ngIf="sc.cat_id==subCatId"><span>*</span> Category name: {{sc.cat_name}} <a (click)="open(editSubCatId);"><i class="fa fa-pencil"></i></a></label>
-                                <!-- <select class="form-control" formControlName="subCatId" (change)="getSpecsByCatId()">
-                                    <option *ngFor="let sc of subCat[0].subItems" value="{{sc.cat_id}}">{{sc.cat_name}}</option>
-                                </select> -->
+                            <!-- <div class="form-group" *ngFor="let sc of subCat">
+                                <label class="col-form-label" *ngIf="sc.cat_id==subCatId"><span>*</span> Category name: {{sc.cat_name}} 
+                                    <a (click)="open(editSubCatId);"><i class="fa fa-pencil"></i></a>
+                                </label>                                
+
+                            </div> -->
+
+                            <div class="form-group" >
+                                <label class="col-form-label" ><span>*</span> Category name: <ul *ngFor="let sc of productCategories"><li>{{sc.cat_name}}</li> </ul>
+                                    
+                                </label>                                
+
                             </div>
 
                             <!-- <div class="form-group" >
@@ -175,6 +185,8 @@
                             <input type="file" id="product_image" (change)="imageChange($event)"/><br>
                             <img class="img-responsive w-25" 
                                 [src]="addProduct.value.prodImage | BlobImage">
+
+                                <h6>Image Url: <a [href]="[imageUrl]" target="_blank">{{imageUrl}}</a></h6>
                         </div>
                     </div>
                 </div>
@@ -195,7 +207,7 @@
                                   </tr>
                                 </thead>
                                 <tbody *ngFor="let ep of editProducts">
-                                  <tr>
+                                  <tr *ngIf="ep.is_primary">
                                     <td>{{ep.city_name}}</td>
                                     <td>{{ep.quantity}}</td>
                                     <td>{{ep.delivery_timeline}}</td>
@@ -336,6 +348,42 @@
             </table>
         </div>
         <!-- <div class="specValues" *ngFor="let sv of tenureEdit.specId | tenurePriority">{{sv.tenure}} {{sv.tenure_period}}</div> -->
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary"  >Save</button>
+        <button class="btn btn-secondary" type="button" data-dismiss="modal"
+            (click)="modal.dismiss('Cross click')">Close</button>
+    </div>
+</ng-template>
+
+<ng-template #editSubCatId2 let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title f-w-600" id="exampleModalLabel">Edit Category</h5>
+        <button type="button" class="close" aria-label="Close"
+            (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <th>Categroy </th>
+                    <th>Action</th>
+                </thead>
+                <tbody *ngFor="let sc of subCategories">
+                    <td >
+                        {{sc.cat_name}}
+                    </td>
+                    <td>
+                        <div class="form-check">
+                            <input type="checkbox" name="subCatName" class="form-check-input" (change)="postProductCategory($event,sc.cat_id)" [checked]="sc.checked">
+                        </div>
+                    </td>
+                </tbody>
+            </table>
+        </div>
+       
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-primary"  >Save</button>

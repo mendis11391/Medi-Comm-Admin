@@ -132,6 +132,14 @@ export class ProductService {
     return this.http.post(this.c_url+'/postCategorySpecs',  catSpecs);
   }
 
+  postProductCategory(cat) {
+    return this.http.post(this.b_url+'/postProductCategory',  cat);
+  }
+
+  deleteProductCategory(id,cat){
+    return this.http.delete(this.b_url+`/deleteProductCategoryByProdId/${id}/${cat}`);
+  }
+
   getTenureByPriority() {
     return this.http.get(this.b_url+'/tenures');
   }

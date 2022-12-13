@@ -10,6 +10,7 @@ import { ProductService } from '../../products/services/product.service';
 import { ActivatedRoute, Router} from '@angular/router';
 import { ExcelService } from '../../sales/services/excel.service';
 import { environment } from 'src/environments/environment';
+import {DropdownFilterOptions} from 'primeng/dropdown';
 
 @Component({
   selector: 'app-replace-request',
@@ -64,6 +65,7 @@ export class ReplaceRequestComponent implements OnInit {
   model: NgbDateStruct;
   paymentStatus;
   matchedProducts2=[];
+  filterValue = '';
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
   constructor(private route: ActivatedRoute, private router:Router,private excelService:ExcelService,private http: HttpClient,private ps:ProductService,private os:OrdersService, private modalService: NgbModal, private formBuilder: UntypedFormBuilder) {
     // this.order = orderDB.list_order;
@@ -102,6 +104,7 @@ export class ReplaceRequestComponent implements OnInit {
       let a=[];
       a.push(res);
       this.orderitem =a[0];
+      this.orderitem = this.orderitem.reverse();
     });
     this.http.get(`${environment.apiUrl}/orders/getAllPaymentStatus`).subscribe((res) => {
       this.paymentStatus=res;
@@ -745,5 +748,34 @@ export class ReplaceRequestComponent implements OnInit {
   exportAsXLSX():void {
     this.excelService.exportAsExcelFile(this.order, 'Orders');
   }
+
+  calcModifiedPrice(p1Tenure,p1SecurityDeposit, p2TenurePrice, p2SD){
+    console.log(p1SecurityDeposit);
+    let p2TenureArr;
+    // let p2TenurePrice=0;
+    // let p2DP=0;
+    let p1RentBalance;
+    let p2RentAmount;
+    let currDate = new Date(this.billStartDate);
+    let day = currDate.getDate();
+    let month = currDate.getMonth()+1;
+    let year = currDate.getFullYear();
+    let deliverDate =day + '/' + month + '/' + year;
+    let tenures;
+    this.securityDepositDiff = p2SD-p1SecurityDeposit;
+    if(this.productDetails.damage_protection>0){
+      this.p2DP=this.p2TenurePrice*(8/100);
+      } else{
+      this.p2DP=0;
+    }
+    p1RentBalance = this.calcDiffPrice(this.productDetails.start_date,this.productDetails.end_date, currDate,this.productDetails.end_date,this.productDetails.tenure_price, this.productDetails.damage_protection);
+    p2RentAmount = this.calcDiffPrice(this.productDetails.start_date,this.productDetails.end_date, currDate,this.productDetails.end_date,p2TenurePrice, this.p2DP);
+    this.rentDifference = p2RentAmount-p1RentBalance;  
+  }
+
+  myResetFunction(options: DropdownFilterOptions) {
+    options.reset();
+    this.filterValue = '';
+}
 
 }

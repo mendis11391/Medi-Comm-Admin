@@ -6,7 +6,7 @@ import { ProductService } from '../../services/product.service';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 
-const URL = `${environment.apiUrl}/products/upload/`;
+const URL = `${environment.apiUrl}/products/upload`;
 
 @Component({
   selector: 'app-upload-files',
@@ -42,7 +42,11 @@ export class UploadFilesComponent implements OnInit {
     //check if the filecount is greater than zero, to be sure a file was selected.
         if (fileCount > 0) { // a file was selected
             //append the key name 'photo' with the first file in the element
+            formData.append('prod_name', 'Intel core i5');
+            formData.append('directory', 'Laptops');
             formData.append('product_image', inputEl.files.item(0));
+            
+            
             //call the angular http method
             this.http.post(URL, formData).subscribe(
                  (success) => {

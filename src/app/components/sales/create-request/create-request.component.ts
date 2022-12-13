@@ -265,7 +265,7 @@ export class CreateRequestComponent implements OnInit {
 
   placeReplaceRequest(oid,oiid,renewals_timline){
     
-    let returnAsset = renewals_timline.filter(item=>item.renewed==1 || item.renewed==4 || item.ordered ==1);
+    let returnAsset = renewals_timline;
     let renewalsData = returnAsset.slice(-1)[0];
     let orderItem={
       order_item_id:oiid,
@@ -277,9 +277,12 @@ export class CreateRequestComponent implements OnInit {
       request_message:'',
       approval_status:0,
       approval_date:0,
-      request_status:1
+      request_status:1,      
+      email:this.customerDetails.email,
+      firstName:this.customerDetails.firstName,
+      lastName:this.customerDetails.lastName,
+      mobile: this.customerDetails.mobile
     }
-    console.log(orderItem);
     this.http.post(`${environment.apiUrl}/users/updateorderItem2`,orderItem).subscribe(()=>{
       this.router.navigate(['../users/replacement-request']);
     });

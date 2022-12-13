@@ -26,6 +26,7 @@ import {TableModule} from 'primeng/table';
 import { ButtonModule } from "primeng/button";
 
 import { UiSwitchModule } from 'ngx-ui-switch';
+import {DropdownModule} from 'primeng/dropdown';
 
 @NgModule({
   declarations: [ListUserComponent, CreateUserComponent, CustomersComponent, ReplaceRequestComponent, ReturnRequestComponent, ReviewsComponent, KycComponent, KycDetailsComponent, CreateEditKycComponent, CustomerLogsComponent],
@@ -42,6 +43,7 @@ import { UiSwitchModule } from 'ngx-ui-switch';
     TableModule,
     ButtonModule,
     UiSwitchModule,
+    DropdownModule,
     NgMultiSelectDropDownModule.forRoot(),
   ]
 })

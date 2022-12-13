@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Orders,OrderItems, Assets } from "../../../shared/data/order";
 import { Customers } from "../../../shared/data/customer";
 import { environment } from 'src/environments/environment';
+import { UrlLogs } from 'src/app/shared/data/reports';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,10 @@ export class OrdersService {
     
   }
 
+  public getAllurlLogs(): Observable<UrlLogs[]> {
+    return this.http.get<UrlLogs[]>(`${this.admin_url}/getUrlLogs`)
+  }
+
   public getorders(id): Observable<Orders[]>{
     return this.http.get<Orders[]>(`${this.orders_url}/${id}`)
   }
@@ -38,6 +43,7 @@ export class OrdersService {
   getAllOrders2(): Observable<Orders[]> {
     return this.http.get<Orders[]>(`${this.admin_url}/getAllOrders`)
   }
+
 
   getAllNewOrders(): Observable<Orders[]> {
     return this.http.get<Orders[]>(`${this.admin_url}/newOrders`)
@@ -115,7 +121,7 @@ export class OrdersService {
   }
 
   getKycBycustomerId(id){
-    return this.http.get(`${this.customer_url}/getAllKYC/getKycBycustomerId/${id}`);
+    return this.http.get(`${environment.apiUrl2}/users/getAllKYC/getKycBycustomerId/${id}`);
   }
 
   getAllCustomersByid(id): Observable<Customers[]> {
@@ -123,27 +129,27 @@ export class OrdersService {
   }
 
   getKYCMainTableByid(id) {
-    return this.http.get(`${this.customer_url}/getAllKYC/kycMainTable/${id}`)
+    return this.http.get(`${environment.apiUrl2}/users/getAllKYC/kycMainTable/${id}`)
   }
 
   getKYCIndividualByid(id) {
-    return this.http.get(`${this.customer_url}/getAllKYC/kycIndividualDetails/${id}`)
+    return this.http.get(`${environment.apiUrl2}/users/getAllKYC/kycIndividualDetails/${id}`)
   }
 
   updateKYCMainTableByid(id, val) {
-    return this.http.put(`${this.customer_url}/getAllKYC/updateKYCMaintablefield/${id}`, val);
+    return this.http.put(`${environment.apiUrl2}/users/getAllKYC/updateKYCMaintablefield/${id}`, val);
   }
 
   updateKYCMainTableExpiryDateByid(id, val) {
-    return this.http.put(`${this.customer_url}/getAllKYC/updateKYCMaintableexpiryDatefield/${id}`, val);
+    return this.http.put(`${environment.apiUrl2}/users/getAllKYC/updateKYCMaintableexpiryDatefield/${id}`, val);
   }
 
   getKYCImage(id) {
-    return this.http.get(`${this.customer_url}/getAllKYC/kycImage/${id}`)
+    return this.http.get(`${environment.apiUrl2}/users/getAllKYC/kycImage/${id}`)
   }
 
   public getKycByCustomerId(id) {
-    return this.http.get(`${this.customer_url}/getAllKYC/kycBycustomerId/${id}`);
+    return this.http.get(`${environment.apiUrl2}/users/getAllKYC/kycBycustomerId/${id}`);
   }
 
   public getEmailTemplatesByid(id) {
@@ -155,47 +161,47 @@ export class OrdersService {
   }
 
   public kycSubmit(formval) {
-    return this.http.post(`${this.customer_url}/kycSubmit`, formval);
+    return this.http.post(`${environment.apiUrl2}/users/kycSubmit`, formval);
   }
 
   public kycDetailsSubmit(formval) {
-    return this.http.post(`${this.customer_url}/kycDetailsSubmit`, formval);
+    return this.http.post(`${environment.apiUrl2}/users/kycDetailsSubmit`, formval);
   }
 
   public kycCompanyDetailsSubmit(formval) {
-    return this.http.post(`${this.customer_url}/kycCompanyDetailsSubmit`, formval);
+    return this.http.post(`${environment.apiUrl2}/users/kycCompanyDetailsSubmit`, formval);
   }
 
   public updateKYCDetailsTab(id,data){
-    const url = `${this.customer_url}/getAllKYC/updatekycDetailsTab/${id}`;
+    const url = `${environment.apiUrl2}/users/getAllKYC/updatekycDetailsTab/${id}`;
     return this.http.put(url, data);
   }
 
   public updateKYCIdProofTab(id,data){
-    const url = `${this.customer_url}/getAllKYC/updatekycIdProofTab/${id}`;
+    const url = `${environment.apiUrl2}/users/getAllKYC/updatekycIdProofTab/${id}`;
     return this.http.put(url, data);
   }
 
   public updateKYCAddressProofTab(id,data){
-    const url = `${this.customer_url}/getAllKYC/updatekycAddressProofTab/${id}`;
+    const url = `${environment.apiUrl2}/users/getAllKYC/updatekycAddressProofTab/${id}`;
     return this.http.put(url, data);
   }
 
   public updateKYCReferencesTab(id,data){
-    const url = `${this.customer_url}/getAllKYC/updatekycReferencesTab/${id}`;
+    const url = `${environment.apiUrl2}/users/getAllKYC/updatekycReferencesTab/${id}`;
     return this.http.put(url, data);
   }
 
   public getKYCMainDetailsById(id) {
-    return this.http.get(`${this.customer_url}/getAllKYC/kycMainTable/${id}`);
+    return this.http.get(`${environment.apiUrl2}/users/getAllKYC/kycMainTable/${id}`);
   }
 
   public getKYCIndividualDetailsById(id) {
-    return this.http.get(`${this.customer_url}/getAllKYC/kycIndividualDetails/${id}`);
+    return this.http.get(`${environment.apiUrl2}/users/getAllKYC/kycIndividualDetails/${id}`);
   }
 
   public getKYCImagesById(id) {
-    return this.http.get(`${this.customer_url}/getAllKYC/kycImage/${id}`);
+    return this.http.get(`${environment.apiUrl2}/users/getAllKYC/kycImage/${id}`);
   }
 
 
