@@ -38,7 +38,7 @@
           </div>
 
         <div class="col-sm-12">
-            <div class="card" [ngClass]="{'bg-danger': kycDetails.kyc_status=='Query raised','bg-success': kycDetails.kyc_status=='eKYC approved', 'bg-warning': kycDetails.kyc_status=='eKYC submitted'}" >
+            <div class="card" [ngClass]="{'bg-danger': kycDetails.kyc_status=='Query raised','bg-success': kycDetails.kyc_status=='eKYC approved', 'bg-warning': kycDetails.kyc_status=='eKYC submitted' || kycDetails.kyc_status=='eKYC partially submitted'}" >
                 <div class="card-body">
                     <h2 class="text-white" >{{kycDetails.kyc_status}}</h2>
                 </div>

@@ -273,6 +273,8 @@ export class CreateOrderComponent implements OnInit {
     
             this.http.post(`https://backend.aisensy.com/campaign/t1/api`, template).subscribe();
           });
+
+          this.http.post(`${environment.apiUrl}/payments/postInvoice`,transaction).subscribe();
           
           alert('Order created successfully');
           this.router.navigate(['/sales/primary-order']);

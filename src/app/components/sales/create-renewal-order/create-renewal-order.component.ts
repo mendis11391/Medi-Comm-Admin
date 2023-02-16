@@ -496,7 +496,6 @@ export class CreateRenewalOrderComponent implements OnInit {
   }
 
   renew(){
-    this.disableRenew = false;
     let allOrders = this.orders;
     let allProducts = [];
     let productsOverdue = [];
@@ -512,6 +511,8 @@ export class CreateRenewalOrderComponent implements OnInit {
     let shippingAddress;
 
     if(this.transactionNo && this.paymentType && this.paymentStatus && this.Description && this.transactionDate){
+      
+      this.disableRenew = false;
       this.os.getUserDetailsByUid(this.uid).subscribe((dta) => {
         if(dta[0]) {
           addrFields.push(dta);
@@ -631,7 +632,7 @@ export class CreateRenewalOrderComponent implements OnInit {
   }
 
   updateRenewalPrice(id,renewalPrice){
-    this.http.put(`${environment.apiUrl}/admin/updateOrderRenewalPrice/${id}`,{renewal_price:renewalPrice}).subscribe((res:any)=>{
+    this.http.put(`${environment.apiUrl}/admin/updateOrderRenewalPrice/${id}`,{renewal_price:Math.round(renewalPrice)}).subscribe((res:any)=>{
       if(res.message=="Success"){
         alert("renewal price updated successfully");
       }
@@ -639,7 +640,7 @@ export class CreateRenewalOrderComponent implements OnInit {
   }
 
   updateRentPrice(id,rentPrice){
-    this.http.put(`${environment.apiUrl}/admin/updateOrderRentPrice/${id}`,{rent:rentPrice}).subscribe((res:any)=>{
+    this.http.put(`${environment.apiUrl}/admin/updateOrderRentPrice/${id}`,{rent:Math.round(rentPrice)}).subscribe((res:any)=>{
       if(res.message=="Success"){
         alert("renewal price updated successfully");
       }

@@ -504,7 +504,8 @@ export class ReplaceRequestComponent implements OnInit {
     let p1RentBalance=0;
     let p2DP=0;
     // filterP1=this.productDetails.filter(item => item.indexs===p1Indexs);
-    filterP2 = this.productsList.filter(item => item.product_id==p2);
+    filterP2 = this.productsList.filter(item => item.product_id==p2.product_id);
+    console.log(filterP2);
     let securityDepositDiff = filterP2[0].securityDeposit-this.productDetails.security_deposit;
     
     // let log={orderID:txnid, request:'Replacement', adminResponse:'Replaced', replacedProdId:filterP1[0].id, replacedWith:filterP2[0].id}

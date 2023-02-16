@@ -64,6 +64,9 @@ export class ReviewsComponent implements OnInit {
   loadReviews(){
     this.http.get(`${environment.apiUrl}/reviews/getAllReviews`, this.reviewForm.value).subscribe((reviews)=>{
       this.reviews=reviews;
+      this.reviews.forEach((res)=>{
+        res.editable=false;
+      })
     });
   }
 
@@ -81,10 +84,9 @@ export class ReviewsComponent implements OnInit {
 
   editReview(e){
     if (window.confirm('Are you sure you want to save?')) {
-      console.log(e.newData);
-      this.http.put(`${environment.apiUrl}/reviews/updateReviewValue`, e.newData).subscribe();
+      this.http.put(`${environment.apiUrl}/reviews/updateReviewValue`, e).subscribe();
       this.loadReviews(); 
-      e.confirm.resolve(e.newData);
+      e.confirm.resolve(e);
     } else {
       e.confirm.reject();
     }

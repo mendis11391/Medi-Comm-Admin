@@ -531,7 +531,7 @@
                             <h4 *ngIf="o.orderType_id==1">Sub total: <span>₹{{o.subTotal+o.damageProtection}}</span></h4>
                             <h4 *ngIf="o.orderType_id==2">Sub total: <span>₹{{subTotal+(o.damageProtection-0)}}</span></h4>
                             <h4 *ngIf="o.orderType_id==1">Delivery charges: <span>₹{{o.deliveryCharges}}</span></h4>
-                            <h4>Taxes: <span>₹{{o.total-(o.subTotal+o.damageProtection+o.deliveryCharges)}}</span></h4>
+                            <h4 *ngIf="o.orderType_id==1">Taxes: <span>₹{{o.total-(o.subTotal+o.damageProtection+o.deliveryCharges)}}</span></h4>
                             <h4 *ngIf="o.orderType_id==2">Taxes: <span>₹{{((subTotal+o.damageProtection)*(Taxes)/100)}}</span></h4>
                             <h4>Total: <span>₹{{o.total}}</span></h4>
                             <h4 *ngIf="o.orderType_id==1">Total security deposit: <span>₹{{o.totalSecurityDeposit}}</span></h4>

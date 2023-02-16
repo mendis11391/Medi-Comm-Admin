@@ -62,6 +62,43 @@
                             <ng-template ngbTabContent>
                                 <div class="tab-pane fade active show" id="account" role="tabpanel"
                                     aria-labelledby="account-tab">
+                                    <table class="table">
+                                        <thead>
+                                          <tr>
+                                            <th scope="col">Customer#</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Mobile</th>
+                                            <th scope="col">Ratings</th>
+                                            <th scope="col">Review</th>
+                                            <th scope="col">Status</th>
+                                            <th>Action</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody>
+                                          <tr *ngFor="let r of reviews">
+                                            <th scope="row">{{r.customer_id}}</th>
+                                            <td>{{r.display_name}}
+                                                <input *ngIf="r.editable" [(ngModel)]="r.display_name" />
+                                            </td>
+                                            <td>{{r.display_mobile}}
+                                                <input *ngIf="r.editable" [(ngModel)]="r.display_mobile" />
+                                            </td>
+                                            <td>{{r.ratings}}
+                                                <input *ngIf="r.editable" [(ngModel)]="r.ratings" />
+                                            </td>
+                                            <td>{{r.review}}
+                                                <textarea *ngIf="r.editable" [(ngModel)]="r.review"></textarea>
+                                            </td>
+                                            <td>{{r.status}}
+                                                <input *ngIf="r.editable" [(ngModel)]="r.status" />
+                                            </td>
+                                            <td >
+                                                <span *ngIf="!r.editable" (click)="r.editable=!r.editable"><i class="fa fa-pencil"></i></span>
+                                                <button *ngIf="r.editable" (click)="editReview(r)">Update</button>
+                                            </td>
+                                          </tr>
+                                        </tbody>
+                                    </table>
                                     <!-- <ng2-smart-table [settings]="settings" [source]="reviews" (editConfirm)="editReview($event)"></ng2-smart-table> -->
                                 </div>
                             </ng-template>
