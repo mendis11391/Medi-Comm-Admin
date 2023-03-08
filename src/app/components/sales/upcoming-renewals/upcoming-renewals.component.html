@@ -79,7 +79,7 @@
                           </tbody>
                         </table> -->
 
-                        <p-table #dt1 [columns]="cols" styleClass="p-datatable-gridlines" selectionMode="multiple" [(selection)]="selectedOrders" [exportHeader]="'customExportHeader'" [value]="filteredOrderItems" [lazy]="false"  responsiveLayout="scroll" dataKey="id"                            
+                        <p-table #dt1 [columns]="cols" (onPage)="onPagination($event)" (onSort)="onSort($event)"  (onFilter)="onFilter($event)" styleClass="p-datatable-gridlines" selectionMode="multiple" [(selection)]="selectedOrders" [exportHeader]="'customExportHeader'" [value]="filteredOrderItems" [lazy]="false"  responsiveLayout="scroll" dataKey="id"                            
                             [paginator]="true" [showCurrentPageReport]="true" [rowsPerPageOptions]="[30,50,100]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="30" [totalRecords]="totalRecords" [loading]="loading" [globalFilterFields]="['order_id', 'firstName', 'mobile', 'totalSecurityDeposit', 'grandTotal', 'paymentStatus', 'delivery_status']">
                             <ng-template pTemplate="caption">
                               <div class="p-d-flex">
@@ -107,7 +107,7 @@
                                   </th>
                                   <th>
                                     <div class="flex justify-content-center align-items-center">
-                                      First name
+                                      Name
                                         <p-columnFilter type="text" field="firstName" display="menu"></p-columnFilter>
                                         <th pSortableColumn="firstName"><p-sortIcon field="firstName"></p-sortIcon></th>
                                     </div>
@@ -152,22 +152,23 @@
                                   <th>
                                     <div class="flex justify-content-center align-items-center">
                                       End date
-                                        <p-columnFilter type="date" field="end_date" display="menu"></p-columnFilter>
-                                        <th pSortableColumn="end_date"><p-sortIcon field="end_date"></p-sortIcon></th>
+                                        <p-columnFilter type="date" field="renewStatus" display="menu"></p-columnFilter>
+                                        <th pSortableColumn="renewStatus"><p-sortIcon field="renewStatus"></p-sortIcon></th>
                                     </div>
                                   </th>
                                 </tr>
                             </ng-template>
                             <ng-template  pTemplate="body" let-rowData let-o>
-                                <tr [pSelectableRow]="rowData">
+                                <tr [pSelectableRow]="rowData" [ngClass]="o.request_status==1 ? 'bg-danger text-white':''">
                                   <td [routerLink]="['../../sales/orders',o.order_id]">{{o.order_id}}</td>
-                                  <td [routerLink]="['../../users/customers',o.customer_id]">{{o.firstName}}</td>
+                                  <td [routerLink]="['../../users/customers',o.customer_id]">{{o.firstName}}{{o.lastName}}</td>
                                   <td [routerLink]="['../../users/customers',o.customer_id]">{{o.mobile}}</td>
                                   <td>{{o.prod_name}}</td> 
                                   <td>{{o.asset_id}}</td> 
                                   <td>{{o.renewal_price}}</td>
                                   <td>{{o.start_date | date: 'dd MM yyyy'}}</td>    
-                                  <td>{{o.end_date | date: 'dd MM yyyy'}}</td>
+                                  <!-- <td>{{o.end_date | date: 'dd MM yyyy'}}</td> -->
+                                  <td>{{o.renewStatus}}</td>
                                 </tr>
                             </ng-template>
                         </p-table>

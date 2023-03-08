@@ -27,6 +27,7 @@ export class ReplaceRequestComponent implements OnInit {
   @ViewChild('orderDetails') orderDetails;
   @ViewChild('returnRequest') returnRequest;
   @ViewChild('replacementRequest') replacementRequest;
+  @ViewChild('dt1', { static: true }) dt1: any;
   orderId;
   updateStatus: UntypedFormGroup;
   deliveryDateStatus: UntypedFormGroup;
@@ -66,6 +67,14 @@ export class ReplaceRequestComponent implements OnInit {
   paymentStatus;
   matchedProducts2=[];
   filterValue = '';
+  datasource:[];
+  loading: boolean;
+  totalRecords: number;
+  selectedOrders:[];
+  cols: any[];
+  exportColumns: any[];
+  first;
+  approvals;
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
   constructor(private route: ActivatedRoute, private router:Router,private excelService:ExcelService,private http: HttpClient,private ps:ProductService,private os:OrdersService, private modalService: NgbModal, private formBuilder: UntypedFormBuilder) {
     // this.order = orderDB.list_order;
@@ -105,10 +114,27 @@ export class ReplaceRequestComponent implements OnInit {
       a.push(res);
       this.orderitem =a[0];
       this.orderitem = this.orderitem.reverse();
+      this.orderitem.forEach((item) => {
+        item.requested_date = new Date(item.requested_date);
+        if(item.approval_status==0 && item.request_status==1){
+          item.approval_statusText={name:"Requested"};
+        }else if(item.approval_status==0 && item.request_status==0){
+          item.approval_statusText={name:"Rejected"};
+        }else if(item.approval_status==1 && item.request_status==0){
+          item.approval_statusText={name:"Approved"};
+        }
+      });
     });
     this.http.get(`${environment.apiUrl}/orders/getAllPaymentStatus`).subscribe((res) => {
       this.paymentStatus=res;
     });
+
+    this.approvals = [
+      { name: "Approved" },
+      { name: "Rejected" },
+      { name: "Requested" },
+    ];
+    this.getFilters();
   }
 
   getOrders(){
@@ -777,6 +803,44 @@ export class ReplaceRequestComponent implements OnInit {
   myResetFunction(options: DropdownFilterOptions) {
     options.reset();
     this.filterValue = '';
+}
+
+onFilter(e:any) {
+  console.log(this.dt1.filters);
+  sessionStorage.setItem("replaceRequestFilters", JSON.stringify(e.filters));
+  // sessionStorage.setItem("listUserFilterValues", JSON.stringify(this.dt1.filteredValue));
+}
+onPagination(e:any){
+  console.log(e);
+  sessionStorage.setItem("replaceRequestPage", JSON.stringify(e));
+}
+onSort(e:any){
+  console.log(e);
+  sessionStorage.setItem("replaceRequestSort", JSON.stringify(e));
+}
+
+getFilters(){
+  const filters = JSON.parse(sessionStorage.getItem("replaceRequestFilters"));
+  if(filters.requested_date[0].value){
+    filters.requested_date[0].value = new Date(filters.requested_date[0].value);
+  }
+  const sort:any = JSON.parse(sessionStorage.getItem("replaceRequestSort"));
+  const page:any = JSON.parse(sessionStorage.getItem("replaceRequestPage"));
+  if (filters) {
+    this.dt1.filters = filters;
+  }
+  if(sort){
+    this.dt1.field = sort.field;
+    this.dt1.order = sort.order;
+  }
+  if(page){
+    this.first=page.first+1;
+    this.dt1.first = page.first+1;
+    this.dt1.rows = page.rows+1;
+    // this.dt1.first = Math.floor(this.dt1.totalRecords / this.table.rows) * this.table.rows;
+    // this.dt1.firstChange.emit(this.dt1.first);
+    // this.dt1.onLazyLoad.emit(this.dt1.createLazyLoadMetadata());
+  }
 }
 
 }

@@ -20,6 +20,7 @@ export class UpcomingRenewalsComponent implements OnInit {
   public order :OrderItems[] = [];
   public assets: Assets[]=[];
   public temp = [];
+  currentDate = new Date();
   @ViewChild('content') content;
   @ViewChild('orderDetails') orderDetails;
   orderId;
@@ -50,6 +51,8 @@ export class UpcomingRenewalsComponent implements OnInit {
   selectedOrders: Orders[];
   cols: any[];
   exportColumns: any[];
+  @ViewChild('dt1', { static: true }) dt1: any;
+
   constructor(calendar: NgbCalendar,private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: UntypedFormBuilder) {
     // this.order = orderDB.list_order;
     this.fromDate = calendar.getToday();
@@ -75,9 +78,17 @@ export class UpcomingRenewalsComponent implements OnInit {
     this.http.get(`${environment.apiUrl}/admin/getAllActiveRenewals`).subscribe((resp:[])=>{
       this.filteredOrderItems=resp;
 
-      this.filteredOrderItems.forEach(
-        item => (item.start_date = new Date(item.start_date), item.end_date = new Date(item.end_date))  
-      );
+      this.filteredOrderItems.forEach((item) => {
+        item.start_date = new Date(item.start_date);
+        item.end_date = new Date(item.end_date); 
+        if(this.dateDiffInDays(item.end_date,this.currentDate)>0){
+          item.renewStatus = 'Expired';
+        }else if(this.dateDiffInDays(item.start_date,this.currentDate)>5){
+          item.renewStatus = 'Overdue';
+        }else if(this.dateDiffInDays(item.start_date,this.currentDate)>=0){
+          item.renewStatus = 'Due';
+        }
+      });
       this.cols = [
         { field: "order_id", header: "Order Id" },
         { field: "start_date", header: "Start date" },
@@ -109,6 +120,7 @@ export class UpcomingRenewalsComponent implements OnInit {
     this.assetAssign = this.formBuilder.group({
       assetId: ['']
     });
+    this.getFilters();
   }
 
   getOrders(){
@@ -272,6 +284,39 @@ export class UpcomingRenewalsComponent implements OnInit {
     const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
   
     return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+  }
+
+  getFilters(){
+    const filters = JSON.parse(sessionStorage.getItem("upcomingRenewalsFilters"));
+    if(filters.start_date[0].value){
+      filters.start_date[0].value = new Date(filters.start_date[0].value);
+    }
+    const sort:any = JSON.parse(sessionStorage.getItem("upcomingRenewalsSort"));
+    const page:any = JSON.parse(sessionStorage.getItem("upcomingRenewalsPage"));
+    if (filters) {
+      this.dt1.filters = filters;
+    }
+    if(sort){
+      this.dt1.field = sort.field;
+      this.dt1.order = sort.order;
+    }
+    if(page){
+      this.dt1.first = page.first+1;
+      this.dt1.rows = page.rows+1;
+    }
+  }
+
+  onFilter(e:any) {
+    console.log(this.dt1.filters);
+    sessionStorage.setItem("upcomingRenewalsFilters", JSON.stringify(e.filters));
+  }
+  onPagination(e:any){
+    console.log(e);
+    sessionStorage.setItem("upcomingRenewalsPage", JSON.stringify(e));
+  }
+  onSort(e:any){
+    console.log(e);
+    sessionStorage.setItem("upcomingRenewalsSort", JSON.stringify(e));
   }
   
 }

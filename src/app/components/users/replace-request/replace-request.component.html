@@ -11,8 +11,126 @@
               <div class="card-body">
                   <div class="custom-datatable">
 
-                   
-                      <table class="table table-striped table-bordered" >
+                    <p-table #dt1 [columns]="cols" (onPage)="onPagination($event)" (onSort)="onSort($event)"  (onFilter)="onFilter($event)" styleClass="p-datatable-gridlines" selectionMode="multiple" [(selection)]="selectedOrders" [exportHeader]="'customExportHeader'" [value]="orderitem" [lazy]="false" responsiveLayout="scroll" dataKey="id"                            
+                      [paginator]="true" [showCurrentPageReport]="true" [rowsPerPageOptions]="[30,50,100]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [first]="first" [rows]="30" [totalRecords]="totalRecords" [loading]="loading" [globalFilterFields]="['customer_id','firstName','lastName','mobile','email','registeredAt','lastLogin']">
+                      <ng-template pTemplate="caption">
+                        <div class="p-d-flex">
+                          <span class="p-input-icon-left p-ml-auto">
+                                    <!-- <i class="pi pi-search"></i> -->
+                                    <input class="w-100" pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Search keyword" />
+                                </span>
+                        </div>
+                        <div class="flex">
+
+                          <button type="button" pButton pRipple icon="pi pi-file" (click)="dt1.exportCSV()" class="mr-2" pTooltip="CSV" tooltipPosition="bottom">CSV</button>
+                          <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportAsXLSX()" class="p-button-success mr-2"  pTooltip="XLS" tooltipPosition="bottom">XL</button>
+                          <!-- <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()" class="p-button-warning mr-2" pTooltip="PDF" tooltipPosition="bottom"></button> -->
+                          <button type="button" pButton pRipple icon="pi pi-filter" (click)="dt1.exportCSV({selectionOnly:true})" class="p-button-info ml-auto" pTooltip="Selection Only" tooltipPosition="bottom">XL</button>
+                        </div>
+                      </ng-template>
+                      <ng-template pTemplate="header">
+                          <tr>
+                            <th>
+                              <div class="flex justify-content-center align-items-center">
+                                Customer Name
+                                  <p-columnFilter type="text" field="firstName" display="menu"></p-columnFilter>
+                                  <th pSortableColumn="firstName"><p-sortIcon field="firstName"></p-sortIcon></th>
+                              </div>
+                            </th>
+                            <th>
+                              <div class="flex justify-content-center align-items-center">
+                                Mobile
+                                  <p-columnFilter type="numeric" field="mobile" display="menu"></p-columnFilter>
+                              </div>
+                            </th>
+                            <th>
+                              <div class="flex justify-content-center align-items-center">
+                                Product name
+                                  <p-columnFilter type="text" field="prod_name" display="menu"></p-columnFilter>
+                              </div>
+                            </th>
+                            <th>
+                              <div class="flex justify-content-center align-items-center">
+                                Asset#
+                                  <p-columnFilter type="text" field="asset_id" display="menu"></p-columnFilter>
+                              </div>
+                            </th>
+                            <th>
+                              <div class="flex justify-content-center align-items-center">
+                                Start date
+                                  <p-columnFilter type="date" field="requested_date" display="menu"></p-columnFilter>
+                                  <th pSortableColumn="requested_date"><p-sortIcon field="requested_date"></p-sortIcon></th>
+                              </div>
+                            </th>
+                            
+                            <th>
+                              <div class="flex justify-content-center align-items-center">
+                                Reason
+                                  <p-columnFilter type="text" field="request_reason" display="menu"></p-columnFilter>
+                                  
+                              </div>
+                            </th>
+
+                            
+                            <th>
+                              <div class="flex justify-content-center align-items-center">
+                                Message
+                                  <p-columnFilter type="text" field="request_message" display="menu"></p-columnFilter>
+                                  
+                              </div>
+                            </th>
+
+                            <th>
+                              <div class="flex justify-content-center align-items-center">
+                                Approval status
+                                <p-columnFilter field="approval_statusText" matchMode="in" display="menu" [showMatchModes]="false"
+                                  [showOperator]="false" [showAddButton]="false">
+                                  <ng-template pTemplate="header">
+                                    <div class="p-px-3 p-pt-3 p-pb-0">
+                                      <span class="p-text-bold">Status Picker</span>
+                                    </div>
+                                  </ng-template>
+                                  <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-multiSelect [ngModel]="value" [options]="approvals" placeholder="Any"
+                                      (onChange)="filter($event.value)" optionLabel="name">
+                                      <ng-template let-option pTemplate="item">
+                                        <div class="p-multiselect-representative-option">
+                                          <span class="p-ml-1">{{option.name}}</span>
+                                        </div>
+                                      </ng-template>
+                                    </p-multiSelect>
+                                  </ng-template>
+                                </p-columnFilter>                                  
+                              </div>
+                            </th>
+
+                            <th>
+                              <div class="flex justify-content-center align-items-center">
+                                Action                                                                    
+                              </div>
+                            </th>
+
+                          </tr>
+                      </ng-template>
+                      <ng-template  pTemplate="body" let-rowData let-o>                        
+                          <tr *ngIf="o.request_id==1">
+                            <td [routerLink]="['../customers',o.customer_id]">{{o.firstName}}</td>
+                            <td [routerLink]="['../customers',o.customer_id]">{{o.mobile}}</td>
+                            <td>{{o.prod_name.substring(0,50)+'...'}}</td>
+                            <td>{{o.asset_id}}</td>
+                            <td>{{o.requested_date | date:'dd MMM yyyy HH:mm'}}</td>
+                            <td>{{o.request_reason}}</td>
+                            <td>{{o.request_message}}</td>
+                            <td>
+                              <span *ngIf="o.approval_statusText.name=='Requested'"><i class="fa fa-circle text-warning"></i> Requested</span>
+                              <span *ngIf="o.approval_statusText.name=='Rejected'"><i class="fa fa-circle text-danger"></i> Rejected</span>
+                              <span *ngIf="o.approval_statusText.name=='Approved'"><i class="fa fa-circle text-success"></i> Approved</span>
+                            </td>
+                            <td *ngIf="o.request_status==1" (click)="replaceProductOrderById(o.order_id, o.order_item_id,o, o.tenure_id, o.asset_id); toggleReplaceDetails=!toggleReplaceDetails"><a><i class="fa fa-pencil"></i></a></td>                   
+                          </tr>
+                      </ng-template>
+                    </p-table>
+                      <!-- <table class="table table-striped table-bordered" >
                         <thead>
                           <tr>
                             <th>Customer name</th>
@@ -43,7 +161,7 @@
                             <td *ngIf="o.request_status==1" (click)="replaceProductOrderById(o.order_id, o.order_item_id,o, o.tenure_id, o.asset_id); toggleReplaceDetails=!toggleReplaceDetails"><a><i class="fa fa-pencil"></i></a></td>                   
                           </tr>                          
                         </tbody>
-                      </table>
+                      </table> -->
                   </div>
               </div>
           </div>

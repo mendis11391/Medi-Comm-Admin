@@ -115,8 +115,13 @@
                                 <input class="form-control" formControlName="priority" type="number" required="">
                             </div> -->
                             <div class="form-group">
-                                <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Product image</label>
-                                <input type="file" id="product_image" (change)="imageChange($event)"  />
+                                <label for="product_image" class="col-form-label pt-0"><span>*</span> Product list image</label>
+                                <input type="file" id="product_image" (change)="imageChange($event,'product_image')"  />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="product_hd_image" class="col-form-label pt-0"><span>*</span> Product HD image</label>
+                                <input type="file" id="product_hd_image" (change)="imageChange($event,'product_hd_image')"  />
                             </div>
 
                             <div class="form-group">

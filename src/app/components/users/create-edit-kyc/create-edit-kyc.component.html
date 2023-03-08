@@ -4,14 +4,14 @@
         <div class="col-sm-12">
             <div class="card">
                 <div class="card-body">
-                        <div class="row" *ngIf="kycStatus?.kyc_status=='Awaiting eKYC' && !kycStatus?.editable">
+                        <div class="row" *ngIf="kycStatus && kycStatus?.kyc_status=='Awaiting eKYC' && !kycStatus?.editable">
                             <div class="col-12">
                                 <div class="success-text mb-3">
                                     <h2>eKYC verification in progress...</h2>
                                 </div>
                             </div>
                         </div>
-                        <div class="row" *ngIf="(kycStatus?.kyc_status=='eKYC submitted' || kycStatus.kyc_status=='eKYC partially submitted') && !updateForm">
+                        <div class="row" *ngIf="kycStatus && (kycStatus?.kyc_status=='eKYC submitted' || kycStatus.kyc_status=='eKYC partially submitted') && !updateForm">
                             <div class="col-md-1"></div>
                             <div class="col-md-10 delivery-sec shadow p-3 m-0">
                                 <div class="row kyc-card">
@@ -39,7 +39,7 @@
                 
                             </div>
                         </div>
-                        <div class="row" *ngIf="kycStatus?.kyc_status=='eKYC approved' && !kycStatus.editable">
+                        <div class="row" *ngIf="kycStatus && kycStatus?.kyc_status=='eKYC approved' && !kycStatus.editable">
                             <div class="col-md-1"></div>
                             <div class="col-md-10 delivery-sec shadow p-3 m-0">
                                 <div class="row kyc-card">
@@ -67,7 +67,7 @@
                 
                             </div>
                         </div>
-                        <div class="row" *ngIf="kycStatus?.kyc_status=='Query raised' && !updateForm">
+                        <div class="row" *ngIf="kycStatus && kycStatus?.kyc_status=='Query raised' && !updateForm">
                             <div class="col-md-1"></div>
                             <div class="col-md-10 delivery-sec shadow p-3 m-0">
                                 <div class="row kyc-card">

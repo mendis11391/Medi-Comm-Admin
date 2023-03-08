@@ -46,6 +46,7 @@ export class DigitalAddComponent implements OnInit {
   prodRequied:boolean=false;
   prodSuccessfull:boolean=false;
   finalBlob;
+  finalHDBlob;
   highlights;
 
   public onUploadInit(args: any): void { }
@@ -68,6 +69,7 @@ export class DigitalAddComponent implements OnInit {
       metaKeywords:['', Validators.required],
       slug:['', Validators.required],
       prodImage:['', Validators.required],
+      prodHdImage:['', Validators.required],
       prodDescription:['', Validators.required],
       prodQty:[0],
       securityDeposit:['', Validators.required],
@@ -281,10 +283,10 @@ export class DigitalAddComponent implements OnInit {
 
   addProducts() {
     this.addProduct.patchValue({
-      prodImage:this.finalBlob
+      prodImage:this.finalBlob,
+      prodHdImage:this.finalHDBlob
     });
     this.prodRequied=false;
-    console.log(this.addProduct.value)
     if(this.addProduct.valid){
       alert('Products added successfully');
       this.router.navigate(['/products/digital/digital-product-list']);
@@ -303,8 +305,8 @@ export class DigitalAddComponent implements OnInit {
     
   }
 
-  imageChange(e) {
-    let inputEl: HTMLInputElement = this.el.nativeElement.querySelector('#product_image');
+  imageChange(e,idName) {
+    let inputEl: HTMLInputElement = this.el.nativeElement.querySelector(`#${idName}`);
 
     var fReader = new FileReader();
     var imageData;
@@ -328,7 +330,11 @@ export class DigitalAddComponent implements OnInit {
     }
     
     setTimeout(()=>{
-      this.finalBlob=finalBlob;
+      if(idName=='product_image'){
+        this.finalBlob=finalBlob;
+      }else if(idName=='product_hd_image'){
+        this.finalHDBlob=finalBlob;
+      }
     }, 100);
     
   }

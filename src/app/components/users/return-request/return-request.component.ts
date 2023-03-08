@@ -25,6 +25,7 @@ export class ReturnRequestComponent implements OnInit {
   @ViewChild('orderDetails') orderDetails;
   @ViewChild('returnRequest') returnRequest;
   @ViewChild('replacementRequest') replacementRequest;
+  @ViewChild('dt1', { static: true }) dt1: any;
   orderId;
   updateStatus: UntypedFormGroup;
   deliveryDateStatus: UntypedFormGroup;
@@ -68,6 +69,14 @@ export class ReturnRequestComponent implements OnInit {
   checkedProducts=[];
   totalSecurityDeposit:number=0;
   disableReturn:boolean=false;
+  datasource:[];
+  loading: boolean;
+  totalRecords: number;
+  selectedOrders:[];
+  cols: any[];
+  exportColumns: any[];
+  first;
+  approvals;
 
   constructor(private calendar: NgbCalendar,private route: ActivatedRoute, private router:Router,private http: HttpClient,private ps:ProductService,private os:OrdersService, private modalService: NgbModal, private formBuilder: UntypedFormBuilder) {
     // this.order = orderDB.list_order;
@@ -91,6 +100,11 @@ export class ReturnRequestComponent implements OnInit {
   ngOnInit() {    
     // this.getOrders();
     // this.getAssets();
+    this.approvals = [
+      { name: "Approved" },
+      { name: "Rejected" },
+      { name: "Requested" },
+    ];
     this.loadProducts();
     this.updateStatus = this.formBuilder.group({
       deliveryStatus: [''],
@@ -103,10 +117,21 @@ export class ReturnRequestComponent implements OnInit {
       assetId: ['']
     });
     this.transactionId();
+    this.getFilters();
     this.http.get(`${environment.apiUrl}/admin/getReturnCustomerRequests`).subscribe((res) => {
       let a=[];
       a.push(res);
       this.orderitem =a[0];
+      this.orderitem.forEach((item) => {
+        item.requested_date = new Date(item.requested_date);
+        if(item.approval_status==0 && item.request_status==1){
+          item.approval_statusText={name:"Requested"};
+        }else if(item.approval_status==0 && item.request_status==0){
+          item.approval_statusText={name:"Rejected"};
+        }else if(item.approval_status==1 && item.request_status==0){
+          item.approval_statusText={name:"Approved"};
+        }
+      });
     });
     this.http.get(`${environment.apiUrl}/orders/getAllPaymentStatus`).subscribe((res) => {
       this.paymentStatus=res;
@@ -528,6 +553,47 @@ export class ReturnRequestComponent implements OnInit {
     this.checkedProducts.forEach((item)=>{
       this.totalSecurityDeposit +=item.security_deposit;
     });
+  }
+
+  onFilter(e:any) {
+    console.log(this.dt1.filters);
+    sessionStorage.setItem("returnRequestFilters", JSON.stringify(e.filters));
+    // sessionStorage.setItem("listUserFilterValues", JSON.stringify(this.dt1.filteredValue));
+  }
+  onPagination(e:any){
+    console.log(e);
+    sessionStorage.setItem("returnRequestPage", JSON.stringify(e));
+  }
+  onSort(e:any){
+    console.log(e);
+    sessionStorage.setItem("returnRequestSort", JSON.stringify(e));
+  }
+
+  getFilters(){
+    const filters = JSON.parse(sessionStorage.getItem("returnRequestFilters"));
+    if(filters.startDate[0].value){
+      filters.startDate[0].value = new Date(filters.startDate[0].value);
+    }
+    if(filters.requested_date[0].value){
+      filters.requested_date[0].value = new Date(filters.requested_date[0].value);
+    }
+    const sort:any = JSON.parse(sessionStorage.getItem("returnRequestSort"));
+    const page:any = JSON.parse(sessionStorage.getItem("returnRequestPage"));
+    if (filters) {
+      this.dt1.filters = filters;
+    }
+    if(sort){
+      this.dt1.field = sort.field;
+      this.dt1.order = sort.order;
+    }
+    if(page){
+      this.first=page.first+1;
+      this.dt1.first = page.first+1;
+      this.dt1.rows = page.rows+1;
+      // this.dt1.first = Math.floor(this.dt1.totalRecords / this.table.rows) * this.table.rows;
+      // this.dt1.firstChange.emit(this.dt1.first);
+      // this.dt1.onLazyLoad.emit(this.dt1.createLazyLoadMetadata());
+    }
   }
 
 }

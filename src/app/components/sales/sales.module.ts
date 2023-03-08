@@ -33,6 +33,7 @@ import { CancelledOrdersComponent } from './cancelled-orders/cancelled-orders.co
 import {TableModule} from 'primeng/table';
 import { ButtonModule } from "primeng/button";
 import { NotesComponent } from './notes/notes.component';
+import {MultiSelectModule} from 'primeng/multiselect';
 
 @NgModule({
   declarations: [OrdersComponent, TransactionsComponent, OthersComponent, DepositsComponent, OrdersPanelComponent, ReplacementOrdersComponent, UserRequestsComponent, ManageOrdersComponent, OrderDetailsComponent, PrimaryOrderComponent, RenewalOrderComponent, ReplacementOrderComponent, ReturnOrderComponent, UpcomingRenewalsComponent, CreateOrderComponent, AllOrdersComponent, CreateRenewalOrderComponent, CreateRequestComponent, CancelledOrdersComponent, NotesComponent],
@@ -48,6 +49,7 @@ import { NotesComponent } from './notes/notes.component';
     SharedModule,
     TableModule,
     ButtonModule,
+    MultiSelectModule,
     NgMultiSelectDropDownModule.forRoot(),
   ]
 })

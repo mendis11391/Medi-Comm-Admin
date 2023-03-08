@@ -177,16 +177,29 @@
 
                 <div class="card">
                     <div class="card-header">
-                        <h5>Product Image</h5>
+                        <h5>Product list page Image</h5>
                     </div>
                     <div class="card-body">
                         <div class="form-group">
-                            <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Product image</label>
-                            <input type="file" id="product_image" (change)="imageChange($event)"/><br>
+                            <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Product list page image</label>
+                            <input type="file" id="product_image" (change)="imageChange($event,'product_image')"/><br>
                             <img class="img-responsive w-25" 
                                 [src]="addProduct.value.prodImage | BlobImage">
 
                                 <h6>Image Url: <a [href]="[imageUrl]" target="_blank">{{imageUrl}}</a></h6>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Product HD Image</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Product Hd image</label>
+                            <input type="file" id="product_hd_image" (change)="imageChange($event,'product_hd_image')"/><br>
+                            <img class="img-responsive w-25" [src]="addProduct.value.prodHdImage | BlobImage">
                         </div>
                     </div>
                 </div>
@@ -228,12 +241,12 @@
                         <div class="digital-add needs-validation">
                             <div class="form-group">
                                 <label class="col-form-label"><span>*</span> Accessories <a (click)="open(editAccs);callGetAccByID()"><i class="fa fa-pencil"></i></a></label>
-                                <div *ngFor="let a of accsID">
-                                    <p>{{a.acceesory_name}}</p>
+                                <div *ngFor="let a of accsNames">
+                                    <p>{{a}}</p>
                                 </div>
-                                <div>
+                                <!-- <div>
                                     {{addProduct.value.accessory}}
-                                </div>
+                                </div> -->
                                 <!-- <select class="form-control" formControlName="accessory" multiple>
                                     <option *ngFor="let a of accessories"  value="{{a.id}}">{{a.acceesory_name}}</option>
                                 </select> -->
@@ -249,8 +262,10 @@
                     <div class="card-body">
                         <div class="digital-add needs-validation">
                             <div class="form-group">
-                                <label class="col-form-label"><span>*</span> Highlights <a (click)="open(editHighlights);callGetHighlightsByID()"><i class="fa fa-pencil"></i></a></label>
-                                
+                                <label class="col-form-label"><span>*</span> Highlights <a (click)="open(editHighlights);"><i class="fa fa-pencil"></i></a></label>
+                                <div *ngFor="let h of highlightsName">
+                                    <p>{{h.highlight_name}}</p>
+                                </div>
                                 <!-- <select class="form-control" formControlName="accessory" multiple>
                                     <option *ngFor="let a of accessories"  value="{{a.id}}">{{a.acceesory_name}}</option>
                                 </select> -->

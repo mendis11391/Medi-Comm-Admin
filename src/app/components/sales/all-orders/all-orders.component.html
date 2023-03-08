@@ -68,14 +68,14 @@
                           </tbody>
                         </table> -->
 
-                        <p-table #dt1 [columns]="cols" styleClass="p-datatable-gridlines" selectionMode="multiple" [(selection)]="selectedOrders" [exportHeader]="'customExportHeader'" [value]="filteredOrders" [lazy]="false" responsiveLayout="scroll" dataKey="id"                            
+                        <p-table #dt1 [columns]="cols" (onPage)="onPagination($event)" (onSort)="onSort($event)"  (onFilter)="onFilter($event)" styleClass="p-datatable-gridlines" selectionMode="multiple" [(selection)]="selectedOrders" [exportHeader]="'customExportHeader'" [value]="filteredOrders" [lazy]="false" responsiveLayout="scroll" dataKey="id"                            
                             [paginator]="true" [showCurrentPageReport]="true" [rowsPerPageOptions]="[30,50,100]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="30" [totalRecords]="totalRecords" [loading]="loading" [globalFilterFields]="['order_id', 'firstName', 'mobile', 'totalSecurityDeposit', 'grandTotal', 'paymentStatus', 'delivery_status']">
                             <ng-template pTemplate="caption">
                               <div class="p-d-flex">
                                 <span class="p-input-icon-left p-ml-auto">
-                                          <!-- <i class="pi pi-search"></i> -->
-                                          <input class="w-100" pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Search keyword" />
-                                      </span>
+                                    <!-- <i class="pi pi-search"></i> -->
+                                    <input class="w-100" pInputText type="text" (input)="dt1.filterGlobal($event.target.value, 'contains')" placeholder="Search keyword" />
+                                </span>
                               </div>
                               <div class="flex">
                                 <button type="button" pButton pRipple icon="pi pi-file" (click)="dt1.exportCSV()" class="mr-2" pTooltip="CSV" tooltipPosition="bottom">CSV</button>
@@ -149,7 +149,7 @@
                                 </tr> -->
                             </ng-template>
                             <ng-template pTemplate="body" let-o>
-                                <tr [routerLink]="['../orders',o.id]">
+                                <tr [routerLink]="['../orders',o.id]" [ngClass]="o.activeItems ? 'bg-primary text-white':''">
                                   <td>{{o.order_type}}</td>
                                   <td>{{o.order_id}}</td>
                                   <td>{{o.createdAt | date:'dd-MMM-yyyy HH:mm' : '+5:30'}}</td> 

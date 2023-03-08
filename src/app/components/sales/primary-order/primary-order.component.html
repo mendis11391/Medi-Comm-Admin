@@ -45,7 +45,7 @@
                           </tbody>
                         </table> -->
 
-                        <p-table #dt1 [columns]="cols" styleClass="p-datatable-gridlines" selectionMode="multiple" [(selection)]="selectedOrders" [exportHeader]="'customExportHeader'" [value]="filteredOrders" [lazy]="false" (onLazyLoad)="loadOrders($event)" responsiveLayout="scroll" dataKey="id"                            
+                        <p-table #dt1 [columns]="cols" (onPage)="onPagination($event)" (onSort)="onSort($event)"  (onFilter)="onFilter($event)" styleClass="p-datatable-gridlines" selectionMode="multiple" [(selection)]="selectedOrders" [exportHeader]="'customExportHeader'" [value]="filteredOrders" [lazy]="false" (onLazyLoad)="loadOrders($event)" responsiveLayout="scroll" dataKey="id"                            
                             [paginator]="true" [showCurrentPageReport]="true" [rowsPerPageOptions]="[30,50,100]" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rows]="30" [totalRecords]="totalRecords" [loading]="loading" [globalFilterFields]="['order_id', 'firstName', 'mobile', 'totalSecurityDeposit', 'grandTotal', 'paymentStatus', 'delivery_status']">
                             <ng-template pTemplate="caption">
                               <div class="p-d-flex">

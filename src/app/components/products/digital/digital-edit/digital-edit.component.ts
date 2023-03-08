@@ -33,8 +33,11 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
  subCatId=0;
  specsCheck;
  accsID;
+ accsNames=[];
  HighlightsID;
+ highlightsName=[];
  finalBlob;
+ finalHDBlob;
  ckEdit:boolean=false;
  
  stock = {
@@ -84,6 +87,7 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
       metaKeywords:['', Validators.required],
       slug:['', Validators.required],
       prodImage:[''],
+      prodHdImage:[''],
       prodDescription:['', Validators.required],
       // prodQty:['', Validators.required],
       securityDeposit:['', Validators.required],
@@ -161,6 +165,7 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
         metaKeywords:data.metaKeywords,
         slug:data.slug,
         prodImage:data.prod_image,
+        prodHdImage:data.prod_hd_image,
         prodDescription:data.prod_description,
         // prodQty:data.prod_qty,
         securityDeposit:data.securityDeposit,
@@ -252,6 +257,7 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
     this.productsService.getAllAccsByProductId(id).subscribe((acc)=>{  
       for(let k=0;k<acc[0].length;k++){
         accsIdArr.push(acc[0][k].accessory_id);
+        this.accsNames.push(acc[0][k].acceesory_name);
       }
       this.addProduct.patchValue({
         accessory:accsIdArr
@@ -276,6 +282,7 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
       HL=highlights;   
       for(let k=0;k<HL.length;k++){
         highlisghtsIdArr.push(HL[k].highlight_type)
+        this.highlightsName.push(HL[k])
       }
       this.addProduct.patchValue({
         highlightType:highlisghtsIdArr
@@ -409,7 +416,6 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
         if(prevSpecId.includes(JSON.stringify(cSpecs[i].spec_id))){
           for(let j in this.specsCheck){
             specsCheckArray.push(this.specsCheck[j]);
-            console.log(this.specsCheck[j]);
             let a = sf.addControl(j , this.formBuilder.control(this.specsCheck[j]));
           }
         } else{
@@ -460,7 +466,12 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
     if(this.finalBlob){
       this.addProduct.patchValue({
         prodImage:this.finalBlob
-      });
+      });     
+    }
+    if(this.finalHDBlob){
+      this.addProduct.patchValue({
+        prodHdImage:this.finalHDBlob
+      }); 
     }
 
     this.http.put(`${environment.apiUrl}/products/${this.prodId}`, this.addProduct.value).subscribe((res) => {
@@ -471,8 +482,8 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
   }
 
 
-  imageChange(e) {
-    let inputEl: HTMLInputElement = this.el.nativeElement.querySelector('#product_image');
+  imageChange(e,idName) {
+    let inputEl: HTMLInputElement = this.el.nativeElement.querySelector(`#${idName}`);
 
     var fReader = new FileReader();
     var imageData;
@@ -493,12 +504,18 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
     }
     
     setTimeout(()=>{
-      this.finalBlob=finalBlob;
+      if(idName=='product_image'){
+        this.finalBlob=finalBlob;
+      }else if(idName=='product_hd_image'){
+        this.finalHDBlob=finalBlob;
+      }
     }, 100);
-    this.upload(inputEl);
+    if(idName=='product_image'){
+      this.upload(inputEl,idName);
+    }
   }
 
-  upload(inputEl) {
+  upload(inputEl,idName) {
     //locate the file element meant for the file upload.
     //get the total amount of files attached to the file input.
         let fileCount: number = inputEl.files.length;
@@ -509,7 +526,7 @@ export class DigitalEditComponent implements OnInit, AfterViewInit {
                 let slug = this.subCat.filter(item=>item.cat_id==this.subCatId);
                 this.ImageFormData.append('file_name', this.addProduct.value.slug);
                 this.ImageFormData.append('directory', slug[0].slug);
-                this.ImageFormData.append('product_image', inputEl.files.item(0));
+                this.ImageFormData.append(`${idName}`, inputEl.files.item(0));
 
                 
             //call the angular http method

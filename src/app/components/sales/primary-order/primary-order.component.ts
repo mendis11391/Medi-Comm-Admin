@@ -46,6 +46,8 @@ export class PrimaryOrderComponent implements OnInit {
   exportColumns: any[];
 
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
+  @ViewChild('dt1', { static: true }) dt1: any;
+
   constructor(private primengConfig: PrimeNGConfig,private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: UntypedFormBuilder) {
     // this.order = orderDB.list_order;
     this.getOrders();
@@ -90,6 +92,7 @@ export class PrimaryOrderComponent implements OnInit {
     // this.assetAssign = this.formBuilder.group({
     //   assetId: ['']
     // });
+    this.getFilters();
   }
 
   getOrders(){
@@ -329,6 +332,36 @@ export class PrimaryOrderComponent implements OnInit {
     this.os.RunPrimaryOrderJob().subscribe();
   }
 
+  getFilters(){
+    const filters = JSON.parse(sessionStorage.getItem("primaryOrdersFilters"));
+    if(filters.createdAt[0].value){
+      filters.createdAt[0].value = new Date(filters.createdAt[0].value);
+    }
+    const sort:any = JSON.parse(sessionStorage.getItem("primaryOrdersSort"));
+    const page:any = JSON.parse(sessionStorage.getItem("primaryOrdersPage"));
+    if (filters) {
+      this.dt1.filters = filters;
+    }
+    if(sort){
+      this.dt1.field = sort.field;
+      this.dt1.order = sort.order;
+    }
+    if(page){
+      this.dt1.first = page.first+1;
+      this.dt1.rows = page.rows+1;
+    }
+  }
 
+  onFilter(e:any) {
+    sessionStorage.setItem("primaryOrdersFilters", JSON.stringify(e.filters));
+  }
+  onPagination(e:any){
+    console.log(e);
+    sessionStorage.setItem("primaryOrdersPage", JSON.stringify(e));
+  }
+  onSort(e:any){
+    console.log(e);
+    sessionStorage.setItem("primaryOrdersSort", JSON.stringify(e));
+  }
 
 }

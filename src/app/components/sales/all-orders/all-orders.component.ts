@@ -40,8 +40,11 @@ export class AllOrdersComponent implements OnInit {
   selectedOrders: Orders[];
   cols: any[];
   exportColumns: any[];
+  transactionStatus;
 
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
+  @ViewChild('dt1', { static: true }) dt1: any;
+
   constructor(private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: UntypedFormBuilder) {
     this.getOrders();
     this.getAssets();
@@ -85,6 +88,15 @@ export class AllOrdersComponent implements OnInit {
     // this.assetAssign = this.formBuilder.group({
     //   assetId: ['']
     // });
+    this.getFilters();
+    this.http.get(`${environment.apiUrl}/orders/getAllPaymentStatus`).subscribe((res:[]) => {
+      console.log(res);
+      var resultArray = res.map(function(elm) {
+        return { name: elm["status_name"]};
+      });
+      this.transactionStatus=resultArray;
+    });
+    
   }
 
   getOrders(){
@@ -300,5 +312,39 @@ export class AllOrdersComponent implements OnInit {
 
   exportAsXLSX():void {
     this.excelService.exportAsExcelFile(this.order, 'Orders');
+  }
+
+  getFilters(){
+    const filters = JSON.parse(sessionStorage.getItem("allOrdersFilters"));
+    if(filters.createdAt[0].value){
+      filters.createdAt[0].value = new Date(filters.createdAt[0].value);
+    }
+    const sort:any = JSON.parse(sessionStorage.getItem("allOrdersSort"));
+    const page:any = JSON.parse(sessionStorage.getItem("allOrdersPage"));
+    if (filters) {
+      
+      this.dt1.filters = filters;
+    }
+    if(sort){
+      this.dt1.field = sort.field;
+      this.dt1.order = sort.order;
+    }
+    if(page){
+      this.dt1.first = page.first+1;
+      this.dt1.rows = page.rows+1;
+    }
+  }
+
+  onFilter(e:any) {
+    console.log(this.dt1.filters);
+    sessionStorage.setItem("allOrdersFilters", JSON.stringify(e.filters));
+  }
+  onPagination(e:any){
+    console.log(e);
+    sessionStorage.setItem("allOrdersPage", JSON.stringify(e));
+  }
+  onSort(e:any){
+    console.log(e);
+    sessionStorage.setItem("allOrdersSort", JSON.stringify(e));
   }
 }

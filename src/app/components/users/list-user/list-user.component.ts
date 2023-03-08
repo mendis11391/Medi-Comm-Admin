@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Directive  } from '@angular/core';
+import { Component, OnInit, ViewChild, Directive, AfterContentInit  } from '@angular/core';
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { Orders, Assets } from "../../../shared/data/order";
 import { Customers } from "../../../shared/data/customer";
@@ -14,13 +14,14 @@ import { ExcelService } from '../../sales/services/excel.service';
   styleUrls: ['./list-user.component.scss']
 })
 
-export class ListUserComponent implements OnInit {
+export class ListUserComponent implements OnInit, AfterContentInit {
   public order :Orders[] = [];
   public customers :Customers[] = [];
   public assets: Assets[]=[];
   public temp = [];
   @ViewChild('content') content;
   @ViewChild('orderDetails') orderDetails;
+  @ViewChild('dt1', { static: true }) dt1: any;
   orderId;
   updateStatus: UntypedFormGroup;
   deliveryDateStatus: UntypedFormGroup;
@@ -39,10 +40,12 @@ export class ListUserComponent implements OnInit {
   selectedOrders:Customers[];
   cols: any[];
   exportColumns: any[];
-
+  first;
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
   constructor(private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: UntypedFormBuilder) {
     // this.order = orderDB.list_order;
+    // this.dt1.filter('22', 'woid', 'contains');
+    // this.getFilters();
   }
 
   updateFilter(event) {
@@ -62,6 +65,53 @@ export class ListUserComponent implements OnInit {
 
   ngOnInit() {    
     this.getCustomers();
+    // this.getFilters();
+  }
+
+  ngAfterContentInit(){
+    this.getFilters();
+  }
+
+  getFilters(){
+    const filters:any = JSON.parse(sessionStorage.getItem("listUserFilters"));
+    console.log(filters);
+    if(filters.registeredAt[0].value){
+      filters.registeredAt[0].value = new Date(filters.registeredAt[0].value);
+    }
+    if(filters.lastLogin[0].value){
+      filters.lastLogin[0].value = new Date(filters.lastLogin[0].value);
+    }
+    const sort:any = JSON.parse(sessionStorage.getItem("listUserSort"));
+    const page:any = JSON.parse(sessionStorage.getItem("listUserPage"));
+    if (filters) {
+      this.dt1.filters = filters;
+    }
+    if(sort){
+      this.dt1.field = sort.field;
+      this.dt1.order = sort.order;
+    }
+    if(page){
+      this.first=page.first+1;
+      this.dt1.first = page.first+1;
+      this.dt1.rows = page.rows+1;
+      // this.dt1.first = Math.floor(this.dt1.totalRecords / this.table.rows) * this.table.rows;
+      // this.dt1.firstChange.emit(this.dt1.first);
+      // this.dt1.onLazyLoad.emit(this.dt1.createLazyLoadMetadata());
+    }
+  }
+
+  onFilter(e:any) {
+    console.log(this.dt1.filters);
+    sessionStorage.setItem("listUserFilters", JSON.stringify(e.filters));
+    // sessionStorage.setItem("listUserFilterValues", JSON.stringify(this.dt1.filteredValue));
+  }
+  onPagination(e:any){
+    console.log(e);
+    sessionStorage.setItem("listUserPage", JSON.stringify(e));
+  }
+  onSort(e:any){
+    console.log(e);
+    sessionStorage.setItem("listUserSort", JSON.stringify(e));
   }
 
   getCustomers(){
@@ -74,14 +124,13 @@ export class ListUserComponent implements OnInit {
         item => (item.registeredAt = new Date(item.registeredAt), item.lastLogin = new Date(item.lastLogin))
       );
       this.cols = [
-        { field: "order_id", header: "Order Id" },
-        { field: "createdAt", header: "Order date" },
-        { field: "firstName", header: "First name" },
+        { field: "customer_id", header: "customer_id" },
+        { field: "firstName", header: "firstName" },
+        { field: "lastName", header: "lastName" },
         { field: "mobile", header: "mobile" },
-        { field: "totalSecurityDeposit", header: "Security deposit" },
-        { field: "grandTotal", header: "Transaction value" },
-        { field: "paymentStatus", header: "Payment status" },
-        { field: "delivery_status", header: "Delivery status" }
+        { field: "email", header: "email" },
+        { field: "registeredAt", header: "registeredAt" },
+        { field: "lastLogin", header: "lastLogin" }
       ];
 
       
