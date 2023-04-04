@@ -92,7 +92,7 @@
             </div>
         </div>
 
-        <div class="col-sm-4">
+        <div class="col-sm-3">
             <div class="card">
                 <div class="card-header">
                     <h5>Order details</h5>
@@ -132,16 +132,52 @@
             </div>
         </div>
 
-        <div class="col-sm-4">
+        <div class="col-sm-9">
             <div class="card">
                 <div class="card-header">
                     <h5>Transaction details 
-                        <button *ngIf="o.transaction_source!='Cashfree' && o.transaction_id==null && role=='admin'" class="btn btn-warning pull-right" (click)="openPostTransaction(postTransaction)">Add</button>
-                        <button *ngIf="o.transaction_source!='Cashfree' && o.transaction_id!=null && role=='admin'" class="btn btn-warning pull-right" (click)="openPostTransaction(updateTransaction)">Edit</button>
+                        <button class="btn btn-warning pull-right" (click)="openPostTransaction(postTransaction)">Add</button>
+                        <!-- <button *ngIf="o.transaction_source!='Cashfree' && o.transaction_id==null && role=='admin'" class="btn btn-warning pull-right" (click)="openPostTransaction(postTransaction)">Add</button>
+                        <button *ngIf="o.transaction_source!='Cashfree' && o.transaction_id!=null && role=='admin'" class="btn btn-warning pull-right" (click)="openPostTransaction(updateTransaction)">Edit</button> -->
                     </h5>
                 </div>
                 <div class="card-body">
-                    <p>Transaction date: {{o.transactionDate | date:'dd MM yyyy HH:mm'}}</p>
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <th>Date</th>
+                            <th>Transaction #</th>
+                            <th>Source</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Message</th>
+                            <th>Action</th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let t of transactionDetails">
+                                <td>{{t.createdAt | date:'dd MM yyyy HH:mm'}}</td>
+                                <td>{{t.transaction_id}}</td>
+                                <td>{{t.transaction_source}}</td>
+                                <td>{{t.type}}</td>
+                                <td>₹{{t.order_amount}}</td>
+                                <td>{{t.transaction_msg}}</td>
+                                <td><button class="btn btn-warning" *ngIf="t.transaction_source=='Manual'" (click)="getTransactionById(t.id);openPostTransaction(updateTransaction)">Edit</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p *ngIf="!paymentStatusActive">Payment status: {{o.paymentStatus}} <i class="fa fa-pencil" *ngIf="editStatus" (click)="paymentStatusActive=!paymentStatusActive"></i></p>
+                    <div class="card" *ngIf="paymentStatusActive">
+                        <div class="card-header">
+                            <p>Payment status <span class="pull-right" (click)="paymentStatusActive=!paymentStatusActive">X</span></p>
+                        </div>
+                        <div class="card-body">
+                                <select class="form-control" [(ngModel)]="orderField">
+                                    <option *ngFor="let ps of paymentStatus" value="{{ps.id}}">{{ps.status_name}}</option>
+                                </select>
+                                <br>
+                                <button class="btn btn-warning" (click)="updateOrderField(o.order_id,'paymentStatus',orderField)">Update</button>                                                   
+                        </div>
+                    </div>
+                    <!-- <p>Transaction date: {{o.transactionDate | date:'dd MM yyyy HH:mm'}}</p>
                     <p>Transaction #: {{o.transaction_id}}</p>
                     <p>Transaction type: {{o.type}}</p>
                     <p>Transaction source : {{o.transaction_source}}</p>
@@ -158,12 +194,12 @@
                                 <br>
                                 <button class="btn btn-warning" (click)="updateOrderField(o.order_id,'paymentStatus',orderField)">Update</button>                                                   
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
 
-        <div class="col-sm-4">
+        <!-- <div class="col-sm-4">
             <div class="card">
                 <div class="card-header">
                     <h5>Transaction message</h5>
@@ -175,7 +211,7 @@
                     <button *ngIf="editStatus" class="btn btn-warning mt-2" (click)="updateTransactionField(o.transaction_id,'transaction_msg',o.transaction_msg)">Update</button>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         
     </div>
@@ -671,10 +707,7 @@
             <div class="col-3"></div>        
             <div class="col-6">
                 <form [formGroup]="addTransaction" (ngSubmit)="postTransactionData()">
-                    <div class="form-group">
-                        <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Transaction No.</label>
-                        <input type="text" class="form-control" formControlName="transactionNo"><br>
-                    </div>
+                    
                     <div class="form-group">
                         <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Payment type</label>
                         <select class="form-control" formControlName="paymentMode">
@@ -683,11 +716,15 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Payment status</label>
-                        <select class="form-control" formControlName="paymentStatus" *ngIf="fullOrderDetails[0].orderType_id!=4">
+                        <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Transaction No.</label>
+                        <input type="text" class="form-control" formControlName="transactionNo"><br>
+                    </div>
+                    <div class="form-group">
+                        <label *ngIf="fullOrderDetails[0].orderType_id==4" for="validationTitle" class="col-form-label pt-0"><span>*</span> Payment status</label>
+                        <!-- <select class="form-control" formControlName="paymentStatus" *ngIf="fullOrderDetails[0].orderType_id!=4">
                             <option>Select</option>
                             <option *ngFor="let ps of paymentStatuses" value="{{ps.id}}">{{ps.status_name}}</option>
-                        </select>
+                        </select> -->
                         <select class="form-control" formControlName="paymentStatus" *ngIf="fullOrderDetails[0].orderType_id==4">
                             <option>Select</option>
                             <option value="5">Refund initiated</option>
@@ -695,7 +732,7 @@
                             <option value="10">Refunded partial</option>
                         </select>
                     </div>
-                    <div class="form-group" *ngIf="fullOrderDetails[0].orderType_id==4">
+                    <div class="form-group" *ngIf="fullOrderDetails[0].orderType_id==4 || fullOrderDetails[0].orderType_id==1">
                         <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Transaction amount.</label>
                         <input type="text" class="form-control" formControlName="orderAmount"><br>
                     </div>

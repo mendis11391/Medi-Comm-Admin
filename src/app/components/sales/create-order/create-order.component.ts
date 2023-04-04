@@ -90,6 +90,7 @@ export class CreateOrderComponent implements OnInit {
     landmark:''
   };
   transactionNo;
+  transactionAmount:number=0;
   paymentTypes;
   paymentStatus:string;
   Description:string;
@@ -133,7 +134,7 @@ export class CreateOrderComponent implements OnInit {
       billingAddress:this.billAddressId,
       shippingAddress:this.shipAddressId,
       orderType:1,
-      orderStatus:8,
+      orderStatus:4,
       deliveryStatus:'Delivered',
       refundStatus:'Paid',
       createdBy:1,
@@ -152,7 +153,8 @@ export class CreateOrderComponent implements OnInit {
       signature:'',
       orderName:'Primary',
       fullyPaidTenure:false,
-      totalDeliveryCharges:0
+      totalDeliveryCharges:0,
+      balanceAmount:0
     });
 
                 this.dropdownSettings = {
@@ -229,60 +231,81 @@ export class CreateOrderComponent implements OnInit {
 
   createOrder(){
     this.showButton=false;
-    if(this.ProductDetails.length>0 && this.transactionNo && this.paymentType && this.paymentStatus && this.Description && this.transactionDate){
-      this.orderForm.patchValue({
-        orderStatus:this.paymentStatus
-      });
-      let transaction = {
-        transactionNo:this.transactionNo,
-        orderId:this.orderForm.value.orderID,
-        orderAmount:this.orderForm.value.grandTotal,
-        paymentMode:this.paymentType,
-        txMsg:this.Description,
-        tDate:this.transactionDate,
-        paymentStatus:this.paymentStatus
-      };
+      // this.orderForm.patchValue({
+      //   orderStatus:this.paymentStatus
+      // });
       this.getProducts();
       this.http.post(`${environment.apiUrl}/payments/saveNewOrder`, this.orderForm.value).subscribe((resp1:any)=>{
-        transaction.orderId = resp1.txnid;
-        this.http.post(`${environment.apiUrl}/payments/postManualOrderTransaction`,transaction).subscribe((resp2)=>{
-          let mobileNos = [];
-          environment.mobiles.forEach((envMobile)=>{
-            mobileNos.push(envMobile);
-          });
-
-          mobileNos.push(this.orderForm.value.mobile);
-          mobileNos.forEach((mobileNumber)=>{
-            let template = {
-              "apiKey": environment.whatsappAPIKey,
-              "campaignName": "Order Successful",
-              "destination": mobileNumber,
-              "userName": "IRENTOUT",
-              "source": "Primary order",
-              "media": {
-                 "url": "https://irentout.com/assets/images/slider/5.png",
-                 "filename": "IROHOME"
-              },
-              "templateParams": [
-                this.orderForm.value.firstName+' '+this.orderForm.value.lastName, JSON.stringify(this.orderForm.value.grandTotal),transaction.orderId
-              ],
-              "attributes": {
-                "InvoiceNo": "1234"
-              }
-            }
-    
-            this.http.post(`https://backend.aisensy.com/campaign/t1/api`, template).subscribe();
-          });
-
-          this.http.post(`${environment.apiUrl}/payments/postInvoice`,transaction).subscribe();
+        
+        var updateOrderObj={
+          status:4,
+          paidAmount:0,
+          balanceAmount:this.orderForm.value.grandTotal,
+          orderId:resp1.txnid
+        };
+        if(this.ProductDetails.length>0 && this.transactionNo && this.paymentType && this.paymentStatus && this.Description && this.transactionDate){
           
-          alert('Order created successfully');
-          this.router.navigate(['/sales/primary-order']);
-        });
+          let transaction = {
+            transactionNo:this.transactionNo,
+            orderId:this.orderForm.value.orderID,
+            orderAmount:this.transactionAmount,
+            paymentMode:this.paymentType,
+            txMsg:this.Description,
+            tDate:this.transactionDate,
+            paymentStatus:this.paymentStatus
+          };
+          transaction.orderId = resp1.txnid;
+        
+            this.http.post(`${environment.apiUrl}/payments/postManualOrderTransaction`,transaction).subscribe((resp2)=>{
+              let mobileNos = [];
+              environment.mobiles.forEach((envMobile)=>{
+                mobileNos.push(envMobile);
+              });
+              
+              updateOrderObj.balanceAmount=this.orderForm.value.grandTotal-this.transactionAmount;
+              if(this.orderForm.value.grandTotal>this.transactionAmount){
+                updateOrderObj.status=4;
+              }else{
+                updateOrderObj.status=1;
+              }
+
+              this.http.put(`${environment.apiUrl}/admin/updateOrderPaidAndBalanceAmount`, updateOrderObj).subscribe();
+
+              mobileNos.push(this.orderForm.value.mobile);
+              mobileNos.forEach((mobileNumber)=>{
+                let template = {
+                  "apiKey": environment.whatsappAPIKey,
+                  "campaignName": "Order Successful",
+                  "destination": mobileNumber,
+                  "userName": "IRENTOUT",
+                  "source": "Primary order",
+                  "media": {
+                    "url": "https://irentout.com/assets/images/slider/5.png",
+                    "filename": "IROHOME"
+                  },
+                  "templateParams": [
+                    this.orderForm.value.firstName+' '+this.orderForm.value.lastName, JSON.stringify(this.orderForm.value.grandTotal),transaction.orderId
+                  ],
+                  "attributes": {
+                    "InvoiceNo": "1234"
+                  }
+                }
+        
+                this.http.post(`https://backend.aisensy.com/campaign/t1/api`, template).subscribe();
+              });
+
+              this.http.post(`${environment.apiUrl}/payments/postInvoice`,transaction).subscribe();
+              
+              
+            });
+            
+        } else{
+          this.orderValidated=false;
+          this.http.put(`${environment.apiUrl}/admin/updateOrderPaidAndBalanceAmount`, updateOrderObj).subscribe();
+        }
+        alert('Order created successfully');
+        this.router.navigate(['/sales/primary-order']);
       });
-    } else{
-      this.orderValidated=false;
-    }
   }
 
 

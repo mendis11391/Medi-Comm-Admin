@@ -571,15 +571,16 @@ export class ReturnRequestComponent implements OnInit {
 
   getFilters(){
     const filters = JSON.parse(sessionStorage.getItem("returnRequestFilters"));
-    if(filters.startDate[0].value){
-      filters.startDate[0].value = new Date(filters.startDate[0].value);
-    }
-    if(filters.requested_date[0].value){
-      filters.requested_date[0].value = new Date(filters.requested_date[0].value);
-    }
+    
     const sort:any = JSON.parse(sessionStorage.getItem("returnRequestSort"));
     const page:any = JSON.parse(sessionStorage.getItem("returnRequestPage"));
     if (filters) {
+      if(filters.startDate[0].value){
+        filters.startDate[0].value = new Date(filters.startDate[0].value);
+      }
+      if(filters.requested_date[0].value){
+        filters.requested_date[0].value = new Date(filters.requested_date[0].value);
+      }
       this.dt1.filters = filters;
     }
     if(sort){

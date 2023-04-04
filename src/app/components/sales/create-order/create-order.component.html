@@ -182,6 +182,11 @@
                             </label>
                             <div class="text-danger" *ngIf="!paymentType && !orderValidated">Payment type is required</div>
                             <br>
+                            <label>Transaction #:
+                                <input class="form-control" type="text" [(ngModel)]="transactionAmount">
+                            </label> 
+                            <div class="text-danger" *ngIf="!transactionAmount && !orderValidated">Transaction amount is required</div>
+                            <br>
                             <label> Payment status
                                 <select class="form-control" [(ngModel)]="paymentStatus">
                                     <option>Select</option>

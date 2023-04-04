@@ -392,7 +392,7 @@ export class ReplaceRequestComponent implements OnInit {
     let year = currDate.getFullYear();
     let deliverDate =day + '/' + month + '/' + year;
     let tenures;
-    this.filteredProducts = this.filteredProducts.filter(item=>item.securityDeposit>=p1SecurityDeposit)
+    // this.filteredProducts = this.filteredProducts.filter(item=>item.securityDeposit>=p1SecurityDeposit)
     this.replaceProduct=this.filteredProducts;
     this.replaceProduct=this.replaceProduct.filter(item=>item.product_id==prodId);
     // let filterP1=this.productDetails.filter(item => item.indexs===p1Indexs);

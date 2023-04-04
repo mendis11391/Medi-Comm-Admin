@@ -44,6 +44,11 @@ export class OrdersService {
     return this.http.get<Orders[]>(`${this.admin_url}/getAllOrders`)
   }
 
+  
+  public getAllTransactionsByOrderId(id) {
+    return this.http.get(`${this.admin_url}/getTransactionsByOrderId/${id}`);
+  }
+
 
   getAllNewOrders(): Observable<Orders[]> {
     return this.http.get<Orders[]>(`${this.admin_url}/newOrders`)

@@ -92,7 +92,7 @@ export class OrdersComponent implements OnInit {
       // orders.reverse();
       // this.order=orders.filter(item => item.paymentStatus=='Success');
       this.order=orders;
-      this.filteredOrders=this.order.filter(item => item.orderType_id==1 && item.deliveryStatus!='4' && item.paymentStatus=='Success');
+      this.filteredOrders=this.order.filter(item => item.orderType_id==1 && item.deliveryStatus!='4');
       this.orderName='New orders';
       this.datasource = this.filteredOrders;
       this.totalRecords = this.filteredOrders.length;

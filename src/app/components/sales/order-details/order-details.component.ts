@@ -67,6 +67,8 @@ export class OrderDetailsComponent implements OnInit {
   totalSecurityDeposit:number=0;
   comment:string='';
   notes:any = [];
+  transactionDetails;
+  currentTransactionId;
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
   constructor(private changeDetection: ChangeDetectorRef,private route: ActivatedRoute,private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: UntypedFormBuilder) {
     // this.order = orderDB.list_order;
@@ -230,13 +232,34 @@ export class OrderDetailsComponent implements OnInit {
     
   }
 
+  // postTransactionData(){
+  //   this.http.post(`${environment.apiUrl}/payments/postManualOrderTransaction`,this.addTransaction.value).subscribe((resp2)=>{
+  //     if(this.addTransaction.value.paymentStatus==1 || this.addTransaction.value.paymentStatus==4){
+  //       this.http.put(`${environment.apiUrl}/payments/updatePaymentStatus`, {paymentStatus: this.addTransaction.value.paymentStatus, orderId: this.oid}).subscribe(()=>{
+  //         this.http.post(`${environment.apiUrl}/payments/postInvoice`,{orderId:this.addTransaction.value.orderId}).subscribe();
+  //       });       
+  //     }
+  //     alert('Transaction posted successfully');      
+  //     this.modalService.dismissAll();
+  //   });
+  // }
+
   postTransactionData(){
     this.http.post(`${environment.apiUrl}/payments/postManualOrderTransaction`,this.addTransaction.value).subscribe((resp2)=>{
-      if(this.addTransaction.value.paymentStatus==1 || this.addTransaction.value.paymentStatus==4){
-        this.http.put(`${environment.apiUrl}/payments/updatePaymentStatus`, {paymentStatus: this.addTransaction.value.paymentStatus, orderId: this.oid}).subscribe(()=>{
+      let paidAmount=JSON.parse(this.fullOrderDetails[0].paidAmount)+JSON.parse(this.addTransaction.value.orderAmount);
+      let balanceAmount=this.fullOrderDetails[0].balanceAmount-this.addTransaction.value.orderAmount;
+      
+      // if(this.addTransaction.value.paymentStatus==1){
+        if(balanceAmount<=0){
+          this.http.put(`${environment.apiUrl}/payments/updatePaymentStatus`, {paymentStatus: 1, orderId: this.oid}).subscribe(()=>{});
+        }else{
+          this.http.put(`${environment.apiUrl}/payments/updatePaymentStatus`, {paymentStatus: 4, orderId: this.oid}).subscribe(()=>{});
+        }
+        
+          this.http.put(`${environment.apiUrl}/payments/updateBalanceAmount`,{paidAmount:paidAmount, balanceAmount:balanceAmount,orderId:this.addTransaction.value.orderId}).subscribe();
           this.http.post(`${environment.apiUrl}/payments/postInvoice`,{orderId:this.addTransaction.value.orderId}).subscribe();
-        });       
-      }
+        // });       
+      // }
       alert('Transaction posted successfully');      
       this.modalService.dismissAll();
     });
@@ -253,7 +276,7 @@ export class OrderDetailsComponent implements OnInit {
   }
 
   updateTransactionManual(){
-    this.http.put(`${environment.apiUrl}/payments/updateTransaction/${this.fullOrderDetails[0].t_id}`,this.updateTransactionData.value).subscribe((resp)=>{
+    this.http.put(`${environment.apiUrl}/payments/updateTransaction/${this.currentTransactionId}`,this.updateTransactionData.value).subscribe((resp)=>{
       this.http.put(`${environment.apiUrl}/payments/updatePaymentStatus`, {paymentStatus: this.updateTransactionData.value.paymentStatus, orderId: this.oid}).subscribe((resp2)=>{
         alert('Transaction Updated successfully');  
         this.modalService.dismissAll();
@@ -306,6 +329,7 @@ export class OrderDetailsComponent implements OnInit {
     this.fullOrderDetails=[];
     this.http.get(`${environment.apiUrl}/orders/orderId/${ordId}`).subscribe((res) => {
       this.fullOrderDetails.push(res[0]);
+      
       this.customer_id = res[0].customer_id
       this.productDetails=res[0].orderItem;
       this.productDetails.forEach((prods)=>{
@@ -313,18 +337,21 @@ export class OrderDetailsComponent implements OnInit {
         this.totalSecurityDeposit +=prods.security_deposit;
       })
       console.log(res[0]);
+      this.os.getAllTransactionsByOrderId(this.fullOrderDetails[0].order_id).subscribe((transactionDetails)=>{        
+        this.transactionDetails= transactionDetails;
+      });
       this.addTransaction.patchValue({
         orderId:res[0].order_id,
-        orderAmount:res[0].grandTotal
+        orderAmount:res[0].balanceAmount
       });
-      this.updateTransactionData.patchValue({
-        transactionNo: res[0].transaction_id,
-        orderAmount: res[0].transactionAmount,
-        paymentStatus: res[0].status_id,
-        paymentMode: res[0].type,
-        txMsg: res[0].transaction_msg,
-        // tDate: res[0].transactionDate
-      });
+      // this.updateTransactionData.patchValue({
+      //   transactionNo: res[0].transaction_id,
+      //   orderAmount: res[0].transactionAmount,
+      //   paymentStatus: res[0].status_id,
+      //   paymentMode: res[0].type,
+      //   txMsg: res[0].transaction_msg,
+      //   // tDate: res[0].transactionDate
+      // });
       this.http.get(`${environment.apiUrl}/users/getCustomerById/${this.customer_id}`).subscribe((customerDetails)=>{
         this.customerDetails = customerDetails;
       });
@@ -903,6 +930,20 @@ export class OrderDetailsComponent implements OnInit {
     doc.save('Invoice.pdf');
     },1000)
     
+  }
+
+  getTransactionById(id){
+    this.currentTransactionId=id;
+    this.http.get(`${environment.apiUrl}/admin/getTransactionById/${id}`).subscribe((res) => {
+      this.updateTransactionData.patchValue({
+        transactionNo: res[0].transaction_id,
+        orderAmount: res[0].order_amount,
+        paymentStatus: res[0].status,
+        paymentMode: res[0].type,
+        txMsg: res[0].transaction_msg,
+        // tDate: res[0].transactionDate
+      });
+    });
   }
 
 }
