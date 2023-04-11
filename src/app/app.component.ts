@@ -18,7 +18,7 @@ export class AppComponent {
       sessionStorage.setItem('user_id', resp.data[0].customer_id);
       sessionStorage.setItem('u_role', resp.data[0].login_type);
       sessionStorage.setItem('adminName', resp.data[0].firstName);
-      this.auth.login(resp.data[0].firstName);
+      // this.auth.login(resp.data[0].firstName);
     });
   }
 }

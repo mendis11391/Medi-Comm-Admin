@@ -243,7 +243,7 @@ export class CreateOrderComponent implements OnInit {
           balanceAmount:this.orderForm.value.grandTotal,
           orderId:resp1.txnid
         };
-        if(this.ProductDetails.length>0 && this.transactionNo && this.paymentType && this.paymentStatus && this.Description && this.transactionDate){
+        if(this.ProductDetails.length>0 && this.transactionNo && this.paymentType && this.Description && this.transactionDate){
           
           let transaction = {
             transactionNo:this.transactionNo,
@@ -252,9 +252,13 @@ export class CreateOrderComponent implements OnInit {
             paymentMode:this.paymentType,
             txMsg:this.Description,
             tDate:this.transactionDate,
-            paymentStatus:this.paymentStatus
+            paymentStatus:1
           };
           transaction.orderId = resp1.txnid;
+
+          if(this.transactionAmount<this.orderForm.value.grandTotal){
+            transaction.paymentStatus=4;
+          }
         
             this.http.post(`${environment.apiUrl}/payments/postManualOrderTransaction`,transaction).subscribe((resp2)=>{
               let mobileNos = [];
@@ -262,6 +266,7 @@ export class CreateOrderComponent implements OnInit {
                 mobileNos.push(envMobile);
               });
               
+              updateOrderObj.paidAmount=this.transactionAmount;
               updateOrderObj.balanceAmount=this.orderForm.value.grandTotal-this.transactionAmount;
               if(this.orderForm.value.grandTotal>this.transactionAmount){
                 updateOrderObj.status=4;
@@ -270,12 +275,26 @@ export class CreateOrderComponent implements OnInit {
               }
 
               this.http.put(`${environment.apiUrl}/admin/updateOrderPaidAndBalanceAmount`, updateOrderObj).subscribe();
+              var campaignName = 'Order Successful';
+              var customerFullName = this.orderForm.value.firstName+' '+this.orderForm.value.lastName;
+              var orderId = this.orderForm.value.orderID;
+              var paidAmount = this.transactionAmount;
+              var balanceAmount:any = 0;
+              var templateParams = [customerFullName,paidAmount,orderId];
+              if(this.transactionAmount<this.orderForm.value.grandTotal){
+                campaignName = 'Pay on Delivery Order Success';
+                balanceAmount = JSON.stringify(this.orderForm.value.grandTotal-this.transactionAmount);
+                paidAmount = this.transactionAmount;
+                templateParams = [];
+                templateParams = [customerFullName,paidAmount,orderId,balanceAmount];
+
+              }
 
               mobileNos.push(this.orderForm.value.mobile);
               mobileNos.forEach((mobileNumber)=>{
                 let template = {
                   "apiKey": environment.whatsappAPIKey,
-                  "campaignName": "Order Successful",
+                  "campaignName": campaignName,
                   "destination": mobileNumber,
                   "userName": "IRENTOUT",
                   "source": "Primary order",
@@ -283,9 +302,7 @@ export class CreateOrderComponent implements OnInit {
                     "url": "https://irentout.com/assets/images/slider/5.png",
                     "filename": "IROHOME"
                   },
-                  "templateParams": [
-                    this.orderForm.value.firstName+' '+this.orderForm.value.lastName, JSON.stringify(this.orderForm.value.grandTotal),transaction.orderId
-                  ],
+                  "templateParams": templateParams,
                   "attributes": {
                     "InvoiceNo": "1234"
                   }

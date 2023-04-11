@@ -21,9 +21,11 @@
       <div class="col-sm-6">
         <div class="card">
           <div class="card-header">
-              <h5 class="theme-color">Notification</h5>
-              <div class="pull-right">
-                  <ui-switch uncheckedLabel="Disabled" checkedLabel="Enabled" [(ngModel)]="filteredCustomers[0].is_notification_enabled" (change)="toggleNotification($event)"></ui-switch>
+              <h5 class="theme-color">Notification: <p *ngIf="filteredCustomers[0].is_notification_enabled==true">Enabled</p>
+                <p *ngIf="filteredCustomers[0].is_notification_enabled==false">Disabled</p></h5>
+              <div class="pull-right" *appUserRole="['superAdmin', 'admin' ]">
+                  
+                  <ui-switch  uncheckedLabel="Disabled" checkedLabel="Enabled" [(ngModel)]="filteredCustomers[0].is_notification_enabled" (change)="toggleNotification($event)"></ui-switch>
               </div>
           </div>
       </div>
@@ -35,7 +37,7 @@
                   <div class="custom-datatable" *ngFor="let o of filteredCustomers">
                       
                       <div class="my-2">Customer #: <span>{{o.customer_id}}</span></div>
-                      <div class="my-2">First name : <span>{{o.firstName}} </span> <span class="text-primary" (click)="fname=!fname"> <i class="fa fa-pencil"></i></span> 
+                      <div class="my-2">First name : <span>{{o.firstName}} </span> <span *appUserRole="['superAdmin', 'admin' ]" class="text-primary" (click)="fname=!fname"> <i class="fa fa-pencil"></i></span> 
                         <div class="input-group mb-3" *ngIf="fname">
                           <input type="text" class="form-control" [(ngModel)]="o.firstName" aria-describedby="basic-addon1">
                           <div class="input-group-append">
@@ -43,7 +45,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="my-2">Last name : <span>{{o.lastName}} </span> <span class="text-primary" (click)="lname=!lname"> <i class="fa fa-pencil"></i></span>
+                      <div class="my-2">Last name : <span>{{o.lastName}} </span> <span *appUserRole="['superAdmin', 'admin' ]" class="text-primary" (click)="lname=!lname"> <i class="fa fa-pencil"></i></span>
                         <div class="input-group mb-3" *ngIf="lname">
                           <input type="text" class="form-control" [(ngModel)]="o.lastName" aria-describedby="basic-addon2">
                           <div class="input-group-append">
@@ -52,7 +54,7 @@
                         </div>
                       </div>
                       <div class="my-2">Mobile : <span>{{o.mobile}} </span></div>
-                      <div class="my-2">Email : <span>{{o.email}} </span><span class="text-primary" (click)="eemail=!eemail"> <i class="fa fa-pencil"></i></span> 
+                      <div class="my-2">Email : <span>{{o.email}} </span><span *appUserRole="['superAdmin', 'admin' ]" class="text-primary" (click)="eemail=!eemail"> <i class="fa fa-pencil"></i></span> 
                         <div class="input-group mb-3" *ngIf="eemail">
                           <input type="text" class="form-control" [(ngModel)]="o.email" aria-describedby="basic-addon3">
                           <div class="input-group-append">
@@ -89,7 +91,7 @@
               <h3>Cart details</h3>
           </div>
             <div class="card-body">
-                <button class="btn btn-warning" (click)="openProdModal()">Add product to cart</button><br><br>
+                <button *appUserRole="['superAdmin', 'admin', 'sales' ]" class="btn btn-warning" (click)="openProdModal()">Add product to cart</button><br><br>
                 <div class="custom-datatable">                        
                     <table class="table table-striped table-bordered" >
                       <thead>
@@ -107,7 +109,7 @@
                         <tr >
                           <td>{{c.product_id}}</td>
                           <td>{{c.prod_name}}</td>
-                          <td>{{c.securityDeposit * c.quantity}} <input class="form-control w-100" [(ngModel)]="c.securityDeposit" (keyup)="updateCartTenurePrice(c)"></td> 
+                          <td>{{c.securityDeposit * c.quantity}} <input *appUserRole="['superAdmin', 'admin' ]" class="form-control w-100" [(ngModel)]="c.securityDeposit" (keyup)="updateCartTenurePrice(c)"></td> 
                           <td><input [(ngModel)]="c.quantity" (keyup)="updateCartQuantity(c, c.quantity)"></td>  
                           <td>
                             <a (click)="openTenureModal(tenure, c.priority, c.tenure_id, c.tenure_base_price, c)">
@@ -154,7 +156,7 @@
                           </ng-template> 
                           </td> 
                           <td>{{c.tenure_price * c.quantity}}
-                            <br> <input class="form-control w-100" [(ngModel)]="c.tenure_price" (keyup)="updateCartTenurePrice(c)">
+                            <br> <input *appUserRole="['superAdmin', 'admin' ]" class="form-control w-100" [(ngModel)]="c.tenure_price" (keyup)="updateCartTenurePrice(c)">
                           </td>
                           <td><a (click)="removeCartItem(c)"><i class="fa fa-trash"></i></a></td>  
                                             
@@ -491,7 +493,7 @@
                       <div class="card-body">
                           <div class="custom-datatable" >
                               
-                              <div class="p-0 m-0">Display name : <span>{{a.display_name}} </span><span class="text-primary" (click)="displayName=!displayName"> <i class="fa fa-pencil"></i></span>
+                              <div class="p-0 m-0">Display name : <span>{{a.display_name}} </span><span *appUserRole="['superAdmin', 'admin' ]" class="text-primary" (click)="displayName=!displayName"> <i class="fa fa-pencil"></i></span>
                                 <div class="input-group mb-3" *ngIf="displayName">
                                   <input type="text" class="form-control" [(ngModel)]="a.display_name" aria-describedby="basic-addon1">
                                   <div class="input-group-append">
@@ -499,7 +501,7 @@
                                   </div>
                                 </div>
                               </div>
-                              <div class="p-0 m-0">Nick Name: ({{a.nickName}}) <span class="text-primary" (click)="nickName=!nickName"> <i class="fa fa-pencil"></i></span>
+                              <div class="p-0 m-0">Nick Name: ({{a.nickName}}) <span *appUserRole="['superAdmin', 'admin' ]" class="text-primary" (click)="nickName=!nickName"> <i class="fa fa-pencil"></i></span>
                                 <div class="input-group mb-3" *ngIf="nickName">
                                   <input type="text" class="form-control" [(ngModel)]="a.nickName" aria-describedby="basic-addon1">
                                   <div class="input-group-append">
@@ -508,7 +510,7 @@
                                 </div>
                               </div>
                               <div class="p-0 m-0">First name : <span>{{a.firstName}}</span></div>
-                              <div class="p-0 m-0">Address line 1 : <span>{{a.address_line1}}</span><span class="text-primary" (click)="address1=!address1"> <i class="fa fa-pencil"></i></span>
+                              <div class="p-0 m-0">Address line 1 : <span>{{a.address_line1}}</span><span *appUserRole="['superAdmin', 'admin' ]" class="text-primary" (click)="address1=!address1"> <i class="fa fa-pencil"></i></span>
                                 <div class="input-group mb-3" *ngIf="address1">
                                   <input type="text" class="form-control" [(ngModel)]="a.address_line1" aria-describedby="basic-addon1">
                                   <div class="input-group-append">
@@ -516,7 +518,7 @@
                                   </div>
                                 </div>
                               </div>
-                              <div class="p-0 m-0">Addresss line 2: <span>{{a.address_line2}} </span><span class="text-primary" (click)="address2=!address2"> <i class="fa fa-pencil"></i></span>
+                              <div class="p-0 m-0">Addresss line 2: <span>{{a.address_line2}} </span><span *appUserRole="['superAdmin', 'admin' ]" class="text-primary" (click)="address2=!address2"> <i class="fa fa-pencil"></i></span>
                                 <div class="input-group mb-3" *ngIf="address2">
                                   <input type="text" class="form-control" [(ngModel)]="a.address_line2" aria-describedby="basic-addon1">
                                   <div class="input-group-append">
@@ -524,7 +526,7 @@
                                   </div>
                                 </div>
                               </div>
-                              <div class="p-0 m-0">city <span>{{a.city}} </span><span class="text-primary" (click)="city=!city"> <i class="fa fa-pencil"></i></span>
+                              <div class="p-0 m-0">city <span>{{a.city}} </span><span class="text-primary" *appUserRole="['superAdmin', 'admin' ]" (click)="city=!city"> <i class="fa fa-pencil"></i></span>
                                 <div class="input-group mb-3" *ngIf="city">
                                   <input type="text" class="form-control" [(ngModel)]="a.city" aria-describedby="basic-addon1">
                                   <div class="input-group-append">
@@ -532,7 +534,7 @@
                                   </div>
                                 </div>
                               </div>
-                              <div class="p-0 m-0">pincode: <span>{{a.pincode}} </span><span class="text-primary" (click)="pincode=!pincode"> <i class="fa fa-pencil"></i></span>
+                              <div class="p-0 m-0">pincode: <span>{{a.pincode}} </span><span class="text-primary" *appUserRole="['superAdmin', 'admin' ]" (click)="pincode=!pincode"> <i class="fa fa-pencil"></i></span>
                                 <div class="input-group mb-3" *ngIf="pincode">
                                   <input type="text" class="form-control" [(ngModel)]="a.pincode" aria-describedby="basic-addon1">
                                   <div class="input-group-append">
@@ -540,7 +542,7 @@
                                   </div>
                                 </div>
                               </div>
-                              <div class="p-0 m-0">Landmark : <span>{{a.landmark}} </span><span class="text-primary" (click)="landmark=!landmark"> <i class="fa fa-pencil"></i></span>
+                              <div class="p-0 m-0">Landmark : <span>{{a.landmark}} </span><span class="text-primary" *appUserRole="['superAdmin', 'admin' ]" (click)="landmark=!landmark"> <i class="fa fa-pencil"></i></span>
                                 <div class="input-group mb-3" *ngIf="landmark">
                                   <input type="text" class="form-control" [(ngModel)]="a.landmark" aria-describedby="basic-addon1">
                                   <div class="input-group-append">
@@ -548,7 +550,7 @@
                                   </div>
                                 </div>
                               </div>
-                              <div class="p-0 m-0">Mobile : <span>{{a.addressMobile}} </span><span class="text-primary" (click)="mobile=!mobile"> <i class="fa fa-pencil"></i></span>
+                              <div class="p-0 m-0">Mobile : <span>{{a.addressMobile}} </span><span class="text-primary" *appUserRole="['superAdmin', 'admin' ]" (click)="mobile=!mobile"> <i class="fa fa-pencil"></i></span>
                                 <div class="input-group mb-3" *ngIf="mobile">
                                   <input type="text" class="form-control" [(ngModel)]="a.addressMobile" aria-describedby="basic-addon1">
                                   <div class="input-group-append">

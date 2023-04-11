@@ -136,7 +136,7 @@
             <div class="card">
                 <div class="card-header">
                     <h5>Transaction details 
-                        <button class="btn btn-warning pull-right" (click)="openPostTransaction(postTransaction)">Add</button>
+                        <button *appUserRole="['superAdmin', 'admin' ]" class="btn btn-warning pull-right" (click)="openPostTransaction(postTransaction)">Add</button>
                         <!-- <button *ngIf="o.transaction_source!='Cashfree' && o.transaction_id==null && role=='admin'" class="btn btn-warning pull-right" (click)="openPostTransaction(postTransaction)">Add</button>
                         <button *ngIf="o.transaction_source!='Cashfree' && o.transaction_id!=null && role=='admin'" class="btn btn-warning pull-right" (click)="openPostTransaction(updateTransaction)">Edit</button> -->
                     </h5>
@@ -160,7 +160,7 @@
                                 <td>{{t.type}}</td>
                                 <td>₹{{t.order_amount}}</td>
                                 <td>{{t.transaction_msg}}</td>
-                                <td><button class="btn btn-warning" *ngIf="t.transaction_source=='Manual'" (click)="getTransactionById(t.id);openPostTransaction(updateTransaction)">Edit</button></td>
+                                <td *appUserRole="['superAdmin', 'admin' ]"><button class="btn btn-warning" *ngIf="t.transaction_source=='Manual'" (click)="getTransactionById(t.id);openPostTransaction(updateTransaction)">Edit</button></td>
                             </tr>
                         </tbody>
                     </table>
@@ -220,9 +220,9 @@
     <div class="row my-products" *ngFor="let o of fullOrderDetails">
         <div class="col-sm-12">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header" *appUserRole="['superAdmin', 'admin' ]">
                     <h5>Product details</h5>
-                    <button class="btn btn-warning pull-right" *ngIf="!editStatus && role=='admin'" (click)="editStatus=!editStatus">Edit order</button>
+                    <button class="btn btn-warning pull-right" *ngIf="!editStatus" (click)="editStatus=!editStatus">Edit order</button>
                     <button class="btn btn-warning pull-right" *ngIf="editStatus" (click)="editStatus=!editStatus">Cancel edit</button>
                 </div>
                 <div class="card-body">

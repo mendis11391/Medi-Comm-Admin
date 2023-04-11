@@ -1,7 +1,9 @@
 export enum Role {
+    superAdmin='superAdmin',
     user = 'user',
     admin = 'admin',
-    sales = 'sales'
+    sales = 'sales',
+    delivery = 'delivery'
 }
 
 export class UserData {

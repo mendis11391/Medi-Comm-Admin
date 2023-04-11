@@ -223,9 +223,9 @@
                             </label>
                         </td>
                         <td  [class.fade]="p.data.renewed==2">
-                            <input type="number" [(ngModel)]="p.data.rent" class="form-control m-1"><button *ngIf="role=='admin'" (click)="updateRentPrice(p.data.id,p.data.rent)" class="btn btn-secondary">Update</button>
+                            <input type="number" [(ngModel)]="p.data.rent" class="form-control m-1"><button *appUserRole="['superAdmin', 'admin' ]" (click)="updateRentPrice(p.data.id,p.data.rent)" class="btn btn-secondary">Update</button>
                         </td>
-                        <td><input type="number" [(ngModel)]="p.data.renewal_price" class="form-control m-1"><button *ngIf="role=='admin'" (click)="updateRenewalPrice(p.data.id,p.data.renewal_price)" class="btn btn-secondary">Update</button></td>
+                        <td><input type="number" [(ngModel)]="p.data.renewal_price" class="form-control m-1"><button *appUserRole="['superAdmin', 'admin' ]" (click)="updateRenewalPrice(p.data.id,p.data.renewal_price)" class="btn btn-secondary">Update</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -301,7 +301,7 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <input class="form-control" type="date" [(ngModel)]="model" [value]="model">
-                            <br><button class="btn btn-secondary" (click)="updateRenewalEndDate()">Update End date</button>
+                            <br><button *appUserRole="['superAdmin', 'admin' ]" class="btn btn-secondary" (click)="updateRenewalEndDate()">Update End date</button>
                         </div>
                     </div>
                 </div>

@@ -17,12 +17,12 @@ const routes: Routes = [
     children: [
       {
         path: 'url-logs-report',
-        // canLoad: [AuthGuard],
-        // canActivate: [AuthGuard],
+        canLoad: [AuthGuard],
+        canActivate: [AuthGuard],
         data: {
           title: "Url logs report",
           breadcrumb: "Url logs report",
-          roles: [Role.admin]
+          roles: [Role.superAdmin,Role.admin,Role.sales]
         },
         component: UrlLogsReportComponent,
       }
