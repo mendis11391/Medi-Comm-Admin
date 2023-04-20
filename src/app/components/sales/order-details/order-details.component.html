@@ -70,9 +70,10 @@
                     <h5>Billing address</h5>
                 </div>
                 <div class="card-body">
-                    <p>Name: <span>{{o.firstName}}</span></p>
+                    <p>Address Name: <span>{{o.billingAddress[0].display_name}}</span></p>
+                    <!-- <p>Name: <span>{{o.firstName}}</span></p> -->
                     <p>Address: <span>{{o.billingAddress[0].address_line1}},{{o.billingAddress[0].address_line2}},{{o.billingAddress[0].city}}-{{o.billingAddress[0].pincode}}.</span></p>
-                    <p>Mobile: <span>{{o.mobile}}</span></p>
+                    <p>Mobile: <span>{{o.billingAddress[0].addressMobile}}</span></p>
                     <p>Email: <span>{{o.email}}</span></p>
                 </div>
             </div>
@@ -84,9 +85,10 @@
                     <h5>Shipping address</h5>
                 </div>
                 <div class="card-body">
-                    <p>Name: <span>{{o.firstName}}</span></p>
+                    <p>Address Name: <span>{{o.shippingAddress[0].display_name}}</span></p>
+                    <!-- <p>Name: <span>{{o.firstName}}</span></p> -->
                     <p>Address: <span>{{o.shippingAddress[0].address_line1}},{{o.shippingAddress[0].address_line2}},{{o.shippingAddress[0].city}}-{{o.shippingAddress[0].pincode}}.</span></p>
-                    <p>Mobile: <span>{{o.mobile}}</span></p>
+                    <p>Mobile: <span>{{o.shippingAddress[0].addressMobile}}</span></p>
                     <p>Email: <span>{{o.email}}</span></p>
                 </div>
             </div>
