@@ -75,6 +75,8 @@ export class ReplaceRequestComponent implements OnInit {
   exportColumns: any[];
   first;
   approvals;
+  info:any;
+  Assset:any;
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
   constructor(private route: ActivatedRoute, private router:Router,private excelService:ExcelService,private http: HttpClient,private ps:ProductService,private os:OrdersService, private modalService: NgbModal, private formBuilder: UntypedFormBuilder) {
     // this.order = orderDB.list_order;
@@ -97,6 +99,7 @@ export class ReplaceRequestComponent implements OnInit {
   ngOnInit() {    
     // this.getOrders();
     this.getAssets();
+    this.getAssetList();
     // this.loadProducts();
     this.updateStatus = this.formBuilder.group({
       deliveryStatus: [''],
@@ -148,7 +151,7 @@ export class ReplaceRequestComponent implements OnInit {
 
   loadProducts() {
     this.ps.getProductsBycityId(1).subscribe(res => {
-      console.log(res);
+      
       this.productsList = res;
       this.filteredProducts=this.productsList.filter(item=>item.prod_status==1 && item.prod_qty>0);
       let data2;
@@ -157,10 +160,10 @@ export class ReplaceRequestComponent implements OnInit {
          data2 = new Promise((resolve2, reject)=>{
            this.http.get(`${environment.apiUrl}/products/tenures/${prodsRes.priority}`).subscribe((res)=>{
              let tenureMatched=res[0].filter(psItem => psItem.tenure_id==this.p1Tenure);
+             
              if(tenureMatched.length>0){
                prodsRes.matchedTenurePrice = prodsRes.tenure_base_price-(prodsRes.tenure_base_price*tenureMatched[0].discount/100);
                this.matchedProducts2.push(prodsRes);
-               console.log(this.matchedProducts2);
                resolve2('success');
                resolve('success');
              }
@@ -511,6 +514,8 @@ export class ReplaceRequestComponent implements OnInit {
   }
 
   replace(oiid,p1, p1Indexs,p1Tenure, p1DP,p1AssetId, p2, damageCharges){
+
+    this.assetId = this.Assset.assetId;
     // let filterP1;
     let filterP2;
     let p2TenureArr;
@@ -531,7 +536,6 @@ export class ReplaceRequestComponent implements OnInit {
     let p2DP=0;
     // filterP1=this.productDetails.filter(item => item.indexs===p1Indexs);
     filterP2 = this.productsList.filter(item => item.product_id==p2.product_id);
-    console.log(filterP2);
     let securityDepositDiff = filterP2[0].securityDeposit-this.productDetails.security_deposit;
     
     // let log={orderID:txnid, request:'Replacement', adminResponse:'Replaced', replacedProdId:filterP1[0].id, replacedWith:filterP2[0].id}
@@ -552,7 +556,7 @@ export class ReplaceRequestComponent implements OnInit {
               this.tenure_id = p2TenureArr[i].tenure_id;
               this.p2Tenure=p2TenureArr[i].tenure+' '+p2TenureArr[i].tenure_period;
               p2TenurePrice = this.replaceProduct[0].tenure_base_price-(this.replaceProduct[0].tenure_base_price*p2TenureArr[i].discount/100);
-              console.log(p2TenurePrice);
+              
             }
           }          
       });
@@ -601,7 +605,6 @@ export class ReplaceRequestComponent implements OnInit {
           damageCharges:damageCharges,
         }; 
   
-        console.log(returnedProduct);
         
         let ucid={      
           indexs:Math.floor((Math.random() * 9999) + 1),
@@ -671,12 +674,37 @@ export class ReplaceRequestComponent implements OnInit {
           modifiedAt:new Date(),
           products:JSON.stringify(cInfo)        
         };  
-        this.http.post(`${environment.apiUrl}/payments/newReplace`,  replaceOrder).subscribe((res) => {
+        this.http.post(`${environment.apiUrl}/payments/newReplace`,  replaceOrder).subscribe((res:any) => {
           let customerRequest={
             approvalStatus:1,
             requestStatus:0
           };
           this.http.put(`${environment.apiUrl}/users/updatecustomerRequests/${this.currentOrderItemId}`,customerRequest).subscribe();
+           let returnedProd={
+            AssetId: returnedProduct.assetId,            
+            customer_Id:this.fullOrderDetails[0].customer_id,            
+            order_id:res.order_id,           
+            source_userId:sessionStorage.getItem('user_id'),            
+            transation_type:4,            
+            assetStatus:2            
+          };
+            
+          this.postInvetory(returnedProd);
+            
+            
+            
+            
+            
+            let replacedProd={            
+              AssetId: this.assetId,            
+              customer_Id:this.fullOrderDetails[0].customer_id,            
+              order_id:res.order_id,            
+              source_userId:sessionStorage.getItem('user_id'),            
+              transation_type:3,            
+              assetStatus:4            
+            };
+            
+            this.postInvetory(replacedProd);
           // this.http.get(`${environment.apiUrl}/orders/orderItemsByorderId/${this.currentOrderItemId}`).subscribe((resOrd) => {
           //   let cid = resOrd[0].renewals_timline;
           //   cid.forEach(element => {
@@ -777,7 +805,6 @@ export class ReplaceRequestComponent implements OnInit {
   }
 
   calcModifiedPrice(p1Tenure,p1SecurityDeposit, p2TenurePrice, p2SD){
-    console.log(p1SecurityDeposit);
     let p2TenureArr;
     // let p2TenurePrice=0;
     // let p2DP=0;
@@ -806,16 +833,13 @@ export class ReplaceRequestComponent implements OnInit {
 }
 
 onFilter(e:any) {
-  console.log(this.dt1.filters);
   sessionStorage.setItem("replaceRequestFilters", JSON.stringify(e.filters));
   // sessionStorage.setItem("listUserFilterValues", JSON.stringify(this.dt1.filteredValue));
 }
 onPagination(e:any){
-  console.log(e);
   sessionStorage.setItem("replaceRequestPage", JSON.stringify(e));
 }
 onSort(e:any){
-  console.log(e);
   sessionStorage.setItem("replaceRequestSort", JSON.stringify(e));
 }
 
@@ -841,6 +865,36 @@ getFilters(){
     // this.dt1.firstChange.emit(this.dt1.first);
     // this.dt1.onLazyLoad.emit(this.dt1.createLazyLoadMetadata());
   }
+}
+
+getAssetList(){
+
+  this.http.get(`${environment.apiUrl3}/InstockAssetId/1`).subscribe((results:any)=>{
+  
+    this.info=results;
+  
+  });
+  
+}
+
+postInvetory(item){
+
+  let obj={
+  
+    AssetId: item.AssetId,
+  
+    customer_Id:item.customer_Id,
+  
+    order_id:item.order_id,
+  
+    source_userId:item.source_userId,
+  
+    transation_type:item.transation_type,
+  
+  };
+  
+  this.http.put(`${environment.apiUrl3}/UpdateAssetStatus/${item.assetStatus}`, obj).subscribe();
+  
 }
 
 }

@@ -186,7 +186,7 @@ export class CustomersComponent implements OnInit {
     let AllProductsOf=[];
     
     this.os.getAllOrdersByCustomerId(id).subscribe((orders)=>{
-      this.orders = orders.filter(item=>item.paymentStatus=='Success' || item.orderType_id==3 || item.orderType_id==4 );
+      this.orders = orders.filter(item=>item.paymentStatus=='Success' || item.paymentStatus=='To be paid' || item.orderType_id==3 || item.orderType_id==4 );
       this.orders.forEach((res)=>{
         if(res.orderType_id==1 || res.orderType_id==3 ){
           filteredProducts = res.orderItem;

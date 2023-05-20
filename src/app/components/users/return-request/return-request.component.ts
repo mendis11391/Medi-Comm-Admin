@@ -340,6 +340,7 @@ export class ReturnRequestComponent implements OnInit {
       modifiedAt:new Date(),
       products:JSON.stringify(cInfo),
       returnDate:this.returnDate,
+      adminUID:sessionStorage.getItem('user_id')
     }; 
 
     let returnOrderItem={
@@ -358,6 +359,14 @@ export class ReturnRequestComponent implements OnInit {
         this.http.put(`${environment.apiUrl}/orders/updateOrderItemStatus/${item.order_item_id}`,returnOrderItem).subscribe();
         this.http.put(`${environment.apiUrl}/users/updatecustomerRequests/${item.order_item_id}`,customerRequest).subscribe(); 
         this.http.put(`${environment.apiUrl}/users/updatecustomerRequestsMessage/${item.order_item_id}`,this.requestDetails).subscribe();
+        let obj={
+          AssetId: item.asset_id,          
+          customer_Id:this.fullOrderDetails[0].customer_id,          
+          order_id:res.order_id,          
+          source_userId:sessionStorage.getItem('user_id'),          
+          transation_type:'4'          
+        }; 
+        this.http.put(`${environment.apiUrl3}/UpdateAssetStatus/2`, obj).subscribe();
       });
       this.http.post(`${environment.apiUrl}/forgotpassword/notifyMailReturnOrder`,  returnOrder).subscribe();
       this.postNotes(res.orderDBId);

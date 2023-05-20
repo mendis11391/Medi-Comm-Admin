@@ -265,7 +265,30 @@
                         {{(p2TenurePrice-0)+(p2DP-0)}}</td>
                       <td>    
                         <label>Asset #:
-                          <input class="form-control" type="text" [(ngModel)]="assetId">
+                          <p-dropdown [options]="info"  [(ngModel)]="Assset" optionLabel="assetId" [filter]="true" filterBy="assetId" [showClear]="true" placeholder="Select a asset">
+
+                            <ng-template pTemplate="selectedItem">
+                            
+                            <div class="flex align-items-center gap-2" *ngIf="Assset">
+                            
+                            <div>{{ Assset.assetId }}</div>
+                            
+                            </div>
+                            
+                            </ng-template>
+                            
+                            <ng-template let-asset pTemplate="item">
+                            
+                            <div class="flex align-items-center gap-2">
+                            
+                            <div>{{ asset.assetId }}</div>
+                            
+                            </div>
+                            
+                            </ng-template>
+                            
+                            </p-dropdown>
+                          <!-- <input class="form-control" type="text" [(ngModel)]="assetId"> -->
                         </label>                
                       </td>
                     </tr>
@@ -283,7 +306,7 @@
                   <p>Sub total: ₹{{(rentDifference)+damageCharges+totalTaxAmount((rentDifference)+damageCharges)}}</p>
                   <p>Difference in security deposit: {{securityDepositDiff}}</p>
                   <p>Total: ₹{{(rentDifference)+damageCharges+totalTaxAmount((rentDifference)+damageCharges)+securityDepositDiff | number: '1.0-0'}}</p>
-                  <button *ngIf="assetId" class="btn btn-primary" (click)="replace(productDetails.order_item_id,productDetails.id,productDetails.indexs, productDetails.tenure_id, productDetails.dp,productDetails.assetId,prodId, damageCharges)">Replace</button>
+                  <button *ngIf="Assset" class="btn btn-primary" (click)="replace(productDetails.order_item_id,productDetails.id,productDetails.indexs, productDetails.tenure_id, productDetails.dp,productDetails.assetId,prodId, damageCharges)">Replace</button>
                 </div>
                 </div>
             </div>

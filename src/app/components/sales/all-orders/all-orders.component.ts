@@ -90,7 +90,6 @@ export class AllOrdersComponent implements OnInit {
     // });
     this.getFilters();
     this.http.get(`${environment.apiUrl}/orders/getAllPaymentStatus`).subscribe((res:[]) => {
-      console.log(res);
       var resultArray = res.map(function(elm) {
         return { name: elm["status_name"]};
       });

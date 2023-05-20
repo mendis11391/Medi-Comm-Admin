@@ -34,9 +34,12 @@ import {TableModule} from 'primeng/table';
 import { ButtonModule } from "primeng/button";
 import { NotesComponent } from './notes/notes.component';
 import {MultiSelectModule} from 'primeng/multiselect';
+import { AssetLastRenewalComponent } from './asset-last-renewal/asset-last-renewal.component';
+import {DropdownModule} from 'primeng/dropdown';
+import { TabViewModule } from 'primeng/tabview';
 
 @NgModule({
-  declarations: [OrdersComponent, TransactionsComponent, OthersComponent, DepositsComponent, OrdersPanelComponent, ReplacementOrdersComponent, UserRequestsComponent, ManageOrdersComponent, OrderDetailsComponent, PrimaryOrderComponent, RenewalOrderComponent, ReplacementOrderComponent, ReturnOrderComponent, UpcomingRenewalsComponent, CreateOrderComponent, AllOrdersComponent, CreateRenewalOrderComponent, CreateRequestComponent, CancelledOrdersComponent, NotesComponent],
+  declarations: [OrdersComponent, TransactionsComponent, OthersComponent, DepositsComponent, OrdersPanelComponent, ReplacementOrdersComponent, UserRequestsComponent, ManageOrdersComponent, OrderDetailsComponent, PrimaryOrderComponent, RenewalOrderComponent, ReplacementOrderComponent, ReturnOrderComponent, UpcomingRenewalsComponent, CreateOrderComponent, AllOrdersComponent, CreateRenewalOrderComponent, CreateRequestComponent, CancelledOrdersComponent, NotesComponent, AssetLastRenewalComponent],
   imports: [
     CommonModule,
     SalesRoutingModule,
@@ -50,6 +53,8 @@ import {MultiSelectModule} from 'primeng/multiselect';
     TableModule,
     ButtonModule,
     MultiSelectModule,
+    DropdownModule,
+    TabViewModule,
     NgMultiSelectDropDownModule.forRoot(),
   ]
 })

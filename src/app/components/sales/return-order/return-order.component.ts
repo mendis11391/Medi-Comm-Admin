@@ -78,7 +78,7 @@ export class ReturnOrderComponent implements OnInit {
 
   getOrders(){
     this.os.getAllreturnOrders().subscribe((orders)=>{
-      this.order=orders.filter(item => item.orderType_id==4);
+      this.order=orders;
       this.filteredOrders=this.order;
       this.filteredOrders.forEach(
         item => (item.createdAt = new Date(item.createdAt))
@@ -100,10 +100,13 @@ export class ReturnOrderComponent implements OnInit {
         dataKey: col.field
       }));
 
-      this.filteredOrders.forEach((resp)=>{
-        
-        resp.totalSecurityDeposit = resp.orderItem.reduce((n, {security_deposit}) => n + security_deposit, 0);
-      });
+      this.filteredOrders = this.filteredOrders.map((resp) => ({
+        ...resp,
+        totalSecurityDeposit: resp.orderItem.reduce(
+          (total, { security_deposit }) => total + security_deposit,
+          0
+        ),
+      }));
 
       this.datasource = this.filteredOrders;
       this.totalRecords = this.filteredOrders.length;

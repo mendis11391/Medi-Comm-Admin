@@ -1,0 +1,33 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Product Lists</h5>
+                </div>
+                <div class="card-body">
+                    <div id="batchDelete" class="custom-datatable">
+                        
+                        <div class="table-responsive">
+                            <!-- <ng2-smart-table [settings]="settings" [source]="productsList" (editConfirm)="onEdit(row.prod_id)" (deleteConfirm)="onDelete(row.prod_id)"></ng2-smart-table> -->
+                            <table class="table table-striped table-bordered">
+                                <thead>
+                                  <tr>
+                                    <th>Order id</th>
+                                    <th>AssetId</th>
+                                  </tr>
+                                </thead>
+                                <tbody *ngFor="let row of assetData">
+                                  <tr >
+                                    <td>{{row.order_id}}</td>
+                                    <td>{{row.asset_id}}</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

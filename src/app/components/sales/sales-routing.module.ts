@@ -22,6 +22,7 @@ import { CreateRenewalOrderComponent } from './create-renewal-order/create-renew
 import { CreateRequestComponent } from './create-request/create-request.component';
 import { CancelledOrdersComponent } from './cancelled-orders/cancelled-orders.component';
 import { NotesComponent } from './notes/notes.component';
+import { AssetLastRenewalComponent } from './asset-last-renewal/asset-last-renewal.component';
 const routes: Routes = [
   {
     path: '',
@@ -152,6 +153,14 @@ const routes: Routes = [
         data: {
           title: "Manage orders",
           breadcrumb: "Manage orders"
+        }
+      },
+      {
+        path: 'asset-renewals',
+        component: AssetLastRenewalComponent,
+        data: {
+          title: "Asset renewals",
+          breadcrumb: "Asset renewals"
         }
       },
       {

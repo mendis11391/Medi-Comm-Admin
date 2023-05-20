@@ -69,6 +69,9 @@ export class OrderDetailsComponent implements OnInit {
   notes:any = [];
   transactionDetails;
   currentTransactionId;
+  info:any;
+  updateInventory={};
+  selectOrder:any;
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
   constructor(private changeDetection: ChangeDetectorRef,private route: ActivatedRoute,private excelService:ExcelService,private http: HttpClient,private os:OrdersService, private modalService: NgbModal, private formBuilder: UntypedFormBuilder) {
     // this.order = orderDB.list_order;
@@ -147,6 +150,8 @@ export class OrderDetailsComponent implements OnInit {
     });
 
     this.getNotesByOrderId(this.oid);
+    
+    this.getAssetList();
   }
 
   async getKycByCustomerId(id){
@@ -429,6 +434,7 @@ export class OrderDetailsComponent implements OnInit {
   //   });
   // }
   updateAssetId(OrderId){
+    this.assetAssign.value.assetId = this.selectOrder.assetId;
     let getOrder;
     let getAllProduct;
     let forQtyProduct;
@@ -610,8 +616,10 @@ export class OrderDetailsComponent implements OnInit {
       orderItem=res;
       getAllProduct.push(orderItem[0].renewals_timline[0]);
       currentAssetId=orderItem[0].asset_id ;
-    
-      if(currentAssetId!='To be assigned'){
+      this.getAssetList();
+      const verifyStatus = this.info.filter((item)=>item.assetId==OIT.asset_id);
+
+      if(currentAssetId!='To be assigned' && verifyStatus.length>0){
         this.http.put(`${environment.apiUrl}/orders/updateRenewTimline/${OrderId}`, {deliveryStatus:delvStatus, orderId:this.oid,fullName:this.customerDetails[0].firstName+' '+this.customerDetails[0].lastName, mobile:this.customerDetails[0].mobile, orderNo:this.fullOrderDetails[0].order_id}).subscribe((res)=>{
           // this.modalReference.close();
           this.deliveryStatus.reset();
@@ -634,6 +642,32 @@ export class OrderDetailsComponent implements OnInit {
           this.getOrderById(this.oid);
               // window.location.reload();
         });
+        this.updateInventory['AssetId']=OIT.asset_id;
+
+        this.updateInventory['customer_Id']=this.customerDetails[0].customer_id;
+
+        this.updateInventory['order_id']=this.fullOrderDetails[0].order_id;
+
+        this.updateInventory['source_userId']=sessionStorage.getItem('user_id');
+
+        if(this.deliveryStatus.value.deliveryStatus==4){
+
+          this.updateInventory['transation_type']='3';
+
+          this.http.put(`${environment.apiUrl3}/UpdateAssetStatus/4`,this.updateInventory).subscribe((res) => {
+            console.log(res);
+          });
+        }
+      //   else if(this.deliveryStatus.value.deliveryStatus==6){
+
+      //     this.updateInventory['transation_type']='3';
+      //     this.http.put(`${environment.apiUrl3}/UpdateAssetStatus/`+4,this.updateInventory).subscribe((res) => {
+
+      //     console.log(res);
+
+      //     });
+
+      // }
       }else{
         this.formError=true;
       }
@@ -927,7 +961,28 @@ export class OrderDetailsComponent implements OnInit {
       tableWidth: 500
     });
 
-    doc.save('Invoice.pdf');
+    this.popupOrder.forEach((item,index)=>{
+      if(item.renewals_timline[0].tenuresOfProduct){
+        autoTable(doc, { html: '#tenure-table'+index, 
+                     margin: {top: 240},
+                     didParseCell: function (data) {
+                      var col = data.column.index;
+                      if( col==1 || col==2 || col==3 || col==4 || col==5){
+                          data.cell.styles.halign = 'center';
+                      } 
+                      var rows = data.table.body;
+                      if (data.row.index === 0 ) {            
+                          data.cell.styles.fillColor = '#f36f02';
+                          data.cell.styles.textColor = '#ffffff';
+                      }
+                  },
+                  tableWidth: 200
+        });
+      }
+      
+    });
+
+    doc.save(`Invoice_${getOrder.invoice_id}.pdf`);
     },1000)
     
   }
@@ -944,6 +999,20 @@ export class OrderDetailsComponent implements OnInit {
         // tDate: res[0].transactionDate
       });
     });
+  }
+
+
+  getAssetList(){
+    this.http.get(`${environment.apiUrl3}/InstockAssetId/1`).subscribe((results:any)=>{   
+      this.info=results;      
+    });  
+  }
+
+  calcTenures(discount, tenure_base_price){
+    let tenurePrice=tenure_base_price;
+    let discountPrice = tenurePrice*discount/100;
+    let tenureDiscountPrice=tenurePrice-discountPrice;
+    return Math.round(tenureDiscountPrice);
   }
 
 }

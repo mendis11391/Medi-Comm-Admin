@@ -5,9 +5,6 @@
             <div class="card">
                 <div class="card-body">
                     <div class="custom-datatable">
-                        <input type='text' class="filter-ngx form-control" placeholder='Search...'
-                            (keyup)='updateFilter($event)' />
-                            <button *appUserRole="['superAdmin', 'admin', 'sales' ]" class="pull-right btn btn-warning ml-2" [routerLink]="'/users/create-customer'" >Create customer</button>
                             
 
                                               
@@ -24,6 +21,8 @@
    
                                 <button *appUserRole="['superAdmin', 'admin' ]" type="button" pButton pRipple icon="pi pi-file" (click)="dt1.exportCSV()" class="mr-2" pTooltip="CSV" tooltipPosition="bottom">CSV</button>
                                 <button *appUserRole="['superAdmin', 'admin' ]" type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportAsXLSX()" class="p-button-success mr-2"  pTooltip="XLS" tooltipPosition="bottom">XL</button>
+                                <button *appUserRole="['superAdmin', 'admin', 'sales' ]" class="btn btn-warning ml-2" [routerLink]="'/users/create-customer'" >Create customer</button>
+                            
                                 <!-- <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()" class="p-button-warning mr-2" pTooltip="PDF" tooltipPosition="bottom"></button> -->
                                 <button *appUserRole="['superAdmin', 'admin' ]" type="button" pButton pRipple icon="pi pi-filter" (click)="dt1.exportCSV({selectionOnly:true})" class="p-button-info ml-auto" pTooltip="Selection Only" tooltipPosition="bottom">XL</button>
                               </div>
@@ -61,7 +60,12 @@
                                         <p-columnFilter type="text" field="email" display="menu"></p-columnFilter>
                                     </div>
                                   </th>
-                                  
+                                  <th>
+                                    <div class="flex justify-content-center align-items-center">
+                                      Last note
+                                        <p-columnFilter type="text" field="lastNote" display="menu"></p-columnFilter>
+                                    </div>
+                                  </th>
                                   <th>
                                     <div class="flex justify-content-center align-items-center">
                                       Registered date
@@ -88,6 +92,7 @@
                                   <td>{{o.lastName}}</td>
                                   <td>{{o.mobile}}</td>
                                   <td>{{o.email}}</td>   
+                                  <td>{{o.lastNote}}</td>
                                   <td>{{o.registeredAt | date:'dd-MMM-yyyy HH:mm'}}</td>  
                                   <td>{{o.lastLogin | date:'dd-MMM-yyyy HH:mm'}}</td> 
                                 </tr>

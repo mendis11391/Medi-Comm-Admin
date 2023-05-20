@@ -263,11 +263,34 @@
                             <td>
                                 <form class="orders-form-popup" [formGroup]="assetAssign" (ngSubmit)="updateAssetId(p.order_item_id)">
                                     <label> Asset #:
+                                        <p-dropdown formControlName="assetId" [options]="info" [(ngModel)]="selectOrder" optionLabel="assetId" [filter]="true" filterBy="assetId" [showClear]="true" placeholder="Select a asset">
+
+                                            <ng-template pTemplate="selectedItem">
+                                            
+                                                <div class="flex align-items-center gap-2" *ngIf="selectOrder">
+                                                
+                                                <div>{{ selectOrder.assetId }}</div>
+                                                
+                                                </div>
+                                            
+                                            </ng-template>
+                                            
+                                            <ng-template let-asset pTemplate="item">
+                                            
+                                            <div class="flex align-items-center gap-2">
+                                            
+                                            <div>{{ asset.assetId }}</div>
+                                            
+                                            </div>
+                                            
+                                            </ng-template>
+                                            
+                                        </p-dropdown>
                                         <!-- <select formControlName="assetId" class="form-control">
-                                            <option [value]="p.asset_id">select</option>
-                                            <option *ngFor="let a of assets" [value]="a.asset_no">{{a.asset_no}}</option>
+                                            <option >select</option>
+                                            <option *ngFor="let a of info">{{a}}</option>
                                         </select>  -->
-                                        <input type="text" formControlName="assetId" class="form-control">
+                                        <!-- <input type="text" formControlName="assetId" class="form-control"> -->
                                     </label>
                                     <div *ngIf="((deliveryStatus.value.deliveryStatus=='Shipped' && assetId=='') || (deliveryStatus.value.deliveryStatus=='Delivered' && assetId=='') || formError==true)" class="text text-danger">
                                         Asset # is required.
@@ -346,7 +369,7 @@
                                         <input type="text" formControlName="assetId" class="form-control">
                                     </label>
                                     <div *ngIf="((deliveryStatus.value.deliveryStatus=='Shipped' && assetId=='') || (deliveryStatus.value.deliveryStatus=='Delivered' && assetId=='') || formError==true)" class="text text-danger">
-                                        Asset # is required.
+                                        Asset # is required / already assigned.
                                     </div><br>
                                     <button class="btn btn-warning">Update</button>
                                 </form>
@@ -696,6 +719,37 @@
     <p>Total: Rs-{{o.amount}}</p> -->
 </div>
 
+<div hidden>
+                        
+                        
+    <div *ngFor="let p of popupOrder;let i=index">
+      <h1>Tenures</h1>
+      <table id="tenure-table{{i}}" class="table table-striped">                            
+          <tr>
+              <th>Current tenure</th>
+              <th>Tenure({{p.prod_id}})</th>
+              <th>Price</th>
+          </tr>
+          <tr *ngFor="let t of p.renewals_timline[0].tenuresOfProduct">
+              <td>
+                  <a *ngIf="p.tenure_id==t.tenure_id">
+                      Selected
+                  </a>
+              </td>
+              <td>
+                  {{t.tenure}} {{t.tenure_period}}
+              </td>
+              <td>
+                  {{calcTenures(t.discount,p.tenure_base_price)}}
+              </td>
+          </tr>
+          <tr>{{p.prod_id}}</tr>
+      </table>
+    </div>
+      
+      
+  </div>
+
 
 <ng-template #postTransaction let-c="close" let-d="dismiss">
     <div class="modal-header text-center">
@@ -736,10 +790,10 @@
                     </div>
                     <div class="form-group" *ngIf="fullOrderDetails[0].orderType_id==4 || fullOrderDetails[0].orderType_id==1">
                         <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Transaction amount.</label>
-                        <input type="text" class="form-control" formControlName="orderAmount"><br>
+                        <input type="number" class="form-control" formControlName="orderAmount"><br>
                     </div>
                     <div class="form-group">
-                        <label for="validationTitle" class="col-form-label pt-0"><span>*</span> Message</label>
+                        <label for="validationTitle" class="col-form-label pt-0">Message</label>
                         <textarea class="form-control" formControlName="txMsg"></textarea>
                     </div>
                     <div class="form-group">
