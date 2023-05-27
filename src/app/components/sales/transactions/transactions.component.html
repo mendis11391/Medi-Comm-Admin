@@ -100,7 +100,7 @@
                                                 <td [routerLink]="['../../sales/orders',o.ord_id]">{{o.order_id}}</td>
                                                 <td>{{o.order_type}}</td>
                                                 <td>{{o.transaction_id}}</td> 
-                                                <td>₹{{o.order_amount}}</td> 
+                                                <td>₹{{o.order_amount | number: '1.0-0'}}</td> 
                                                 <td>{{o.transaction_source}}</td>
                                                 <td>{{o.type }}</td>    
                                                 <td>{{o.createdAt | date: 'dd MM yyyy'}}</td>

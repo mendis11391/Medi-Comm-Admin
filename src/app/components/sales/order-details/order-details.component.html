@@ -589,22 +589,22 @@
         
                     <div *ngFor="let o of fullOrderDetails" class="pull-right text-right">
                         <div *ngIf="o.orderType_id!=3 && o.orderType_id!=4">
-                            <h4 *ngIf="o.orderType_id==1">Sub total: <span>₹{{o.subTotal+o.damageProtection}}</span></h4>
+                            <h4 *ngIf="o.orderType_id==1">Sub total: <span>₹{{o.subTotal+o.damageProtection | number: '1.0-0'}}</span></h4>
                             <h4 *ngIf="o.orderType_id==2">Sub total: <span>₹{{subTotal+(o.damageProtection-0)}}</span></h4>
                             <h4 *ngIf="o.orderType_id==1">Delivery charges: <span>₹{{o.deliveryCharges}}</span></h4>
                             <h4 *ngIf="o.orderType_id==1">Taxes: <span>₹{{o.total-(o.subTotal+o.damageProtection+o.deliveryCharges)}}</span></h4>
                             <h4 *ngIf="o.orderType_id==2">Taxes: <span>₹{{((subTotal+o.damageProtection)*(Taxes)/100)}}</span></h4>
-                            <h4>Total: <span>₹{{o.total}}</span></h4>
+                            <h4>Total: <span>₹{{o.total | number: '1.0-0'}}</span></h4>
                             <h4 *ngIf="o.orderType_id==1">Total security deposit: <span>₹{{o.totalSecurityDeposit}}</span></h4>
-                            <h4>Grand Total: <span>₹{{o.grandTotal}}</span></h4>
+                            <h4>Grand Total: <span>₹{{o.grandTotal | number: '1.0-0'}}</span></h4>
                         </div>
                         <div *ngIf="o.orderType_id==3">
                             <h4>Difference Rent: ₹{{o.orderItem[0].renewals_timline[0].p2Rent - o.orderItem[0].renewals_timline[0].returnedProduct.p1Rent}}</h4>
                             <h4 *ngIf="o.orderItem[0].renewals_timline[0].damageCharges>0">Damage / Delivery Charges: ₹{{o.orderItem[0].renewals_timline[0].damageCharges}}</h4>
                             <h4>GST: {{totalTaxAmount((o.orderItem[0].renewals_timline[0].p2Rent - o.orderItem[0].renewals_timline[0].returnedProduct.p1Rent)+o.orderItem[0].renewals_timline[0].damageCharges)}}</h4>
-                            <h4>Sub total: ₹{{(o.orderItem[0].renewals_timline[0].p2Rent - o.orderItem[0].renewals_timline[0].returnedProduct.p1Rent)+o.orderItem[0].renewals_timline[0].damageCharges+totalTaxAmount((o.orderItem[0].renewals_timline[0].p2Rent - o.orderItem[0].renewals_timline[0].returnedProduct.p1Rent)+o.orderItem[0].renewals_timline[0].damageCharges)}}</h4>
+                            <h4>Sub total: ₹{{(o.orderItem[0].renewals_timline[0].p2Rent - o.orderItem[0].renewals_timline[0].returnedProduct.p1Rent)+o.orderItem[0].renewals_timline[0].damageCharges+totalTaxAmount((o.orderItem[0].renewals_timline[0].p2Rent - o.orderItem[0].renewals_timline[0].returnedProduct.p1Rent)+o.orderItem[0].renewals_timline[0].damageCharges) | number: '1.0-0'}}</h4>
                             <h4>Difference Deposit: {{o.orderItem[0].renewals_timline[0].securityDepositDiff}}</h4>
-                            <h4>Total: ₹{{(o.orderItem[0].renewals_timline[0].p2Rent - o.orderItem[0].renewals_timline[0].returnedProduct.p1Rent)+o.orderItem[0].renewals_timline[0].damageCharges+totalTaxAmount((o.orderItem[0].renewals_timline[0].p2Rent - o.orderItem[0].renewals_timline[0].returnedProduct.p1Rent)+o.orderItem[0].renewals_timline[0].damageCharges)+o.orderItem[0].renewals_timline[0].securityDepositDiff}}</h4>
+                            <h4>Total: ₹{{(o.orderItem[0].renewals_timline[0].p2Rent - o.orderItem[0].renewals_timline[0].returnedProduct.p1Rent)+o.orderItem[0].renewals_timline[0].damageCharges+totalTaxAmount((o.orderItem[0].renewals_timline[0].p2Rent - o.orderItem[0].renewals_timline[0].returnedProduct.p1Rent)+o.orderItem[0].renewals_timline[0].damageCharges)+o.orderItem[0].renewals_timline[0].securityDepositDiff | number: '1.0-0'}}</h4>
                         </div>
                         <div *ngIf="o.orderType_id==4">
                             <div>

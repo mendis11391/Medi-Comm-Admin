@@ -182,7 +182,7 @@ const routes: Routes = [
         data: {
           title: "Pincodes",
           breadcrumb: "Pincodes",
-          roles: [Role.admin]
+          roles: [Role.admin,Role.sales]
         }
       },
       {
